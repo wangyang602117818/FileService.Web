@@ -19,7 +19,7 @@ namespace FileService.Data
         public bool UpdateConfig(string extension, string value, string action)
         {
             var filter = FilterBuilder.Eq("Extension", extension);
-            return MongoCollection.UpdateOne(filter, Builders<BsonDocument>.Update.Set("Type", value).Set("Action", action), new UpdateOptions() { IsUpsert = true }).IsAcknowledged;
+            return MongoCollection.UpdateOne(filter, Builders<BsonDocument>.Update.Set("Type", value).Set("Action", action).Set("CreateTime", DateTime.Now), new UpdateOptions() { IsUpsert = true }).IsAcknowledged;
         }
         public bool DeleteConfig(string extension)
         {

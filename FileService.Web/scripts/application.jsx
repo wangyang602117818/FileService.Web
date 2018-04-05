@@ -4,12 +4,12 @@
     }
     render() {
         return (
-            <table className="table" style={{ width: "30%" }}>
+            <table className="table" style={{ width: "45%" }}>
                 <thead>
                     <tr>
                         <th width="40%">ApplicationName</th>
-                        <th width="40%">Action</th>
-                        <th width="20%">Del</th>
+                        <th width="20%">Action</th>
+                        <th width="40%">CreateTime</th>
                     </tr>
                 </thead>
                 <ApplicationList data={this.props.data}
@@ -59,8 +59,31 @@ class ApplicationItem extends React.Component {
                     <b dangerouslySetInnerHTML={{ __html: this.props.application.ApplicationName }}></b>
                 </td>
                 <td dangerouslySetInnerHTML={{ __html: this.props.application.Action }}></td>
-                <td><i className="iconfont icon-del" onClick={this.props.deleteItem} id={this.props.application.ApplicationName}></i></td>
+                <td>{parseBsonTime(this.props.application.CreateTime)}</td>
             </tr>
+        )
+    }
+}
+class DeleteApplication extends React.Component {
+    constructor(props) {
+        super(props);
+    }
+    render() {
+        return (
+            <div className={this.props.show ? "show" : "hidden"}>
+                <table className="table" style={{ border: "0" }}>
+                    <tbody>
+                        <tr>
+                            <td style={{ border: "0" }}>
+                                <input type="button"
+                                    value="Delete"
+                                    className="button"
+                                    onClick={this.props.deleteItem.bind(this)} />
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         )
     }
 }
@@ -71,6 +94,9 @@ class Application extends React.Component {
         this.state = {
             pageShow: eval(localStorage.application) ? true : false,
             applicationShow: eval(localStorage.application_add) ? true : false,
+            deleteShow: false,
+            deleteToggle: false,
+            deleteName: "",
             pageIndex: 1,
             pageSize: localStorage.application_pageSize || 10,
             pageCount: 1,
@@ -98,17 +124,25 @@ class Application extends React.Component {
         });
     }
     deleteItem(e) {
-        var id = e.target.id;
+        var id = this.state.deleteName;
         if (window.confirm(" Delete ?")) {
             var that = this;
             http.get(urls.application.deleteUrl + "?applicationName=" + id, function (data) {
                 if (data.code == 0) {
                     that.getData();
+                    that.setState({ deleteShow: false });
                 }
                 else {
                     alert(data.message);
                 }
             });
+        }
+    }
+    onDeleteShow(e) {
+        if (this.state.deleteToggle) {
+            this.setState({ deleteToggle: false });
+        } else {
+            this.setState({ deleteToggle: true });
         }
     }
     onAppNameClick(e) {
@@ -123,6 +157,7 @@ class Application extends React.Component {
             action = e.target.nextElementSibling.innerText;
         }
         this.refs.addApplication.onAppNameClick(appName, action);
+        this.setState({ deleteShow: true, deleteName: appName });
     }
     render() {
         return (
@@ -149,6 +184,15 @@ class Application extends React.Component {
                     show={this.state.applicationShow}
                     onShowChange={this.onApplicationShow.bind(this)} />
                 <AddApplication show={this.state.applicationShow} addApplication={this.addApplication.bind(this)} ref="addApplication" />
+                {this.state.deleteShow ?
+                    <TitleArrow
+                        title={"Delete This Application(" + this.state.deleteName + ")"}
+                        show={this.state.deleteToggle}
+                        onShowChange={this.onDeleteShow.bind(this)} /> : null}
+                {this.state.deleteShow ?
+                    <DeleteApplication
+                        show={this.state.deleteToggle}
+                        deleteItem={this.deleteItem.bind(this)} /> : null}
             </div>
         );
     }

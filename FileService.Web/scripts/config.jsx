@@ -4,13 +4,13 @@
     }
     render() {
         return (
-            <table className="table" style={{ width: "35%" }}>
+            <table className="table" style={{ width: "55%" }}>
                 <thead>
                     <tr>
-                        <th width="30%">Extension</th>
-                        <th width="30%">Type</th>
+                        <th width="20%">Extension</th>
+                        <th width="20%">Type</th>
                         <th width="20%">Action</th>
-                        <th width="20%">Del</th>
+                        <th width="40%">CreateTime</th>
                     </tr>
                 </thead>
                 <ConfigList data={this.props.data}
@@ -59,7 +59,7 @@ class ConfigItem extends React.Component {
                 <td className="link" onClick={this.props.onExtensionClick}><b dangerouslySetInnerHTML={{ __html: this.props.config.Extension }}></b></td>
                 <td dangerouslySetInnerHTML={{ __html: this.props.config.Type }}></td>
                 <td dangerouslySetInnerHTML={{ __html: this.props.config.Action }}></td>
-                <td><i className="iconfont icon-del" onClick={this.props.deleteItem} id={this.props.config.Extension}></i></td>
+                <td>{parseBsonTime(this.props.config.CreateTime)}</td>
             </tr>
         )
     }
@@ -77,6 +77,29 @@ class ConfigToolBar extends React.Component {
         )
     }
 }
+class DeleteConfig extends React.Component {
+    constructor(props) {
+        super(props);
+    }
+    render() {
+        return (
+            <div className={this.props.show ? "show" : "hidden"}>
+                <table className="table" style={{ border: "0" }}>
+                    <tbody>
+                        <tr>
+                            <td style={{ border: "0" }}>
+                                <input type="button"
+                                    value="Delete"
+                                    className="button"
+                                    onClick={this.props.deleteConfig.bind(this)} />
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        )
+    }
+}
 class Config extends React.Component {
     constructor(props) {
         super(props);
@@ -84,6 +107,9 @@ class Config extends React.Component {
         this.state = {
             pageShow: eval(localStorage.config) ? true : false,
             configShow: eval(localStorage.config_add) ? true : false,
+            deleteShow: false,
+            deleteToggle: false,
+            deleteName: "",
             pageIndex: 1,
             pageSize: localStorage.config_pageSize || 10,
             pageCount: 1,
@@ -111,17 +137,25 @@ class Config extends React.Component {
         });
     }
     deleteItem(e) {
-        var id = e.target.id;
+        var id = this.state.deleteName;
         if (window.confirm(" Delete ?")) {
             var that = this;
             http.get(urls.config.deleteUrl + "?extension=" + id, function (data) {
                 if (data.code == 0) {
                     that.getData();
+                    that.setState({ deleteShow: false });
                 }
                 else {
                     alert(data.message);
                 }
             });
+        }
+    }
+    onDeleteShow(e) {
+        if (this.state.deleteToggle) {
+            this.setState({ deleteToggle: false });
+        } else {
+            this.setState({ deleteToggle: true });
         }
     }
     onExtensionClick(e) {
@@ -140,6 +174,7 @@ class Config extends React.Component {
             action = e.target.nextElementSibling.nextElementSibling.innerText;
         }
         this.refs.addconfig.onExtensionClick(extension, type, action);
+        this.setState({ deleteShow: true, deleteName: extension });
     }
     render() {
         return (
@@ -160,12 +195,23 @@ class Config extends React.Component {
                     lastPage={this.lastPage.bind(this)}
                     nextPage={this.nextPage.bind(this)} />
                 <ConfigData data={this.state.data.result}
-                    onExtensionClick={this.onExtensionClick.bind(this)}
-                    deleteItem={this.deleteItem.bind(this)} />
+                    onExtensionClick={this.onExtensionClick.bind(this)}/>
                 <TitleArrow title="Update Config"
                     show={this.state.configShow}
                     onShowChange={this.onConfigShow.bind(this)} />
-                <AddConfig show={this.state.configShow} addConfig={this.addConfig.bind(this)} ref="addconfig" />
+                <AddConfig
+                    show={this.state.configShow}
+                    addConfig={this.addConfig.bind(this)}
+                    ref="addconfig" />
+                {this.state.deleteShow ?
+                    <TitleArrow
+                        title={"Delete This Config(" + this.state.deleteName + ")"}
+                        show={this.state.deleteToggle}
+                        onShowChange={this.onDeleteShow.bind(this)} /> : null}
+                {this.state.deleteShow ?
+                    <DeleteConfig
+                        show={this.state.deleteToggle}
+                        deleteConfig={this.deleteItem.bind(this)} /> : null}
             </div>
         );
     }

@@ -37,22 +37,22 @@ namespace FileService.Data
                 database.CreateCollection("Config");
                 List<BsonDocument> list = new List<BsonDocument>()
                 {
-                    new BsonDocument(){{"Extension",".jpg" },{"Type","image" }, { "Action","allow"} },
-                    new BsonDocument(){{"Extension", ".png" },{"Type", "image" }, { "Action","allow"} },
-                    new BsonDocument(){{"Extension", ".gif" },{"Type", "image" }, { "Action","allow"} },
-                    new BsonDocument(){{"Extension", ".bmp" },{"Type", "image" }, { "Action","allow"} },
-                    new BsonDocument(){{"Extension", ".mp4" },{"Type","video" }, { "Action","allow"}},
-                    new BsonDocument(){{"Extension", ".avi" },{"Type", "video" }, { "Action","allow"} },
-                    new BsonDocument(){{"Extension", ".wmv" },{"Type", "video" }, { "Action","allow"} },
-                    new BsonDocument(){{"Extension", ".pdf" },{"Type", "attachment" }, { "Action","allow"} },
-                    new BsonDocument(){{"Extension", ".doc" },{"Type", "attachment" }, { "Action","allow"} },
-                    new BsonDocument(){{"Extension", ".docx" },{"Type", "attachment" }, { "Action","allow"} },
-                    new BsonDocument(){{"Extension", ".xls" },{"Type", "attachment" }, { "Action","allow"} },
-                    new BsonDocument(){{"Extension", ".xlsx" },{"Type", "attachment" }, { "Action","allow"} },
-                    new BsonDocument(){{"Extension", ".ppt" },{"Type", "attachment" }, { "Action","allow"} },
-                    new BsonDocument(){{"Extension", ".pptx" },{"Type", "attachment" }, { "Action","allow"} },
-                    new BsonDocument(){{"Extension", ".txt" },{"Type", "attachment" }, { "Action","allow"} },
-                    new BsonDocument(){{"Extension", ".zip" },{"Type", "attachment" }, { "Action","allow"} }
+                    new BsonDocument(){{"Extension",".jpg" },{"Type","image" }, { "Action","allow"},{ "CreateTime", DateTime.Now } },
+                    new BsonDocument(){{"Extension", ".png" },{"Type", "image" }, { "Action","allow"},{ "CreateTime", DateTime.Now } },
+                    new BsonDocument(){{"Extension", ".gif" },{"Type", "image" }, { "Action","allow"},{ "CreateTime", DateTime.Now } },
+                    new BsonDocument(){{"Extension", ".bmp" },{"Type", "image" }, { "Action","allow"},{ "CreateTime", DateTime.Now } },
+                    new BsonDocument(){{"Extension", ".mp4" },{"Type","video" }, { "Action","allow"},{ "CreateTime", DateTime.Now }},
+                    new BsonDocument(){{"Extension", ".avi" },{"Type", "video" }, { "Action","allow"} ,{ "CreateTime", DateTime.Now }},
+                    new BsonDocument(){{"Extension", ".wmv" },{"Type", "video" }, { "Action","allow"} ,{ "CreateTime", DateTime.Now }},
+                    new BsonDocument(){{"Extension", ".pdf" },{"Type", "attachment" }, { "Action","allow"} ,{ "CreateTime", DateTime.Now }},
+                    new BsonDocument(){{"Extension", ".doc" },{"Type", "attachment" }, { "Action","allow"} ,{ "CreateTime", DateTime.Now }},
+                    new BsonDocument(){{"Extension", ".docx" },{"Type", "attachment" }, { "Action","allow"} ,{ "CreateTime", DateTime.Now }},
+                    new BsonDocument(){{"Extension", ".xls" },{"Type", "attachment" }, { "Action","allow"} ,{ "CreateTime", DateTime.Now }},
+                    new BsonDocument(){{"Extension", ".xlsx" },{"Type", "attachment" }, { "Action","allow"} ,{ "CreateTime", DateTime.Now }},
+                    new BsonDocument(){{"Extension", ".ppt" },{"Type", "attachment" }, { "Action","allow"} ,{ "CreateTime", DateTime.Now }},
+                    new BsonDocument(){{"Extension", ".pptx" },{"Type", "attachment" }, { "Action","allow"} ,{ "CreateTime", DateTime.Now }},
+                    new BsonDocument(){{"Extension", ".txt" },{"Type", "attachment" }, { "Action","allow"} ,{ "CreateTime", DateTime.Now }},
+                    new BsonDocument(){{"Extension", ".zip" },{"Type", "attachment" }, { "Action","allow"}, { "CreateTime", DateTime.Now }}
                 };
                 database.GetCollection<BsonDocument>("Config").InsertMany(list);
             }
@@ -66,7 +66,8 @@ namespace FileService.Data
                 database.GetCollection<BsonDocument>("Application").InsertOne(new BsonDocument()
                 {
                     {"ApplicationName","FileServiceApi" },
-                    {"Action","allow" }
+                    {"Action","allow" },
+                    {"CreateTime", DateTime.Now }
                 });
             }
             catch (Exception ex)

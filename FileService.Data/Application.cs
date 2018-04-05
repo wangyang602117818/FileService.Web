@@ -19,7 +19,7 @@ namespace FileService.Data
         public bool UpdateApplication(string name, string action)
         {
             var filter = FilterBuilder.Eq("ApplicationName", name);
-            return MongoCollection.UpdateOne(filter, Builders<BsonDocument>.Update.Set("Action", action), new UpdateOptions() { IsUpsert = true }).IsAcknowledged;
+            return MongoCollection.UpdateOne(filter, Builders<BsonDocument>.Update.Set("Action", action).Set("CreateTime", DateTime.Now), new UpdateOptions() { IsUpsert = true }).IsAcknowledged;
         }
         public bool DeleteApplication(string name)
         {

@@ -77,7 +77,6 @@ class DeleteUser extends React.Component {
                         </td>
                     </tr>
                     </tbody>
-
                 </table>
 
             </div>
@@ -93,12 +92,12 @@ class User extends React.Component {
             userShow: eval(localStorage.user_add) ? true : false,
             deleteShow: false,
             deleteToggle: false,
+            deleteName: "",
             pageIndex: 1,
             pageSize: localStorage.user_pageSize || 10,
             pageCount: 1,
             filter: "",
             data: { code: 0, message: "", count: 0, result: [] },
-            deleteName: "",
         }
         this.url = urls.user.getUrl;
         this.storagePageShowKey = "user";
@@ -173,7 +172,9 @@ class User extends React.Component {
                 <TitleArrow title="Add User"
                             show={this.state.userShow}
                             onShowChange={this.onUserShow.bind(this)} />
-                <AddUser show={this.state.userShow} addUser={this.addUser.bind(this)} ref="add_user" />
+                <AddUser show={this.state.userShow}
+                    addUser={this.addUser.bind(this)}
+                    ref="add_user" />
                 {this.state.deleteShow ?
                 <TitleArrow title={"Delete This User(" + this.state.deleteName + ")"}
                          show={this.state.deleteToggle}
