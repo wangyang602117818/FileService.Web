@@ -4,14 +4,15 @@
     }
     render() {
         return (
-            <table className="table" style={{width:"80%"}}>
+            <table className="table">
                 <thead>
                     <tr>
-                        <td width="15%">AppName</td>
-                        <td width="25%">FileId/TaskId</td>
-                        <td width="18%">Content</td>
-                        <td width="10%">User</td>
-                        <td width="12%">Ip</td>
+                        <td width="15%">Id</td>
+                        <td width="12%">AppName</td>
+                        <td width="18%">FileId/TaskId</td>
+                        <td width="12%">Content</td>
+                        <td width="8%">User</td>
+                        <td width="15%">Ip</td>
                         <td width="20%">CreateTime</td>
                     </tr>
                 </thead>
@@ -54,6 +55,7 @@ class LogItem extends React.Component {
     render() {
         return (
             <tr>
+                <td>{this.props.log._id.$oid}</td>
                 <td dangerouslySetInnerHTML={{ __html: this.props.log.AppName }}></td>
                 <td dangerouslySetInnerHTML={{ __html: this.props.log.FileId }}></td>
                 <td dangerouslySetInnerHTML={{ __html: this.props.log.Content }}></td>

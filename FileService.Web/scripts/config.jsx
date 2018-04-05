@@ -4,7 +4,7 @@
     }
     render() {
         return (
-            <table className="table" style={{ width: "55%" }}>
+            <table className="table" style={{ width: "50%" }}>
                 <thead>
                     <tr>
                         <th width="20%">Extension</th>
