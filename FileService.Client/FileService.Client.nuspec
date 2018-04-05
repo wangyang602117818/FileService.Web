@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>WangXYang.FileService.Client</id>
+    <version>1.2.0</version>
+    <title>FileService.Client</title>
+    <authors>Wang Yang</authors>
+    <owners>Wang Yang</owners>
+    <projectUrl>https://github.com/wangyang602117818/FileService.Api/</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>该程序集必须配合指定的后台服务程序使用，方便用户管理文件（上传，获取，转换）</description>
+    <releaseNotes>
+       添加了一些进度接口，统一了返回值的泛型类型
+    </releaseNotes>
+    <copyright>Copyright 2017-10-09</copyright>
+    <tags>FileService.Client FileService.Api FileService</tags>
+    <dependencies>
+      <dependency id="Newtonsoft.Json" version="[6.0.1,)" />
+    </dependencies>
+  </metadata>
+</package>

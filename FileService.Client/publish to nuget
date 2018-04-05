@@ -1,0 +1,10 @@
+﻿第一步：打包，并且生成类似 FileService.Client.1.0.0.0.nupkg 包文件
+	nuget pack FileService.Client.csproj
+第二步：发布|发布新版本
+    nuget push WangXYang.FileService.Client.1.0.0.nupkg 5581f505-d5a2-4886-9a07-cc0d45c4dd44 -Source https://www.nuget.org/api/v2/package
+
+tips：每一次有更新之后要先修改 .nuspec 文件的 version，releaseNotes，然后再打包、发布
+
+
+
+

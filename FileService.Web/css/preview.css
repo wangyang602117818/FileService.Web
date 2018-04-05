@@ -1,0 +1,120 @@
+﻿* {
+    margin: 0;
+    padding: 0;
+}
+
+html, body {
+    height: 100%;
+}
+
+.title {
+    position: absolute;
+    height: 30px;
+    background: rgb(65,65,65);
+    left: 0;
+    right: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.title_item {
+    position: relative;
+    float: left;
+    top: 0;
+    z-index: 2;
+    padding: 0px 18px;
+    height: 30px;
+    margin-right: 5px;
+    text-align: center;
+    line-height: 30px;
+    cursor: pointer;
+    color: #fff;
+}
+
+.current {
+    background: rgba(102,102,102,1);
+    color: #fff;
+    cursor:default;
+}
+
+.background {
+    position: absolute;
+    background: rgba(102,102,102,1);
+    top: 30px;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    padding-top: 40px;
+    overflow: auto;
+    padding-bottom: 20px;
+    text-align: center;
+}
+
+video {
+    background-color: #000;
+}
+
+.background_text {
+    width: 80%;
+    height: 90%;
+    min-height: 700px;
+    background-color: #fff;
+    padding: 5px;
+    padding-left: 10px;
+    white-space: pre-wrap;
+    white-space: -moz-pre-wrap;
+    white-space: -pre-wrap;
+    white-space: -o-pre-wrap;
+    *word-wrap: break-word;
+    *white-space: normal;
+    overflow: auto;
+    margin:0 auto;
+    text-align:left;
+}
+
+.videocp_cmd {
+    width: 900px;
+    margin: 10px auto;
+    text-align: left;
+}
+
+.video_cp {
+    width: 900px;
+    margin: 10px auto 50px auto;
+    background-color: #414141;
+    overflow-y: auto;
+    padding-bottom: 10px;
+}
+
+    .video_cp .image_item {
+        position: relative;
+        float: left;
+        width: 290px;
+        height: 190px;
+        margin-left: 7px;
+        margin-top: 7px;
+    }
+
+.image_item img {
+    width: 100%;
+    height: 100%;
+}
+
+.image_item .videocp_del {
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 16px;
+    height: 16px;
+    line-height: 12px;
+    background-color: rgba(65,65,65,0.7);
+    text-align: center;
+    font-size:18px;
+    cursor:pointer;
+    padding-left:2px;
+   
+}
+.image_item .videocp_del:hover{
+    background-color: rgba(65,65,65,0.6);
+}

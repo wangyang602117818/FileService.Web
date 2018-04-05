@@ -1,0 +1,46 @@
+﻿@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>File Management</title>
+    <link rel="icon" href="~/image/data.ico" type="image/x-ico" />
+    <script src="~/scripts/react.min.js"></script>
+    <script src="~/scripts/react-dom.min.js"></script>
+    <script src="~/scripts/echarts.min.js"></script>
+    <link href="~/css/iconfont.css" rel="stylesheet" />
+    <link href="~/css/index.css" rel="stylesheet" />
+    <link href="~/css/page.css" rel="stylesheet" />
+</head>
+<body>
+    <div id="index"></div>
+    <input type="hidden" name="userName" id="userName" value="@ViewBag.Name" />
+    <input type="hidden" name="role" id="role" value="@ViewBag.Role" />
+</body>
+</html>
+<script src="~/scripts/funs.jsx"></script>
+<script src="~/scripts/common.jsx"></script>
+<script src="~/scripts/overview.jsx"></script>
+<script src="~/scripts/handlers.jsx"></script>
+<script src="~/scripts/tasks_update.jsx"></script>
+<script src="~/scripts/tasks.jsx"></script>
+<script src="~/scripts/resources_image.jsx"></script>
+<script src="~/scripts/resources_video.jsx"></script>
+<script src="~/scripts/resources_attachment.jsx"></script>
+<script src="~/scripts/resources.jsx"></script>
+<script src="~/scripts/logs.jsx"></script>
+@if (@ViewBag.Role == "management" || @ViewBag.Role == "admin")
+{
+    <script src="~/scripts/application.jsx"></script>
+    <script src="~/scripts/application_add.jsx"></script>
+    <script src="~/scripts/config.jsx"></script>
+    <script src="~/scripts/config_add.jsx"></script>
+}
+@if (@ViewBag.Role == "admin")
+{
+    <script src="~/scripts/user.jsx"></script>
+    <script src="~/scripts/user_add.jsx"></script>
+}
+<script src="~/scripts/index.jsx"></script>

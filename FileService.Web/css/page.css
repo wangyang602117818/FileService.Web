@@ -1,0 +1,229 @@
+﻿.title_inner {
+    font-size: 11px;
+    height: 20px;
+    line-height: 20px;
+    padding-left: 7px;
+    margin-top: 10px;
+    color: #484848;
+    border-bottom: 1px solid #e4e4e4;
+}
+
+.title_arrow {
+    display: flex;
+    font-size: 11px;
+    height: 20px;
+    line-height: 20px;
+    border-bottom: 1px solid #e4e4e4;
+    margin-top: 12px;
+    font-weight: bold;
+    color: #484848;
+    background-color: #F8F8F8;
+}
+
+    .title_arrow .title_txt {
+        display: inline-block;
+        cursor: pointer;
+    }
+
+        .title_arrow .title_txt:hover {
+            color: #000;
+        }
+
+.overview_con {
+    margin-top: 5px;
+    /*border: 1px solid #ccc;*/
+}
+
+.echart_main {
+    display: inline-block;
+    width: 680px;
+    height: 190px;
+    /*border: 1px solid red;*/
+}
+
+.echart_split {
+    display: inline-block;
+    margin-left: 20px;
+    height: 180px;
+    width: 1px;
+    border-left: 1px solid #e4e4e4;
+}
+
+.echart_option {
+    position: relative;
+    display: inline-block;
+    margin-top: 0;
+    width: 250px;
+    height: 190px;
+    /*border: 1px solid red;*/
+}
+
+    .echart_option .echart_option_con {
+        width: 250px;
+        height: 190px;
+        margin-left: 10px;
+        position: absolute;
+        /*border:1px solid gray;*/
+    }
+
+        .echart_option .echart_option_con .current {
+            cursor: default;
+            background-color: #DCDCFF;
+            border: 1px solid #BCBCFF;
+            border-radius: 2px;
+            color: #000;
+        }
+
+            .echart_option .echart_option_con .current:hover {
+                color: #000;
+            }
+
+.echart_option_con span {
+    float: left;
+    margin-top: 20px;
+    margin-left: 20px;
+    width: 90px;
+    height: 22px;
+    line-height: 22px;
+    text-align: center;
+    color: #484848;
+    border: 1px solid #f0f0f0;
+    border-radius: 2px;
+    cursor: pointer;
+}
+
+    .echart_option_con span:hover {
+        background-color: #DCDCFF;
+        color: #000;
+        border: 1px solid #BCBCFF;
+    }
+
+.pagenation {
+    padding-left: 10px;
+    margin-top: 10px;
+    font-size: 12px;
+}
+
+    .pagenation .page {
+        display: inline-block;
+    }
+
+    .pagenation .pageIndex {
+        width: 40px;
+        outline: none;
+    }
+
+    .pagenation .size {
+        text-align: right;
+        float: right;
+    }
+
+    .pagenation .pageSize, .pagenation .filter {
+        margin-left: 5px;
+    }
+
+    .pagenation .size input {
+        width: 60px;
+    }
+
+.show {
+    display: block;
+}
+
+.hidden {
+    display: none;
+}
+
+.table_modify {
+    width: 60%;
+    margin-top: 10px;
+    border: 1px solid #e4e4e4;
+    margin-right: 20px;
+    border-collapse: collapse;
+}
+
+    .table_modify td {
+        border: 1px solid #e4e4e4;
+        padding: 4px;
+    }
+
+.convert_flag {
+    margin-right: 4px;
+}
+
+    .convert_flag .flag_txt {
+        display: inline-block;
+        padding: 3px 5px;
+        border: 1px solid #e4e4e4;
+    }
+
+    .convert_flag .flag_del {
+        margin-left: -1px;
+        color: #888;
+        cursor: pointer;
+    }
+
+.flag_del:hover {
+    color: #000;
+}
+
+.table_user {
+    width: 50%;
+}
+
+    .table_user .tag_txt {
+        display: inline-block;
+        margin: 3px;
+        cursor: pointer;
+    }
+
+        .table_user .tag_txt:hover {
+            color: #888;
+        }
+
+.convertBtn {
+    text-align: center;
+    background-color: #f0f0f0;
+    cursor: pointer;
+}
+
+    .convertBtn:hover {
+        background-color: #f3f3f3;
+    }
+
+.config_toolbar {
+    position: relative;
+    width: 200px;
+    height: 30px;
+    margin-top: -23px;
+    right: 0;
+    float: right;
+}
+
+    .config_toolbar .config_info {
+        float: right;
+        padding: 0 8px;
+        height: 27px;
+        line-height: 27px;
+        text-align: center;
+        display: inline-block;
+        margin-left: 5px;
+        color: #fff;
+        border-radius: 3px;
+        color: #444;
+        cursor: pointer;
+        font-weight: bold;
+    }
+
+        .config_toolbar .config_info:hover {
+            color: #000;
+        }
+
+    .config_toolbar .select {
+        background-color: #f60;
+        color: #fff;
+    }
+
+        .config_toolbar .select:hover {
+            color: #fff;
+        }

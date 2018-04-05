@@ -1,0 +1,51 @@
+﻿@{
+    Layout = null;
+}
+@using FileService.Business;
+@using FileService.Model;
+<!DOCTYPE html>
+
+<html mozdisallowselectionprint moznomarginboxes>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>File Management</title>
+    <link rel="icon" href="~/image/data.ico" type="image/x-ico" />
+    <script src="~/scripts/react.min.js"></script>
+    <script src="~/scripts/react-dom.min.js"></script>
+    <link href="~/css/preview.css" rel="stylesheet" />
+</head>
+<body tabindex="1" class="loadingInProgress" id="body">
+    <div id="preview"></div>
+
+    <script src="~/scripts/funs.jsx"></script>
+    <script src="~/scripts/preview.jsx"></script>
+    <input type="hidden" name="fileId" id="fileId" value="@ViewBag.id" />
+    @if (ViewBag.FileType == "image" || ViewBag.FileType == "attachment" && (new Config().GetTypeByExtension(Path.GetExtension(ViewBag.FileName).ToLower())).ToLower() == "image")
+    {
+        <script src="~/scripts/preview_image.jsx"></script>
+    }
+    else if (ViewBag.FileType == "video" || ViewBag.FileType == "attachment" && (new Config().GetTypeByExtension(Path.GetExtension(ViewBag.FileName).ToLower())).ToLower() == "video")
+    {
+        <script src="~/hlsplayer/jquery-3.3.1.min.js"></script>
+        <script src="~/hlsplayer/hlsplayer.min.js" script-flowplayer="~/hlsplayer/flowplayer.swf" script-flowplayerhls="~/hlsplayer/flowplayerhls.swf" script-auto="false"></script>
+        <script src="~/scripts/preview_video.jsx"></script>
+    }
+    else if (ViewBag.FileType == "attachment" && (Path.GetExtension(ViewBag.FileName).ToLower() == ".pdf"|| OfficeFormatList.offices.Contains(Path.GetExtension(ViewBag.FileName).ToLower())))
+    {
+        @Html.Partial("partial_pdfview")
+        <link href="~/pdfview/viewer.css" rel="stylesheet" />
+        <link rel="resource" type="application/l10n" href="~/pdfview/locale/locale.txt">
+        <script src="~/scripts/preview_pdf.jsx"></script>
+        <script src="~/pdfview/pdf.min.js"></script>
+        <script src="~/pdfview/viewer.min.js"></script>
+    }
+    else if (ViewBag.FileType == "attachment" && Path.GetExtension(ViewBag.FileName).ToLower() == ".txt")
+    {
+        <script src="~/scripts/preview_txt.jsx"></script>
+    }
+    else
+    {
+        <script src="~/scripts/preview_notsupported.jsx"></script>
+    }
+</body>
+</html>
