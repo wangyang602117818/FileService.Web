@@ -365,9 +365,6 @@
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
   </ItemGroup>
   <ItemGroup>
-    <WCFMetadata Include="Connected Services\" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\FileService.Business\FileService.Business.csproj">
       <Project>{9bcfddd4-438b-43d1-abc7-cb3aeeed2ac8}</Project>
       <Name>FileService.Business</Name>
