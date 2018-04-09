@@ -72,9 +72,7 @@ class ResourceItem extends React.Component {
     render() {
         return (
             <tr>
-                <td className="link"
-                    onClick={this.preView.bind(this)}
-                    id={"id=" + this.props.resource._id.$oid + "&filetype=" + this.props.resource.metadata.FileType + "&filename=" + this.props.resource.filename.removeHTML()}>
+                <td className="link">
                     <b>{this.props.resource._id.$oid}</b>
                 </td>
                 <td title={this.props.resource.filename.removeHTML()}>

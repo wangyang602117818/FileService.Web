@@ -195,7 +195,7 @@ namespace FileService.Web.Controllers
                     task.Insert(taskId, oId.Result, file.FileName, "attachment", new BsonDocument() {
                         {"_id",ObjectId.Empty },
                         {"Format",AttachmentOutput.pdf },
-                        {"Flag","preview" }
+                        {"Flag","office_pdf_version" }
                     }, handlerId, TaskStateEnum.wait, 0);
                     //添加队列
                     queue.Insert(handlerId, "attachment", "Task", taskId, false, new BsonDocument());
