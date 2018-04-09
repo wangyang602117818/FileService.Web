@@ -320,6 +320,7 @@
     <Content Include="scripts\logs.jsx" />
     <Content Include="scripts\overview.jsx" />
     <Content Include="scripts\preview.jsx" />
+    <Content Include="scripts\preview_converting.jsx" />
     <Content Include="scripts\preview_image.jsx" />
     <Content Include="scripts\preview_notsupported.jsx" />
     <Content Include="scripts\preview_pdf.jsx" />

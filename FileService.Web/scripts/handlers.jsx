@@ -73,7 +73,7 @@ class Handlers extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            pageShow: eval(localStorage.handler) ? true : false,
+            pageShow: localStorage.handler ? eval(localStorage.handler) : true,
             pageIndex: 1,
             pageSize: localStorage.handler_pageSize || 10,
             pageCount: 1,

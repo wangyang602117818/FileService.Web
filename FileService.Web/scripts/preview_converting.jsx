@@ -4,7 +4,7 @@
     }
     render() {
         return (
-            <div className="background" style={{ color:"#fff" }}>
+            <div className="background" style={{ color: "#fff" }}>
                 {this.props.text}
             </div>
         );
@@ -16,7 +16,7 @@ class Preview extends React.Component {
         this.state = {
             tabs: [],
             fileId: "",
-            text: "Not Supported Preview",
+            text: "File Converting...",
             isOrigin: false
         }
     }

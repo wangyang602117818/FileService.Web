@@ -359,4 +359,14 @@ h1 {
         color: #8E4C9E;
         margin-left: 0;
     }
+
+.table .icon-attachment {
+    color: #484848;
+    cursor: default;
+}
+
+    .table .icon-attachment:hover {
+        color: #484848;
+        margin-left: 0;
+    }
 /*******************文件小图标******************/

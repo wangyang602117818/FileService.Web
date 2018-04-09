@@ -54,7 +54,7 @@ class ResourceItem extends React.Component {
     constructor(props) {
         super(props);
     }
-    view(e) {
+    preView(e) {
         var id = e.target.id;
         window.open(urls.preview + "?" + id, "_blank");
     }
@@ -72,10 +72,15 @@ class ResourceItem extends React.Component {
     render() {
         return (
             <tr>
-                <td>{this.props.resource._id.$oid}</td>
+                <td className="link"
+                    onClick={this.preView.bind(this)}
+                    id={"id=" + this.props.resource._id.$oid + "&filetype=" + this.props.resource.metadata.FileType + "&filename=" + this.props.resource.filename.removeHTML()}>
+                    <b>{this.props.resource._id.$oid}</b>
+                </td>
                 <td title={this.props.resource.filename.removeHTML()}>
                     <i className={"iconfont " + getIconNameByFileName(this.props.resource.filename.removeHTML())}></i>&nbsp;
-                    <span dangerouslySetInnerHTML={{ __html: this.props.resource.filename.getFileName(15) }}></span>
+                    <span dangerouslySetInnerHTML={{ __html: this.props.resource.filename.getFileName(15) }}>
+                    </span>
                 </td>
                 <td>{convertFileSize(this.props.resource.length)}</td>
                 <td>{parseBsonTime(this.props.resource.uploadDate)}</td>
@@ -83,7 +88,7 @@ class ResourceItem extends React.Component {
                 <td dangerouslySetInnerHTML={{ __html: this.props.resource.metadata.FileType }}></td>
                 <td>
                     <i className="iconfont icon-view"
-                        onClick={this.view.bind(this)} id={"id=" + this.props.resource._id.$oid + "&filetype=" + this.props.resource.metadata.FileType + "&filename=" + this.props.resource.filename.removeHTML()}>
+                        onClick={this.preView.bind(this)} id={"id=" + this.props.resource._id.$oid + "&filetype=" + this.props.resource.metadata.FileType + "&filename=" + this.props.resource.filename.removeHTML()}>
                     </i>
                 </td>
                 <td>
@@ -100,7 +105,7 @@ class Resources extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            pageShow: eval(localStorage.resource) ? true : false,
+            pageShow: localStorage.resource ? eval(localStorage.resource) : true,
             imageShow: eval(localStorage.image_show) ? true : false,
             videoShow: eval(localStorage.video_show) ? true : false,
             attachmentShow: eval(localStorage.attachment_show) ? true : false,

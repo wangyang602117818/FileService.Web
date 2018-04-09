@@ -68,14 +68,14 @@ class DeleteUser extends React.Component {
     }
     render() {
         return (
-            <div className={this.props.show ? "show" : "hidden" }>
-                <table className="table" style={{border:"0"}}>
+            <div className={this.props.show ? "show" : "hidden"}>
+                <table className="table" style={{ border: "0" }}>
                     <tbody>
-                    <tr>
-                        <td style={{border:"0"}}>
-                        <input type="button" value="Delete" className="button" onClick={this.props.deleteUser.bind(this)} />
-                        </td>
-                    </tr>
+                        <tr>
+                            <td style={{ border: "0" }}>
+                                <input type="button" value="Delete" className="button" onClick={this.props.deleteUser.bind(this)} />
+                            </td>
+                        </tr>
                     </tbody>
                 </table>
 
@@ -88,8 +88,8 @@ class User extends React.Component {
         super(props);
         if (!localStorage.user_add) localStorage.user_add = true;
         this.state = {
-            pageShow: eval(localStorage.user) ? true : false,
-            userShow: eval(localStorage.user_add) ? true : false,
+            pageShow: localStorage.user ? eval(localStorage.user) : true,
+            userShow: localStorage.user_add ? eval(localStorage.user_add) : true,
             deleteShow: false,
             deleteToggle: false,
             deleteName: "",
@@ -156,32 +156,32 @@ class User extends React.Component {
             <div className="main">
                 <h1>User</h1>
                 <TitleArrow title="All Users" show={this.state.pageShow}
-                            count={this.state.data.count}
-                            onShowChange={this.onPageShow.bind(this)} />
+                    count={this.state.data.count}
+                    onShowChange={this.onPageShow.bind(this)} />
                 <Pagination show={this.state.pageShow}
-                            pageIndex={this.state.pageIndex}
-                            pageSize={this.state.pageSize}
-                            pageCount={this.state.pageCount}
-                            filter={this.state.filter}
-                            onInput={this.onInput.bind(this)}
-                            onKeyPress={this.onKeyPress.bind(this)}
-                            lastPage={this.lastPage.bind(this)}
-                            nextPage={this.nextPage.bind(this)} />
+                    pageIndex={this.state.pageIndex}
+                    pageSize={this.state.pageSize}
+                    pageCount={this.state.pageCount}
+                    filter={this.state.filter}
+                    onInput={this.onInput.bind(this)}
+                    onKeyPress={this.onKeyPress.bind(this)}
+                    lastPage={this.lastPage.bind(this)}
+                    nextPage={this.nextPage.bind(this)} />
                 <UserData data={this.state.data.result}
-                          onNameClick={this.onNameClick.bind(this)} />
+                    onNameClick={this.onNameClick.bind(this)} />
                 <TitleArrow title="Add User"
-                            show={this.state.userShow}
-                            onShowChange={this.onUserShow.bind(this)} />
+                    show={this.state.userShow}
+                    onShowChange={this.onUserShow.bind(this)} />
                 <AddUser show={this.state.userShow}
                     addUser={this.addUser.bind(this)}
                     ref="add_user" />
                 {this.state.deleteShow ?
-                <TitleArrow title={"Delete This User(" + this.state.deleteName + ")"}
-                         show={this.state.deleteToggle}
-                         onShowChange={this.onDeleteShow.bind(this)} /> : null}
+                    <TitleArrow title={"Delete This User(" + this.state.deleteName + ")"}
+                        show={this.state.deleteToggle}
+                        onShowChange={this.onDeleteShow.bind(this)} /> : null}
                 {this.state.deleteShow ?
-                <DeleteUser show={this.state.deleteToggle}
-                            deleteUser={this.deleteUser.bind(this)} /> : null}
+                    <DeleteUser show={this.state.deleteToggle}
+                        deleteUser={this.deleteUser.bind(this)} /> : null}
             </div>
         )
     }

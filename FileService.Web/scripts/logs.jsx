@@ -70,7 +70,7 @@ class Logs extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            pageShow: eval(localStorage.log) ? true : false,
+            pageShow: localStorage.log ? eval(localStorage.log) : true,
             pageIndex: 1,
             pageSize: localStorage.log_pageSize || 10,
             pageCount: 1,

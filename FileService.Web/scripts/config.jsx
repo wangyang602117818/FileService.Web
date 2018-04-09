@@ -103,10 +103,9 @@ class DeleteConfig extends React.Component {
 class Config extends React.Component {
     constructor(props) {
         super(props);
-        if (!localStorage.config) localStorage.config = true;
         this.state = {
-            pageShow: eval(localStorage.config) ? true : false,
-            configShow: eval(localStorage.config_add) ? true : false,
+            pageShow: localStorage.config ? eval(localStorage.config) : true,
+            configShow: localStorage.config_add ? eval(localStorage.config_add) : true,
             deleteShow: false,
             deleteToggle: false,
             deleteName: "",
@@ -195,7 +194,7 @@ class Config extends React.Component {
                     lastPage={this.lastPage.bind(this)}
                     nextPage={this.nextPage.bind(this)} />
                 <ConfigData data={this.state.data.result}
-                    onExtensionClick={this.onExtensionClick.bind(this)}/>
+                    onExtensionClick={this.onExtensionClick.bind(this)} />
                 <TitleArrow title="Update Config"
                     show={this.state.configShow}
                     onShowChange={this.onConfigShow.bind(this)} />

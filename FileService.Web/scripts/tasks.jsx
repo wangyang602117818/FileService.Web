@@ -74,7 +74,9 @@ class TaskItem extends React.Component {
     render() {
         return (
             <tr>
-                <td className="link" onClick={this.props.onNameClick} id={this.props.task._id.$oid}><b>{this.props.task.FileId.$oid}</b></td>
+                <td className="link"
+                    onClick={this.props.onNameClick}
+                    id={this.props.task._id.$oid}><b>{this.props.task.FileId.$oid}</b></td>
                 <td title={this.props.task.FileName.removeHTML()}>
                     <i className={"iconfont " + getIconNameByFileName(this.props.task.FileName.removeHTML())}></i>&nbsp;
                     <span dangerouslySetInnerHTML={{ __html: this.props.task.FileName.getFileName(10) }}></span>
@@ -106,7 +108,7 @@ class Tasks extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            pageShow: eval(localStorage.task) ? true : false,
+            pageShow: localStorage.task ? eval(localStorage.task) : true,
             taskShow: false,
             taskToggle: false,
             updateFileName: "",

@@ -131,7 +131,8 @@ namespace FileService.Web.Controllers
             ViewBag.id = id;
             if (OfficeFormatList.offices.Contains(Path.GetExtension(fileName)))
             {
-                ViewBag.id = files.FindOne(ObjectId.Parse(id))["metadata"]["Files"].AsBsonArray[0]["_id"].AsObjectId;
+                BsonDocument metadata = files.FindOne(ObjectId.Parse(id))["metadata"].AsBsonDocument;
+                ViewBag.id = metadata.Contains("Files") ? metadata["Files"].AsBsonArray[0]["_id"].ToString() : ObjectId.Empty.ToString();
             }
             ViewBag.FileType = fileType;
             ViewBag.FileName = fileName;
