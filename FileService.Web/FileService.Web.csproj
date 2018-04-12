@@ -333,6 +333,9 @@
     <Content Include="scripts\resources.jsx" />
     <Content Include="scripts\resources_attachment.jsx" />
     <Content Include="scripts\resources_image.jsx" />
+    <Content Include="scripts\resources_m3u8_list.jsx" />
+    <Content Include="scripts\resources_subfile_list.jsx" />
+    <Content Include="scripts\resources_thumbnail_list.jsx" />
     <Content Include="scripts\resources_video.jsx" />
     <Content Include="scripts\tasks.jsx" />
     <Content Include="scripts\tasks_update.jsx" />

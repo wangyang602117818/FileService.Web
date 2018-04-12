@@ -125,6 +125,21 @@ namespace FileService.Web.Controllers
             IEnumerable<BsonDocument> result = files.GetPageList(pageIndex, pageSize, "uploadDate", filter, new List<string>() { "filename", "metadata.From", "metadata.FileType" }, new List<string>() { }, out count);
             return new ResponseModel<IEnumerable<BsonDocument>>(ErrorCode.success, result, count);
         }
+        public ActionResult GetThumbnailMetadata(string id)
+        {
+            BsonDocument thumb = thumbnail.FindOne(ObjectId.Parse(id));
+            return new ResponseModel<BsonDocument>(ErrorCode.success, thumb);
+        }
+        public ActionResult GetM3u8Metadata(string id)
+        {
+            BsonDocument bson = m3u8.FindOne(ObjectId.Parse(id));
+            return new ResponseModel<BsonDocument>(ErrorCode.success, bson);
+        }
+        public ActionResult GetFileMetadata(string id)
+        {
+            BsonDocument file = files.FindOne(ObjectId.Parse(id));
+            return new ResponseModel<BsonDocument>(ErrorCode.success, file);
+        }
         [AllowAnonymous]
         public ActionResult Preview(string id, string fileType, string fileName)
         {

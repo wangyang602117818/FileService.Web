@@ -4,7 +4,7 @@
     }
     render() {
         return (
-            <table className="table table_resource">
+            <table className="table">
                 <thead>
                     <tr>
                         <th width="18%">FileId</th>
@@ -18,7 +18,7 @@
                         <th width="4%">Del</th>
                     </tr>
                 </thead>
-                <ResourcesList data={this.props.data} deleteItem={this.props.deleteItem} />
+                <ResourcesList data={this.props.data} deleteItem={this.props.deleteItem} onIdClick={this.props.onIdClick} />
             </table>
         );
     }
@@ -42,7 +42,7 @@ class ResourcesList extends React.Component {
                 <tbody>
                     {this.props.data.map(function (item, i) {
                         return (
-                            <ResourceItem resource={item} key={i} deleteItem={that.props.deleteItem} />
+                            <ResourceItem resource={item} key={i} deleteItem={that.props.deleteItem} onIdClick={that.props.onIdClick} />
                         )
                     })}
                 </tbody>
@@ -62,17 +62,42 @@ class ResourceItem extends React.Component {
         var id = e.target.id;
         window.location.href = urls.downloadUrl + "/" + id;
     }
-    getFileType(filetype,filename) {
+    getFileType(filetype, filename) {
         if (filetype == "attachment") {
             return filename.split('.').pop().toLowerCase();
         } else {
             return filetype;
         }
     }
+    getSubFileIds(resource) {
+        var meta = {
+            ids: [],
+            cp: 0
+        };
+        switch (resource.metadata.FileType.removeHTML()) {
+            case "image":
+                for (var i = 0; i < resource.metadata.Thumbnail.length; i++) meta.ids.push(resource.metadata.Thumbnail[i]._id.$oid);
+                break;
+            case "video":
+                for (var i = 0; i < resource.metadata.Videos.length; i++) meta.ids.push(resource.metadata.Videos[i]._id.$oid);
+                break;
+            case "attachment":
+                for (var i = 0; i < resource.metadata.Files.length; i++) meta.ids.push(resource.metadata.Files[i]._id.$oid);
+                break;
+        }
+        meta.cp = resource.metadata.VideoCpIds ? resource.metadata.VideoCpIds.length : 0;
+        return meta;
+    }
     render() {
+        var meta = this.getSubFileIds(this.props.resource);
         return (
             <tr>
-                <td className="link">
+                <td className="link"
+                    data-type={this.props.resource.metadata.FileType.removeHTML()}
+                    data-fileName={this.props.resource.filename.removeHTML()}
+                    data-ids={meta.ids}
+                    data-cp={meta.cp}
+                    onClick={this.props.onIdClick}>
                     <b>{this.props.resource._id.$oid}</b>
                 </td>
                 <td title={this.props.resource.filename.removeHTML()}>
@@ -107,6 +132,13 @@ class Resources extends React.Component {
             imageShow: eval(localStorage.image_show) ? true : false,
             videoShow: eval(localStorage.video_show) ? true : false,
             attachmentShow: eval(localStorage.attachment_show) ? true : false,
+            ///////////
+            subFileShow: false,
+            subFileToggle: true,
+            subFileArray: [],
+            fileName: "",
+            subComponent: null,
+            ////////////
             pageIndex: 1,
             pageSize: localStorage.handler_pageSize || 10,
             pageCount: 1,
@@ -142,6 +174,13 @@ class Resources extends React.Component {
         } else {
             this.setState({ attachmentShow: true });
             localStorage.attachment_show = true;
+        }
+    }
+    onSubFileShow() {
+        if (this.state.subFileToggle) {
+            this.setState({ subFileToggle: false });
+        } else {
+            this.setState({ subFileToggle: true });
         }
     }
     deleteItem(e) {
@@ -187,36 +226,115 @@ class Resources extends React.Component {
             success(data);
         }, process);
     }
+    onIdClick(e) {
+        var ids = [],
+            fileType = "",
+            fileName = "",
+            cp = 0,
+            subComponent = null;
+        if (e.target.nodeName.toLowerCase() == "b") {
+            fileType = e.target.parentElement.getAttribute("data-type");
+            fileName = e.target.parentElement.getAttribute("data-fileName");
+            ids = e.target.parentElement.getAttribute("data-ids").split(",");
+            cp = e.target.parentElement.getAttribute("data-cp");
+        } else {
+            fileType = e.target.getAttribute("data-type");
+            fileName = e.target.getAttribute("data-fileName");
+            ids = e.target.getAttribute("data-ids").split(",");
+            cp = e.target.getAttribute("data-cp");
+        }
+        this.state.subFileArray = [];
+        switch (fileType) {
+            case "image":
+                for (var i = 0; i < ids.length; i++) this.getThumbnail(ids[i]);
+                fileName = "Thumbnails(" + fileName + ")";
+                subComponent = ThumbnailData;
+                break;
+            case "video":
+                for (var i = 0; i < ids.length; i++) this.getM3u8(ids[i], cp);
+                fileName = "M3u8List(" + fileName + ")";
+                subComponent = M3u8Data;
+                break;
+            case "attachment":
+                for (var i = 0; i < ids.length; i++) this.getSubFile(ids[i]);
+                fileName = "FileList(" + fileName + ")";
+                subComponent = SubFileData;
+                break;
+        }
+        this.setState({ fileName: fileName, subFileShow: true, subComponent: subComponent });
+    }
+    getThumbnail(fileId) {
+        if (fileId.length != 24) return;
+        http.get(urls.resources.getThumbnailMetadataUrl + "/" + fileId, function (data) {
+            if (data.code == 0) this.state.subFileArray.push(data.result);
+            this.setState({ subFileArray: this.state.subFileArray });
+        }.bind(this));
+    }
+    getM3u8(fileId, cp) {
+        if (fileId.length != 24) return;
+        http.get(urls.resources.getM3u8MetadataUrl + "/" + fileId, function (data) {
+            if (data.code == 0) {
+                data.result.cp = cp;
+                this.state.subFileArray.push(data.result);
+            }
+            this.setState({ subFileArray: this.state.subFileArray });
+        }.bind(this));
+    }
+    getSubFile(fileId) {
+        if (fileId.length != 24) return;
+        http.get(urls.resources.getFileMetadataUrl + "/" + fileId, function (data) {
+            if (data.code == 0) {
+                this.state.subFileArray.push(data.result);
+            } 
+            this.setState({ subFileArray: this.state.subFileArray });
+        }.bind(this));
+    }
     render() {
         return (
             <div className="main">
                 <h1>Resources</h1>
-                <TitleArrow title="All Resources" show={this.state.pageShow}
-                            count={this.state.data.count}
-                            onShowChange={this.onPageShow.bind(this)} />
+                <TitleArrow title="All Resources"
+                    show={this.state.pageShow}
+                    count={this.state.data.count}
+                    onShowChange={this.onPageShow.bind(this)} />
                 <Pagination show={this.state.pageShow}
-                            pageIndex={this.state.pageIndex}
-                            pageSize={this.state.pageSize}
-                            pageCount={this.state.pageCount}
-                            filter={this.state.filter}
-                            onInput={this.onInput.bind(this)}
-                            onKeyPress={this.onKeyPress.bind(this)}
-                            lastPage={this.lastPage.bind(this)}
-                            nextPage={this.nextPage.bind(this)} />
+                    pageIndex={this.state.pageIndex}
+                    pageSize={this.state.pageSize}
+                    pageCount={this.state.pageCount}
+                    filter={this.state.filter}
+                    onInput={this.onInput.bind(this)}
+                    onKeyPress={this.onKeyPress.bind(this)}
+                    lastPage={this.lastPage.bind(this)}
+                    nextPage={this.nextPage.bind(this)} />
                 <ResourcesData data={this.state.data.result}
-                               deleteItem={this.deleteItem.bind(this)} />
+                    deleteItem={this.deleteItem.bind(this)}
+                    onIdClick={this.onIdClick.bind(this)} />
                 <TitleArrow title="Add Image"
-                            show={this.state.imageShow}
-                            onShowChange={this.onImageShow.bind(this)} />
-                <AddImage show={this.state.imageShow} imageUpload={this.imageUpload.bind(this)} />
+                    show={this.state.imageShow}
+                    onShowChange={this.onImageShow.bind(this)} />
+                <AddImage show={this.state.imageShow}
+                    imageUpload={this.imageUpload.bind(this)} />
                 <TitleArrow title="Add Video"
-                            show={this.state.videoShow}
-                            onShowChange={this.onVideoShow.bind(this)} />
-                <AddVideo show={this.state.videoShow} videoUpload={this.videoUpload.bind(this)} />
+                    show={this.state.videoShow}
+                    onShowChange={this.onVideoShow.bind(this)} />
+                <AddVideo show={this.state.videoShow}
+                    videoUpload={this.videoUpload.bind(this)} />
                 <TitleArrow title="Add Attachment"
-                            show={this.state.attachmentShow}
-                            onShowChange={this.onAttachmentShow.bind(this)} />
-                <AddAttachment show={this.state.attachmentShow} attachmentUpload={this.attachmentUpload.bind(this)} />
+                    show={this.state.attachmentShow}
+                    onShowChange={this.onAttachmentShow.bind(this)} />
+                <AddAttachment show={this.state.attachmentShow}
+                    attachmentUpload={this.attachmentUpload.bind(this)} />
+                {this.state.subFileShow ?
+                    <TitleArrow title={this.state.fileName}
+                        show={this.state.subFileToggle}
+                        onShowChange={this.onSubFileShow.bind(this)} /> : null
+                }
+                {this.state.subFileShow ?
+                    <this.state.subComponent
+                        show={this.state.subFileToggle}
+                        data={this.state.subFileArray}
+                    /> : null
+                }
             </div>
         );
     }

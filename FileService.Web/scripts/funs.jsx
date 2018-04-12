@@ -118,6 +118,9 @@ var urls = {
     },
     resources: {
         getUrl: appDomain + "admin/getfiles",
+        getThumbnailMetadataUrl: appDomain + "admin/getthumbnailmetadata",
+        getFileMetadataUrl: appDomain + "admin/getfilemetadata",
+        getM3u8MetadataUrl: appDomain + "admin/getm3u8metadata",
         uploadImageUrl: appDomain + "upload/image",
         uploadVideoUrl: appDomain + "upload/video",
         uploadAttachmentUrl: appDomain + "upload/attachment",

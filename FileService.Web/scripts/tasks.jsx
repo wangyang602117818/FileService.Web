@@ -54,7 +54,7 @@ class TaskItem extends React.Component {
     constructor(props) {
         super(props);
     }
-    view(e) {
+    preView(e) {
         var id = e.target.id;
         window.open(urls.preview + "?" + id, "_blank");
     }
@@ -91,7 +91,7 @@ class TaskItem extends React.Component {
                 <td>{parseBsonTime(this.props.task.CreateTime)}</td>
                 <td>{parseBsonTime(this.props.task.CompletedTime)}</td>
                 <td>
-                    <i className="iconfont icon-view" onClick={this.view.bind(this)}
+                    <i className="iconfont icon-view" onClick={this.preView.bind(this)}
                         id={"id=" + this.props.task.FileId.$oid + "&filetype=" + this.props.task.Type.removeHTML() + "&filename=" + this.props.task.FileName.removeHTML() + "#" + this.props.task.Output._id.$oid}></i>
                 </td>
                 <td>
