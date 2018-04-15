@@ -182,6 +182,20 @@ function convertFileSize(value) {
         return size.toFixed(2) + " KB";
     }
 }
+function convertTime(seconds) {
+    seconds = parseInt(seconds);
+    if (seconds < 60) return "00:" + "00:" + seconds;
+    var minuts = parseInt(seconds / 60);
+    if (minuts < 60) {
+        var seconds = parseInt(seconds % 60);
+        return "00:" + formatMonth(minuts) + ":" + formatMonth(seconds);
+    } else {
+        var h = parseInt(seconds / 3600);
+        minuts = parseInt((seconds - (h * 3600)) / 60);
+        seconds = parseInt((seconds - (h * 3600)) % 60);
+        return formatMonth(h) + ":" + formatMonth(minuts) + ":" + formatMonth(seconds);
+    }
+}
 function formatMonth(month) {
     return month.toString().length == 1 ? "0" + month : month;
 }

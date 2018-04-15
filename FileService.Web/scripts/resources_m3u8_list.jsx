@@ -10,7 +10,7 @@
                         <tr>
                             <th width="20%">M3u8Id</th>
                             <th width="25%">FileName</th>
-                            <th width="10%">Duration(s)</th>
+                            <th width="10%">Duration</th>
                             <th width="6%">Ts</th>
                             <th width="6%">Cp</th>
                             <th width="6%">Type</th>
@@ -55,7 +55,7 @@ class M3u8FileList extends React.Component {
                             <tr>
                                 <td>{item._id.$oid}</td>
                                 <td>{item.FileName}</td>
-                                <td>{item.Duration}</td>
+                                <td>{convertTime(item.Duration)}</td>
                                 <td>{item.TsCount}</td>
                                 <td>{item.cp}</td>
                                 <td>m3u8</td>
