@@ -5,7 +5,7 @@
     render() {
         return (
             <div className={this.props.show ? "show" : "hidden"}>
-                <table className="table" style={{ width: "80%" }}>
+                <table className="table">
                     <thead>
                         <tr>
                             <th width="25%">FileId</th>
