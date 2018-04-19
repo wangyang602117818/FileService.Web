@@ -37,7 +37,6 @@ namespace FileService.Util
                     return "image/gif";
                 case ".bmp":
                     return "application/x-bmp";
-
             }
             return "image/*";
         }

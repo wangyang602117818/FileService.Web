@@ -127,13 +127,14 @@ namespace FileService.Web.Controllers
         }
         public ActionResult GetThumbnailMetadata(string id)
         {
-            BsonDocument thumb = thumbnail.FindOne(ObjectId.Parse(id));
-            return new ResponseModel<BsonDocument>(ErrorCode.success, thumb);
+            IEnumerable<BsonDocument> thumbs = thumbnail.FindBySourceId(ObjectId.Parse(id));
+            return new ResponseModel<IEnumerable<BsonDocument>>(ErrorCode.success, thumbs);
         }
         public ActionResult GetM3u8Metadata(string id)
         {
-            BsonDocument bson = m3u8.FindOne(ObjectId.Parse(id));
-            return new ResponseModel<BsonDocument>(ErrorCode.success, bson);
+            int cp = files.FindOne(ObjectId.Parse(id))["metadata"]["VideoCpIds"].AsBsonArray.Count;
+            IEnumerable<BsonDocument> m3u8s = m3u8.FindBySourceId(ObjectId.Parse(id)).Select(sel=>sel.Add("Cp", cp));
+            return new ResponseModel<IEnumerable<BsonDocument>>(ErrorCode.success, m3u8s);
         }
         public ActionResult GetFileMetadata(string id)
         {

@@ -1,32 +1,30 @@
-﻿class M3u8Data extends React.Component {
+﻿class DeCompressionFileData extends React.Component {
     constructor(props) {
         super(props);
     }
     render() {
         return (
             <div className={this.props.show ? "show" : "hidden"}>
-                <table className="table">
+                <table className="table" style={{ width: "80%" }}>
                     <thead>
                         <tr>
-                            <th width="20%">M3u8Id</th>
-                            <th width="25%">FileName</th>
-                            <th width="10%">Duration</th>
-                            <th width="6%">Ts</th>
-                            <th width="6%">Cp</th>
-                            <th width="6%">Type</th>
-                            <th width="12%">Flag</th>
+                            <th width="25%">FileId</th>
+                            <th width="30%">FileName</th>
+                            <th width="10%">Size</th>
+                            <th width="10%">Type</th>
+                            <th width="10%">From</th>
                             <th width="5%">View</th>
                             <th width="5%">Dol</th>
                             <th width="5%">Del</th>
                         </tr>
                     </thead>
-                    <M3u8FileList data={this.props.data} />
+                    <SubFileList data={this.props.data} />
                 </table>
             </div>
         );
     }
 }
-class M3u8FileList extends React.Component {
+class DeCompressionFileList extends React.Component {
     constructor(props) {
         super(props);
     }
@@ -36,7 +34,7 @@ class M3u8FileList extends React.Component {
     }
     download(e) {
         var id = e.target.id;
-        window.location.href = urls.m3u8Url + "/" + id;
+        window.location.href = urls.downloadUrl + "/" + id;
     }
     render() {
         if (this.props.data.length == 0) {
@@ -54,15 +52,13 @@ class M3u8FileList extends React.Component {
                         return (
                             <tr>
                                 <td>{item._id.$oid}</td>
-                                <td>{item.FileName}</td>
-                                <td>{convertTime(item.Duration)}</td>
-                                <td>{item.TsCount}</td>
-                                <td>{item.Cp}</td>
-                                <td>m3u8</td>
-                                <td>{item.Flag}</td>
+                                <td>{item.filename}</td>
+                                <td>{convertFileSize(item.length)}</td>
+                                <td>{item.metadata.FileType}</td>
+                                <td>{item.metadata.From}</td>
                                 <td>
                                     <i className="iconfont icon-view" onClick={this.preView.bind(this)}
-                                        id={"id=" + item.SourceId.$oid + "&filetype=video&filename=" + item.FileName + "#" + item._id.$oid}>
+                                        id={"id=" + item._id.$oid + "&filetype=attachment&filename=" + item.filename}>
                                     </i>
                                 </td>
                                 <td>

@@ -11,7 +11,7 @@ namespace FileService.Business
     public partial class Thumbnail : ModelBase<Data.Thumbnail>
     {
         public Thumbnail() : base(new Data.Thumbnail()) { }
-        public bool Replace(ObjectId id, ObjectId sourceId, long length, string fileName,string flag, byte[] file)
+        public bool Replace(ObjectId id, ObjectId sourceId, long length, string fileName, string flag, byte[] file)
         {
             BsonDocument document = new BsonDocument()
             {
@@ -24,6 +24,10 @@ namespace FileService.Business
                 {"CreateTime",DateTime.Now },
             };
             return mongoData.Replace(document);
+        }
+        public IEnumerable<BsonDocument> FindBySourceId(ObjectId sourceId)
+        {
+            return mongoData.FindBySourceId(sourceId);
         }
     }
 }

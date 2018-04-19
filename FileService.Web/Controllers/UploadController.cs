@@ -172,12 +172,23 @@ namespace FileService.Web.Controllers
                     continue;
                 }
                 BsonArray files = new BsonArray();
-                if (OfficeFormatList.offices.Contains(Path.GetExtension(file.FileName))){
+                //office
+                if (OfficeFormatList.offices.Contains(Path.GetExtension(file.FileName).ToLower()))
+                {
                     files.Add(new BsonDocument() {
                         {"_id",ObjectId.Empty },
                         {"Format",AttachmentOutput.pdf },
                         {"Flag","preview" }
                     });
+                }
+                //zip
+                if (Path.GetExtension(file.FileName).ToLower() == ".zip")
+                {
+                    IEnumerable<string> subFiles = file.InputStream.GetDeCompressionZipFiles();
+                    foreach (string str in subFiles)
+                    {
+                        files.Add(new BsonDocument("Name", str));
+                    }
                 }
                 //上传
                 Task<ObjectId> oId = mongoFile.UploadAsync(file.FileName, file.InputStream, new BsonDocument()

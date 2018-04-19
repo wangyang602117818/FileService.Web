@@ -62,43 +62,15 @@ class ResourceItem extends React.Component {
         var id = e.target.id;
         window.location.href = urls.downloadUrl + "/" + id;
     }
-    getFileType(filetype, filename) {
-        if (filetype == "attachment") {
-            return filename.split('.').pop().toLowerCase();
-        } else {
-            return filetype;
-        }
-    }
-    getSubFileIds(resource) {
-        var meta = {
-            ids: [],
-            cp: 0
-        };
-        switch (resource.metadata.FileType.removeHTML()) {
-            case "image":
-                for (var i = 0; i < resource.metadata.Thumbnail.length; i++) meta.ids.push(resource.metadata.Thumbnail[i]._id.$oid);
-                break;
-            case "video":
-                for (var i = 0; i < resource.metadata.Videos.length; i++) meta.ids.push(resource.metadata.Videos[i]._id.$oid);
-                break;
-            case "attachment":
-                for (var i = 0; i < resource.metadata.Files.length; i++) meta.ids.push(resource.metadata.Files[i]._id.$oid);
-                break;
-        }
-        meta.cp = resource.metadata.VideoCpIds ? resource.metadata.VideoCpIds.length : 0;
-        return meta;
-    }
     render() {
-        var meta = this.getSubFileIds(this.props.resource);
         return (
             <tr>
                 <td className="link"
                     data-type={this.props.resource.metadata.FileType.removeHTML()}
                     data-fileName={this.props.resource.filename.removeHTML()}
-                    data-ids={meta.ids}
-                    data-cp={meta.cp}
-                    onClick={this.props.onIdClick}>
-                    <b>{this.props.resource._id.$oid}</b>
+                    data-fileId={this.props.resource._id.$oid}
+                    onClick={this.props.onIdClick}
+                ><b>{this.props.resource._id.$oid}</b>
                 </td>
                 <td title={this.props.resource.filename.removeHTML()}>
                     <i className={"iconfont " + getIconNameByFileName(this.props.resource.filename.removeHTML())}></i>&nbsp;
@@ -227,31 +199,28 @@ class Resources extends React.Component {
         }, process);
     }
     onIdClick(e) {
-        var ids = [],
+        var fileId = "",
             fileType = "",
             fileName = "",
-            cp = 0,
             subComponent = null;
         if (e.target.nodeName.toLowerCase() == "b") {
-            fileType = e.target.parentElement.getAttribute("data-type");
+            fileId = e.target.parentElement.getAttribute("data-fileId");
             fileName = e.target.parentElement.getAttribute("data-fileName");
-            ids = e.target.parentElement.getAttribute("data-ids").split(",");
-            cp = e.target.parentElement.getAttribute("data-cp");
+            fileType = e.target.parentElement.getAttribute("data-type");
         } else {
-            fileType = e.target.getAttribute("data-type");
+            fileId = e.target.getAttribute("data-fileId");
             fileName = e.target.getAttribute("data-fileName");
-            ids = e.target.getAttribute("data-ids").split(",");
-            cp = e.target.getAttribute("data-cp");
+            fileType = e.target.getAttribute("data-type");
         }
         this.state.subFileArray = [];
         switch (fileType) {
             case "image":
-                for (var i = 0; i < ids.length; i++) this.getThumbnail(ids[i]);
+                this.getThumbnail(fileId);
                 fileName = "Thumbnails(" + fileName + ")";
                 subComponent = ThumbnailData;
                 break;
             case "video":
-                for (var i = 0; i < ids.length; i++) this.getM3u8(ids[i], cp);
+                this.getM3u8(fileId);
                 fileName = "M3u8List(" + fileName + ")";
                 subComponent = M3u8Data;
                 break;
@@ -266,26 +235,23 @@ class Resources extends React.Component {
     getThumbnail(fileId) {
         if (fileId.length != 24) return;
         http.get(urls.resources.getThumbnailMetadataUrl + "/" + fileId, function (data) {
-            if (data.code == 0) this.state.subFileArray.push(data.result);
+            if (data.code == 0) this.state.subFileArray = data.result;
             this.setState({ subFileArray: this.state.subFileArray });
         }.bind(this));
     }
-    getM3u8(fileId, cp) {
+    getM3u8(fileId) {
         if (fileId.length != 24) return;
         http.get(urls.resources.getM3u8MetadataUrl + "/" + fileId, function (data) {
-            if (data.code == 0) {
-                data.result.cp = cp;
-                this.state.subFileArray.push(data.result);
-            }
+            if (data.code == 0)  this.state.subFileArray = data.result;
             this.setState({ subFileArray: this.state.subFileArray });
         }.bind(this));
     }
     getSubFile(fileId) {
         if (fileId.length != 24) return;
-        http.get(urls.resources.getFileMetadataUrl + "/" + fileId, function (data) {
+        http.get(urls.resources.getSubFileMetadataUrl + "/" + fileId, function (data) {
             if (data.code == 0) {
                 this.state.subFileArray.push(data.result);
-            } 
+            }
             this.setState({ subFileArray: this.state.subFileArray });
         }.bind(this));
     }

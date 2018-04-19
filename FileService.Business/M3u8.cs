@@ -25,5 +25,9 @@ namespace FileService.Business
             };
             mongoData.Replace(document);
         }
+        public IEnumerable<BsonDocument> FindBySourceId(ObjectId sourceId)
+        {
+            return mongoData.FindBySourceId(sourceId);
+        }
     }
 }

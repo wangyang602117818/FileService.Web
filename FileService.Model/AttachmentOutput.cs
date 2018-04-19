@@ -8,6 +8,6 @@ namespace FileService.Model
 {
     public enum AttachmentOutput
     {
-        pdf = 10,
+        pdf = 10
     }
 }
