@@ -42,7 +42,9 @@ class ResourcesList extends React.Component {
                 <tbody>
                     {this.props.data.map(function (item, i) {
                         return (
-                            <ResourceItem resource={item} key={i} deleteItem={that.props.deleteItem} onIdClick={that.props.onIdClick} />
+                            <ResourceItem resource={item} key={i}
+                                deleteItem={that.props.deleteItem}
+                                onIdClick={that.props.onIdClick} />
                         )
                     })}
                 </tbody>
@@ -225,7 +227,7 @@ class Resources extends React.Component {
                 subComponent = M3u8Data;
                 break;
             case "attachment":
-                for (var i = 0; i < ids.length; i++) this.getSubFile(ids[i]);
+                this.getSubFile(fileId);
                 fileName = "FileList(" + fileName + ")";
                 subComponent = SubFileData;
                 break;

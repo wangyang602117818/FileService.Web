@@ -133,12 +133,25 @@ namespace FileService.Web.Controllers
         public ActionResult GetM3u8Metadata(string id)
         {
             int cp = files.FindOne(ObjectId.Parse(id))["metadata"]["VideoCpIds"].AsBsonArray.Count;
-            IEnumerable<BsonDocument> m3u8s = m3u8.FindBySourceId(ObjectId.Parse(id)).Select(sel=>sel.Add("Cp", cp));
+            IEnumerable<BsonDocument> m3u8s = m3u8.FindBySourceId(ObjectId.Parse(id)).Select(sel => sel.Add("Cp", cp));
             return new ResponseModel<IEnumerable<BsonDocument>>(ErrorCode.success, m3u8s);
         }
-        public ActionResult GetFileMetadata(string id)
+        public ActionResult GetSubFileMetadata(string id)
         {
             BsonDocument file = files.FindOne(ObjectId.Parse(id));
+            List<BsonDocument> result = new List<BsonDocument>();
+            if (!file.Contains("Files")) return new ResponseModel<IEnumerable<BsonDocument>>(ErrorCode.success, result);
+            foreach (BsonDocument doc in file["Files"].AsBsonArray)
+            {
+                if (doc.Contains("_id"))
+                {
+                    result.Add(files.FindOne(doc["_id"].AsObjectId));
+                }
+                else
+                {
+                    
+                }
+            }
             return new ResponseModel<BsonDocument>(ErrorCode.success, file);
         }
         [AllowAnonymous]
