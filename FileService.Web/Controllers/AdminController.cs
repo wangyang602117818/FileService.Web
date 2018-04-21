@@ -421,6 +421,14 @@ namespace FileService.Web.Controllers
                 ts.DeleteBySourceId(m3u8Ids);
                 videoCapture.DeleteBySourceId(ObjectId.Parse(id));
             }
+            if (doc["metadata"]["FileType"] == "attachment")
+            {
+                foreach (BsonDocument bson in doc["metadata"]["Files"].AsBsonArray)
+                {
+                    if (!bson.Contains("_id")) continue;
+                    if (files.FindOne(bson["_id"].AsObjectId) != null) mongoFile.Delete(bson["_id"].AsObjectId);
+                }
+            }
             mongoFile.Delete(ObjectId.Parse(id));
             task.Delete(ObjectId.Parse(id));
             Log("FileServiceApi", id, "DeleteFile");

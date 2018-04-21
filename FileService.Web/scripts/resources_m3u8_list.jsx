@@ -68,7 +68,7 @@ class M3u8FileList extends React.Component {
                                 <td>
                                     <i className="iconfont icon-download" id={item._id.$oid} onClick={this.download.bind(this)}></i>
                                 </td>
-                                <td><i className="iconfont icon-del" id={item.FileId}></i></td>
+                                <td></td>
                             </tr>
                         )
                     }.bind(this))}

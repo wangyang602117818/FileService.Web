@@ -110,6 +110,7 @@ class Resources extends React.Component {
             subFileShow: false,
             subFileToggle: true,
             subFileArray: [],
+            fileId: "",
             fileName: "",
             subComponent: null,
             ////////////
@@ -236,7 +237,12 @@ class Resources extends React.Component {
                 fileName = "FileList(" + fileName + ")";
                 break;
         }
-        this.setState({ fileName: fileName, subFileShow: true, subComponent: subComponent });
+        this.setState({
+            fileName: fileName,
+            fileId: fileId,
+            subFileShow: true,
+            subComponent: subComponent
+        });
     }
     getThumbnail(fileId) {
         if (fileId.length != 24) return;
@@ -305,6 +311,7 @@ class Resources extends React.Component {
                     <this.state.subComponent
                         show={this.state.subFileToggle}
                         data={this.state.subFileArray}
+                        fileId={this.state.fileId}
                     /> : null
                 }
             </div>

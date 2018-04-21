@@ -17,7 +17,7 @@
                             <th width="5%">Del</th>
                         </tr>
                     </thead>
-                    <DeCompressionFileList data={this.props.data} />
+                    <DeCompressionFileList data={this.props.data} fileId={this.props.fileId} />
                 </table>
             </div>
         );
@@ -26,6 +26,9 @@
 class DeCompressionFileList extends React.Component {
     constructor(props) {
         super(props);
+        this.state = {
+            fileId: ""
+        }
     }
     preView(e) {
         var id = e.target.id;
@@ -55,13 +58,13 @@ class DeCompressionFileList extends React.Component {
                                 <td>attachment</td>
                                 <td>zip</td>
                                 <td>
-                                    <i className="iconfont icon-view" onClick={this.preView.bind(this)} >
+                                    <i className="iconfont icon-view" onClick={this.preView.bind(this)} id={"id=" + this.props.fileId + "&filetype=attachment&filename=" + item.Name}>
                                     </i>
                                 </td>
                                 <td>
                                     <i className="iconfont icon-download" id={item.Name} onClick={this.download.bind(this)}></i>
                                 </td>
-                                <td><i className="iconfont icon-del" id={item.Name}></i></td>
+                                <td></td>
                             </tr>
                         )
                     }.bind(this))}
