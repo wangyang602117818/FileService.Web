@@ -140,19 +140,23 @@ namespace FileService.Web.Controllers
         {
             BsonDocument file = files.FindOne(ObjectId.Parse(id));
             List<BsonDocument> result = new List<BsonDocument>();
-            if (!file.Contains("Files")) return new ResponseModel<IEnumerable<BsonDocument>>(ErrorCode.success, result);
-            foreach (BsonDocument doc in file["Files"].AsBsonArray)
+            if (file == null) return new ResponseModel<List<BsonDocument>>(ErrorCode.success, result);
+            if (!file["metadata"].AsBsonDocument.Contains("Files"))
             {
-                if (doc.Contains("_id"))
+                return new ResponseModel<IEnumerable<BsonDocument>>(ErrorCode.success, result);
+            }
+            foreach (BsonDocument doc in file["metadata"]["Files"].AsBsonArray)
+            {
+                if (doc.Contains("_id") && doc["_id"].AsObjectId != ObjectId.Empty)
                 {
                     result.Add(files.FindOne(doc["_id"].AsObjectId));
                 }
                 else
                 {
-                    
+                    result.Add(doc);
                 }
             }
-            return new ResponseModel<BsonDocument>(ErrorCode.success, file);
+            return new ResponseModel<List<BsonDocument>>(ErrorCode.success, result);
         }
         [AllowAnonymous]
         public ActionResult Preview(string id, string fileType, string fileName)

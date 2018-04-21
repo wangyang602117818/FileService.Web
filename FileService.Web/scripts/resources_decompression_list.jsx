@@ -5,20 +5,19 @@
     render() {
         return (
             <div className={this.props.show ? "show" : "hidden"}>
-                <table className="table" style={{ width: "80%" }}>
+                <table className="table">
                     <thead>
                         <tr>
-                            <th width="25%">FileId</th>
                             <th width="30%">FileName</th>
-                            <th width="10%">Size</th>
-                            <th width="10%">Type</th>
-                            <th width="10%">From</th>
+                            <th width="20%">Size</th>
+                            <th width="15%">Type</th>
+                            <th width="20%">From</th>
                             <th width="5%">View</th>
                             <th width="5%">Dol</th>
                             <th width="5%">Del</th>
                         </tr>
                     </thead>
-                    <SubFileList data={this.props.data} />
+                    <DeCompressionFileList data={this.props.data} />
                 </table>
             </div>
         );
@@ -51,20 +50,18 @@ class DeCompressionFileList extends React.Component {
                     {this.props.data.map(function (item, i) {
                         return (
                             <tr>
-                                <td>{item._id.$oid}</td>
-                                <td>{item.filename}</td>
-                                <td>{convertFileSize(item.length)}</td>
-                                <td>{item.metadata.FileType}</td>
-                                <td>{item.metadata.From}</td>
+                                <td>{item.Name}</td>
+                                <td>{convertFileSize(item.Length)}</td>
+                                <td>attachment</td>
+                                <td>zip</td>
                                 <td>
-                                    <i className="iconfont icon-view" onClick={this.preView.bind(this)}
-                                        id={"id=" + item._id.$oid + "&filetype=attachment&filename=" + item.filename}>
+                                    <i className="iconfont icon-view" onClick={this.preView.bind(this)} >
                                     </i>
                                 </td>
                                 <td>
-                                    <i className="iconfont icon-download" id={item._id.$oid} onClick={this.download.bind(this)}></i>
+                                    <i className="iconfont icon-download" id={item.Name} onClick={this.download.bind(this)}></i>
                                 </td>
-                                <td><i className="iconfont icon-del" id={item.FileId}></i></td>
+                                <td><i className="iconfont icon-del" id={item.Name}></i></td>
                             </tr>
                         )
                     }.bind(this))}

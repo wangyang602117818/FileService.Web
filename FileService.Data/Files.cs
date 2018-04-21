@@ -72,6 +72,11 @@ namespace FileService.Data
             var filter = FilterBuilder.Eq("_id", id) & FilterBuilder.Eq("metadata.Files._id", oldFileId);
             return MongoCollection.UpdateOne(filter, Builders<BsonDocument>.Update.Set("metadata.Files.$._id", newFileId)).IsAcknowledged;
         }
+        public bool UpdateSubFiles(ObjectId id,BsonArray array)
+        {
+            var filter = FilterBuilder.Eq("_id", id);
+            return MongoCollection.UpdateOne(filter, Builders<BsonDocument>.Update.Set("metadata.Files", array)).IsAcknowledged;
+        }
         protected override FilterDefinition<BsonDocument> GetPageFilters(IEnumerable<string> fields, string filter)
         {
             FilterDefinition<BsonDocument> filterBuilder = FilterBuilder.And(FilterBuilder.Not(FilterBuilder.Eq("metadata.From", "Convert")));

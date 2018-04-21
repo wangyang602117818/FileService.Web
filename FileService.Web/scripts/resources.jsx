@@ -228,8 +228,12 @@ class Resources extends React.Component {
                 break;
             case "attachment":
                 this.getSubFile(fileId);
+                if (fileName.getFileExtension().toLowerCase() == ".zip") {
+                    subComponent = DeCompressionFileData;
+                } else {
+                    subComponent = SubFileData;
+                }
                 fileName = "FileList(" + fileName + ")";
-                subComponent = SubFileData;
                 break;
         }
         this.setState({ fileName: fileName, subFileShow: true, subComponent: subComponent });
@@ -244,7 +248,7 @@ class Resources extends React.Component {
     getM3u8(fileId) {
         if (fileId.length != 24) return;
         http.get(urls.resources.getM3u8MetadataUrl + "/" + fileId, function (data) {
-            if (data.code == 0)  this.state.subFileArray = data.result;
+            if (data.code == 0) this.state.subFileArray = data.result;
             this.setState({ subFileArray: this.state.subFileArray });
         }.bind(this));
     }
@@ -252,7 +256,7 @@ class Resources extends React.Component {
         if (fileId.length != 24) return;
         http.get(urls.resources.getSubFileMetadataUrl + "/" + fileId, function (data) {
             if (data.code == 0) {
-                this.state.subFileArray.push(data.result);
+                this.state.subFileArray = data.result;
             }
             this.setState({ subFileArray: this.state.subFileArray });
         }.bind(this));

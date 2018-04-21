@@ -331,7 +331,7 @@
     <Content Include="scripts\react.js" />
     <Content Include="scripts\react.min.js" />
     <Content Include="scripts\resources.jsx" />
-    <Content Include="scripts\resources_ decompression_list.jsx" />
+    <Content Include="scripts\resources_decompression_list.jsx" />
     <Content Include="scripts\resources_attachment.jsx" />
     <Content Include="scripts\resources_image.jsx" />
     <Content Include="scripts\resources_m3u8_list.jsx" />

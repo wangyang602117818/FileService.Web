@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MongoDB.Bson;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
@@ -10,14 +11,17 @@ namespace FileService.Util
 {
     public static class StreamExtention
     {
-        public static IEnumerable<string> GetDeCompressionZipFiles(this Stream stream)
+        public static BsonArray GetDeCompressionZipFiles(this Stream stream)
         {
             ZipArchive zipFile = new ZipArchive(stream, ZipArchiveMode.Read);
-            List<string> result = new List<string>();
+            BsonArray result = new BsonArray();
             foreach (var item in zipFile.Entries)
             {
                 if (item.FullName.Substring(item.FullName.Length - 1, 1) == "/") continue;
-                result.Add(item.FullName);
+                result.Add(new BsonDocument() {
+                    {"Name",item.Name },
+                    {"Length",item.Length }
+                });
             }
             stream.Position = 0;
             return result;

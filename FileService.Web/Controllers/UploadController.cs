@@ -184,11 +184,7 @@ namespace FileService.Web.Controllers
                 //zip
                 if (Path.GetExtension(file.FileName).ToLower() == ".zip")
                 {
-                    IEnumerable<string> subFiles = file.InputStream.GetDeCompressionZipFiles();
-                    foreach (string str in subFiles)
-                    {
-                        files.Add(new BsonDocument("Name", str));
-                    }
+                    files = file.InputStream.GetDeCompressionZipFiles();
                 }
                 //上传
                 Task<ObjectId> oId = mongoFile.UploadAsync(file.FileName, file.InputStream, new BsonDocument()
@@ -198,6 +194,7 @@ namespace FileService.Web.Controllers
                         {"ContentType",file.ContentType},
                         {"Files",files }
                     });
+                //office转换任务
                 if (OfficeFormatList.offices.Contains(Path.GetExtension(file.FileName)))
                 {
                     string handlerId = converter.GetHandlerId();
