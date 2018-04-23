@@ -153,7 +153,9 @@ class VideoUpdate extends React.Component {
                             <td width="15%">Handler:</td>
                             <td width="25%">
                                 <select name="handler" value={this.state.handler} onChange={this.handlerChange.bind(this)}>
-                                    <option value="h01">h01</option>
+                                    {this.props.handlers.map(function (item, i) {
+                                        return <option value={item} key={i}>{item}</option>
+                                    })}
                                 </select>
                             </td>
                             <td width="20%">OutputFormat:</td>
@@ -223,7 +225,9 @@ class OfficeUpdate extends React.Component {
                             <td width="15%">Handler:</td>
                             <td width="25%">
                                 <select name="handler" value={this.state.handler} onChange={this.handlerChange.bind(this)}>
-                                    <option value="h01">h01</option>
+                                    {this.props.handlers.map(function (item, i) {
+                                        return <option value={item} key={i}>{item}</option>
+                                    })}
                                 </select>
                             </td>
                             <td width="20%">OutputFormat:</td>
