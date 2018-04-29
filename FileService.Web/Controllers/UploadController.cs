@@ -181,7 +181,7 @@ namespace FileService.Web.Controllers
                         {"Flag","preview" }
                     });
                 }
-                //zip
+                //zip转换任务
                 if (Path.GetExtension(file.FileName).ToLower() == ".zip")
                 {
                     files = file.InputStream.GetDeCompressionZipFiles();
