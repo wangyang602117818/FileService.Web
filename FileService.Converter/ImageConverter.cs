@@ -16,7 +16,7 @@ namespace FileService.Converter
     {
         MongoFile mongoFile = new MongoFile();
         Thumbnail thumbnail = new Thumbnail();
-        public void Converter(FileItem fileItem)
+        public void Convert(FileItem fileItem)
         {
             BsonDocument outputDocument = fileItem.Message["Output"].AsBsonDocument;
             string fileName = fileItem.Message["FileName"].AsString;

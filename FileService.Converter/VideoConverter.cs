@@ -19,7 +19,7 @@ namespace FileService.Converter
         Ts ts = new Ts();
         M3u8 m3u8 = new M3u8();
         Business.Task task = new Business.Task();
-        public void Converter(FileItem fileItem)
+        public void Convert(FileItem fileItem)
         {
             BsonDocument outputDocument = fileItem.Message["Output"].AsBsonDocument;
             string fileName = fileItem.Message["FileName"].AsString;
@@ -58,7 +58,7 @@ namespace FileService.Converter
                 int currentDuration = GetCurrentDuration(line);
                 if (totalDuration != 0 && currentDuration != 0)
                 {
-                    int percent = Convert.ToInt32(Math.Round((double)currentDuration / totalDuration, 2) * 100);
+                    int percent = System.Convert.ToInt32(Math.Round((double)currentDuration / totalDuration, 2) * 100);
                     if (percent == 100) percent = 99;
                     task.UpdatePercent(id, percent);
                 }

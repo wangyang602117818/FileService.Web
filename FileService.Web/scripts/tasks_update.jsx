@@ -223,17 +223,11 @@ class OfficeUpdate extends React.Component {
                     <tbody>
                         <tr>
                             <td width="15%">Handler:</td>
-                            <td width="25%">
+                            <td width="75%">
                                 <select name="handler" value={this.state.handler} onChange={this.handlerChange.bind(this)}>
                                     {this.props.handlers.map(function (item, i) {
                                         return <option value={item} key={i}>{item}</option>
                                     })}
-                                </select>
-                            </td>
-                            <td width="20%">OutputFormat:</td>
-                            <td width="40%">
-                                <select name="format" value={this.state.format}>
-                                    <option value="10">Pdf</option>
                                 </select>
                             </td>
                         </tr>

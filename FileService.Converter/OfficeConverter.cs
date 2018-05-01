@@ -19,7 +19,7 @@ namespace FileService.Converter
         MongoFile mongoFile = new MongoFile();
         MongoFileConvert mongoFileConvert = new MongoFileConvert();
         static object o = new object();
-        public void Converter(FileItem fileItem)
+        public void Convert(FileItem fileItem)
         {
             ObjectId oldFileId = fileItem.Message["Output"]["_id"].AsObjectId;
             if (oldFileId != ObjectId.Empty && filesConvert.FindOne(oldFileId) != null) mongoFileConvert.Delete(oldFileId);

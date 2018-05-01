@@ -207,7 +207,15 @@ namespace FileService.Web.Controllers
                 if (Path.GetExtension(file.FileName).ToLower() == ".zip")
                 {
                     //files = file.InputStream.GetDeCompressionZipFiles();
-
+                    string handlerId = converter.GetHandlerId();
+                    converter.AddCount(handlerId, 1);
+                    ObjectId taskId = ObjectId.GenerateNewId();
+                    task.Insert(taskId, oId.Result, file.FileName, "attachment", new BsonDocument() {
+                        {"_id",ObjectId.Empty },
+                        {"Flag","zip" }
+                    }, handlerId, TaskStateEnum.wait, 0);
+                    //添加队列
+                    queue.Insert(handlerId, "attachment", "Task", taskId, false, new BsonDocument());
                 }
                 //日志
                 Log(uploadAttachmentModel.AppName, oId.Result.ToString(), "UploadAttachment");

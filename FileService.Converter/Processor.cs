@@ -64,13 +64,21 @@ namespace FileService.Converter
                 switch (item.Message["Type"].AsString)
                 {
                     case "image":
-                        new ImageConverter().Converter(item);
+                        new ImageConverter().Convert(item);
                         break;
                     case "video":
-                        new VideoConverter().Converter(item);
+                        new VideoConverter().Convert(item);
                         break;
                     case "attachment":
-                        new OfficeConverter().Converter(item);
+                        string fileExt = Path.GetExtension(item.Message["FileName"].AsString).ToLower();
+                        if (fileExt == ".zip")
+                        {
+                            new ZipConverter().Convert(item);
+                        }
+                        else
+                        {
+                            new OfficeConverter().Convert(item);
+                        }
                         break;
                 }
                 new Queue().MessageProcessed(item.QueueId);

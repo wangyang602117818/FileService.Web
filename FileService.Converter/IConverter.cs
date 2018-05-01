@@ -9,6 +9,6 @@ namespace FileService.Converter
 {
     interface IConverter
     {
-        void Converter(FileItem fileItem);
+        void Convert(FileItem fileItem);
     }
 }
