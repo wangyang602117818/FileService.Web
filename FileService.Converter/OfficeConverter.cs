@@ -14,18 +14,20 @@ namespace FileService.Converter
     public class OfficeConverter : IConverter
     {
         Files files = new Files();
+        FilesConvert filesConvert = new FilesConvert();
         Business.Task task = new Business.Task();
         MongoFile mongoFile = new MongoFile();
+        MongoFileConvert mongoFileConvert = new MongoFileConvert();
         static object o = new object();
         public void Converter(FileItem fileItem)
         {
             ObjectId oldFileId = fileItem.Message["Output"]["_id"].AsObjectId;
-            if (oldFileId != ObjectId.Empty && files.FindOne(oldFileId) != null) mongoFile.Delete(oldFileId);
+            if (oldFileId != ObjectId.Empty && filesConvert.FindOne(oldFileId) != null) mongoFileConvert.Delete(oldFileId);
             string fileName = fileItem.Message["FileName"].AsString;
             string sourceFullPath = MongoFile.AppDataDir + fileName;
             string destinationFullPath = MongoFile.AppDataDir + Path.GetFileNameWithoutExtension(fileName) + ".pdf";
             //转换office方法
-            ObjectId outputId = ConvertOffice(sourceFullPath, destinationFullPath);
+            ObjectId outputId = ConvertOffice(sourceFullPath, destinationFullPath, fileItem.Message["FileId"].AsObjectId);
             //更新 fs.files表
             files.UpdateSubFileId(fileItem.Message["FileId"].AsObjectId, oldFileId, outputId);
             //更新 task 表
@@ -33,7 +35,7 @@ namespace FileService.Converter
             if (File.Exists(destinationFullPath)) File.Delete(destinationFullPath);
             if (File.Exists(sourceFullPath)) File.Delete(sourceFullPath);
         }
-        private ObjectId ConvertOffice(string sourcePath, string destinationPath)
+        private ObjectId ConvertOffice(string sourcePath, string destinationPath, ObjectId sourceFileId)
         {
             if (!File.Exists(AppSettings.libreOffice))
             {
@@ -58,9 +60,10 @@ namespace FileService.Converter
             {
                 using (FileStream stream = new FileStream(destinationPath, FileMode.Open))
                 {
-                    return mongoFile.Upload(Path.GetFileName(destinationPath), stream, new BsonDocument()
+                    return mongoFileConvert.Upload(Path.GetFileName(destinationPath), stream, new BsonDocument()
                         {
-                            {"From", "Convert"},
+                            {"From", "fs.files"},
+                            {"SourceId",sourceFileId },
                             {"FileType","attachment"},
                             {"ContentType","application/pdf"}
                         });

@@ -181,11 +181,6 @@ namespace FileService.Web.Controllers
                         {"Flag","preview" }
                     });
                 }
-                //zip转换任务
-                if (Path.GetExtension(file.FileName).ToLower() == ".zip")
-                {
-                    files = file.InputStream.GetDeCompressionZipFiles();
-                }
                 //上传
                 Task<ObjectId> oId = mongoFile.UploadAsync(file.FileName, file.InputStream, new BsonDocument()
                     {
@@ -203,10 +198,16 @@ namespace FileService.Web.Controllers
                     task.Insert(taskId, oId.Result, file.FileName, "attachment", new BsonDocument() {
                         {"_id",ObjectId.Empty },
                         {"Format",AttachmentOutput.pdf },
-                        {"Flag","office_pdf_version" }
+                        {"Flag","preview" }
                     }, handlerId, TaskStateEnum.wait, 0);
                     //添加队列
                     queue.Insert(handlerId, "attachment", "Task", taskId, false, new BsonDocument());
+                }
+                //zip转换任务
+                if (Path.GetExtension(file.FileName).ToLower() == ".zip")
+                {
+                    //files = file.InputStream.GetDeCompressionZipFiles();
+
                 }
                 //日志
                 Log(uploadAttachmentModel.AppName, oId.Result.ToString(), "UploadAttachment");

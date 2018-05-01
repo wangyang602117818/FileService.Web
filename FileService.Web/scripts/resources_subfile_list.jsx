@@ -30,11 +30,11 @@ class SubFileList extends React.Component {
     }
     preView(e) {
         var id = e.target.id;
-        window.open(urls.preview + "?" + id, "_blank");
+        window.open(urls.previewConvert + "?" + id, "_blank");
     }
     download(e) {
         var id = e.target.id;
-        window.location.href = urls.downloadUrl + "/" + id;
+        window.location.href = urls.downloadConvertUrl + "/" + id;
     }
     render() {
         if (this.props.data.length == 0) {

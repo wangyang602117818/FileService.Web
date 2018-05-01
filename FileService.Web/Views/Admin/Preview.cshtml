@@ -21,6 +21,7 @@
     <script src="~/scripts/funs.jsx"></script>
     <script src="~/scripts/preview.jsx"></script>
     <input type="hidden" name="fileId" id="fileId" value="@ViewBag.id" />
+    <input type="hidden" name="convert" id="convert" value="@ViewBag.Convert" />
     @if (ViewBag.FileType == "image" || ViewBag.FileType == "attachment" && (new Config().GetTypeByExtension(Path.GetExtension(ViewBag.FileName).ToLower())).ToLower() == "image")
     {
         <script src="~/scripts/preview_image.jsx"></script>

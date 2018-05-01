@@ -18,6 +18,7 @@ namespace FileService.Web.Controllers
     public class DownLoadController : Controller
     {
         MongoFile mongoFile = new MongoFile();
+        MongoFileConvert mongoFileConvert = new MongoFileConvert();
         M3u8 m3u8 = new M3u8();
         Ts ts = new Ts();
         Thumbnail thumbnail = new Thumbnail();
@@ -25,6 +26,11 @@ namespace FileService.Web.Controllers
         public ActionResult Get(string id)
         {
             GridFSDownloadStream stream = mongoFile.DownLoad(ObjectId.Parse(id));
+            return File(stream, stream.FileInfo.Metadata["ContentType"].AsString, stream.FileInfo.Filename);
+        }
+        public ActionResult GetConvert(string id)
+        {
+            GridFSDownloadStream stream = mongoFileConvert.DownLoad(ObjectId.Parse(id));
             return File(stream, stream.FileInfo.Metadata["ContentType"].AsString, stream.FileInfo.Filename);
         }
         public ActionResult Thumbnail(string id)

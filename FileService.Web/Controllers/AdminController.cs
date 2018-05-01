@@ -21,6 +21,8 @@ namespace FileService.Web.Controllers
         Application application = new Application();
         Files files = new Files();
         MongoFile mongoFile = new MongoFile();
+        FilesConvert filesConvert = new FilesConvert();
+        MongoFileConvert mongoFileConvert = new MongoFileConvert();
         User user = new User();
         Converter converter = new Converter();
         Task task = new Task();
@@ -125,6 +127,12 @@ namespace FileService.Web.Controllers
             IEnumerable<BsonDocument> result = files.GetPageList(pageIndex, pageSize, "uploadDate", filter, new List<string>() { "filename", "metadata.From", "metadata.FileType" }, new List<string>() { }, out count);
             return new ResponseModel<IEnumerable<BsonDocument>>(ErrorCode.success, result, count);
         }
+        public ActionResult GetConvertFiles(int pageIndex = 1, int pageSize = 10, string filter = "")
+        {
+            long count = 0;
+            IEnumerable<BsonDocument> result = filesConvert.GetPageList(pageIndex, pageSize, "uploadDate", filter, new List<string>() { "filename", "metadata.From", "metadata.FileType" }, new List<string>() { }, out count);
+            return new ResponseModel<IEnumerable<BsonDocument>>(ErrorCode.success, result, count);
+        }
         public ActionResult GetThumbnailMetadata(string id)
         {
             IEnumerable<BsonDocument> thumbs = thumbnail.FindBySourceId(ObjectId.Parse(id));
@@ -149,7 +157,7 @@ namespace FileService.Web.Controllers
             {
                 if (doc.Contains("_id") && doc["_id"].AsObjectId != ObjectId.Empty)
                 {
-                    result.Add(files.FindOne(doc["_id"].AsObjectId));
+                    result.Add(filesConvert.FindOne(doc["_id"].AsObjectId));
                 }
                 else
                 {
@@ -162,14 +170,25 @@ namespace FileService.Web.Controllers
         public ActionResult Preview(string id, string fileType, string fileName)
         {
             ViewBag.id = id;
+            ViewBag.Convert = "false";
             if (OfficeFormatList.offices.Contains(Path.GetExtension(fileName)))
             {
+                ViewBag.Convert = "true";
                 BsonDocument metadata = files.FindOne(ObjectId.Parse(id))["metadata"].AsBsonDocument;
                 ViewBag.id = metadata.Contains("Files") ? metadata["Files"].AsBsonArray[0]["_id"].ToString() : ObjectId.Empty.ToString();
             }
             ViewBag.FileType = fileType;
             ViewBag.FileName = fileName;
             return View();
+        }
+        [AllowAnonymous]
+        public ActionResult PreviewConvert(string id, string fileType, string fileName)
+        {
+            ViewBag.id = id;
+            ViewBag.Convert = "true";
+            ViewBag.FileType = fileType;
+            ViewBag.FileName = fileName;
+            return View("Preview");
         }
         public ActionResult GetCountRecentMonth(int month)
         {
@@ -426,7 +445,7 @@ namespace FileService.Web.Controllers
                 foreach (BsonDocument bson in doc["metadata"]["Files"].AsBsonArray)
                 {
                     if (!bson.Contains("_id")) continue;
-                    if (files.FindOne(bson["_id"].AsObjectId) != null) mongoFile.Delete(bson["_id"].AsObjectId);
+                    if (filesConvert.FindOne(bson["_id"].AsObjectId) != null) mongoFileConvert.Delete(bson["_id"].AsObjectId);
                 }
             }
             mongoFile.Delete(ObjectId.Parse(id));
