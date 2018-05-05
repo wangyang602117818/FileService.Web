@@ -1,4 +1,6 @@
 ﻿using MongoDB.Bson;
+using SharpCompress.Archives.Rar;
+using SharpCompress.Readers;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -23,7 +25,6 @@ namespace FileService.Util
                     {"Length",item.Length }
                 });
             }
-            stream.Position = 0;
             return result;
         }
         public static Stream GetFileInZip(this Stream stream, string file)
@@ -31,6 +32,33 @@ namespace FileService.Util
             ZipArchive zipFile = new ZipArchive(stream, ZipArchiveMode.Read);
             ZipArchiveEntry zipArchiveEntry = zipFile.GetEntry(file);
             return zipArchiveEntry.Open();
+        }
+        public static BsonArray GetDeCompressionRarFiles(this Stream stream)
+        {
+            RarArchive rarArchive = RarArchive.Open(stream);
+            IReader reader = rarArchive.ExtractAllEntries();
+            BsonArray result = new BsonArray();
+            while (reader.MoveToNextEntry())
+            {
+                result.Add(new BsonDocument() {
+                    {"Name",reader.Entry.Key },
+                    {"Length",reader.Entry.Size }
+                });
+            }
+            return result;
+        }
+        public static Stream GetFileInRar(this Stream stream, string file)
+        {
+            RarArchive rarArchive = RarArchive.Open(stream);
+            IReader reader = rarArchive.ExtractAllEntries();
+            while (reader.MoveToNextEntry())
+            {
+                if (reader.Entry.Key.ToLower() == file.ToLower())
+                {
+                    return reader.OpenEntryStream();
+                }
+            }
+            return null;
         }
     }
 }

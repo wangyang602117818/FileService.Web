@@ -52,7 +52,8 @@ namespace FileService.Data
                     new BsonDocument(){{"Extension", ".ppt" },{"Type", "attachment" }, { "Action","allow"} ,{ "CreateTime", DateTime.Now }},
                     new BsonDocument(){{"Extension", ".pptx" },{"Type", "attachment" }, { "Action","allow"} ,{ "CreateTime", DateTime.Now }},
                     new BsonDocument(){{"Extension", ".txt" },{"Type", "attachment" }, { "Action","allow"} ,{ "CreateTime", DateTime.Now }},
-                    new BsonDocument(){{"Extension", ".zip" },{"Type", "attachment" }, { "Action","allow"}, { "CreateTime", DateTime.Now }}
+                    new BsonDocument(){{"Extension", ".zip" },{"Type", "attachment" }, { "Action","allow"}, { "CreateTime", DateTime.Now }},
+                    new BsonDocument(){{"Extension", ".rar" },{"Type", "attachment" }, { "Action","allow"}, { "CreateTime", DateTime.Now }}
                 };
                 database.GetCollection<BsonDocument>("Config").InsertMany(list);
             }

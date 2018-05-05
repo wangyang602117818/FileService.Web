@@ -33,6 +33,18 @@ namespace FileService.Web.Controllers
             GridFSDownloadStream stream = mongoFileConvert.DownLoad(ObjectId.Parse(id));
             return File(stream, stream.FileInfo.Metadata["ContentType"].AsString, stream.FileInfo.Filename);
         }
+        public ActionResult GetZipInnerFile(string id,string fileName)
+        {
+            GridFSDownloadStream stream = mongoFile.DownLoad(ObjectId.Parse(id));
+            Stream file = stream.GetFileInZip(fileName);
+            return File(file, "application/octet-stream", fileName);
+        }
+        public ActionResult GetRarInnerFile(string id, string fileName)
+        {
+            GridFSDownloadStream stream = mongoFile.DownLoadSeekable(ObjectId.Parse(id));
+            Stream file = stream.GetFileInRar(fileName);
+            return File(file, "application/octet-stream", fileName);
+        }
         public ActionResult Thumbnail(string id)
         {
             BsonDocument thumb = thumbnail.FindOne(ObjectId.Parse(id));

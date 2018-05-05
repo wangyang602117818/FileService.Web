@@ -1,4 +1,4 @@
-﻿class DeCompressionFileData extends React.Component {
+﻿class ZipFileData extends React.Component {
     constructor(props) {
         super(props);
     }
@@ -17,13 +17,15 @@
                             <th width="5%">Del</th>
                         </tr>
                     </thead>
-                    <DeCompressionFileList data={this.props.data} fileId={this.props.fileId} />
+                    <ZipFileList data={this.props.data}
+                        fileId={this.props.fileId}
+                        fileName={this.props.fileName} />
                 </table>
             </div>
         );
     }
 }
-class DeCompressionFileList extends React.Component {
+class ZipFileList extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -36,7 +38,12 @@ class DeCompressionFileList extends React.Component {
     }
     download(e) {
         var id = e.target.id;
-        window.location.href = urls.downloadUrl + "/" + id;
+        if (/.zip/i.test(this.props.fileName)) {
+            window.location.href = urls.downloadZipInnerUrl + "?" + id;
+        }
+        if (/.rar/i.test(this.props.fileName)) {
+            window.location.href = urls.downloadRarInnerUrl + "?" + id;
+        }
     }
     render() {
         if (this.props.data.length == 0) {
@@ -56,13 +63,13 @@ class DeCompressionFileList extends React.Component {
                                 <td>{item.Name}</td>
                                 <td>{convertFileSize(item.Length)}</td>
                                 <td>attachment</td>
-                                <td>zip</td>
+                                <td>{/.zip/i.test(this.props.fileName) ? "zip" : "rar"}</td>
                                 <td>
                                     <i className="iconfont icon-view" onClick={this.preView.bind(this)} id={"id=" + this.props.fileId + "&filetype=attachment&filename=" + item.Name}>
                                     </i>
                                 </td>
                                 <td>
-                                    <i className="iconfont icon-download" id={item.Name} onClick={this.download.bind(this)}></i>
+                                    <i className="iconfont icon-download" id={"id=" + this.props.fileId + "&filename=" + item.Name} onClick={this.download.bind(this)}></i>
                                 </td>
                                 <td></td>
                             </tr>

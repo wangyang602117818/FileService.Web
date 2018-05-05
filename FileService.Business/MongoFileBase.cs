@@ -25,6 +25,10 @@ namespace FileService.Business
         {
             return mongoData.DownLoad(id);
         }
+        public GridFSDownloadStream DownLoadSeekable(ObjectId id)
+        {
+            return mongoData.DownLoadSeekable(id);
+        }
         public void Delete(ObjectId id)
         {
             mongoData.Delete(id);

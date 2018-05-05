@@ -40,7 +40,7 @@ namespace FileService.Web.Controllers
             foreach (HttpPostedFileBase file in uploadVideo.Videos)
             {
                 //过滤不正确的格式
-                if (!config.CheckFileExtensionVideo(Path.GetExtension(file.FileName)))
+                if (!config.CheckFileExtensionVideo(Path.GetExtension(file.FileName).ToLower()))
                 {
                     response.Add(new VideoItemResponse()
                     {
@@ -104,7 +104,7 @@ namespace FileService.Web.Controllers
             foreach (HttpPostedFileBase file in uploadImgModel.Images)
             {
                 //过滤不正确的格式
-                if (!config.CheckFileExtensionImage(Path.GetExtension(file.FileName)))
+                if (!config.CheckFileExtensionImage(Path.GetExtension(file.FileName).ToLower()))
                 {
                     response.Add(new ImageItemResponse()
                     {
@@ -162,7 +162,7 @@ namespace FileService.Web.Controllers
             foreach (HttpPostedFileBase file in uploadAttachmentModel.Attachments)
             {
                 //过滤不正确的格式
-                if (!config.CheckFileExtension(Path.GetExtension(file.FileName)))
+                if (!config.CheckFileExtension(Path.GetExtension(file.FileName).ToLower()))
                 {
                     response.Add(new AttachmentResponse()
                     {
@@ -206,7 +206,6 @@ namespace FileService.Web.Controllers
                 //zip转换任务
                 if (Path.GetExtension(file.FileName).ToLower() == ".zip")
                 {
-                    //files = file.InputStream.GetDeCompressionZipFiles();
                     string handlerId = converter.GetHandlerId();
                     converter.AddCount(handlerId, 1);
                     ObjectId taskId = ObjectId.GenerateNewId();

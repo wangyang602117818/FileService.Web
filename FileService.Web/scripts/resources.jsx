@@ -229,8 +229,9 @@ class Resources extends React.Component {
                 break;
             case "attachment":
                 this.getSubFile(fileId);
-                if (fileName.getFileExtension().toLowerCase() == ".zip") {
-                    subComponent = DeCompressionFileData;
+                var fileExt = fileName.getFileExtension().toLowerCase();
+                if (fileExt == ".zip" || fileExt == ".rar") {
+                    subComponent = ZipFileData;
                 } else {
                     subComponent = SubFileData;
                 }
@@ -312,6 +313,7 @@ class Resources extends React.Component {
                         show={this.state.subFileToggle}
                         data={this.state.subFileArray}
                         fileId={this.state.fileId}
+                        fileName={this.state.fileName}
                     /> : null
                 }
             </div>

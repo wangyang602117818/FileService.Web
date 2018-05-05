@@ -28,6 +28,10 @@ namespace FileService.Data
         {
             return gridFSBucket.OpenDownloadStream(id);
         }
+        public GridFSDownloadStream DownLoadSeekable(ObjectId id)
+        {
+            return gridFSBucket.OpenDownloadStream(id, new GridFSDownloadOptions() { Seekable = true });
+        }
         public void Delete(ObjectId id)
         {
             gridFSBucket.Delete(id);
