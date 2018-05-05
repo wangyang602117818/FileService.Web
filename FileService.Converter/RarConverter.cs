@@ -1,20 +1,18 @@
 ﻿using FileService.Business;
+using FileService.Model;
 using MongoDB.Bson;
-using MongoDB.Driver.GridFS;
-using System.IO;
-using System.IO.Compression;
+using SharpCompress.Archives.Rar;
+using SharpCompress.Readers;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using SharpCompress.Archives.Zip;
-using SharpCompress.Readers;
-using FileService.Model;
 
 namespace FileService.Converter
 {
-    public class ZipConverter : IConverter
+    public class RarConverter: IConverter
     {
         Files files = new Files();
         FilesConvert filesConvert = new FilesConvert();
@@ -36,15 +34,15 @@ namespace FileService.Converter
             }
             string fileName = fileItem.Message["FileName"].AsString;
             string fullSourceFileName = MongoFileBase.AppDataDir + fileName;
-            BsonArray subFiles = ConvertZip(fileId, fullSourceFileName);
+            BsonArray subFiles = ConvertRar(fileId, fullSourceFileName);
             //更新 fs.files表
             files.ReplaceSubFiles(fileId, subFiles);
             if (File.Exists(fullSourceFileName)) File.Delete(fullSourceFileName);
         }
-        public BsonArray ConvertZip(ObjectId sourceFileId, string fullSourceFileName)
+        public BsonArray ConvertRar(ObjectId sourceFileId, string fullSourceFileName)
         {
             BsonArray result = new BsonArray();
-            using (ZipArchive rarArchive = ZipArchive.Open(fullSourceFileName))
+            using (RarArchive rarArchive = RarArchive.Open(fullSourceFileName))
             {
                 using (IReader reader = rarArchive.ExtractAllEntries())
                 {
@@ -56,7 +54,7 @@ namespace FileService.Converter
                         string fileExt = Path.GetExtension(reader.Entry.Key).ToLower();
                         if (OfficeFormatList.offices.Contains(fileExt))
                         {
-                            
+
                             string destPath = MongoFileBase.AppDataDir + Path.GetFileNameWithoutExtension(fullSourceFileName) + "\\";
                             if (!Directory.Exists(destPath)) Directory.CreateDirectory(destPath);
                             string sourcePath = destPath + Path.GetFileName(reader.Entry.Key);

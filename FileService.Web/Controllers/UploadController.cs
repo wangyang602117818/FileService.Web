@@ -161,8 +161,9 @@ namespace FileService.Web.Controllers
             List<AttachmentResponse> response = new List<AttachmentResponse>();
             foreach (HttpPostedFileBase file in uploadAttachmentModel.Attachments)
             {
+                string fileExt = Path.GetExtension(file.FileName).ToLower();
                 //过滤不正确的格式
-                if (!config.CheckFileExtension(Path.GetExtension(file.FileName).ToLower()))
+                if (!config.CheckFileExtension(fileExt))
                 {
                     response.Add(new AttachmentResponse()
                     {
@@ -173,7 +174,7 @@ namespace FileService.Web.Controllers
                 }
                 BsonArray files = new BsonArray();
                 //office
-                if (OfficeFormatList.offices.Contains(Path.GetExtension(file.FileName).ToLower()))
+                if (OfficeFormatList.offices.Contains(fileExt))
                 {
                     files.Add(new BsonDocument() {
                         {"_id",ObjectId.Empty },
@@ -190,7 +191,7 @@ namespace FileService.Web.Controllers
                         {"Files",files }
                     });
                 //office转换任务
-                if (OfficeFormatList.offices.Contains(Path.GetExtension(file.FileName)))
+                if (OfficeFormatList.offices.Contains(fileExt))
                 {
                     string handlerId = converter.GetHandlerId();
                     converter.AddCount(handlerId, 1);
@@ -204,7 +205,7 @@ namespace FileService.Web.Controllers
                     queue.Insert(handlerId, "attachment", "Task", taskId, false, new BsonDocument());
                 }
                 //zip转换任务
-                if (Path.GetExtension(file.FileName).ToLower() == ".zip")
+                if (fileExt == ".zip" || fileExt == ".rar")
                 {
                     string handlerId = converter.GetHandlerId();
                     converter.AddCount(handlerId, 1);

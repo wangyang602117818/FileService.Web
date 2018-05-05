@@ -23,11 +23,15 @@ namespace FileService.Converter
             ImageOutPut output = BsonSerializer.Deserialize<ImageOutPut>(outputDocument);
             string outputExt = "";
             ImageFormat format = GetFormat(output.Format, fileName, out outputExt);
-            GridFSDownloadStream gridFSDownloadStream = mongoFile.DownLoad(fileItem.Message["FileId"].AsObjectId);
-            Stream stream = GenerateThumbnail(fileName, gridFSDownloadStream, output.Model, format, output.X, output.Y, output.Width, output.Height);
-            byte[] bytes = new byte[stream.Length];
-            stream.Read(bytes, 0, bytes.Length);
-            thumbnail.Replace(output.Id, fileItem.Message["FileId"].AsObjectId, stream.Length, Path.GetFileNameWithoutExtension(fileName) + outputExt, output.Flag, bytes);
+            using (GridFSDownloadStream gridFSDownloadStream = mongoFile.DownLoad(fileItem.Message["FileId"].AsObjectId))
+            {
+                using (Stream stream = GenerateThumbnail(fileName, gridFSDownloadStream, output.Model, format, output.X, output.Y, output.Width, output.Height))
+                {
+                    byte[] bytes = new byte[stream.Length];
+                    stream.Read(bytes, 0, bytes.Length);
+                    thumbnail.Replace(output.Id, fileItem.Message["FileId"].AsObjectId, stream.Length, Path.GetFileNameWithoutExtension(fileName) + outputExt, output.Flag, bytes);
+                }
+            }
         }
         public Stream GenerateThumbnail(string fileName, Stream stream, ImageModelEnum model, ImageFormat outputFormat, int x, int y, int width, int height)
         {

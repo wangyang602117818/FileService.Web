@@ -89,6 +89,7 @@
     <Compile Include="ProjectInstaller.Designer.cs">
       <DependentUpon>ProjectInstaller.cs</DependentUpon>
     </Compile>
+    <Compile Include="RarConverter.cs" />
     <Compile Include="Service1.cs">
       <SubType>Component</SubType>
     </Compile>

@@ -8,10 +8,11 @@
                 <table className="table">
                     <thead>
                         <tr>
+                            <th width="20%">FileId</th>
                             <th width="30%">FileName</th>
-                            <th width="20%">Size</th>
+                            <th width="10%">Size</th>
                             <th width="15%">Type</th>
-                            <th width="20%">From</th>
+                            <th width="10%">From</th>
                             <th width="5%">View</th>
                             <th width="5%">Dol</th>
                             <th width="5%">Del</th>
@@ -60,16 +61,17 @@ class ZipFileList extends React.Component {
                     {this.props.data.map(function (item, i) {
                         return (
                             <tr>
-                                <td>{item.Name}</td>
+                                <td>{item._id.$oid}</td>
+                                <td>{item.FileName}</td>
                                 <td>{convertFileSize(item.Length)}</td>
                                 <td>attachment</td>
                                 <td>{/.zip/i.test(this.props.fileName) ? "zip" : "rar"}</td>
                                 <td>
-                                    <i className="iconfont icon-view" onClick={this.preView.bind(this)} id={"id=" + this.props.fileId + "&filetype=attachment&filename=" + item.Name}>
+                                    <i className="iconfont icon-view" onClick={this.preView.bind(this)} id={"id=" + this.props.fileId + "&filetype=attachment&filename=" + item.FileName}>
                                     </i>
                                 </td>
                                 <td>
-                                    <i className="iconfont icon-download" id={"id=" + this.props.fileId + "&filename=" + item.Name} onClick={this.download.bind(this)}></i>
+                                    <i className="iconfont icon-download" id={"id=" + this.props.fileId + "&filename=" + item.FileName} onClick={this.download.bind(this)}></i>
                                 </td>
                                 <td></td>
                             </tr>

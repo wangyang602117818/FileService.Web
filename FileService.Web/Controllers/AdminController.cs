@@ -154,14 +154,9 @@ namespace FileService.Web.Controllers
                 return new ResponseModel<IEnumerable<BsonDocument>>(ErrorCode.success, result);
             }
             string fileExt = Path.GetExtension(file["filename"].AsString).ToLower();
-            if (fileExt == ".zip")
+            if (fileExt == ".zip" || fileExt == ".rar")
             {
-                BsonArray bsonArray = mongoFile.DownLoad(ObjectId.Parse(id)).GetDeCompressionZipFiles();
-                return new ResponseModel<BsonArray>(ErrorCode.success, bsonArray);
-            }
-            if (fileExt == ".rar")
-            {
-                BsonArray bsonArray = mongoFile.DownLoadSeekable(ObjectId.Parse(id)).GetDeCompressionRarFiles();
+                BsonArray bsonArray = file["metadata"]["Files"].AsBsonArray;
                 return new ResponseModel<BsonArray>(ErrorCode.success, bsonArray);
             }
             foreach (BsonDocument doc in file["metadata"]["Files"].AsBsonArray)

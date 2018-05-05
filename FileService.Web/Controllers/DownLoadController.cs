@@ -35,7 +35,7 @@ namespace FileService.Web.Controllers
         }
         public ActionResult GetZipInnerFile(string id,string fileName)
         {
-            GridFSDownloadStream stream = mongoFile.DownLoad(ObjectId.Parse(id));
+            GridFSDownloadStream stream = mongoFile.DownLoadSeekable(ObjectId.Parse(id));
             Stream file = stream.GetFileInZip(fileName);
             return File(file, "application/octet-stream", fileName);
         }

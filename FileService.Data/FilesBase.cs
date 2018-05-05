@@ -72,7 +72,7 @@ namespace FileService.Data
             var filter = FilterBuilder.Eq("_id", id) & FilterBuilder.Eq("metadata.Files._id", oldFileId);
             return MongoCollection.UpdateOne(filter, Builders<BsonDocument>.Update.Set("metadata.Files.$._id", newFileId)).IsAcknowledged;
         }
-        public bool UpdateSubFiles(ObjectId id, BsonArray array)
+        public bool ReplaceSubFiles(ObjectId id, BsonArray array)
         {
             var filter = FilterBuilder.Eq("_id", id);
             return MongoCollection.UpdateOne(filter, Builders<BsonDocument>.Update.Set("metadata.Files", array)).IsAcknowledged;

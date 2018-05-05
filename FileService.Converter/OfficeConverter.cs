@@ -24,8 +24,8 @@ namespace FileService.Converter
             ObjectId oldFileId = fileItem.Message["Output"]["_id"].AsObjectId;
             if (oldFileId != ObjectId.Empty && filesConvert.FindOne(oldFileId) != null) mongoFileConvert.Delete(oldFileId);
             string fileName = fileItem.Message["FileName"].AsString;
-            string sourceFullPath = MongoFile.AppDataDir + fileName;
-            string destinationFullPath = MongoFile.AppDataDir + Path.GetFileNameWithoutExtension(fileName) + ".pdf";
+            string sourceFullPath = MongoFileBase.AppDataDir + fileName;
+            string destinationFullPath = MongoFileBase.AppDataDir + Path.GetFileNameWithoutExtension(fileName) + ".pdf";
             //转换office方法
             ObjectId outputId = ConvertOffice(sourceFullPath, destinationFullPath, fileItem.Message["FileId"].AsObjectId);
             //更新 fs.files表
@@ -35,7 +35,7 @@ namespace FileService.Converter
             if (File.Exists(destinationFullPath)) File.Delete(destinationFullPath);
             if (File.Exists(sourceFullPath)) File.Delete(sourceFullPath);
         }
-        private ObjectId ConvertOffice(string sourcePath, string destinationPath, ObjectId sourceFileId)
+        public ObjectId ConvertOffice(string sourcePath, string destinationPath, ObjectId sourceFileId)
         {
             if (!File.Exists(AppSettings.libreOffice))
             {

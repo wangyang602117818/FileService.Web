@@ -75,6 +75,10 @@ namespace FileService.Converter
                         {
                             new ZipConverter().Convert(item);
                         }
+                        else if (fileExt == ".rar")
+                        {
+                            new RarConverter().Convert(item);
+                        }
                         else
                         {
                             new OfficeConverter().Convert(item);

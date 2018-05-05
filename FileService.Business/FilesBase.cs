@@ -46,9 +46,9 @@ namespace FileService.Business
         {
             return mongoData.UpdateSubFileId(id, oldFileId, newFileId);
         }
-        public bool UpdateSubFiles(ObjectId id, BsonArray array)
+        public bool ReplaceSubFiles(ObjectId id, BsonArray array)
         {
-            return mongoData.UpdateSubFiles(id, array);
+            return mongoData.ReplaceSubFiles(id, array);
         }
     }
 }
