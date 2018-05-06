@@ -11,7 +11,7 @@
                     <VideoM3u8 fileId={this.props.fileId} />
                 }
                 <VideoCpBtn onCpClick={this.props.onCpClick} />
-                <VideoCpList videoCps={this.props.videoCps} onCpDel={this.props.onCpDel}/>
+                <VideoCpList videoCps={this.props.videoCps} onCpDel={this.props.onCpDel} />
             </div>
         );
     }
@@ -58,12 +58,19 @@ class VideoCpItem extends React.Component {
 class VideoOrigin extends React.Component {
     constructor(props) {
         super(props);
+        this.state = {
+            convert: false
+        }
+    }
+    componentDidMount() {
+        var convert = document.getElementById("convert").value == "true" ? true : false;
+        this.setState({ convert: convert })
     }
     render() {
         return (
             <video controls="controls" width="900" height="600">
                 {this.props.fileId ?
-                    <source src={urls.downloadUrl + "/" + this.props.fileId} />
+                    <source src={(convert ? urls.downloadConvertUrl : urls.downloadUrl) + "/" + this.props.fileId} />
                     :
                     null
                 }
@@ -127,7 +134,7 @@ class Preview extends React.Component {
             }, function (data) {
                 if (data.code == 0) {
                     that.state.videoCps.push(data.result);
-                    that.setState({videoCps: that.state.videoCps});
+                    that.setState({ videoCps: that.state.videoCps });
                 }
             })
     }
@@ -135,12 +142,12 @@ class Preview extends React.Component {
         var cpId = e.target.id;
         var that = this;
         http.get(urls.videoCpDelUrl + "?id=" + cpId
-        ,function (data) {
-            if (data.code == 0) {
-                that.state.videoCps.remove(cpId);
-                that.setState({ videoCps: that.state.videoCps });
-            }
-        })
+            , function (data) {
+                if (data.code == 0) {
+                    that.state.videoCps.remove(cpId);
+                    that.setState({ videoCps: that.state.videoCps });
+                }
+            })
     }
     render() {
         return (

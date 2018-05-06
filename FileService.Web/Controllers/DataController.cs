@@ -13,6 +13,7 @@ namespace FileService.Web.Controllers
     public class DataController : BaseController
     {
         Files files = new Files();
+        FilesConvert filesConvert = new FilesConvert();
         VideoCapture videoCapture = new VideoCapture();
         Task task = new Task();
         Converter converter = new Converter();
@@ -24,6 +25,7 @@ namespace FileService.Web.Controllers
         public ActionResult GetVideoList(string id)
         {
             BsonDocument document = files.FindOne(ObjectId.Parse(id));
+            if (document == null) document = filesConvert.FindOne(ObjectId.Parse(id));
             List<dynamic> videoList = new List<dynamic>();
             videoList.Add(new { _id = id, tag = "origin", current = false });
             if (document["metadata"].AsBsonDocument.Contains("Videos"))
@@ -34,15 +36,19 @@ namespace FileService.Web.Controllers
                 }
             }
             List<string> videoCps = new List<string>();
-            foreach (BsonValue value in document["metadata"]["VideoCpIds"].AsBsonArray)
+            if (document["metadata"].AsBsonDocument.Contains("VideoCpIds"))
             {
-                videoCps.Add(value.ToString());
+                foreach (BsonValue value in document["metadata"]["VideoCpIds"].AsBsonArray)
+                {
+                    videoCps.Add(value.ToString());
+                }
             }
             return new ResponseModel<dynamic>(ErrorCode.success, new { videolist = videoList, videocps = videoCps });
         }
         public ActionResult GetImageList(string id)
         {
             BsonDocument document = files.FindOne(ObjectId.Parse(id));
+            if (document == null) document = filesConvert.FindOne(ObjectId.Parse(id));
             List<dynamic> list = new List<dynamic>();
             list.Add(new { _id = id, tag = "origin", current = false });
             if (document["metadata"].AsBsonDocument.Contains("Thumbnail"))

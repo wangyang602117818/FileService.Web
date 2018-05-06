@@ -7,7 +7,7 @@
             return (
                 <div className="background">
                     {this.props.isOrigin ?
-                        <img src={urls.downloadUrl + "/" + this.props.fileId} />
+                        <img src={(this.props.convert ? urls.downloadConvertUrl : urls.downloadUrl) + "/" + this.props.fileId} />
                         :
                         <img src={urls.thumbnailUrl + "/" + this.props.fileId} />
                     }
@@ -25,11 +25,14 @@ class Preview extends React.Component {
         this.state = {
             tabs: [],
             fileId: "",
+            convert: false,
             isOrigin: false
         }
     }
     componentDidMount() {
         var fileId = document.getElementById("fileId").value;
+        var convert = document.getElementById("convert").value == "true" ? true : false;
+        this.setState({ convert: convert });
         var that = this;
         http.get(urls.imageListUrl + "/" + fileId, function (data) {
             if (data.code == 0) that.dataSetChange(data.result);
@@ -41,7 +44,9 @@ class Preview extends React.Component {
                 <PreviewTitle
                     tabs={this.state.tabs}
                     onItemClick={this.onItemClick.bind(this)} />
-                <PreviewBody fileId={this.state.fileId} isOrigin={this.state.isOrigin} />
+                <PreviewBody fileId={this.state.fileId}
+                    isOrigin={this.state.isOrigin}
+                    convert={this.state.convert} />
             </div>
         );
     }

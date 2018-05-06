@@ -35,7 +35,7 @@ class ZipFileList extends React.Component {
     }
     preView(e) {
         var id = e.target.id;
-        window.open(urls.preview + "?" + id, "_blank");
+        window.open(urls.previewConvert + "?" + id, "_blank");
     }
     download(e) {
         var id = e.target.id;
@@ -67,7 +67,7 @@ class ZipFileList extends React.Component {
                                 <td>attachment</td>
                                 <td>{/.zip/i.test(this.props.fileName) ? "zip" : "rar"}</td>
                                 <td>
-                                    <i className="iconfont icon-view" onClick={this.preView.bind(this)} id={"id=" + this.props.fileId + "&filetype=attachment&filename=" + item.FileName}>
+                                    <i className="iconfont icon-view" onClick={this.preView.bind(this)} id={"id=" + item._id.$oid + "&filetype=attachment&filename=" + item.FileName}>
                                     </i>
                                 </td>
                                 <td>
