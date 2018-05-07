@@ -43,24 +43,24 @@ class Menu extends React.Component {
                            id="overview">Overview</a>
                     </li>
                     <li>
-                        <a className={this.props.style == "handler" ? "current" : ""}
+                        <a className={this.props.style == "handlers" ? "current" : ""}
                            onClick={this.props.menuClick}
-                           id="handler">Handler</a>
+                           id="handlers">Handlers</a>
                     </li>
                     <li>
-                        <a className={this.props.style == "task" ? "current" : ""}
+                        <a className={this.props.style == "tasks" ? "current" : ""}
                            onClick={this.props.menuClick}
-                           id="task">Task</a>
+                           id="tasks">Tasks</a>
                     </li>
                     <li>
-                        <a className={this.props.style == "resource" ? "current" : ""}
+                        <a className={this.props.style == "resources" ? "current" : ""}
                            onClick={this.props.menuClick}
-                           id="resource">Resource</a>
+                           id="resources">Resources</a>
                     </li>
                     <li>
-                        <a className={this.props.style == "log" ? "current" : ""}
+                        <a className={this.props.style == "logs" ? "current" : ""}
                            onClick={this.props.menuClick}
-                           id="log">Log</a>
+                           id="logs">Logs</a>
                     </li>
                     {typeof (Config) === "undefined" ? null :
                     <li>
@@ -71,9 +71,9 @@ class Menu extends React.Component {
                     }
                     {typeof (User) === "undefined" ? null :
                     <li>
-                        <a className={this.props.style == "user" ? "current" : ""}
+                        <a className={this.props.style == "users" ? "current" : ""}
                            onClick={this.props.menuClick}
-                           id="user">User</a>
+                           id="users">Users</a>
                     </li>
                     }
                 </ul>
@@ -129,22 +129,22 @@ class Container extends React.Component {
             case "overview":
                 component = Overview;
                 break;
-            case "handler":
+            case "handlers":
                 component = Handlers;
                 break;
-            case "task":
+            case "tasks":
                 component = Tasks;
                 break;
-            case "resource":
+            case "resources":
                 component = Resources;
                 break;
-            case "log":
+            case "logs":
                 component = Logs;
                 break;
             case "config":
                 component = typeof (ConfigContainer) === "undefined" ? Overview : ConfigContainer;
                 break;
-            case "user":
+            case "users":
                 component = typeof (User) === "undefined" ? Overview : User;
                 break;
             default:
