@@ -65,31 +65,31 @@
     }
     render() {
         return (
-            <div className={this.props.show ? "overview_con show" : "overview_con hidden" }>
-                <TitleTxt title="Task and Resource Count by date" />
+            <div className={this.props.show ? "overview_con show" : "overview_con hidden"}>
+                <TitleTxt title={culture.count_by_date} />
                 <div className="echart_main" id="echart_main">
                 </div>
                 <div className="echart_split"></div>
                 <div className="echart_option">
                     <div className="echart_option_con">
                         <span id="1"
-                              className={this.state.recentMonth=="1"?"current":""}
-                              onClick={this.onRecentMonthChange.bind(this)}>last 1 month</span>
+                            className={this.state.recentMonth == "1" ? "current" : ""}
+                            onClick={this.onRecentMonthChange.bind(this)}>{culture.last} 1 {culture.month}</span>
                         <span id="12"
-                              className={this.state.recentMonth == "12" ? "current" : ""}
-                              onClick={this.onRecentMonthChange.bind(this)}>last 1 year</span>
+                            className={this.state.recentMonth == "12" ? "current" : ""}
+                            onClick={this.onRecentMonthChange.bind(this)}>{culture.last} 1 {culture.year}</span>
                         <span id="3"
                               className={this.state.recentMonth == "3" ? "current" : ""}
-                              onClick={this.onRecentMonthChange.bind(this)}>last 3 month</span>
+                              onClick={this.onRecentMonthChange.bind(this)}>{culture.last} 3 {culture.month}</span>
                         <span id="24"
                               className={this.state.recentMonth == "24" ? "current" : ""}
-                              onClick={this.onRecentMonthChange.bind(this)}>last 2 year</span>
+                              onClick={this.onRecentMonthChange.bind(this)}>{culture.last} 2 {culture.year}</span>
                         <span id="6"
                               className={this.state.recentMonth == "6" ? "current" : ""}
-                              onClick={this.onRecentMonthChange.bind(this)}>last 6 month</span>
+                              onClick={this.onRecentMonthChange.bind(this)}>{culture.last} 6 {culture.month}</span>
                         <span id="36"
                               className={this.state.recentMonth == "36" ? "current" : ""}
-                              onClick={this.onRecentMonthChange.bind(this)}>last 3 year</span>
+                              onClick={this.onRecentMonthChange.bind(this)}>{culture.last} 3 {culture.year}</span>
                     </div>
                 </div>
             </div>
@@ -146,18 +146,18 @@ class CountTotal extends React.Component {
     }
     render() {
         return (
-            <div className={this.props.show ? "overview_con show" : "overview_con hidden" }>
-                <TitleTxt title="Count by AppName" />
+            <div className={this.props.show ? "overview_con show" : "overview_con hidden"}>
+                <TitleTxt title={culture.count_by_app} />
                 <div className="echart_main" id="echart_count_appname" style={{height:"240px"}}>
                 </div>
-                <TitleTxt title="Totals" />
+                <TitleTxt title={culture.totals} />
                 <div className="totals">
                     <table className="table_general" style={{width:"40%"}}>
                         <thead>
                             <tr>
-                                <td>Handlers</td>
-                                <td>Tasks</td>
-                                <td>Resources</td>
+                                <td>{culture.handlers}</td>
+                                <td>{culture.tasks}</td>
+                                <td>{culture.resources}</td>
                             </tr>
                         </thead>
                         <tbody>
@@ -169,15 +169,15 @@ class CountTotal extends React.Component {
                         </tbody>
                     </table>
                 </div>
-                <TitleTxt title="Resources" />
+                <TitleTxt title={culture.resources} />
                 <div className="totals">
                     <table className="table_general" style={{width:"30%"}}>
                         <thead>
                             <tr>
-                                <td>Image</td>
-                                <td>Video</td>
-                                <td>Attachment</td>
-                                <td>Totals</td>
+                                <td>{culture.image}</td>
+                                <td>{culture.video}</td>
+                                <td>{culture.attachment}</td>
+                                <td>{culture.totals}</td>
                             </tr>
                         </thead>
                         <tbody>
@@ -262,12 +262,12 @@ class Overview extends React.Component {
     render() {
         return (
             <div className="main">
-                <h1>Overview</h1>
-                <TitleArrow title="Overview"
+                <h1>{culture.overview}</h1>
+                <TitleArrow title={culture.overview}
                             show={this.state.overviewShow}
                             onShowChange={this.onOverviewShow.bind(this)} />
                 <OverViewTotal ref="overViewTotal" show={this.state.overviewShow} />
-                <TitleArrow title="Totals"
+                <TitleArrow title={culture.totals}
                             show={this.state.totalShow} 
                             onShowChange={this.onCountTotalShow.bind(this)}/>
                 <CountTotal ref="countTotal" show={this.state.totalShow}/>

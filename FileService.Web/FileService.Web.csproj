@@ -173,6 +173,7 @@
     <Compile Include="Controllers\DataController.cs" />
     <Compile Include="Controllers\DownLoadController.cs" />
     <Compile Include="Controllers\UploadController.cs" />
+    <Compile Include="CultureInfo.cs" />
     <Compile Include="Filters\CheckParamsForNullAttribute.cs" />
     <Compile Include="Filters\MyAuthorizeAttribute.cs" />
     <Compile Include="Filters\MyHandleErrorAttribute.cs" />
@@ -306,6 +307,8 @@
     <Content Include="scripts\common.jsx" />
     <Content Include="scripts\config.jsx" />
     <Content Include="scripts\config_add.jsx" />
+    <Content Include="scripts\culture_en-US.js" />
+    <Content Include="scripts\culture_zh-CN.js" />
     <Content Include="scripts\echarts.js" />
     <Content Include="scripts\echarts.min.js" />
     <Content Include="scripts\funs.jsx" />

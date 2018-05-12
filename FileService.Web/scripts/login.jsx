@@ -18,7 +18,7 @@ class LoginName extends React.Component {
         return (
             <div className="login_row margin_top">
                 <div className="name">
-                    Username:
+                    {culture.username}:
                </div>
                 <div className="value">
                     <input type="text" name="username" value={this.props.value} onChange={this.props.nameChanged} onKeyPress={this.props.onKeypressName} /> <font color="red">*</font>
@@ -35,7 +35,7 @@ class LoginValue extends React.Component {
         return (
             <div className="login_row">
                 <div className="name">
-                    Password:
+                    {culture.password}:
                 </div>
                 <div className="value">
                     <input type="password" name="pwd" value={this.props.value} onChange={this.props.passWordChangd} onKeyPress={this.props.onKeypressPassWord} /> <font color="red">*</font>
@@ -55,7 +55,7 @@ class LoginButton extends React.Component {
     render() {
         return (
             <div className="login_row">
-                <input type="button" ref="loginBtn" value="Login" ref="button" className="loginBtn" onClick={this.props.onClick} />
+                <input type="button" ref="loginBtn" value={culture.login} ref="button" className="loginBtn" onClick={this.props.onClick} />
             </div>
         );
     }
@@ -88,14 +88,14 @@ class Login extends React.Component {
         this.setState({ password: e.target.value });
     }
     onKeypressName(e) {
-        if (e.key.toLowerCase() == "enter") { this.onClick();}
+        if (e.key.toLowerCase() == "enter") { this.onClick(); }
     }
     onKeypressPassWord(e) {
         if (e.key.toLowerCase() == "enter") { this.onClick(); }
     }
     onClick(e) {
-        if (!this.state.username) { this.setState({ message: "Username Required!" }); return; }
-        if (!this.state.password) { this.setState({ message: "Password Required!" }); return; }
+        if (!this.state.username) { this.setState({ message: culture.username_required }); return; }
+        if (!this.state.password) { this.setState({ message: culture.password_required }); return; }
         var that = this;
         http.post(window.location.href, this.state, function (data) {
             var url = "";
@@ -107,7 +107,7 @@ class Login extends React.Component {
                     window.location.href = data.result;
                     break;
                 default:
-                    that.setState({ message: data.message });
+                    that.setState({ message: culture.login_fault });
             }
         });
     }

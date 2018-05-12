@@ -9,6 +9,14 @@
     logOut(e) {
         window.location.href = urls.logOutUrl + "?appName=" + appName;
     }
+    changeCulture(e) {
+        if (current_culture == "en-US") {
+            setCookie("culture", "zh-CN", 365);
+        } else {
+            setCookie("culture", "en-US", 365);
+        }
+        window.location.reload();
+    }
     componentDidMount() {
         var userName = document.getElementById("userName").value;
         var role = document.getElementById("role").value;
@@ -21,9 +29,10 @@
                     <img src={urls.logoUrl} />
                 </div>
                 <div className="user">
-                    <span className="user_tip">User:</span>
+                    <span className="user_tip">{culture.user}:</span>
                     <span className="user_txt"> {this.state.name} | {this.state.role} </span>
-                    <span className="logout" onClick={this.logOut}>Log Out</span>
+                    <span className="lang btn" onClick={this.changeCulture}>{culture.lang}</span>
+                    <span className="logout btn" onClick={this.logOut}>{culture.login_out}</span>
                 </div>
             </div>
         );
@@ -39,42 +48,42 @@ class Menu extends React.Component {
                 <ul>
                     <li>
                         <a className={this.props.style == "overview" ? "current" : ""}
-                           onClick={this.props.menuClick}
-                           id="overview">Overview</a>
+                            onClick={this.props.menuClick}
+                            id="overview">{culture.overview}</a>
                     </li>
                     <li>
                         <a className={this.props.style == "handlers" ? "current" : ""}
-                           onClick={this.props.menuClick}
-                           id="handlers">Handlers</a>
+                            onClick={this.props.menuClick}
+                            id="handlers">{culture.handlers}</a>
                     </li>
                     <li>
                         <a className={this.props.style == "tasks" ? "current" : ""}
-                           onClick={this.props.menuClick}
-                           id="tasks">Tasks</a>
+                            onClick={this.props.menuClick}
+                            id="tasks">{culture.tasks}</a>
                     </li>
                     <li>
                         <a className={this.props.style == "resources" ? "current" : ""}
-                           onClick={this.props.menuClick}
-                           id="resources">Resources</a>
+                            onClick={this.props.menuClick}
+                            id="resources">{culture.resources}</a>
                     </li>
                     <li>
                         <a className={this.props.style == "logs" ? "current" : ""}
-                           onClick={this.props.menuClick}
-                           id="logs">Logs</a>
+                            onClick={this.props.menuClick}
+                            id="logs">{culture.logs}</a>
                     </li>
                     {typeof (Config) === "undefined" ? null :
-                    <li>
-                        <a className={this.props.style == "config" ? "current" : ""}
-                           onClick={this.props.menuClick}
-                           id="config">Config</a>
-                    </li>
+                        <li>
+                            <a className={this.props.style == "config" ? "current" : ""}
+                                onClick={this.props.menuClick}
+                                id="config">{culture.config}</a>
+                        </li>
                     }
                     {typeof (User) === "undefined" ? null :
-                    <li>
-                        <a className={this.props.style == "users" ? "current" : ""}
-                           onClick={this.props.menuClick}
-                           id="users">Users</a>
-                    </li>
+                        <li>
+                            <a className={this.props.style == "users" ? "current" : ""}
+                                onClick={this.props.menuClick}
+                                id="users">{culture.users}</a>
+                        </li>
                     }
                 </ul>
             </div>
@@ -91,7 +100,7 @@ class Footer extends React.Component {
     componentDidMount() {
         this.interval = window.setInterval(this.refreshText.bind(this), 1000);
     }
-    refreshText(){
+    refreshText() {
         this.setState({ update_time: localStorage.update_time });
     }
     componentWillUnmount() {
@@ -100,15 +109,15 @@ class Footer extends React.Component {
     render() {
         return (
             <div className="footer">
-                Update:
+                {culture.update}:
                 <select name="update" defaultValue={this.props.refresh} onChange={this.props.onRefreshChange}>
-                    <option value="5">every 5 seconds</option>
-                    <option value="15">every 15 seconds</option>
-                    <option value="30">every 30 seconds</option>
-                    <option value="300">every 5 minutes</option>
-                    <option value="0">never</option>
+                    <option value="5">{culture.every} 5 {culture.seconds}</option>
+                    <option value="15">{culture.every} 15 {culture.seconds}</option>
+                    <option value="30">{culture.every} 30 {culture.seconds}</option>
+                    <option value="300">{culture.every} 5 {culture.minutes}</option>
+                    <option value="0">{culture.never}</option>
                 </select>
-                <div className="update_time">Last update: {this.state.update_time}</div>
+                <div className="update_time">{culture.last_update}: {this.state.update_time}</div>
             </div>
         );
     }
@@ -171,10 +180,10 @@ class Container extends React.Component {
             <div className="container">
                 <Top />
                 <Menu style={this.state.menuStyle}
-                      menuClick={this.menuClick.bind(this)} />
+                    menuClick={this.menuClick.bind(this)} />
                 <this.state.component ref="main" refresh={this.state.refresh} />
                 <Footer onRefreshChange={this.onRefreshChange.bind(this)}
-                        refresh={this.state.refresh} />
+                    refresh={this.state.refresh} />
             </div>
         );
     }

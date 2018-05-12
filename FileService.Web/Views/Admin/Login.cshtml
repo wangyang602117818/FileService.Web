@@ -10,7 +10,18 @@
     <link rel="icon" href="~/image/data.ico" type="image/x-ico" />
     <script src="~/scripts/react.min.js"></script>
     <script src="~/scripts/react-dom.min.js"></script>
+    @{
+        if (CultureInfo.GetCulture() == "zh-CN")
+        {
+            <script src="~/scripts/culture_zh-CN.js"></script>
+        }
+        else
+        {
+            <script src="~/scripts/culture_en-US.js"></script>
+        }
+    }
     <link href="~/css/login.css" rel="stylesheet" />
+
 </head>
 <body >
     <div id="login"></div>

@@ -147,6 +147,21 @@ var urls = {
         deleteUserUrl: appDomain + "admin/deleteuser"
     }
 }
+function setCookie(cname, cvalue, exdays) {
+    var d = new Date();
+    d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
+    var expires = "expires=" + d.toGMTString();
+    document.cookie = cname + "=" + cvalue + "; " + expires;
+}
+function getCookie(cname) {
+    var name = cname + "=";
+    var ca = document.cookie.split(';');
+    for (var i = 0; i < ca.length; i++) {
+        var c = ca[i].trim();
+        if (c.indexOf(name) == 0) { return c.substring(name.length, c.length); }
+    }
+    return "";
+}
 function getDate(value) {
     var date = new Date(0);
     date.setMilliseconds(value);
@@ -272,10 +287,10 @@ function getEchartOptionLine(data) {
             itemWidth: 35,
             itemHeight: 12,
             data: [{
-                name: "resource",
+                name: culture.resources,
                 icon: "roundRect"
             }, {
-                name: "task",
+                name: culture.tasks,
                 icon: "roundRect"
             }]
         },
@@ -327,7 +342,7 @@ function getEchartOptionLine(data) {
             }
         },
         series: [{
-            name: "resource",
+            name: culture.resources,
             type: 'line',
             showSymbol: false,
             symbol: "circle",
@@ -345,7 +360,7 @@ function getEchartOptionLine(data) {
             smooth: false,
             data: []
         }, {
-            name: "task",
+            name: culture.tasks,
             type: 'line',
             showSymbol: false,
             symbol: "circle",
