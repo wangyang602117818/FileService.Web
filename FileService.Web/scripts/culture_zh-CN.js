@@ -12,7 +12,7 @@ var culture = {
 
     overview: "概况",
     handlers: "处理器",
-    tasks: "任务列表",
+    tasks: "转换任务",
     resources: "资源列表",
     logs: "日志",
     config: "配置管理",
