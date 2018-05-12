@@ -52,7 +52,7 @@
                 <table className="table" style={{ width: "50%" }}>
                     <tbody>
                         <tr>
-                            <td>Handler:</td>
+                            <td>{culture.handler}:</td>
                             <td>
                                 <select name="handler" value={this.state.handler} onChange={this.handlerChange.bind(this)}>
                                     {this.props.handlers.map(function (item, i) {
@@ -60,10 +60,10 @@
                                     })}
                                 </select>
                             </td>
-                            <td>OutputFormat:</td>
+                            <td>{culture.outputFormat}:</td>
                             <td>
                                 <select name="format" value={this.state.format} onChange={this.formatChange.bind(this)}>
-                                    <option value="0">Default</option>
+                                    <option value="0">{culture.default}</option>
                                     <option value="1">Jpeg</option>
                                     <option value="2">Png</option>
                                     <option value="3">Gif</option>
@@ -72,19 +72,19 @@
                             </td>
                         </tr>
                         <tr>
-                            <td>Flag:</td>
+                            <td>{culture.flag}:</td>
                             <td colSpan="3">
                                 <input type="text" name="flag" maxLength="20" value={this.state.flag} onChange={this.flagChange.bind(this)} /><font color="red">*</font>
                             </td>
                         </tr>
                         <tr>
-                            <td>Model:</td>
+                            <td>{culture.model}:</td>
                             <td>
                                 <select name="model" value={this.state.model} onChange={this.modelChange.bind(this)}>
-                                    <option value="0">Scale</option>
-                                    <option value="1">Cut</option>
-                                    <option value="2">By Width</option>
-                                    <option value="3">By Height</option>
+                                    <option value="0">{culture.scale}</option>
+                                    <option value="1">{culture.cut}</option>
+                                    <option value="2">{culture.by_width}</option>
+                                    <option value="3">{culture.by_height}</option>
                                 </select>
                             </td>
                             <td colSpan="2">
@@ -99,14 +99,14 @@
                         </td>
                         </tr>
                         <tr>
-                            <td width="10%">Width:</td>
+                            <td width="10%">{culture.width}:</td>
                             <td width="40%"><input type="text" name="width" style={{ width: "60px" }} value={this.state.width} onChange={this.widthChange.bind(this)} />px</td>
-                            <td width="10%">Height:</td>
-                            <td width="40%"><input type="text" name="height" style={{ width: "60px" }} value={this.state.height} onChange={this.heightChange.bind(this)} />px</td>
+                            <td width="20%">{culture.height}:</td>
+                            <td width="30%"><input type="text" name="height" style={{ width: "60px" }} value={this.state.height} onChange={this.heightChange.bind(this)} />px</td>
                         </tr>
                         <tr>
                             <td colSpan="4">
-                                <input type="button" name="btnImg" className="button" value="Update" onClick={this.updateImage.bind(this)} />
+                                <input type="button" name="btnImg" className="button" value={culture.update} onClick={this.updateImage.bind(this)} />
                             </td>
                         </tr>
                     </tbody>
@@ -150,7 +150,7 @@ class VideoUpdate extends React.Component {
                 <table className="table" style={{ width: "50%" }}>
                     <tbody>
                         <tr>
-                            <td width="15%">Handler:</td>
+                            <td width="15%">{culture.handler}:</td>
                             <td width="25%">
                                 <select name="handler" value={this.state.handler} onChange={this.handlerChange.bind(this)}>
                                     {this.props.handlers.map(function (item, i) {
@@ -158,7 +158,7 @@ class VideoUpdate extends React.Component {
                                     })}
                                 </select>
                             </td>
-                            <td width="20%">OutputFormat:</td>
+                            <td width="20%">{culture.outputFormat}:</td>
                             <td width="40%">
                                 <select name="format" value={this.state.format}>
                                     <option value="0">M3u8</option>
@@ -166,24 +166,24 @@ class VideoUpdate extends React.Component {
                             </td>
                         </tr>
                         <tr>
-                            <td>Quality:</td>
+                            <td>{culture.quality}:</td>
                             <td colSpan="3">
                                 <select name="quality" value={this.state.quality} onChange={this.qualityChange.bind(this)}>
-                                    <option value="0">Original</option>
-                                    <option value="1">Lower</option>
-                                    <option value="2">Medium</option>
-                                    <option value="3">Bad</option>
+                                    <option value="0">{culture.original}</option>
+                                    <option value="1">{culture.lower}</option>
+                                    <option value="2">{culture.medium}</option>
+                                    <option value="3">{culture.bad}</option>
                                 </select>
                             </td>
                         </tr>
                         <tr>
-                            <td>Flag:</td>
+                            <td>{culture.flag}:</td>
                             <td colSpan="3">
                                 <input type="text" name="flag" value={this.state.flag} onChange={this.flagChange.bind(this)} /><font color="red">*</font>
                             </td>
                         </tr>
                         <tr>
-                            <td colSpan="4"><input type="button" name="Update" className="button" value="Update" onClick={this.updateVideo.bind(this)} /></td>
+                            <td colSpan="4"><input type="button" name="Update" className="button" value={culture.update} onClick={this.updateVideo.bind(this)} /></td>
                         </tr>
                     </tbody>
                 </table>
@@ -191,7 +191,7 @@ class VideoUpdate extends React.Component {
         )
     }
 }
-class OfficeUpdate extends React.Component {
+class AttachmentUpdate extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -222,7 +222,7 @@ class OfficeUpdate extends React.Component {
                 <table className="table" style={{ width: "50%" }}>
                     <tbody>
                         <tr>
-                            <td width="15%">Handler:</td>
+                            <td width="15%">{culture.handler}:</td>
                             <td width="75%">
                                 <select name="handler" value={this.state.handler} onChange={this.handlerChange.bind(this)}>
                                     {this.props.handlers.map(function (item, i) {
@@ -232,13 +232,13 @@ class OfficeUpdate extends React.Component {
                             </td>
                         </tr>
                         <tr>
-                            <td>Flag:</td>
+                            <td>{culture.flag}:</td>
                             <td colSpan="3">
                                 <input type="text" name="flag" value={this.state.flag} onChange={this.flagChange.bind(this)} /><font color="red">*</font>
                             </td>
                         </tr>
                         <tr>
-                            <td colSpan="4"><input type="button" name="Update" className="button" value="Update" onClick={this.updateAttachment.bind(this)} /></td>
+                            <td colSpan="4"><input type="button" name="Update" className="button" value={culture.update} onClick={this.updateAttachment.bind(this)} /></td>
                         </tr>
                     </tbody>
                 </table>
@@ -303,7 +303,7 @@ class TasksUpdate extends React.Component {
                 }
                 if (data.result.Type == "attachment") {
                     that.setState({
-                        component: OfficeUpdate
+                        component: AttachmentUpdate
                     }, function () {
                         that.refs.updatemodule.changeState({
                             id: id,

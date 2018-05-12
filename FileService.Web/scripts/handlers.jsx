@@ -7,13 +7,13 @@
             <table className="table table_handler">
                 <thead>
                     <tr>
-                        <th width="15%">HandlerId</th>
-                        <th width="18%">MachineName</th>
-                        <th width="12%">Total</th>
-                        <th width="15%">State</th>
-                        <th width="15%">StartTime</th>
-                        <th width="15%">EndTime</th>
-                        <th width="10%">Empty</th>
+                        <th width="15%">{culture.handlerId}</th>
+                        <th width="18%">{culture.machineName}</th>
+                        <th width="12%">{culture.total_task_count}</th>
+                        <th width="15%">{culture.state}</th>
+                        <th width="15%">{culture.startTime}</th>
+                        <th width="15%">{culture.endTime}</th>
+                        <th width="10%">{culture.empty}</th>
                     </tr>
                 </thead>
                 <HandlerList data={this.props.data} empty={this.props.empty} />
@@ -31,7 +31,7 @@ class HandlerList extends React.Component {
             return (
                 <tbody>
                     <tr>
-                        <td colSpan='10'>... no data ...</td>
+                        <td colSpan='10'>... {culture.no_data} ...</td>
                     </tr>
                 </tbody>
             )
@@ -100,8 +100,8 @@ class Handlers extends React.Component {
     render() {
         return (
             <div className="main">
-                <h1>Handlers</h1>
-                <TitleArrow title="All Handlers" show={this.state.pageShow}
+                <h1>{culture.handlers}</h1>
+                <TitleArrow title={culture.all + culture.handlers} show={this.state.pageShow}
                             count={this.state.data.count}
                             onShowChange={this.onPageShow.bind(this)} />
                 <Pagination show={this.state.pageShow}

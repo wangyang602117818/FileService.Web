@@ -1,6 +1,7 @@
 ﻿var current_culture = "zh-CN";
 var culture = {
     lang: "EN",
+    all:"所有",
     username: "用户名",
     password: "密码",
     login: "登陆",
@@ -13,6 +14,7 @@ var culture = {
     overview: "概况",
     handlers: "处理器",
     tasks: "转换任务",
+    task: "任务",
     resources: "资源列表",
     logs: "日志",
     config: "配置管理",
@@ -34,5 +36,56 @@ var culture = {
 
     image: "图片",
     video: "视频",
-    attachment: "附件"
+    attachment: "附件",
+
+    no_data: "无数据",
+    handlerId: "处理器编号",
+    machineName: "机器名",
+    total_task_count: "任务总数",
+    state: "状态",
+    startTime: "启动时间",
+    endTime: "结束时间",
+    empty: "清空",
+
+    of: "/",
+    page: "页",
+    filter: "过滤",
+    page_size_up: "每页个数",
+    next_page: "下一页",
+    last_page: "上一页",
+
+    fileId: "文件编号",
+    fileName: "文件名称",
+    handler: "处理器",
+    percent: "百分比",
+    createTime: "创建时间",
+    completedTime: "完成时间",
+    view: "预览",
+    reDo: "重做",
+
+    outputFormat: "输出格式",
+    default: "默认",
+    flag: "标识",
+    model: "模式",
+    scale: "缩放",
+    cut: "剪切",
+    by_width: "按宽度",
+    by_height: "按高度",
+    width: "宽度",
+    height: "高度",
+
+    quality: "质量",
+    original: "原画",
+    lower: "稍低",
+    medium: "中等",
+    bad: "差",
+
+    size: "大小",
+    uploadDate: "上传时间",
+    from: "来源",
+    fileType: "文件类型",
+    dol: "下载",
+    del: "删除",
+    add: "添加",
+    unknow: "未知",
 }

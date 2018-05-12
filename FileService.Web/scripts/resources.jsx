@@ -7,15 +7,15 @@
             <table className="table">
                 <thead>
                     <tr>
-                        <th width="18%">FileId</th>
-                        <th width="30%">FileName</th>
-                        <th width="8%">Size</th>
-                        <th width="14%">UploadDate</th>
-                        <th width="10%">From</th>
-                        <th width="8%">FileType</th>
-                        <th width="4%">View</th>
-                        <th width="4%">Dol</th>
-                        <th width="4%">Del</th>
+                        <th width="18%">{culture.fileId}</th>
+                        <th width="30%">{culture.fileName}</th>
+                        <th width="8%">{culture.size}</th>
+                        <th width="14%">{culture.uploadDate}</th>
+                        <th width="10%">{culture.from}</th>
+                        <th width="8%">{culture.fileType}</th>
+                        <th width="4%">{culture.view}</th>
+                        <th width="4%">{culture.dol}</th>
+                        <th width="4%">{culture.del}</th>
                     </tr>
                 </thead>
                 <ResourcesList data={this.props.data} deleteItem={this.props.deleteItem} onIdClick={this.props.onIdClick} />
@@ -33,7 +33,7 @@ class ResourcesList extends React.Component {
             return (
                 <tbody>
                     <tr>
-                        <td colSpan='10'>... no data ...</td>
+                        <td colSpan='10'>... {culture.no_data} ...</td>
                     </tr>
                 </tbody>
             )
@@ -81,7 +81,7 @@ class ResourceItem extends React.Component {
                 </td>
                 <td>{convertFileSize(this.props.resource.length)}</td>
                 <td>{parseBsonTime(this.props.resource.uploadDate)}</td>
-                <td dangerouslySetInnerHTML={{ __html: this.props.resource.metadata.From || "unknow" }}></td>
+                <td dangerouslySetInnerHTML={{ __html: this.props.resource.metadata.From || culture.unknow }}></td>
                 <td dangerouslySetInnerHTML={{ __html: this.props.resource.metadata.FileType }}></td>
                 <td>
                     <i className="iconfont icon-view"
@@ -271,8 +271,8 @@ class Resources extends React.Component {
     render() {
         return (
             <div className="main">
-                <h1>Resources</h1>
-                <TitleArrow title="All Resources"
+                <h1>{culture.resources}</h1>
+                <TitleArrow title={culture.all + culture.resources}
                     show={this.state.pageShow}
                     count={this.state.data.count}
                     onShowChange={this.onPageShow.bind(this)} />

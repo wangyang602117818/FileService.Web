@@ -7,15 +7,15 @@
             <table className="table table_task">
                 <thead>
                     <tr>
-                        <th width="15%">FileId</th>
-                        <th width="24%">FileName</th>
-                        <th width="8%">Handler</th>
-                        <th width="9%">State</th>
-                        <th width="6%">Percent</th>
-                        <th width="15%">CreateTime</th>
-                        <th width="15%">CompletedTime</th>
-                        <th width="4%">View</th>
-                        <th width="4%">ReDo</th>
+                        <th width="15%">{culture.fileId}</th>
+                        <th width="24%">{culture.fileName}</th>
+                        <th width="8%">{culture.handler}</th>
+                        <th width="9%">{culture.state}</th>
+                        <th width="6%">{culture.percent}</th>
+                        <th width="15%">{culture.createTime}</th>
+                        <th width="15%">{culture.completedTime}</th>
+                        <th width="4%">{culture.view}</th>
+                        <th width="4%">{culture.reDo}</th>
                     </tr>
                 </thead>
                 <TaskList data={this.props.data} getData={this.props.getData} onNameClick={this.props.onNameClick} />
@@ -33,7 +33,7 @@ class TaskList extends React.Component {
             return (
                 <tbody>
                     <tr>
-                        <td colSpan='10'>... no data ...</td>
+                        <td colSpan='10'>... {culture.no_data} ...</td>
                     </tr>
                 </tbody>
             )
@@ -95,7 +95,7 @@ class TaskItem extends React.Component {
                         id={"id=" + this.props.task.FileId.$oid + "&filetype=" + this.props.task.Type.removeHTML() + "&filename=" + this.props.task.FileName.removeHTML() + "#" + this.props.task.Output._id.$oid}></i>
                 </td>
                 <td>
-                    {this.props.task.State == 2 || this.props.task.State == 4 || this.props.task.State==-1 ?
+                    {this.props.task.State == 2 || this.props.task.State == 4 || this.props.task.State == -1 ?
                         <i className="iconfont icon-redo" onClick={this.redo.bind(this)}
                             id={"id=" + this.props.task._id.$oid + "&type=" + this.props.task.Type}></i> :
                         null}
@@ -163,8 +163,8 @@ class Tasks extends React.Component {
     render() {
         return (
             <div className="main">
-                <h1>Tasks</h1>
-                <TitleArrow title="All Tasks" show={this.state.pageShow}
+                <h1>{culture.tasks}</h1>
+                <TitleArrow title={culture.all + culture.tasks} show={this.state.pageShow}
                     count={this.state.data.count}
                     onShowChange={this.onPageShow.bind(this)} />
                 <Pagination show={this.state.pageShow}
@@ -180,9 +180,9 @@ class Tasks extends React.Component {
                     getData={this.getData.bind(this)}
                     onNameClick={this.onNameClick.bind(this)} />
                 {this.state.taskShow ?
-                    <TitleArrow title={"Update Task (" + this.state.updateFileName + ")"}
+                    <TitleArrow title={culture.update + culture.task + "(" + this.state.updateFileName + ")"}
                         show={this.state.taskToggle}
-                        onShowChange={this.onTaskShow.bind(this)} /> : null}
+                onShowChange={this.onTaskShow.bind(this)} /> : null}
                 {this.state.taskShow ?
                     <TasksUpdate show={this.state.taskToggle} ref="update_task"
                         updateImage={this.updateImage.bind(this)}

@@ -32,28 +32,28 @@ class Pagination extends React.Component {
         return (
             <div className={this.props.show ? "pagenation show" : "pagenation hidden"}>
                 <div className="page">
-                    Page:
+                    {culture.page}:
                     {'\u00A0'}
                     <input type="text" name="pageIndex" value={this.props.pageIndex} maxLength="4"
                         className="pageIndex"
                         onChange={this.props.onInput}
                         onKeyPress={this.props.onKeyPress} />
-                    Of{'\u00A0'}
+                    {" "+culture.of}{'\u00A0'}
                     {this.props.pageCount}
                     {'\u00A0'}{'\u00A0'}{'\u00A0'}
-                    <i className="iconfont icon-last" title="last page" onClick={this.props.lastPage}></i>
+                    <i className="iconfont icon-last" title={culture.last_page} onClick={this.props.lastPage}></i>
                     {'\u00A0'}
-                    <i className="iconfont icon-next" title="next page" onClick={this.props.nextPage}></i>
+                    <i className="iconfont icon-next" title={culture.next_page} onClick={this.props.nextPage}></i>
 
                     {'\u00A0'}{'\u00A0'}{'\u00A0'}{'\u00A0'}
-                    Filter:
+                    {culture.filter}:
                     <input type="text" name="filter" value={this.props.filter}
                         className="filter"
                         onChange={this.props.onInput}
                         onKeyPress={this.props.onKeyPress} />
                 </div>
                 <div className="size">
-                    Page size up to :
+                    {culture.page_size_up} :
                     <input type="text" name="pageSize" value={this.props.pageSize} className="pageSize" maxLength="3"
                         onChange={this.props.onInput}
                         onKeyPress={this.props.onKeyPress} />
