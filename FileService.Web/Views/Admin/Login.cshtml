@@ -6,20 +6,22 @@
 <html>
 <head>
     <meta name="viewport" content="width=device-width" />
-    <title>File Management</title>
     <link rel="icon" href="~/image/data.ico" type="image/x-ico" />
-    <script src="~/scripts/react.min.js"></script>
-    <script src="~/scripts/react-dom.min.js"></script>
     @{
         if (CultureInfo.GetCulture() == "zh-CN")
         {
+            <title>文件管理系统</title>
             <script src="~/scripts/culture_zh-CN.js"></script>
         }
         else
         {
+            <title>File Management</title>
             <script src="~/scripts/culture_en-US.js"></script>
         }
     }
+    <script src="~/scripts/react.min.js"></script>
+    <script src="~/scripts/react-dom.min.js"></script>
+
     <link href="~/css/login.css" rel="stylesheet" />
 
 </head>
