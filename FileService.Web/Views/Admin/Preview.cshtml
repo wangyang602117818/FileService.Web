@@ -52,7 +52,7 @@
         <script src="~/pdfview/pdf.min.js"></script>
         <script src="~/pdfview/viewer.min.js"></script>
     }
-    else if (ViewBag.FileType == "attachment" && Path.GetExtension(ViewBag.FileName).ToLower() == ".txt")
+    else if (ViewBag.FileType == "attachment" && new List<string>() { ".txt", ".js", ".htm", ".html" }.Contains(Path.GetExtension(ViewBag.FileName).ToLower()))
     {
         <script src="~/scripts/preview_txt.jsx"></script>
     }

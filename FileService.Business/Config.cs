@@ -38,7 +38,7 @@ namespace FileService.Business
         public string GetTypeByExtension(string extension)
         {
             BsonDocument document = mongoData.FindByExtension(extension);
-            if (document == null) return null;
+            if (document == null) return "";
             return document["Type"].AsString;
         }
         public bool UpdateConfig(string extension, string type, string action)
