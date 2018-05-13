@@ -11,23 +11,22 @@
         if (CultureInfo.GetCulture() == "zh-CN")
         {
             <title>文件管理系统</title>
-            <script src="~/scripts/culture_zh-CN.js"></script>
+            @Scripts.Render("~/scripts/culture_zh-CN")
         }
         else
         {
             <title>File Management</title>
-            <script src="~/scripts/culture_en-US.js"></script>
+            @Scripts.Render("~/scripts/culture_en-US")
         }
     }
     <script src="~/scripts/react.min.js"></script>
     <script src="~/scripts/react-dom.min.js"></script>
 
-    <link href="~/css/login.css" rel="stylesheet" />
+    @Styles.Render("~/css/login")
 
 </head>
-<body >
+<body>
     <div id="login"></div>
 </body>
 </html>
-<script src="~/scripts/funs.jsx"></script>
-<script src="~/scripts/login.jsx"></script>
+@Scripts.Render("~/scripts/login")

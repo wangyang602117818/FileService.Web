@@ -32,6 +32,7 @@ var culture = {
 
     count_by_date: "根据时间统计任务和资源个数",
     totals: "总数",
+    total: "总数",
     last: "最近",
     month: "月",
     year: "年",

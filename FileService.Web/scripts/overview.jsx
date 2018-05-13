@@ -177,7 +177,7 @@ class CountTotal extends React.Component {
                                 <td>{culture.image}</td>
                                 <td>{culture.video}</td>
                                 <td>{culture.attachment}</td>
-                                <td>{culture.totals}</td>
+                                <td>{culture.total}</td>
                             </tr>
                         </thead>
                         <tbody>

@@ -31,7 +31,8 @@ var culture = {
     minutes: "minutes",
 
     count_by_date: "Task and Resource Count by date",
-    total: "Totals",
+    totals: "Totals",
+    total:"Total",
     last: "last",
     month: "month",
     year: "year",

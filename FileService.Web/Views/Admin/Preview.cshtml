@@ -4,7 +4,6 @@
 @using FileService.Business;
 @using FileService.Model;
 @using MongoDB.Bson;
-@using System.Threading;
 <!DOCTYPE html>
 
 <html mozdisallowselectionprint moznomarginboxes>
@@ -17,52 +16,51 @@
     @{
         if (CultureInfo.GetCulture() == "zh-CN")
         {
-            <script src="~/scripts/culture_zh-CN.js"></script>
+            @Scripts.Render("~/scripts/culture_zh-CN")
         }
         else
         {
-            <script src="~/scripts/culture_en-US.js"></script>
+            @Scripts.Render("~/scripts/culture_en-US")
         }
     }
-    <link href="~/css/preview.css" rel="stylesheet" />
+    @Styles.Render("~/css/preview")
 </head>
 <body tabindex="1" class="loadingInProgress" id="body">
     <div id="preview"></div>
 
-    <script src="~/scripts/funs.jsx"></script>
-    <script src="~/scripts/preview.jsx"></script>
+    @Scripts.Render("~/scripts/preview")
     <input type="hidden" name="fileId" id="fileId" value="@ViewBag.id" />
     <input type="hidden" name="convert" id="convert" value="@ViewBag.Convert" />
     @if (ViewBag.FileType == "image" || ViewBag.FileType == "attachment" && (new Config().GetTypeByExtension(Path.GetExtension(ViewBag.FileName).ToLower())).ToLower() == "image")
     {
-        <script src="~/scripts/preview_image.jsx"></script>
+        @Scripts.Render("~/scripts/preview_image")
     }
     else if (ViewBag.FileType == "video" || ViewBag.FileType == "attachment" && (new Config().GetTypeByExtension(Path.GetExtension(ViewBag.FileName).ToLower())).ToLower() == "video")
     {
         <script src="~/hlsplayer/jquery-3.3.1.min.js"></script>
         <script src="~/hlsplayer/hlsplayer.min.js" script-flowplayer="~/hlsplayer/flowplayer.swf" script-flowplayerhls="~/hlsplayer/flowplayerhls.swf" script-auto="false"></script>
-        <script src="~/scripts/preview_video.jsx"></script>
+        @Scripts.Render("~/scripts/preview_video")
     }
     else if (ViewBag.FileType == "attachment" && (Path.GetExtension(ViewBag.FileName).ToLower() == ".pdf" || OfficeFormatList.offices.Contains(Path.GetExtension(ViewBag.FileName).ToLower())) && ViewBag.id != ObjectId.Empty.ToString())
     {
         @Html.Partial("partial_pdfview")
         <link href="~/pdfview/viewer.css" rel="stylesheet" />
         <link rel="resource" type="application/l10n" href="~/pdfview/locale/locale.txt">
-        <script src="~/scripts/preview_pdf.jsx"></script>
+        @Scripts.Render("~/scripts/preview_pdf")
         <script src="~/pdfview/pdf.min.js"></script>
         <script src="~/pdfview/viewer.min.js"></script>
     }
     else if (ViewBag.FileType == "attachment" && new List<string>() { ".txt", ".js", ".htm", ".html" }.Contains(Path.GetExtension(ViewBag.FileName).ToLower()))
     {
-        <script src="~/scripts/preview_txt.jsx"></script>
+        @Scripts.Render("~/scripts/preview_txt")
     }
     else if (ViewBag.id == ObjectId.Empty.ToString())
     {
-        <script src="~/scripts/preview_converting.jsx"></script>
+        @Scripts.Render("~/scripts/preview_converting")
     }
     else
     {
-        <script src="~/scripts/preview_notsupported.jsx"></script>
+        @Scripts.Render("~/scripts/preview_notsupported")
     }
 </body>
 </html>
