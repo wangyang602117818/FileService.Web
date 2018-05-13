@@ -21,7 +21,7 @@ var culture = {
     log:"日志",
     configs: "配置管理",
     config: "配置",
-    users: "用户列表",
+    users: "用户管理",
     update: "更新",
 
     last_update: "上次更新",
