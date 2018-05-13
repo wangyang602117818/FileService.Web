@@ -1,7 +1,7 @@
 ﻿var current_culture = "en-US";
 var culture = {
     lang: "中",
-    all: "All",
+    all: "All ",
     username: "Username",
     password: "Password",
     login: "Login",
@@ -21,7 +21,7 @@ var culture = {
     configs: "Config",
     config: "Config",
     users: "Users",
-    update: "Update",
+    update: "Update ",
 
     last_update: "Last update",
     every: "every",
@@ -89,7 +89,7 @@ var culture = {
     fileType: "FileType",
     dol: "Dol",
     del: "Del",
-    add: "Add",
+    add: "Add ",
     unknow: "unknow",
     ok: "Ok",
     upload: "Upload",
