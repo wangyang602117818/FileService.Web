@@ -11,7 +11,7 @@ var culture = {
     user: "用户",
     login_out: "退出",
 
-    overview: "概况",
+    overview: "概况统计",
     handlers: "处理器",
     tasks: "转换任务",
     task: "任务",
