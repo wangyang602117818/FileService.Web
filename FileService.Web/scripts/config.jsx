@@ -7,10 +7,10 @@
             <table className="table" style={{ width: "50%" }}>
                 <thead>
                     <tr>
-                        <th width="20%">Extension</th>
-                        <th width="20%">Type</th>
-                        <th width="20%">Action</th>
-                        <th width="40%">CreateTime</th>
+                        <th width="20%">{culture.extension}</th>
+                        <th width="20%">{culture.type}</th>
+                        <th width="20%">{culture.action}</th>
+                        <th width="40%">{culture.createTime}</th>
                     </tr>
                 </thead>
                 <ConfigList data={this.props.data}
@@ -30,7 +30,7 @@ class ConfigList extends React.Component {
             return (
                 <tbody>
                     <tr>
-                        <td colSpan='10'>... no data ...</td>
+                        <td colSpan='10'>... {culture.no_data} ...</td>
                     </tr>
                 </tbody>
             )
@@ -71,8 +71,8 @@ class ConfigToolBar extends React.Component {
     render() {
         return (
             <div className="config_toolbar">
-                <div className={this.props.section == "application" ? "config_info select" : "config_info"} onClick={this.props.onSectionChange}>Application</div>
-                <div className={this.props.section == "config" ? "config_info select" : "config_info"} onClick={this.props.onSectionChange}>Config</div>
+                <div className={this.props.section == "application" ? "config_info select" : "config_info"} onClick={this.props.onSectionChange} id="application">{culture.application}</div>
+                <div className={this.props.section == "config" ? "config_info select" : "config_info"} onClick={this.props.onSectionChange} id="config">{culture.config}</div>
             </div>
         )
     }
@@ -89,7 +89,7 @@ class DeleteConfig extends React.Component {
                         <tr>
                             <td style={{ border: "0" }}>
                                 <input type="button"
-                                    value="Delete"
+                                    value={culture.delete}
                                     className="button"
                                     onClick={this.props.deleteConfig.bind(this)} />
                             </td>
@@ -137,7 +137,7 @@ class Config extends React.Component {
     }
     deleteItem(e) {
         var id = this.state.deleteName;
-        if (window.confirm(" Delete ?")) {
+        if (window.confirm(" " + culture.delete + " ?")) {
             var that = this;
             http.get(urls.config.deleteUrl + "?extension=" + id, function (data) {
                 if (data.code == 0) {
@@ -178,9 +178,10 @@ class Config extends React.Component {
     render() {
         return (
             <div className="main">
-                <h1>Config</h1>
-                <ConfigToolBar section={this.props.section} onSectionChange={this.props.onSectionChange} />
-                <TitleArrow title="All Configs"
+                <h1>{culture.config}</h1>
+                <ConfigToolBar section={this.props.section}
+                    onSectionChange={this.props.onSectionChange} />
+                <TitleArrow title={culture.all + culture.config}
                     show={this.state.configShow}
                     count={this.state.data.count}
                     onShowChange={this.onPageShow.bind(this)} />
@@ -195,7 +196,7 @@ class Config extends React.Component {
                     nextPage={this.nextPage.bind(this)} />
                 <ConfigData data={this.state.data.result}
                     onExtensionClick={this.onExtensionClick.bind(this)} />
-                <TitleArrow title="Update Config"
+                <TitleArrow title={culture.update + culture.config}
                     show={this.state.configShow}
                     onShowChange={this.onConfigShow.bind(this)} />
                 <AddConfig
@@ -204,7 +205,7 @@ class Config extends React.Component {
                     ref="addconfig" />
                 {this.state.deleteShow ?
                     <TitleArrow
-                        title={"Delete This Config(" + this.state.deleteName + ")"}
+                        title={culture.delete + culture.config + "(" + this.state.deleteName + ")"}
                         show={this.state.deleteToggle}
                         onShowChange={this.onDeleteShow.bind(this)} /> : null}
                 {this.state.deleteShow ?
@@ -225,7 +226,7 @@ class ConfigContainer extends React.Component {
         }
     }
     onSectionChange(e) {
-        var value = e.target.innerText.toLowerCase();
+        var value = e.target.id.toLowerCase();
         this.setState({ section: value });
     }
     onRefreshChange(value) {

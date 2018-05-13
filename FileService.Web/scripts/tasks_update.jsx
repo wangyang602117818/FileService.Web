@@ -99,8 +99,8 @@
                         </td>
                         </tr>
                         <tr>
-                            <td width="10%">{culture.width}:</td>
-                            <td width="40%"><input type="text" name="width" style={{ width: "60px" }} value={this.state.width} onChange={this.widthChange.bind(this)} />px</td>
+                            <td width="15%">{culture.width}:</td>
+                            <td width="35%"><input type="text" name="width" style={{ width: "60px" }} value={this.state.width} onChange={this.widthChange.bind(this)} />px</td>
                             <td width="20%">{culture.height}:</td>
                             <td width="30%"><input type="text" name="height" style={{ width: "60px" }} value={this.state.height} onChange={this.heightChange.bind(this)} />px</td>
                         </tr>

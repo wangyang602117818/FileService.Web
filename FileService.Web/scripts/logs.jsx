@@ -7,13 +7,13 @@
             <table className="table">
                 <thead>
                     <tr>
-                        <td width="15%">Id</td>
-                        <td width="12%">AppName</td>
-                        <td width="18%">FileId/TaskId</td>
-                        <td width="12%">Content</td>
-                        <td width="8%">User</td>
+                        <td width="15%">{culture.id}</td>
+                        <td width="12%">{culture.appName}</td>
+                        <td width="18%">{culture.fileId}/{culture.taskId}</td>
+                        <td width="12%">{culture.content}</td>
+                        <td width="8%">{culture.user}</td>
                         <td width="15%">Ip</td>
-                        <td width="20%">CreateTime</td>
+                        <td width="20%">{culture.createTime}</td>
                     </tr>
                 </thead>
                 <LogList data={this.props.data} />
@@ -84,8 +84,8 @@ class Logs extends React.Component {
     render() {
         return (
             <div className="main">
-                <h1>Logs</h1>
-                <TitleArrow title="All Logs" show={this.state.pageShow}
+                <h1>{culture.logs}</h1>
+                <TitleArrow title={culture.all + culture.logs} show={this.state.pageShow}
                             count={this.state.data.count}
                             onShowChange={this.onPageShow.bind(this)} />
                 <Pagination show={this.state.pageShow}

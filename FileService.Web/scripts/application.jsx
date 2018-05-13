@@ -7,9 +7,9 @@
             <table className="table" style={{ width: "45%" }}>
                 <thead>
                     <tr>
-                        <th width="40%">ApplicationName</th>
-                        <th width="20%">Action</th>
-                        <th width="40%">CreateTime</th>
+                        <th width="40%">{culture.applicationName}</th>
+                        <th width="20%">{culture.action}</th>
+                        <th width="40%">{culture.createTime}</th>
                     </tr>
                 </thead>
                 <ApplicationList data={this.props.data}
@@ -29,7 +29,7 @@ class ApplicationList extends React.Component {
             return (
                 <tbody>
                     <tr>
-                        <td colSpan='10'>... no data ...</td>
+                        <td colSpan='10'>... {culture.no_data} ...</td>
                     </tr>
                 </tbody>
             )
@@ -76,7 +76,7 @@ class DeleteApplication extends React.Component {
                         <tr>
                             <td style={{ border: "0" }}>
                                 <input type="button"
-                                    value="Delete"
+                                    value={culture.delete}
                                     className="button"
                                     onClick={this.props.deleteItem.bind(this)} />
                             </td>
@@ -125,7 +125,7 @@ class Application extends React.Component {
     }
     deleteItem(e) {
         var id = this.state.deleteName;
-        if (window.confirm(" Delete ?")) {
+        if (window.confirm(" " + culture.delete + " ?")) {
             var that = this;
             http.get(urls.application.deleteUrl + "?applicationName=" + id, function (data) {
                 if (data.code == 0) {
@@ -162,9 +162,9 @@ class Application extends React.Component {
     render() {
         return (
             <div className="main">
-                <h1>Application</h1>
+                <h1>{culture.application}</h1>
                 <ConfigToolBar section={this.props.section} onSectionChange={this.props.onSectionChange} />
-                <TitleArrow title="All Applications"
+                <TitleArrow title={culture.all + culture.application}
                     show={this.state.applicationShow}
                     count={this.state.data.count}
                     onShowChange={this.onPageShow.bind(this)} />
@@ -180,15 +180,15 @@ class Application extends React.Component {
                 <ApplicationData data={this.state.data.result}
                     onAppNameClick={this.onAppNameClick.bind(this)}
                     deleteItem={this.deleteItem.bind(this)} />
-                <TitleArrow title="Update Application"
+                <TitleArrow title={culture.add + culture.application}
                     show={this.state.applicationShow}
                     onShowChange={this.onApplicationShow.bind(this)} />
                 <AddApplication show={this.state.applicationShow} addApplication={this.addApplication.bind(this)} ref="addApplication" />
                 {this.state.deleteShow ?
                     <TitleArrow
-                        title={"Delete This Application(" + this.state.deleteName + ")"}
+                        title={culture.delete + culture.application + "(" + this.state.deleteName + ")"}
                         show={this.state.deleteToggle}
-                        onShowChange={this.onDeleteShow.bind(this)} /> : null}
+                onShowChange={this.onDeleteShow.bind(this)} /> : null}
                 {this.state.deleteShow ?
                     <DeleteApplication
                         show={this.state.deleteToggle}

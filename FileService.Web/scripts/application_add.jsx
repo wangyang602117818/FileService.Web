@@ -31,14 +31,14 @@
     render() {
         return (
             <div className={this.props.show ? "show" : "hidden" }>
-                <table className="table" style={{width:"30%"}}>
+                <table className="table" style={{width:"40%"}}>
                     <tbody>
                         <tr>
-                            <td className="tdCenter">ApplicationName:</td>
+                            <td>{culture.applicationName}:</td>
                             <td><input type="text" name="applicationName" value={this.state.applicationName} onChange={this.nameChanged.bind(this)} /><font color="red">*</font></td>
                         </tr>
                         <tr>
-                            <td className="tdCenter">Action:</td>
+                            <td>{culture.action}:</td>
                              <td>
                                 <select name="action" value={this.state.action} onChange={this.actionChanged.bind(this)}>
                                     <option value="allow">allow</option>
@@ -47,7 +47,10 @@
                             </td>
                          </tr>
                         <tr>
-                             <td colSpan="2"><input type="button" value="Add" className="button" onClick={this.addApplication.bind(this) } /><font color="red">{" " + this.state.message}</font></td>
+                            <td colSpan="2"><input type="button"
+                                value={culture.add}
+                                className="button"
+                                onClick={this.addApplication.bind(this)} /><font color="red">{" " + this.state.message}</font></td>
                         </tr>
                     </tbody>
                 </table>

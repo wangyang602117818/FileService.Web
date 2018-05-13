@@ -38,7 +38,7 @@
                 <table className="table" style={{ width: "35%" }}>
                     <tbody>
                         <tr>
-                            <td className="tdCenter">Extension:</td>
+                            <td>{culture.extension}:</td>
                             <td><input type="text" name="extension"
                                 value={this.state.extension}
                                 onChange={this.extensionChanged.bind(this)} />
@@ -46,7 +46,7 @@
                             </td>
                         </tr>
                         <tr>
-                            <td className="tdCenter">Type:</td>
+                            <td>{culture.type}:</td>
                             <td>
                                 <select name="type"
                                     value={this.state.type}
@@ -59,7 +59,7 @@
                             </td>
                         </tr>
                         <tr>
-                            <td className="tdCenter">Action:</td>
+                            <td>{culture.action}:</td>
                             <td>
                                 <select name="action"
                                     value={this.state.action}
@@ -71,7 +71,7 @@
                         </tr>
                         <tr>
                             <td colSpan="2">
-                                <input type="button" value="Add"
+                                <input type="button" value={culture.add}
                                     className="button"
                                     onClick={this.addConfig.bind(this)} />
                                     <font color="red">{" " + this.state.message}</font>

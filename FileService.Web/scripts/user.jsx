@@ -7,10 +7,10 @@
             <table className="table table_user">
                 <thead>
                     <tr>
-                        <th width="20%">Name</th>
-                        <th width="30%">PassWord</th>
-                        <th width="20%">Role</th>
-                        <th width="30%">CreateTime</th>
+                        <th width="20%">{culture.username}</th>
+                        <th width="30%">{culture.password}</th>
+                        <th width="20%">{culture.role}</th>
+                        <th width="30%">{culture.createTime}</th>
                     </tr>
                 </thead>
                 <UserList data={this.props.data} onNameClick={this.props.onNameClick} />
@@ -27,7 +27,7 @@ class UserList extends React.Component {
             return (
                 <tbody>
                     <tr>
-                        <td colSpan='10'>... no data ...</td>
+                        <td colSpan='10'>... {culture.no_data} ...</td>
                     </tr>
                 </tbody>
             )
@@ -73,7 +73,7 @@ class DeleteUser extends React.Component {
                     <tbody>
                         <tr>
                             <td style={{ border: "0" }}>
-                                <input type="button" value="Delete" className="button" onClick={this.props.deleteUser.bind(this)} />
+                                <input type="button" value={culture.delete} className="button" onClick={this.props.deleteUser.bind(this)} />
                             </td>
                         </tr>
                     </tbody>
@@ -142,7 +142,7 @@ class User extends React.Component {
     }
     deleteUser(e) {
         var that = this;
-        if (confirm("Delete?")) {
+        if (confirm(" " + culture.delete + " ?")) {
             http.get(urls.user.deleteUserUrl + "?userName=" + this.state.deleteName, function (data) {
                 if (data.code == 0) {
                     that.getData();
@@ -154,8 +154,8 @@ class User extends React.Component {
     render() {
         return (
             <div className="main">
-                <h1>User</h1>
-                <TitleArrow title="All Users" show={this.state.pageShow}
+                <h1>{culture.user}</h1>
+                <TitleArrow title={culture.all + culture.user} show={this.state.pageShow}
                     count={this.state.data.count}
                     onShowChange={this.onPageShow.bind(this)} />
                 <Pagination show={this.state.pageShow}
@@ -169,16 +169,16 @@ class User extends React.Component {
                     nextPage={this.nextPage.bind(this)} />
                 <UserData data={this.state.data.result}
                     onNameClick={this.onNameClick.bind(this)} />
-                <TitleArrow title="Add User"
+                <TitleArrow title={culture.add + culture.user}
                     show={this.state.userShow}
                     onShowChange={this.onUserShow.bind(this)} />
                 <AddUser show={this.state.userShow}
                     addUser={this.addUser.bind(this)}
                     ref="add_user" />
                 {this.state.deleteShow ?
-                    <TitleArrow title={"Delete This User(" + this.state.deleteName + ")"}
-                        show={this.state.deleteToggle}
-                        onShowChange={this.onDeleteShow.bind(this)} /> : null}
+                    <TitleArrow title={culture.delete + culture.user +"(" + this.state.deleteName + ")"}
+                show={this.state.deleteToggle}
+                onShowChange={this.onDeleteShow.bind(this)} /> : null}
                 {this.state.deleteShow ?
                     <DeleteUser show={this.state.deleteToggle}
                         deleteUser={this.deleteUser.bind(this)} /> : null}

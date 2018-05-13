@@ -43,7 +43,7 @@
                     }
                 });
             } else {
-                this.setState({ message: " PassWord not matched" });
+                this.setState({ message: culture.password_not_match });
                 return;
             }
         }
@@ -54,18 +54,18 @@
                 <table className="table table_user">
                     <tbody>
                         <tr>
-                            <td className="tdCenter">UserName:</td>
+                            <td>{culture.username}:</td>
                             <td><input type="text" name="userName" value={this.state.userName} onChange={this.nameChanged.bind(this)} /><font color="red">*</font></td>
                         </tr>
                         <tr>
-                            <td className="tdCenter">PassWord:</td>
+                            <td>{culture.password}:</td>
                             <td>
                                 <input type="password" name="passWord" value={this.state.passWord} onChange={this.passWordChanged.bind(this)} /><font color="red">*</font><br />
-                                <input type="password" name="confirm" value={this.state.confirm} onChange={this.confirmChanged.bind(this)} /><font color="red">*</font>(confirm)
+                                <input type="password" name="confirm" value={this.state.confirm} onChange={this.confirmChanged.bind(this)} /><font color="red">*</font>({culture.confirm})
                             </td>
                         </tr>
                         <tr>
-                            <td className="tdCenter">Role:</td>
+                            <td>{culture.role}:</td>
                             <td>
                                 <input type="text" name="role" value={this.state.role} onChange={this.roleChanged.bind(this)} /> (?)<br />
                                 <span className="tag_txt" onClick={this.tagClick.bind(this)}>admin</span>
@@ -74,7 +74,7 @@
                             </td>
                         </tr>
                         <tr>
-                            <td colSpan="2"><input type="button" value="Add" className="button" onClick={this.addUser.bind(this)} /><font color="red">{" "+this.state.message}</font></td>
+                            <td colSpan="2"><input type="button" value={culture.add} className="button" onClick={this.addUser.bind(this)} /><font color="red">{" " + this.state.message}</font></td>
                         </tr>
                     </tbody>
                 </table>

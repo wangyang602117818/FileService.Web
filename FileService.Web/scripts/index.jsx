@@ -75,7 +75,7 @@ class Menu extends React.Component {
                         <li>
                             <a className={this.props.style == "config" ? "current" : ""}
                                 onClick={this.props.menuClick}
-                                id="config">{culture.config}</a>
+                                id="config">{culture.configs}</a>
                         </li>
                     }
                     {typeof (User) === "undefined" ? null :

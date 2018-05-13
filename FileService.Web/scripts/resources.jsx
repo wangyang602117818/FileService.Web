@@ -160,7 +160,7 @@ class Resources extends React.Component {
     }
     deleteItem(e) {
         var id = e.target.id;
-        if (window.confirm(" Delete ?")) {
+        if (window.confirm(" " + culture.delete + " ?")) {
             var that = this;
             http.get(urls.deleteUrl + "?id=" + id, function (data) {
                 if (data.code == 0) {
@@ -219,12 +219,12 @@ class Resources extends React.Component {
         switch (fileType) {
             case "image":
                 this.getThumbnail(fileId);
-                fileName = "Thumbnails(" + fileName + ")";
+                fileName = culture.thumbnails + "(" + fileName + ")";
                 subComponent = ThumbnailData;
                 break;
             case "video":
                 this.getM3u8(fileId);
-                fileName = "M3u8List(" + fileName + ")";
+                fileName = culture.m3u8List + "(" + fileName + ")";
                 subComponent = M3u8Data;
                 break;
             case "attachment":
@@ -235,7 +235,7 @@ class Resources extends React.Component {
                 } else {
                     subComponent = SubFileData;
                 }
-                fileName = "FileList(" + fileName + ")";
+                fileName = culture.fileList + "(" + fileName + ")";
                 break;
         }
         this.setState({
@@ -288,17 +288,17 @@ class Resources extends React.Component {
                 <ResourcesData data={this.state.data.result}
                     deleteItem={this.deleteItem.bind(this)}
                     onIdClick={this.onIdClick.bind(this)} />
-                <TitleArrow title="Add Image"
+                <TitleArrow title={culture.add + culture.image}
                     show={this.state.imageShow}
                     onShowChange={this.onImageShow.bind(this)} />
                 <AddImage show={this.state.imageShow}
                     imageUpload={this.imageUpload.bind(this)} />
-                <TitleArrow title="Add Video"
+                <TitleArrow title={culture.add + culture.video}
                     show={this.state.videoShow}
                     onShowChange={this.onVideoShow.bind(this)} />
                 <AddVideo show={this.state.videoShow}
                     videoUpload={this.videoUpload.bind(this)} />
-                <TitleArrow title="Add Attachment"
+                <TitleArrow title={culture.add + culture.attachment}
                     show={this.state.attachmentShow}
                     onShowChange={this.onAttachmentShow.bind(this)} />
                 <AddAttachment show={this.state.attachmentShow}

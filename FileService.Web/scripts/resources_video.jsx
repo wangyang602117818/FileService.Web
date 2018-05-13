@@ -32,32 +32,32 @@
             <table style={{ width: "50%", marginTop: "0px",borderCollapse: "collapse" }}>
                 <tbody>
                     <tr>
-                        <td width="10%">Format:</td>
-                        <td width="90%">
+                        <td width="30%">{culture.outputFormat}:</td>
+                        <td width="70%">
                             <select name="format" value={this.state.format}>
                                 <option value="0">M3u8</option>
                             </select>
                         </td>
                     </tr>
                     <tr>
-                        <td>Quality:</td>
+                        <td>{culture.quality}:</td>
                         <td>
                             <select name="quality" value={this.state.quality} onChange={this.qualityChange.bind(this)}>
-                                <option value="0">Original</option>
-                                <option value="1">Lower</option>
-                                <option value="2">Medium</option>
-                                <option value="3">Bad</option>
+                                <option value="0">{culture.original}</option>
+                                <option value="1">{culture.lower}</option>
+                                <option value="2">{culture.medium}</option>
+                                <option value="3">{culture.bad}</option>
                             </select>
                         </td>
                     </tr>
                     <tr>
-                        <td>Flag:</td>
+                        <td>{culture.flag}:</td>
                         <td>
                             <input type="text" name="flag" value={this.state.flag} onChange={this.flagChange.bind(this)} /><font color="red">*</font>
                         </td>
                     </tr>
                     <tr>
-                        <td colSpan="3" className="convertBtn" onClick={this.Ok.bind(this)}>ok</td>
+                        <td colSpan="3" className="convertBtn" onClick={this.Ok.bind(this)}>{culture.ok}</td>
                     </tr>
                 </tbody>
             </table>
@@ -70,7 +70,7 @@ class AddVideo extends React.Component {
         this.state = {
             convertShow: false,
             errorMsg: "",
-            buttonValue: "Upload",
+            buttonValue: culture.upload,
             buttonDisabled: false,
             videos: []
         }
@@ -98,9 +98,9 @@ class AddVideo extends React.Component {
             this.props.videoUpload(this.input, this.state.videos, function (data) {
                 if (data.code == 0) {
                     that.input.value = "";
-                    that.setState({ buttonValue: "Upload", buttonDisabled: false });
+                    that.setState({ buttonValue: culture.upload, buttonDisabled: false });
                 } else {
-                    that.setState({ errorMsg: " " + data.message, buttonValue: "Upload", buttonDisabled: false });
+                    that.setState({ errorMsg: " " + data.message, buttonValue: culture.upload, buttonDisabled: false });
                 }
                 
             }, function (loaded, total) {
@@ -109,7 +109,7 @@ class AddVideo extends React.Component {
             });
         } else {
             this.setState({
-                errorMsg: " no file selected"
+                errorMsg: culture.no_file_select
             });
         }
     }
@@ -125,11 +125,11 @@ class AddVideo extends React.Component {
                 <table className="table_modify">
                     <tbody>
                         <tr>
-                            <td>Video:</td>
+                            <td>{culture.video}:</td>
                             <td colSpan="2"><input type="file" multiple name="video" accept="video/mp4,video/x-ms-wmv,video/avi" onChange={this.fileChanged.bind(this)} /></td>
                         </tr>
                         <tr style={{ height: "40px" }}>
-                            <td width="15%">Convert:</td>
+                            <td width="15%">{culture.convert}:</td>
                             <td width="75%">
                                 {
                                     this.state.videos.map(function (item, i) {

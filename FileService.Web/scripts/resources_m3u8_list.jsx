@@ -8,16 +8,16 @@
                 <table className="table">
                     <thead>
                         <tr>
-                            <th width="20%">M3u8Id</th>
-                            <th width="25%">FileName</th>
-                            <th width="10%">Duration</th>
-                            <th width="6%">Ts</th>
-                            <th width="6%">Cp</th>
-                            <th width="6%">Type</th>
-                            <th width="12%">Flag</th>
-                            <th width="5%">View</th>
-                            <th width="5%">Dol</th>
-                            <th width="5%">Del</th>
+                            <th width="20%">{culture.m3u8Id}</th>
+                            <th width="25%">{culture.fileName}</th>
+                            <th width="10%">{culture.duration}</th>
+                            <th width="6%">{culture.ts}</th>
+                            <th width="6%">{culture.cp}</th>
+                            <th width="6%">{culture.type}</th>
+                            <th width="12%">{culture.flag}</th>
+                            <th width="5%">{culture.view}</th>
+                            <th width="5%">{culture.dol}</th>
+                            <th width="5%">{culture.del}</th>
                         </tr>
                     </thead>
                     <M3u8FileList data={this.props.data} />
@@ -43,7 +43,7 @@ class M3u8FileList extends React.Component {
             return (
                 <tbody>
                     <tr>
-                        <td colSpan='10'>... no files ...</td>
+                        <td colSpan='10'>... {culture.no_data} ...</td>
                     </tr>
                 </tbody>
             )

@@ -16,8 +16,10 @@ var culture = {
     tasks: "转换任务",
     task: "任务",
     resources: "资源列表",
+    resource:"资源",
     logs: "日志",
-    config: "配置管理",
+    configs: "配置管理",
+    config: "配置",
     users: "用户列表",
     update: "更新",
 
@@ -64,6 +66,7 @@ var culture = {
     reDo: "重做",
 
     outputFormat: "输出格式",
+    format: "格式",
     default: "默认",
     flag: "标识",
     model: "模式",
@@ -88,4 +91,34 @@ var culture = {
     del: "删除",
     add: "添加",
     unknow: "未知",
+    ok: "确定",
+    upload: "上传",
+    no_file_select: " 未选中文件",
+    convert: "转换",
+    type: "类型",
+
+    thumbnails: "缩略图列表",
+    m3u8List: "M3u8列表",
+    fileList: "子文件列表",
+    m3u8Id: "M3u8编号",
+    duration: "持续时间",
+    ts: "切片数",
+    cp: "截图数",
+    thumbnailId: "缩略图编号",
+
+    id: "编号",
+    appName: "应用程序",
+    applicationName: "应用程序名称",
+    application: "应用程序",
+    taskId: "任务编号",
+    content: "内容",
+    user: "用户",
+
+    extension: "扩展名",
+    action: "行为",
+    delete: "删除",
+
+    role: "角色",
+    password_not_match: "密码不匹配",
+    confirm: "确认"
 }

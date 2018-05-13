@@ -8,14 +8,14 @@
                 <table className="table">
                     <thead>
                         <tr>
-                            <th width="25%">ThumbnailId</th>
-                            <th width="30%">FileName</th>
-                            <th width="10%">Size</th>
-                            <th width="10%">Type</th>
-                            <th width="10%">Flag</th>
-                            <th width="5%">View</th>
-                            <th width="5%">Dol</th>
-                            <th width="5%">Del</th>
+                            <th width="25%">{culture.thumbnailId}</th>
+                            <th width="30%">{culture.fileName}</th>
+                            <th width="10%">{culture.size}</th>
+                            <th width="10%">{culture.type}</th>
+                            <th width="10%">{culture.flag}</th>
+                            <th width="5%">{culture.view}</th>
+                            <th width="5%">{culture.dol}</th>
+                            <th width="5%">{culture.del}</th>
                         </tr>
                     </thead>
                     <ThumbnailFileList data={this.props.data} />
@@ -41,7 +41,7 @@ class ThumbnailFileList extends React.Component {
             return (
                 <tbody>
                     <tr>
-                        <td colSpan='10'>... no files ...</td>
+                        <td colSpan='10'>... {culture.no_data} ...</td>
                     </tr>
                 </tbody>
             )

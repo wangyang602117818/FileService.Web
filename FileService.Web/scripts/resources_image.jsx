@@ -51,10 +51,10 @@
             <table style={{ width: "100%", marginTop: "0", borderCollapse: "collapse" }}>
                 <tbody>
                     <tr>
-                        <td>Format:</td>
+                        <td>{culture.outputFormat}:</td>
                         <td colSpan="3">
                             <select name="format" value={this.state.format} onChange={this.formatChange.bind(this)}>
-                                <option value="0">Default</option>
+                                <option value="0">{culture.default}</option>
                                 <option value="1">Jpeg</option>
                                 <option value="2">Png</option>
                                 <option value="3">Gif</option>
@@ -63,19 +63,19 @@
                         </td>
                     </tr>
                     <tr>
-                        <td>Flag:</td>
+                        <td>{culture.flag}:</td>
                         <td colSpan="3">
                             <input type="text" name="flag" maxLength="20" value={this.state.flag} onChange={this.flagChange.bind(this)} /><font color="red">*</font>
                         </td>
                     </tr>
                     <tr>
-                        <td>Model:</td>
+                        <td>{culture.model}:</td>
                         <td>
                             <select name="model" value={this.state.model} onChange={this.modelChange.bind(this)}>
-                                <option value="0">Scale</option>
-                                <option value="1">Cut</option>
-                                <option value="2">By Width</option>
-                                <option value="3">By Height</option>
+                                <option value="0">{culture.scale}</option>
+                                <option value="1">{culture.cut}</option>
+                                <option value="2">{culture.by_width}</option>
+                                <option value="3">{culture.by_height}</option>
                             </select>
                         </td>
                         <td colSpan="2" ref="">
@@ -91,13 +91,13 @@
                         </td>
                     </tr>
                     <tr>
-                        <td width="10%">Width:</td>
-                        <td width="40%"><input type="text" name="width" style={{ width: "60px" }} value={this.state.width} onChange={this.widthChange.bind(this)} />px</td>
-                        <td width="10%">Height:</td>
-                        <td width="40%"><input type="text" name="height" style={{ width: "60px" }} value={this.state.height} onChange={this.heightChange.bind(this)} />px</td>
+                        <td width="15%">{culture.width}:</td>
+                        <td width="35%"><input type="text" name="width" style={{ width: "60px" }} value={this.state.width} onChange={this.widthChange.bind(this)} />px</td>
+                        <td width="20%">{culture.height}:</td>
+                        <td width="30%"><input type="text" name="height" style={{ width: "60px" }} value={this.state.height} onChange={this.heightChange.bind(this)} />px</td>
                     </tr>
                     <tr>
-                        <td colSpan="4" className="convertBtn" onClick={this.Ok.bind(this)}>ok</td>
+                        <td colSpan="4" className="convertBtn" onClick={this.Ok.bind(this)}>{culture.ok}</td>
                     </tr>
                 </tbody>
             </table>
@@ -110,7 +110,7 @@ class AddImage extends React.Component {
         this.state = {
             convertShow: false,
             errorMsg: "",
-            buttonValue: "Upload",
+            buttonValue: culture.upload,
             buttonDisabled: false,
             thumbnails: []
         }
@@ -144,9 +144,9 @@ class AddImage extends React.Component {
             this.props.imageUpload(this.input, this.state.thumbnails, function (data) {
                 if (data.code == 0) {
                     that.input.value = "";
-                    that.setState({ buttonValue: "Upload", buttonDisabled: false });
+                    that.setState({ buttonValue: culture.upload, buttonDisabled: false });
                 } else {
-                    that.setState({ errorMsg: " " + data.message, buttonValue: "Upload", buttonDisabled: false });
+                    that.setState({ errorMsg: " " + data.message, buttonValue: culture.upload, buttonDisabled: false });
                 }
             }, function (loaded, total) {
                 var precent = ((loaded / total) * 100).toFixed() + "%";
@@ -154,7 +154,7 @@ class AddImage extends React.Component {
             });
         } else {
             this.setState({
-                errorMsg: " no file selected"
+                errorMsg: culture.no_file_select
             })
         }
     }
@@ -164,11 +164,11 @@ class AddImage extends React.Component {
                 <table className="table_modify">
                     <tbody>
                         <tr>
-                            <td>Image:</td>
+                            <td>{culture.image}:</td>
                             <td colSpan="2"><input type="file" multiple name="image" accept="image/gif,image/jpeg,image/png,image/bmp" onChange={this.fileChanged.bind(this)} /></td>
                         </tr>
                         <tr style={{ height: "40px" }}>
-                            <td width="15%">Convert:</td>
+                            <td width="15%">{culture.convert}:</td>
                             <td width="75%">
                                 {
                                     this.state.thumbnails.map(function (item, i) {

@@ -8,14 +8,14 @@
                 <table className="table">
                     <thead>
                         <tr>
-                            <th width="20%">FileId</th>
-                            <th width="30%">FileName</th>
-                            <th width="10%">Size</th>
-                            <th width="15%">Type</th>
-                            <th width="10%">From</th>
-                            <th width="5%">View</th>
-                            <th width="5%">Dol</th>
-                            <th width="5%">Del</th>
+                            <th width="20%">{culture.fileId}</th>
+                            <th width="30%">{culture.fileName}</th>
+                            <th width="10%">{culture.size}</th>
+                            <th width="15%">{culture.type}</th>
+                            <th width="10%">{culture.from}</th>
+                            <th width="5%">{culture.view}</th>
+                            <th width="5%">{culture.dol}</th>
+                            <th width="5%">{culture.del}</th>
                         </tr>
                     </thead>
                     <ZipFileList data={this.props.data}
@@ -51,7 +51,7 @@ class ZipFileList extends React.Component {
             return (
                 <tbody>
                     <tr>
-                        <td colSpan='10'>... no files ...</td>
+                        <td colSpan='10'>... {culture.no_data} ...</td>
                     </tr>
                 </tbody>
             )

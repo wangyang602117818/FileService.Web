@@ -3,7 +3,7 @@
         super(props);
         this.state = {
             errorMsg: "",
-            buttonValue: "Upload",
+            buttonValue: culture.upload,
             buttonDisabled: false
         }
     }
@@ -21,9 +21,9 @@
                 function (data) {
                     if (data.code == 0) {
                         that.input.value = "";  //清空input框
-                        that.setState({ buttonValue: "Upload", buttonDisabled: false });
+                        that.setState({ buttonValue: culture.upload, buttonDisabled: false });
                     } else {
-                        that.setState({ errorMsg: " "+data.message, buttonValue: "Upload", buttonDisabled: false });
+                        that.setState({ errorMsg: " " + data.message, buttonValue: culture.upload, buttonDisabled: false });
                     }
                 }, function (loaded, total) {
                     var precent = ((loaded / total) * 100).toFixed();
@@ -31,7 +31,7 @@
                 });
         } else {
             this.setState({
-                errorMsg: " no file selected"
+                errorMsg: culture.no_file_select
             });
         }
     }
@@ -41,7 +41,7 @@
                 <table className="table_modify">
                     <tbody>
                         <tr>
-                            <td width="15%">Attachment:</td>
+                            <td width="15%">{culture.attachment}:</td>
                             <td width="85%"><input type="file" multiple name="video" onChange={this.fileChanged.bind(this)} /></td>
                         </tr>
                         <tr>
