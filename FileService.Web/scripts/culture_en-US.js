@@ -18,6 +18,7 @@ var culture = {
     resources: "Resources",
     resource: "Resources",
     logs: "Logs",
+    log: "Log",
     configs: "Config",
     config: "Config",
     users: "Users",
