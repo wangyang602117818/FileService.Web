@@ -51,7 +51,7 @@ namespace FileService.Converter
                     //获取压缩文件列表
                     while (reader.MoveToNextEntry())
                     {
-                        if (reader.Entry.Key.EndsWith("/")) continue;
+                        if (reader.Entry.IsDirectory) continue;
                         //压缩文件内部的扩展名
                         string fileExt = Path.GetExtension(reader.Entry.Key).ToLower();
                         if (OfficeFormatList.offices.Contains(fileExt))
