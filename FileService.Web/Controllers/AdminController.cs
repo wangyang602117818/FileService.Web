@@ -220,6 +220,10 @@ namespace FileService.Web.Controllers
             IEnumerable<BsonDocument> result = files.GetFilesByAppName();
             return new ResponseModel<IEnumerable<BsonDocument>>(ErrorCode.success, result);
         }
+        public ActionResult GetHexCode(int id)
+        {
+            return new ResponseModel<string>(ErrorCode.success, new Random().RandomCodeHex(id));
+        }
         public ActionResult GetLogs(int pageIndex = 1, int pageSize = 10, string filter = "")
         {
             long count = 0;
@@ -234,6 +238,12 @@ namespace FileService.Web.Controllers
             return new ResponseModel<IEnumerable<BsonDocument>>(ErrorCode.success, result, count);
         }
         [Authorize(Roles = "admin,management")]
+        public ActionResult GetConfig(string id)
+        {
+            BsonDocument con = config.FindOne(ObjectId.Parse(id));
+            return new ResponseModel<BsonDocument>(ErrorCode.success, con);
+        }
+        [Authorize(Roles = "admin,management")]
         [HttpPost]
         public ActionResult UpdateConfig(AddConfigModel updateConfigModel)
         {
@@ -245,9 +255,9 @@ namespace FileService.Web.Controllers
             return new ResponseModel<string>(ErrorCode.server_exception, "");
         }
         [Authorize(Roles = "admin,management")]
-        public ActionResult DeleteConfig(string extension, string appName)
+        public ActionResult DeleteConfig(string id, string appName)
         {
-            if (config.DeleteConfig(extension))
+            if (config.DeleteOne(ObjectId.Parse(id)))
             {
                 Log(appName, "-", "DeleteConfig");
                 return new ResponseModel<string>(ErrorCode.success, "");
@@ -262,19 +272,25 @@ namespace FileService.Web.Controllers
             return new ResponseModel<IEnumerable<BsonDocument>>(ErrorCode.success, result, count);
         }
         [Authorize(Roles = "admin,management")]
+        public ActionResult GetApplication(string id)
+        {
+            BsonDocument app = application.FindOne(ObjectId.Parse(id));
+            return new ResponseModel<BsonDocument>(ErrorCode.success, app);
+        }
+        [Authorize(Roles = "admin,management")]
         public ActionResult UpdateApplication(UpdateApplicationModel updateApplicationModel)
         {
-            if (application.UpdateApplication(updateApplicationModel.ApplicationName, updateApplicationModel.Action))
+            if (application.UpdateApplication(updateApplicationModel.ApplicationName, updateApplicationModel.AuthCode, updateApplicationModel.Action))
             {
-                Log(updateApplicationModel.AppName, "-", "UpdateApplication");
+                Log(updateApplicationModel.AuthCode, "-", "UpdateApplication");
                 return new ResponseModel<string>(ErrorCode.success, "");
             }
             return new ResponseModel<string>(ErrorCode.server_exception, "");
         }
         [Authorize(Roles = "admin,management")]
-        public ActionResult DeleteApplication(string applicationName, string appName)
+        public ActionResult DeleteApplication(string id, string appName)
         {
-            if (application.DeleteApplication(applicationName))
+            if (application.DeleteOne(ObjectId.Parse(id)))
             {
                 Log(appName, "-", "DeleteApplication");
                 return new ResponseModel<string>(ErrorCode.success, "");

@@ -9,9 +9,9 @@ namespace FileService.Web.Models
     public class UpdateApplicationModel
     {
         [Required]
-        public string AppName { get; set; }
-        [Required]
         public string ApplicationName { get; set; }
+        [Required]
+        public string AuthCode { get; set; }
         [Required]
         public string Action { get; set; }
     }

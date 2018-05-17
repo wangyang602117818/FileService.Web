@@ -67,6 +67,7 @@ namespace FileService.Data
                 database.GetCollection<BsonDocument>("Application").InsertOne(new BsonDocument()
                 {
                     {"ApplicationName","FileServiceApi" },
+                    {"Code","3c9deb1f8f6e" },
                     {"Action","allow" },
                     {"CreateTime", DateTime.Now }
                 });

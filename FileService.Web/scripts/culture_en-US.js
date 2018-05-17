@@ -32,7 +32,7 @@ var culture = {
 
     count_by_date: "Task and Resource Count by date",
     totals: "Totals",
-    total:"Total",
+    total: "Total",
     last: "last",
     month: "month",
     year: "year",
@@ -122,6 +122,7 @@ var culture = {
 
     role: "Role",
     password_not_match: "PassWord not matched",
-    confirm:"confirm"
+    confirm: "confirm",
+    auth_code: "AuthCode"
 
 }

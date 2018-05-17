@@ -56,7 +56,7 @@ class ConfigItem extends React.Component {
     render() {
         return (
             <tr>
-                <td className="link" onClick={this.props.onExtensionClick}><b dangerouslySetInnerHTML={{ __html: this.props.config.Extension }}></b></td>
+                <td className="link" onClick={this.props.onExtensionClick} id={this.props.config._id.$oid}><b dangerouslySetInnerHTML={{ __html: this.props.config.Extension }} id={this.props.config._id.$oid}></b></td>
                 <td dangerouslySetInnerHTML={{ __html: this.props.config.Type }}></td>
                 <td dangerouslySetInnerHTML={{ __html: this.props.config.Action }}></td>
                 <td>{parseBsonTime(this.props.config.CreateTime)}</td>
@@ -109,6 +109,7 @@ class Config extends React.Component {
             deleteShow: false,
             deleteToggle: false,
             deleteName: "",
+            deleteId: "",
             pageIndex: 1,
             pageSize: localStorage.config_pageSize || 10,
             pageCount: 1,
@@ -136,10 +137,10 @@ class Config extends React.Component {
         });
     }
     deleteItem(e) {
-        var id = this.state.deleteName;
+        var id = this.state.deleteId;
         if (window.confirm(" " + culture.delete + " ?")) {
             var that = this;
-            http.get(urls.config.deleteUrl + "?extension=" + id, function (data) {
+            http.get(urls.config.deleteUrl + "/" + id, function (data) {
                 if (data.code == 0) {
                     that.getData();
                     that.setState({ deleteShow: false });
@@ -158,22 +159,13 @@ class Config extends React.Component {
         }
     }
     onExtensionClick(e) {
-        var extension = e.target.innerText;
-        var type = "";
-        var action = "";
-        if (e.target.nodeName.toLowerCase() == "b") {
-            type = e.target.parentElement.nextElementSibling.innerText;
-            action = e.target.parentElement.nextElementSibling.nextElementSibling.innerText;
-        } else if (e.target.nodeName.toLowerCase() == "span") {
-            extension = e.target.parentElement.innerText;
-            type = e.target.parentElement.parentElement.nextElementSibling.innerText;
-            action = e.target.parentElement.parentElement.nextElementSibling.nextElementSibling.innerText;
-        } else {
-            type = e.target.nextElementSibling.innerText;
-            action = e.target.nextElementSibling.nextElementSibling.innerText;
-        }
-        this.refs.addconfig.onExtensionClick(extension, type, action);
-        this.setState({ deleteShow: true, deleteName: extension });
+        var id = e.target.id;
+        http.get(urls.config.getConfigUrl + "/" + id, function (data) {
+            if (data.code == 0) {
+                this.refs.addconfig.onExtensionClick(data.result.Extension, data.result.Type, data.result.Action);
+                this.setState({ deleteShow: true, deleteId: data.result._id.$oid, deleteName: data.result.Extension });
+            }
+        }.bind(this));
     }
     render() {
         return (

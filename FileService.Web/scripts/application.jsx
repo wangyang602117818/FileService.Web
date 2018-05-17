@@ -7,9 +7,10 @@
             <table className="table" style={{ width: "45%" }}>
                 <thead>
                     <tr>
-                        <th width="40%">{culture.applicationName}</th>
+                        <th width="25%">{culture.applicationName}</th>
+                        <th width="20%">{culture.auth_code}</th>
                         <th width="20%">{culture.action}</th>
-                        <th width="40%">{culture.createTime}</th>
+                        <th width="35%">{culture.createTime}</th>
                     </tr>
                 </thead>
                 <ApplicationList data={this.props.data}
@@ -55,9 +56,11 @@ class ApplicationItem extends React.Component {
     render() {
         return (
             <tr>
-                <td className="link" onClick={this.props.onAppNameClick}>
-                    <b dangerouslySetInnerHTML={{ __html: this.props.application.ApplicationName }}></b>
+                <td className="link" onClick={this.props.onAppNameClick} id={this.props.application._id.$oid}>
+                    <b dangerouslySetInnerHTML={{ __html: this.props.application.ApplicationName }}
+                        id={this.props.application._id.$oid}></b>
                 </td>
+                <td>{this.props.application.AuthCode}</td>
                 <td dangerouslySetInnerHTML={{ __html: this.props.application.Action }}></td>
                 <td>{parseBsonTime(this.props.application.CreateTime)}</td>
             </tr>
@@ -97,6 +100,7 @@ class Application extends React.Component {
             deleteShow: false,
             deleteToggle: false,
             deleteName: "",
+            deleteId:"",
             pageIndex: 1,
             pageSize: localStorage.application_pageSize || 10,
             pageCount: 1,
@@ -124,10 +128,10 @@ class Application extends React.Component {
         });
     }
     deleteItem(e) {
-        var id = this.state.deleteName;
+        var id = this.state.deleteId;
         if (window.confirm(" " + culture.delete + " ?")) {
             var that = this;
-            http.get(urls.application.deleteUrl + "?applicationName=" + id, function (data) {
+            http.get(urls.application.deleteUrl + "/" + id, function (data) {
                 if (data.code == 0) {
                     that.getData();
                     that.setState({ deleteShow: false });
@@ -146,18 +150,13 @@ class Application extends React.Component {
         }
     }
     onAppNameClick(e) {
-        var appName = e.target.innerText;
-        var action = "";
-        if (e.target.nodeName.toLowerCase() == "b") {
-            action = e.target.parentElement.nextElementSibling.innerText;
-        } else if (e.target.nodeName.toLowerCase() == "span") {
-            appName = e.target.parentElement.innerText;
-            action = e.target.parentElement.parentElement.nextElementSibling.innerText;
-        } else {
-            action = e.target.nextElementSibling.innerText;
-        }
-        this.refs.addApplication.onAppNameClick(appName, action);
-        this.setState({ deleteShow: true, deleteName: appName });
+        var id = e.target.id;
+        http.get(urls.application.getapplicationUrl + "?id=" + id, function (data) {
+            if (data.code == 0) {
+                this.refs.addApplication.onAppNameClick(data.result.ApplicationName, data.result.AuthCode, data.result.Action);
+                this.setState({ deleteShow: true, deleteId: data.result._id.$oid, deleteName: data.result.ApplicationName });
+            }
+        }.bind(this));
     }
     render() {
         return (
@@ -179,7 +178,7 @@ class Application extends React.Component {
                     nextPage={this.nextPage.bind(this)} />
                 <ApplicationData data={this.state.data.result}
                     onAppNameClick={this.onAppNameClick.bind(this)}
-                    deleteItem={this.deleteItem.bind(this)} />
+                />
                 <TitleArrow title={culture.add + culture.application}
                     show={this.state.applicationShow}
                     onShowChange={this.onApplicationShow.bind(this)} />
@@ -188,7 +187,7 @@ class Application extends React.Component {
                     <TitleArrow
                         title={culture.delete + culture.application + "(" + this.state.deleteName + ")"}
                         show={this.state.deleteToggle}
-                onShowChange={this.onDeleteShow.bind(this)} /> : null}
+                        onShowChange={this.onDeleteShow.bind(this)} /> : null}
                 {this.state.deleteShow ?
                     <DeleteApplication
                         show={this.state.deleteToggle}

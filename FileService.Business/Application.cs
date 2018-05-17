@@ -16,13 +16,9 @@ namespace FileService.Business
             if (document == null || document["Action"] == "block") return false;
             return true;
         }
-        public bool UpdateApplication(string name, string action)
+        public bool UpdateApplication(string name, string authCode,string action)
         {
-            return mongoData.UpdateApplication(name, action);
-        }
-        public bool DeleteApplication(string name)
-        {
-            return mongoData.DeleteApplication(name);
+            return mongoData.UpdateApplication(name, authCode, action);
         }
     }
 }

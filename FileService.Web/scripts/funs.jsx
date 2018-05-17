@@ -86,7 +86,7 @@ var urls = {
     homeUrl: appDomain + "admin/index",
     logOutUrl: appDomain + "admin/logout",
     preview: appDomain + "admin/preview",
-    previewConvert: appDomain +"admin/previewconvert",
+    previewConvert: appDomain + "admin/previewconvert",
     deleteUrl: appDomain + "admin/delete",
     downloadUrl: appDomain + "download/get",
     downloadConvertUrl: appDomain + "download/getconvert",
@@ -131,11 +131,13 @@ var urls = {
     },
     config: {
         getUrl: appDomain + "admin/getconfigs",
+        getConfigUrl: appDomain + "admin/getconfig",
         updateUrl: appDomain + "admin/updateconfig",
         deleteUrl: appDomain + "admin/deleteconfig",
     },
     application: {
         getUrl: appDomain + "admin/getapplications",
+        getapplicationUrl: appDomain + "admin/getapplication",
         updateUrl: appDomain + "admin/updateapplication",
         deleteUrl: appDomain + "admin/deleteapplication"
     },
