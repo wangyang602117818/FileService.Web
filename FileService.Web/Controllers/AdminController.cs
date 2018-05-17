@@ -433,15 +433,13 @@ namespace FileService.Web.Controllers
             if (doc["metadata"]["FileType"] == "image")
             {
                 List<ObjectId> thumbnailIds = new List<ObjectId>();
-                foreach (BsonDocument d in doc["metadata"]["Thumbnail"].AsBsonArray)
-                    thumbnailIds.Add(d["_id"].AsObjectId);
+                foreach (BsonDocument d in doc["metadata"]["Thumbnail"].AsBsonArray) thumbnailIds.Add(d["_id"].AsObjectId);
                 thumbnail.DeleteMany(thumbnailIds);
             }
             if (doc["metadata"]["FileType"] == "video")
             {
                 List<ObjectId> m3u8Ids = new List<ObjectId>();
-                foreach (BsonDocument d in doc["metadata"]["Videos"].AsBsonArray)
-                    m3u8Ids.Add(d["_id"].AsObjectId);
+                foreach (BsonDocument d in doc["metadata"]["Videos"].AsBsonArray) m3u8Ids.Add(d["_id"].AsObjectId);
                 m3u8.DeleteMany(m3u8Ids);
                 ts.DeleteBySourceId(m3u8Ids);
                 videoCapture.DeleteBySourceId(ObjectId.Parse(id));
