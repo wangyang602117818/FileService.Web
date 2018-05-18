@@ -30,7 +30,7 @@ namespace FileService.Web.Models
         /// url不存在错误
         /// </summary>
         uri_not_found = 110,
-        appname_not_exist = 111,
+        app_not_exist = 111,
         username_exist = 112,
         login_fault = 140,
         task_not_completed = 150,

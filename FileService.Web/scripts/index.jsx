@@ -7,7 +7,7 @@
         }
     }
     logOut(e) {
-        window.location.href = urls.logOutUrl + "?appName=" + appName;
+        window.location.href = urls.logOutUrl + "?authCode=" + authCode;
     }
     changeCulture(e) {
         if (current_culture == "en-US") {

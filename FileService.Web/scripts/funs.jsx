@@ -1,4 +1,4 @@
-﻿var appName = "FileServiceApi";
+﻿var authCode = "3c9deb1f8f6e";
 var keywords = ["HandlerId",
     "MachineName",
     "FileName",
@@ -18,7 +18,7 @@ var keywords = ["HandlerId",
 var http = {
     post: function (url, data, success, progress, error) {
         var formData = new FormData();
-        formData.append("AppName", appName);
+        formData.append("authCode", authCode);
         for (var item in data) {
             if (!data[item]) continue;
             if (data[item].nodeName && data[item].nodeName.toLowerCase() === "input") {
@@ -51,9 +51,9 @@ var http = {
     },
     get: function (url, success, error) {
         if (url.indexOf("?") == -1) {
-            url = url + "?appName=" + appName;
+            url = url + "?authCode=" + authCode;
         } else {
-            if (url.toLowerCase().indexOf("appname") == -1) url = url + "&appName=" + appName;
+            if (url.toLowerCase().indexOf("authcode") == -1) url = url + "&authCode=" + authCode;
         }
         var xhr = new XMLHttpRequest();
         xhr.onload = function (event) {
@@ -66,9 +66,9 @@ var http = {
     },
     getFile: function (url, success, error) {
         if (url.indexOf("?") == -1) {
-            url = url + "?appName=" + appName;
+            url = url + "?authCode=" + authCode;
         } else {
-            if (url.toLowerCase().indexOf("appname") == -1) url = url + "&appName=" + appName;
+            if (url.toLowerCase().indexOf("authcode") == -1) url = url + "&authCode=" + authCode;
         }
         var xhr = new XMLHttpRequest();
         xhr.onload = function (event) {

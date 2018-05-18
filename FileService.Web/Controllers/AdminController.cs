@@ -92,7 +92,7 @@ namespace FileService.Web.Controllers
             HttpCookie userCookie = new HttpCookie(FormsAuthentication.FormsCookieName, FormsAuthentication.Encrypt(ticket));
             userCookie.Expires = DateTime.MaxValue;
             Response.Cookies.Add(userCookie);
-            LogInRecord(userLogin.AppName, "Login", userLogin.UserName);
+            LogInRecord(userLogin.AuthCode, "Login", userLogin.UserName);
             if (Url.IsLocalUrl(returnUrl) && returnUrl.Length > 1 && returnUrl.StartsWith("/")
                     && !returnUrl.StartsWith("//") && !returnUrl.StartsWith("/\\"))
             {
@@ -103,9 +103,9 @@ namespace FileService.Web.Controllers
                 return new ResponseModel<string>(ErrorCode.success, "");
             }
         }
-        public ActionResult Logout(string appName)
+        public ActionResult Logout(string authCode)
         {
-            LogInRecord(appName, "LogOut", User.Identity.Name);
+            LogInRecord(authCode, "LogOut", User.Identity.Name);
             FormsAuthentication.SignOut();
             return RedirectToAction("login", "admin");
         }
@@ -248,17 +248,17 @@ namespace FileService.Web.Controllers
         {
             if (config.UpdateConfig(updateConfigModel.Extension, updateConfigModel.Type, updateConfigModel.Action))
             {
-                Log(updateConfigModel.AppName, "-", "UpdateConfig");
+                Log(updateConfigModel.AuthCode, "-", "UpdateConfig");
                 return new ResponseModel<string>(ErrorCode.success, "");
             }
             return new ResponseModel<string>(ErrorCode.server_exception, "");
         }
         [Authorize(Roles = "admin,management")]
-        public ActionResult DeleteConfig(string id, string appName)
+        public ActionResult DeleteConfig(string id, string authCode)
         {
             if (config.DeleteOne(ObjectId.Parse(id)))
             {
-                Log(appName, "-", "DeleteConfig");
+                Log(authCode, "-", "DeleteConfig");
                 return new ResponseModel<string>(ErrorCode.success, "");
             }
             return new ResponseModel<string>(ErrorCode.server_exception, "");
@@ -286,19 +286,19 @@ namespace FileService.Web.Controllers
             return new ResponseModel<string>(ErrorCode.server_exception, "");
         }
         [Authorize(Roles = "admin,management")]
-        public ActionResult DeleteApplication(string id, string appName)
+        public ActionResult DeleteApplication(string id, string authCode)
         {
             if (application.DeleteOne(ObjectId.Parse(id)))
             {
-                Log(appName, "-", "DeleteApplication");
+                Log(authCode, "-", "DeleteApplication");
                 return new ResponseModel<string>(ErrorCode.success, "");
             }
             return new ResponseModel<string>(ErrorCode.server_exception, "");
         }
         [Authorize(Roles = "admin,management")]
-        public ActionResult ReDo(string id, string type)
+        public ActionResult ReDo(string id, string type, string authCode)
         {
-            Log("FileServiceApi", id, "ReDo");
+            Log(authCode, id, "ReDo");
             BsonDocument document = task.FindOne(ObjectId.Parse(id));
             if (document["State"].AsInt32 == 2 || document["State"].AsInt32 == 4 || document["State"].AsInt32 == -1)
             {
@@ -341,7 +341,7 @@ namespace FileService.Web.Controllers
                 {"Output.X",updateImageTask.X },
                 {"Output.Y",updateImageTask.Y },
             };
-            Log("FileServiceApi", updateImageTask.FileId, "UpdateImageTask");
+            Log(updateImageTask.AuthCode, updateImageTask.FileId, "UpdateImageTask");
             files.UpdateFlagImage(ObjectId.Parse(updateImageTask.FileId), ObjectId.Parse(updateImageTask.ThumbnailId), updateImageTask.Flag);
             thumbnail.Update(ObjectId.Parse(updateImageTask.ThumbnailId), new BsonDocument("Flag", updateImageTask.Flag));
             if (task.Update(ObjectId.Parse(updateImageTask.Id), document))
@@ -361,7 +361,7 @@ namespace FileService.Web.Controllers
                 {"Output.Flag",updateVideoTask.Flag },
                 {"Output.Quality",updateVideoTask.Quality},
             };
-            Log("FileServiceApi", updateVideoTask.FileId, "UpdateVideoTask");
+            Log(updateVideoTask.AuthCode, updateVideoTask.FileId, "UpdateVideoTask");
             files.UpdateFlagVideo(ObjectId.Parse(updateVideoTask.FileId), ObjectId.Parse(updateVideoTask.M3u8Id), updateVideoTask.Flag);
             m3u8.Update(ObjectId.Parse(updateVideoTask.M3u8Id), new BsonDocument("Flag", updateVideoTask.Flag));
             if (task.Update(ObjectId.Parse(updateVideoTask.Id), document))
@@ -380,18 +380,18 @@ namespace FileService.Web.Controllers
                 {"Output.Format",updateAttachmentTask.Format },
                 {"Output.Flag",updateAttachmentTask.Flag }
             };
-            Log("FileServiceApi", updateAttachmentTask.FileId, "UpdateAttachmentTask");
+            Log(updateAttachmentTask.AuthCode, updateAttachmentTask.FileId, "UpdateAttachmentTask");
             files.UpdateFlagAttachment(ObjectId.Parse(updateAttachmentTask.FileId), ObjectId.Parse(updateAttachmentTask.SubFileId), updateAttachmentTask.Flag);
             if (task.Update(ObjectId.Parse(updateAttachmentTask.Id), document))
                 return new ResponseModel<BsonDocument>(ErrorCode.success, document);
             return new ResponseModel<string>(ErrorCode.server_exception, "");
         }
         [Authorize(Roles = "admin")]
-        public ActionResult Empty(string handlerId, string appName)
+        public ActionResult Empty(string handlerId, string authCode)
         {
             if (converter.Empty(handlerId))
             {
-                Log(appName, "-", "Empty");
+                Log(authCode, "-", "Empty");
                 return new ResponseModel<string>(ErrorCode.success, "");
             }
             return new ResponseModel<string>(ErrorCode.server_exception, "");
@@ -415,11 +415,11 @@ namespace FileService.Web.Controllers
             if (bsonUser == null)
             {
                 user.Insert(document);
-                Log(addUser.AppName, "-", "InsertUser");
+                Log(addUser.AuthCode, "-", "InsertUser");
             }
             else
             {
-                Log(addUser.AppName, "-", "UpdateUser");
+                Log(addUser.AuthCode, "-", "UpdateUser");
                 user.UpdateUser(addUser.UserName, addUser.ToBsonDocument());
             }
             return new ResponseModel<string>(ErrorCode.success, "");
@@ -431,17 +431,17 @@ namespace FileService.Web.Controllers
             return new ResponseModel<BsonDocument>(ErrorCode.success, document);
         }
         [Authorize(Roles = "admin")]
-        public ActionResult DeleteUser(string userName, string appName)
+        public ActionResult DeleteUser(string userName, string authCode)
         {
             if (user.DeleteUser(userName))
             {
-                Log(appName, "-", "DeleteUser");
+                Log(authCode, "-", "DeleteUser");
                 return new ResponseModel<string>(ErrorCode.success, "");
             }
             return new ResponseModel<string>(ErrorCode.server_exception, "");
         }
         [Authorize(Roles = "admin")]
-        public ActionResult Delete(string id)
+        public ActionResult Delete(string id, string authCode)
         {
             BsonDocument doc = files.FindOne(ObjectId.Parse(id));
             if (doc["metadata"]["FileType"] == "image")
@@ -468,7 +468,7 @@ namespace FileService.Web.Controllers
             }
             mongoFile.Delete(ObjectId.Parse(id));
             task.Delete(ObjectId.Parse(id));
-            Log("FileServiceApi", id, "DeleteFile");
+            Log(authCode, id, "DeleteFile");
             return new ResponseModel<string>(ErrorCode.success, "");
         }
 

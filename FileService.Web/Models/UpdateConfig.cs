@@ -9,7 +9,7 @@ namespace FileService.Web.Models
     public class AddConfigModel
     {
         [Required]
-        public string AppName { get; set; }
+        public string AuthCode { get; set; }
         [Required]
         public string Extension { get; set; }
         [Required]

@@ -12,7 +12,7 @@ namespace FileService.Web.Models
     public class UploadVideoModel
     {
         [Required]
-        public string AppName { get; set; }
+        public string AuthCode { get; set; }
         [Required]
         public HttpPostedFileBase[] Videos { get; set; }
         public string OutPut { get; set; }
@@ -20,7 +20,7 @@ namespace FileService.Web.Models
     public class UploadImgModel
     {
         [Required]
-        public string AppName { get; set; }
+        public string AuthCode { get; set; }
         [Required]
         public HttpPostedFileBase[] Images { get; set; }
         public string OutPut { get; set; }
@@ -28,14 +28,14 @@ namespace FileService.Web.Models
     public class UploadAttachmentModel
     {
         [Required]
-        public string AppName { get; set; }
+        public string AuthCode { get; set; }
         [Required]
         public HttpPostedFileBase[] Attachments { get; set; }
     }
     public class UploadVideoCPModel
     {
         [Required]
-        public string AppName { get; set; }
+        public string AuthCode { get; set; }
         [Required]
         public string FileId { get; set; }
         [Required]
@@ -44,7 +44,7 @@ namespace FileService.Web.Models
     public class UploadVideoCPStreamModel
     {
         [Required]
-        public string AppName { get; set; }
+        public string AuthCode { get; set; }
         [Required]
         public string FileId { get; set; }
         [Required]

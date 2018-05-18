@@ -10,6 +10,8 @@ namespace FileService.Web.Models
     public class UpdateImageTask
     {
         [Required]
+        public string AuthCode { get; set; }
+        [Required]
         public string Id { get; set; }
         [Required]
         public string FileId { get; set; }
@@ -31,6 +33,8 @@ namespace FileService.Web.Models
     public class UpdateVideoTask
     {
         [Required]
+        public string AuthCode { get; set; }
+        [Required]
         public string Id { get; set; }
         [Required]
         public string FileId { get; set; }
@@ -47,6 +51,8 @@ namespace FileService.Web.Models
     }
     public class UpdateAttachmentTask
     {
+        [Required]
+        public string AuthCode { get; set; }
         [Required]
         public string Id { get; set; }
         [Required]

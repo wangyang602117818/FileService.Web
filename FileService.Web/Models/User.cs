@@ -10,7 +10,7 @@ namespace FileService.Web.Models
     public class AddUser
     {
         [Required]
-        public string AppName { get; set; }
+        public string AuthCode { get; set; }
         [Required]
         public string UserName { get; set; }
         [Required]
@@ -25,7 +25,7 @@ namespace FileService.Web.Models
     public class UserLogin
     {
         [Required]
-        public string AppName { get; set; }
+        public string AuthCode { get; set; }
         [Required]
         public string UserName { get; set; }
         [Required]
