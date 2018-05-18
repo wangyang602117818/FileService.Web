@@ -18,7 +18,6 @@ var keywords = ["HandlerId",
 var http = {
     post: function (url, data, success, progress, error) {
         var formData = new FormData();
-        formData.append("authCode", authCode);
         for (var item in data) {
             if (!data[item]) continue;
             if (data[item].nodeName && data[item].nodeName.toLowerCase() === "input") {
@@ -47,14 +46,10 @@ var http = {
             if (error) error(event);
         }
         xhr.open('post', url);
+        xhr.setRequestHeader("AuthCode", authCode);
         xhr.send(formData);
     },
     get: function (url, success, error) {
-        if (url.indexOf("?") == -1) {
-            url = url + "?authCode=" + authCode;
-        } else {
-            if (url.toLowerCase().indexOf("authcode") == -1) url = url + "&authCode=" + authCode;
-        }
         var xhr = new XMLHttpRequest();
         xhr.onload = function (event) {
             var target = event.srcElement || event.target;
@@ -62,21 +57,19 @@ var http = {
         };
         if (error) xhr.onerror = error;
         xhr.open('get', url);
+        xhr.setRequestHeader("AuthCode", authCode);
         xhr.send();
     },
     getFile: function (url, success, error) {
-        if (url.indexOf("?") == -1) {
-            url = url + "?authCode=" + authCode;
-        } else {
-            if (url.toLowerCase().indexOf("authcode") == -1) url = url + "&authCode=" + authCode;
-        }
         var xhr = new XMLHttpRequest();
+        xhr.setRequestHeader("AuthCode", authCode);
         xhr.onload = function (event) {
             var target = event.srcElement || event.target;
             success(target.responseText);
         };
         if (error) xhr.onerror = error;
         xhr.open('get', url);
+        xhr.setRequestHeader("AuthCode", authCode);
         xhr.send();
     }
 };

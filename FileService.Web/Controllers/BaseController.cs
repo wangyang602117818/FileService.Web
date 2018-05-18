@@ -10,16 +10,16 @@ namespace FileService.Web.Controllers
     public class BaseController : Controller
     {
         public Log log = new Log();
-        public void Log(string appName, string fileId, string content)
+        public void Log(string fileId, string content)
         {
-            log.Insert(appName, fileId, content,
+            log.Insert(Request.Headers["AuthCode"], fileId, content,
                 Request.Headers["UserName"] ?? User.Identity.Name,
                 Request.Headers["UserIp"] ?? Request.UserHostAddress,
                 Request.Headers["UserAgent"] ?? Request.UserAgent);
         }
-        public void LogInRecord(string appName,string content, string userName)
+        public void LogInRecord(string content, string userName)
         {
-            log.Insert(appName, "-", content, userName,
+            log.Insert(Request.Headers["AuthCode"], "-", content, userName,
                 Request.Headers["UserIp"] ?? Request.UserHostAddress,
                 Request.Headers["UserAgent"] ?? Request.UserAgent);
         }

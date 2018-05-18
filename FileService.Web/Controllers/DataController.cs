@@ -61,13 +61,13 @@ namespace FileService.Web.Controllers
             }
             return new ResponseModel<List<dynamic>>(ErrorCode.success, list);
         }
-        public ActionResult DeleteVideoCapture(string authCode, string id)
+        public ActionResult DeleteVideoCapture(string id)
         {
             BsonDocument document = videoCapture.FindOne(ObjectId.Parse(id));
             if (videoCapture.DeleteOne(ObjectId.Parse(id)) && document != null)
             {
                 files.DeleteVideoCapture(document["SourceId"].AsObjectId, ObjectId.Parse(id));
-                Log(authCode, id, "DeleteVideoCapture");
+                Log(id, "DeleteVideoCapture");
                 return new ResponseModel<string>(ErrorCode.success, "");
             }
             return new ResponseModel<string>(ErrorCode.record_not_exist, "");

@@ -7,7 +7,7 @@
         }
     }
     logOut(e) {
-        window.location.href = urls.logOutUrl + "?authCode=" + authCode;
+        window.location.href = urls.logOutUrl;
     }
     changeCulture(e) {
         if (current_culture == "en-US") {
