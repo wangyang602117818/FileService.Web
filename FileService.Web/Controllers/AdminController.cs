@@ -240,8 +240,7 @@ namespace FileService.Web.Controllers
         [Authorize(Roles = "admin,management")]
         public ActionResult GetConfig(string id)
         {
-            BsonDocument con = config.FindOne(ObjectId.Parse(id));
-            return new ResponseModel<BsonDocument>(ErrorCode.success, con);
+            return new ResponseModel<BsonDocument>(ErrorCode.success, config.FindOne(ObjectId.Parse(id)));
         }
         [Authorize(Roles = "admin,management")]
         [HttpPost]
@@ -274,8 +273,7 @@ namespace FileService.Web.Controllers
         [Authorize(Roles = "admin,management")]
         public ActionResult GetApplication(string id)
         {
-            BsonDocument app = application.FindOne(ObjectId.Parse(id));
-            return new ResponseModel<BsonDocument>(ErrorCode.success, app);
+            return new ResponseModel<BsonDocument>(ErrorCode.success, application.FindOne(ObjectId.Parse(id)));
         }
         [Authorize(Roles = "admin,management")]
         public ActionResult UpdateApplication(UpdateApplicationModel updateApplicationModel)
