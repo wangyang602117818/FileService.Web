@@ -10,9 +10,9 @@ namespace FileService.Business
     public class Application : ModelBase<Data.Application>
     {
         public Application() : base(new Data.Application()) { }
-        public bool FindByApplicationName(string name)
+        public bool FindByAuthCode(string authCode)
         {
-            BsonDocument document = mongoData.FindByApplicationName(name);
+            BsonDocument document = mongoData.FindByAuthCode(authCode);
             if (document == null || document["Action"] == "block") return false;
             return true;
         }

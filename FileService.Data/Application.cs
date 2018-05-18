@@ -11,9 +11,9 @@ namespace FileService.Data
     public class Application : MongoBase
     {
         public Application() : base("Application") { }
-        public BsonDocument FindByApplicationName(string name)
+        public BsonDocument FindByAuthCode(string authCode)
         {
-            var filter = FilterBuilder.Eq("ApplicationName", name);
+            var filter = FilterBuilder.Eq("AuthCode", authCode);
             return MongoCollection.Find(filter).FirstOrDefault();
         }
         public bool UpdateApplication(string name, string code, string action)
