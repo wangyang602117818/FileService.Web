@@ -14,9 +14,9 @@ namespace FileService.Client
     public class FileClient
     {
         /// <summary>
-        /// 标明上传的文件来自于哪个应用程序（文件服务器统计数据时候使用，不同的application使用不同的appName）
+        /// 标明上传的文件来自于哪个应用程序（文件服务器统计数据时候使用，不同的application使用不同的 AuthCode）
         /// </summary>
-        public string AppName { get; set; }
+        public string AuthCode { get; set; }
         /// <summary>
         /// 文件服务器的url
         /// </summary>
@@ -24,9 +24,9 @@ namespace FileService.Client
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="appName">标明上传的文件来自于哪个应用程序（文件服务器统计数据时候使用，不同的application使用不同的appName）</param>
+        /// <param name="authCode">标明上传的文件来自于哪个应用程序（文件服务器统计数据时候使用，不同的application使用不同的 AuthCode）</param>
         /// <param name="remoteUrl">文件服务器的url</param>
-        public FileClient(string appName, string remoteUrl) { AppName = appName; RemoteUrl = remoteUrl; }
+        public FileClient(string authCode, string remoteUrl) { AuthCode = authCode; RemoteUrl = remoteUrl; }
         /// <summary>
         /// 上传单张图片
         /// </summary>
@@ -96,6 +96,7 @@ namespace FileService.Client
         {
             IEnumerable<ImageConvert> converts = convert == null ? null : new List<ImageConvert>() { convert };
             Dictionary<string, string> headers = new Dictionary<string, string>();
+            headers.Add("AuthCode", AuthCode);
             if (userData != null)
             {
                 if (!string.IsNullOrEmpty(userData.UserName)) headers.Add("UserName", userData.UserName);
@@ -113,7 +114,7 @@ namespace FileService.Client
         /// <returns></returns>
         public ResultBase<IEnumerable<ImageFileResult>> UploadImage(IEnumerable<FileItem> images, IEnumerable<ImageConvert> converts, Dictionary<string, string> headers)
         {
-            Task<string> result = new HttpRequestHelper().PostFileImage(AppName, RemoteUrl + "/upload/image", images, converts, headers);
+            Task<string> result = new HttpRequestHelper().PostFileImage(RemoteUrl + "/upload/image", images, converts, headers);
             return JsonConvert.DeserializeObject<ResultBase<IEnumerable<ImageFileResult>>>(result.Result);
         }
 
@@ -186,6 +187,7 @@ namespace FileService.Client
         {
             IEnumerable<VideoConvert> converts = convert == null ? null : new List<VideoConvert>() { convert };
             Dictionary<string, string> headers = new Dictionary<string, string>();
+            headers.Add("AuthCode", AuthCode);
             if (userData != null)
             {
                 if (!string.IsNullOrEmpty(userData.UserName)) headers.Add("UserName", userData.UserName);
@@ -203,7 +205,7 @@ namespace FileService.Client
         /// <returns></returns>
         public ResultBase<IEnumerable<VideoFileResult>> UploadVideo(IEnumerable<FileItem> videos, IEnumerable<VideoConvert> converts, Dictionary<string, string> headers)
         {
-            Task<string> result = new HttpRequestHelper().PostFileVideo(AppName, RemoteUrl + "/upload/video", videos, converts, headers);
+            Task<string> result = new HttpRequestHelper().PostFileVideo(RemoteUrl + "/upload/video", videos, converts, headers);
             return JsonConvert.DeserializeObject<ResultBase<IEnumerable<VideoFileResult>>>(result.Result);
         }
 
@@ -250,6 +252,7 @@ namespace FileService.Client
         public ResultBase<IEnumerable<AttachmentFileResult>> UploadAttachment(IEnumerable<FileItem> attachments, UserData userData)
         {
             Dictionary<string, string> headers = new Dictionary<string, string>();
+            headers.Add("AuthCode", AuthCode);
             if (userData != null)
             {
                 if (!string.IsNullOrEmpty(userData.UserName)) headers.Add("UserName", userData.UserName);
@@ -265,7 +268,7 @@ namespace FileService.Client
         /// <param name="headers">头信息</param>
         public ResultBase<IEnumerable<AttachmentFileResult>> UploadAttachment(IEnumerable<FileItem> attachments, Dictionary<string, string> headers)
         {
-            Task<string> result = new HttpRequestHelper().PostFileAttachment(AppName, RemoteUrl + "/upload/attachment", attachments, headers);
+            Task<string> result = new HttpRequestHelper().PostFileAttachment(RemoteUrl + "/upload/attachment", attachments, headers);
             return JsonConvert.DeserializeObject<ResultBase<IEnumerable<AttachmentFileResult>>>(result.Result);
         }
 
@@ -291,13 +294,14 @@ namespace FileService.Client
             string[] imageBase64 = fileBase64.Split(',');
             string image = Base64SecureURL.Encode(imageBase64.Length >= 2 ? imageBase64[1] : imageBase64[0]);
             Dictionary<string, string> headers = new Dictionary<string, string>();
+            headers.Add("AuthCode", AuthCode);
             if (userData != null)
             {
                 if (!string.IsNullOrEmpty(userData.UserName)) headers.Add("UserName", userData.UserName);
                 if (!string.IsNullOrEmpty(userData.UserAgent)) headers.Add("UserAgent", userData.UserAgent);
                 if (!string.IsNullOrEmpty(userData.UserIp)) headers.Add("UserIp", userData.UserIp);
             }
-            Task<string> result = new HttpRequestHelper().Post(AppName, RemoteUrl + "/upload/videocapture", "fileId=" + fileId + "&fileBase64=" + image, headers);
+            Task<string> result = new HttpRequestHelper().Post(RemoteUrl + "/upload/videocapture", "fileId=" + fileId + "&fileBase64=" + image, headers);
             return JsonConvert.DeserializeObject<ResultBase<string>>(result.Result);
         }
         /// <summary>
@@ -323,13 +327,14 @@ namespace FileService.Client
         public ResultBase<IEnumerable<string>> UploadVideoCapture(string fileId, IEnumerable<FileItem> videoCps, UserData userData)
         {
             Dictionary<string, string> headers = new Dictionary<string, string>();
+            headers.Add("AuthCode", AuthCode);
             if (userData != null)
             {
                 if (!string.IsNullOrEmpty(userData.UserName)) headers.Add("UserName", userData.UserName);
                 if (!string.IsNullOrEmpty(userData.UserAgent)) headers.Add("UserAgent", userData.UserAgent);
                 if (!string.IsNullOrEmpty(userData.UserIp)) headers.Add("UserIp", userData.UserIp);
             }
-            Task<string> result = new HttpRequestHelper().PostFileVideoCapture(AppName, fileId, RemoteUrl + "/upload/videocapturestream", videoCps, headers);
+            Task<string> result = new HttpRequestHelper().PostFileVideoCapture(fileId, RemoteUrl + "/upload/videocapturestream", videoCps, headers);
             return JsonConvert.DeserializeObject<ResultBase<IEnumerable<string>>>(result.Result);
         }
 
@@ -351,13 +356,14 @@ namespace FileService.Client
         public ResultBase<string> DeleteVideoCapture(string captureFileId, UserData userData)
         {
             Dictionary<string, string> headers = new Dictionary<string, string>();
+            headers.Add("AuthCode", AuthCode);
             if (userData != null)
             {
                 if (!string.IsNullOrEmpty(userData.UserName)) headers.Add("UserName", userData.UserName);
                 if (!string.IsNullOrEmpty(userData.UserAgent)) headers.Add("UserAgent", userData.UserAgent);
                 if (!string.IsNullOrEmpty(userData.UserIp)) headers.Add("UserIp", userData.UserIp);
             }
-            Task<string> result = new HttpRequestHelper().Get(AppName, RemoteUrl + "/data/deletevideocapture", "id=" + captureFileId, headers);
+            Task<string> result = new HttpRequestHelper().Get(RemoteUrl + "/data/deletevideocapture", "id=" + captureFileId, headers);
             return JsonConvert.DeserializeObject<ResultBase<string>>(result.Result);
         }
         /// <summary>
@@ -367,7 +373,9 @@ namespace FileService.Client
         /// <returns></returns>
         public ResultBase<IEnumerable<string>> GetVideoCaptureIds(string fileId)
         {
-            Task<string> result = new HttpRequestHelper().Get(AppName, RemoteUrl + "/data/getvideocaptureids", "id=" + fileId, null);
+            Dictionary<string, string> headers = new Dictionary<string, string>();
+            headers.Add("AuthCode", AuthCode);
+            Task<string> result = new HttpRequestHelper().Get(RemoteUrl + "/data/getvideocaptureids", "id=" + fileId, headers);
             return JsonConvert.DeserializeObject<ResultBase<IEnumerable<string>>>(result.Result);
         }
         /// <summary>
@@ -377,7 +385,9 @@ namespace FileService.Client
         /// <returns></returns>
         public ResultBase<FileConvertState> GetFileState(string fileId)
         {
-            Task<string> result = new HttpRequestHelper().Get(AppName, RemoteUrl + "/data/filestate", "id=" + fileId, null);
+            Dictionary<string, string> headers = new Dictionary<string, string>();
+            headers.Add("AuthCode", AuthCode);
+            Task<string> result = new HttpRequestHelper().Get(RemoteUrl + "/data/filestate", "id=" + fileId, headers);
             return JsonConvert.DeserializeObject<ResultBase<FileConvertState>>(result.Result);
         }
 
@@ -388,7 +398,9 @@ namespace FileService.Client
         /// <returns></returns>
         public DownloadFileItem DownloadFile(string fileId)
         {
-            return new HttpRequestHelper().GetFile(RemoteUrl + "/download/get/" + fileId);
+            Dictionary<string, string> headers = new Dictionary<string, string>();
+            headers.Add("AuthCode", AuthCode);
+            return new HttpRequestHelper().GetFile(RemoteUrl + "/download/get/" + fileId, headers);
         }
         /// <summary>
         /// 下载缩略图
@@ -397,7 +409,9 @@ namespace FileService.Client
         /// <returns></returns>
         public DownloadFileItem DownloadThumbnail(string fileId)
         {
-            return new HttpRequestHelper().GetFile(RemoteUrl + "/download/thumbnail/" + fileId);
+            Dictionary<string, string> headers = new Dictionary<string, string>();
+            headers.Add("AuthCode", AuthCode);
+            return new HttpRequestHelper().GetFile(RemoteUrl + "/download/thumbnail/" + fileId, headers);
         }
         /// <summary>
         /// 下载m3u8视频切片列表
@@ -406,7 +420,9 @@ namespace FileService.Client
         /// <returns></returns>
         public DownloadFileItem DownloadM3u8(string fileId)
         {
-            return new HttpRequestHelper().GetFile(RemoteUrl + "/download/m3u8pure/" + fileId);
+            Dictionary<string, string> headers = new Dictionary<string, string>();
+            headers.Add("AuthCode", AuthCode);
+            return new HttpRequestHelper().GetFile(RemoteUrl + "/download/m3u8pure/" + fileId, headers);
         }
         /// <summary>
         /// 下载视频切片
@@ -415,7 +431,9 @@ namespace FileService.Client
         /// <returns></returns>
         public DownloadFileItem DownloadTs(string fileId)
         {
-            return new HttpRequestHelper().GetFile(RemoteUrl + "/download/ts/" + fileId);
+            Dictionary<string, string> headers = new Dictionary<string, string>();
+            headers.Add("AuthCode", AuthCode);
+            return new HttpRequestHelper().GetFile(RemoteUrl + "/download/ts/" + fileId, headers);
         }
         /// <summary>
         /// 下载视频截图文件
@@ -424,7 +442,9 @@ namespace FileService.Client
         /// <returns></returns>
         public DownloadFileItem DownloadVideoCapture(string fileId)
         {
-            return new HttpRequestHelper().GetFile(RemoteUrl + "/download/videocapture/" + fileId);
+            Dictionary<string, string> headers = new Dictionary<string, string>();
+            headers.Add("AuthCode", AuthCode);
+            return new HttpRequestHelper().GetFile(RemoteUrl + "/download/videocapture/" + fileId, headers);
         }
     }
 }

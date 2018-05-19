@@ -52,11 +52,23 @@ class LogItem extends React.Component {
     constructor(props) {
         super(props);
     }
+    onMouseOver(e) {
+        var td = e.target;
+        if (e.target.title) return;
+        http.get(urls.application.getApplicationByAuthCodeUrl + "/" + td.id, function (data) {
+            if (data.code == 0) {
+                td.title = data.result.ApplicationName;
+            }
+        }.bind(this));
+    }
     render() {
         return (
             <tr>
                 <td>{this.props.log._id.$oid}</td>
-                <td dangerouslySetInnerHTML={{ __html: this.props.log.AppName }}></td>
+                <td dangerouslySetInnerHTML={{ __html: this.props.log.AppName }}
+                    id={this.props.log.AppName.removeHTML()}
+                    onMouseOver={this.onMouseOver.bind(this)}>
+                </td>
                 <td dangerouslySetInnerHTML={{ __html: this.props.log.FileId }}></td>
                 <td dangerouslySetInnerHTML={{ __html: this.props.log.Content }}></td>
                 <td>{this.props.log.UserName}</td>

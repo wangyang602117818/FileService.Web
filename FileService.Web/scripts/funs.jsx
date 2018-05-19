@@ -93,6 +93,7 @@ var urls = {
     imageListUrl: appDomain + "data/getimagelist",
     redoUrl: appDomain + "admin/redo",
     emptyUrl: appDomain + "admin/empty",
+    getHexCodeUrl: appDomain + "admin/gethexcode",
     overview: {
         recentUrl: appDomain + "admin/getcountrecentmonth",
         totalUrl: appDomain + "admin/gettotalcount",
@@ -130,6 +131,7 @@ var urls = {
     application: {
         getUrl: appDomain + "admin/getapplications",
         getapplicationUrl: appDomain + "admin/getapplication",
+        getApplicationByAuthCodeUrl: appDomain + "admin/getapplicationbyauthcode",
         updateUrl: appDomain + "admin/updateapplication",
         deleteUrl: appDomain + "admin/deleteapplication"
     },

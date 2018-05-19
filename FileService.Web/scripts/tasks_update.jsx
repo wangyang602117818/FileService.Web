@@ -88,7 +88,9 @@
                                 </select>
                             </td>
                             <td colSpan="2">
-                                top:<input type="text" name="x" style={{ width: "35px" }}
+                                top:<input type="text"
+                                    name="x"
+                                    style={{ width: "35px" }}
                                     value={this.state.model == "1" ? this.state.x : "0"}
                                     disabled={this.state.model == "1" ? false : true}
                                     onChange={this.xChange.bind(this)} />px{'\u00A0'}
@@ -100,9 +102,19 @@
                         </tr>
                         <tr>
                             <td width="15%">{culture.width}:</td>
-                            <td width="35%"><input type="text" name="width" style={{ width: "60px" }} value={this.state.width} onChange={this.widthChange.bind(this)} />px</td>
+                            <td width="35%"><input type="text"
+                                name="width"
+                                style={{ width: "60px" }}
+                                disabled={this.state.model == "3" ? true : false}
+                                value={this.state.width}
+                                onChange={this.widthChange.bind(this)} />px</td>
                             <td width="20%">{culture.height}:</td>
-                            <td width="30%"><input type="text" name="height" style={{ width: "60px" }} value={this.state.height} onChange={this.heightChange.bind(this)} />px</td>
+                            <td width="30%"><input type="text"
+                                name="height"
+                                disabled={this.state.model == "2" ? true : false}
+                                style={{ width: "60px" }}
+                                value={this.state.height}
+                                onChange={this.heightChange.bind(this)} />px</td>
                         </tr>
                         <tr>
                             <td colSpan="4">

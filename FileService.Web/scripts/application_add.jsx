@@ -8,6 +8,16 @@
             message: ""
         };
     }
+    componentDidMount() {
+        this.getHexCode();
+    }
+    getHexCode() {
+        http.get(urls.getHexCodeUrl + "/12", function (data) {
+            if (data.code == 0) {
+                this.setState({ authCode: data.result });
+            }
+        }.bind(this));
+    }
     nameChanged(e) {
         this.setState({ applicationName: e.target.value });
     }
@@ -39,11 +49,21 @@
                     <tbody>
                         <tr>
                             <td>{culture.applicationName}:</td>
-                            <td><input type="text" name="applicationName" value={this.state.applicationName} onChange={this.nameChanged.bind(this)} /><font color="red">*</font></td>
+                            <td><input type="text"
+                                name="applicationName"
+                                value={this.state.applicationName}
+                                onChange={this.nameChanged.bind(this)} /><font color="red">*</font></td>
                         </tr>
                         <tr>
                             <td>{culture.auth_code}:</td>
-                            <td><input type="text" name="authCode" value={this.state.authCode} onChange={this.codeChanged.bind(this)} size="15" /><font color="red">*</font></td>
+                            <td><input type="text" name="authCode"
+                                value={this.state.authCode}
+                                onChange={this.codeChanged.bind(this)}
+                                size="15" />
+                                <font color="red">*</font>&nbsp;
+                                <i className="iconfont icon-get" 
+                                    onClick={this.getHexCode.bind(this)}></i>
+                            </td>
                         </tr>
                         <tr>
                             <td>{culture.action}:</td>

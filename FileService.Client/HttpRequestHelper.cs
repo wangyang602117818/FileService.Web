@@ -11,10 +11,9 @@ namespace FileService.Client
 {
     internal class HttpRequestHelper
     {
-        internal Task<string> PostFileImage(string appName, string url, IEnumerable<FileItem> images, IEnumerable<ImageConvert> converts, Dictionary<string, string> headers)
+        internal Task<string> PostFileImage(string url, IEnumerable<FileItem> images, IEnumerable<ImageConvert> converts, Dictionary<string, string> headers)
         {
             Dictionary<string, string> paras = new Dictionary<string, string>();
-            paras.Add("appName", appName);
             string output = null;
             if (converts != null && converts.Count() > 0)
             {
@@ -23,10 +22,9 @@ namespace FileService.Client
             }
             return PostFile(url, "images", images, paras, headers);
         }
-        internal Task<string> PostFileVideo(string appName, string url, IEnumerable<FileItem> videos, IEnumerable<VideoConvert> converts, Dictionary<string, string> headers)
+        internal Task<string> PostFileVideo(string url, IEnumerable<FileItem> videos, IEnumerable<VideoConvert> converts, Dictionary<string, string> headers)
         {
             Dictionary<string, string> paras = new Dictionary<string, string>();
-            paras.Add("appName", appName);
             string output = null;
             if (converts != null && converts.Count() > 0)
             {
@@ -35,16 +33,14 @@ namespace FileService.Client
             }
             return PostFile(url, "videos", videos, paras, headers);
         }
-        internal Task<string> PostFileAttachment(string appName, string url, IEnumerable<FileItem> attachments, Dictionary<string, string> headers)
+        internal Task<string> PostFileAttachment(string url, IEnumerable<FileItem> attachments, Dictionary<string, string> headers)
         {
             Dictionary<string, string> paras = new Dictionary<string, string>();
-            paras.Add("appName", appName);
             return PostFile(url, "attachments", attachments, paras, headers);
         }
-        internal Task<string> PostFileVideoCapture(string appName, string fileId, string url, IEnumerable<FileItem> videoCaptures, Dictionary<string, string> headers)
+        internal Task<string> PostFileVideoCapture(string fileId, string url, IEnumerable<FileItem> videoCaptures, Dictionary<string, string> headers)
         {
             Dictionary<string, string> paras = new Dictionary<string, string>();
-            paras.Add("appName", appName);
             paras.Add("fileId", fileId);
             return PostFile(url, "videocps", videoCaptures, paras, headers);
         }
@@ -95,7 +91,7 @@ namespace FileService.Client
                 }
             }
         }
-        internal Task<string> Post(string appName, string url, string paras, Dictionary<string, string> headers)
+        internal Task<string> Post(string url, string paras, Dictionary<string, string> headers)
         {
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
             request.Method = "post";
@@ -107,7 +103,7 @@ namespace FileService.Client
                     request.Headers.Add(kv.Key, kv.Value);
                 }
             }
-            byte[] bs = Encoding.UTF8.GetBytes("appName=" + appName + "&" + paras);
+            byte[] bs = Encoding.UTF8.GetBytes(paras);
             using (Stream requestStream = request.GetRequestStream())
             {
                 requestStream.Write(bs, 0, bs.Length);
@@ -120,9 +116,9 @@ namespace FileService.Client
                 }
             }
         }
-        internal Task<string> Get(string appName, string url, string paras, Dictionary<string, string> headers)
+        internal Task<string> Get(string url, string paras, Dictionary<string, string> headers)
         {
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url + "?appName=" + appName + "&" + paras);
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url + "?" + paras);
             request.Method = "get";
             if (headers != null)
             {
@@ -135,10 +131,17 @@ namespace FileService.Client
             StreamReader reader = new StreamReader(response.GetResponseStream());
             return reader.ReadToEndAsync();
         }
-        internal DownloadFileItem GetFile(string url)
+        internal DownloadFileItem GetFile(string url, Dictionary<string, string> headers)
         {
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
             request.Method = "get";
+            if (headers != null)
+            {
+                foreach (var kv in headers)
+                {
+                    request.Headers.Add(kv.Key, kv.Value);
+                }
+            }
             WebResponse response = request.GetResponse();
             if (response.Headers["Content-Disposition"] == null) return new DownloadFileItem() { };
             string name = response.Headers["Content-Disposition"].Split('=')[1];
