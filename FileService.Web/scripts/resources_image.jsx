@@ -65,13 +65,19 @@
                     <tr>
                         <td>{culture.flag}:</td>
                         <td colSpan="3">
-                            <input type="text" name="flag" maxLength="20" value={this.state.flag} onChange={this.flagChange.bind(this)} /><font color="red">*</font>
+                            <input type="text"
+                                name="flag"
+                                maxLength="20"
+                                value={this.state.flag}
+                                onChange={this.flagChange.bind(this)} /><font color="red">*</font>
                         </td>
                     </tr>
                     <tr>
                         <td>{culture.model}:</td>
                         <td>
-                            <select name="model" value={this.state.model} onChange={this.modelChange.bind(this)}>
+                            <select name="model"
+                                value={this.state.model}
+                                onChange={this.modelChange.bind(this)}>
                                 <option value="0">{culture.scale}</option>
                                 <option value="1">{culture.cut}</option>
                                 <option value="2">{culture.by_width}</option>
@@ -92,9 +98,17 @@
                     </tr>
                     <tr>
                         <td width="15%">{culture.width}:</td>
-                        <td width="35%"><input type="text" name="width" style={{ width: "60px" }} value={this.state.width} onChange={this.widthChange.bind(this)} />px</td>
+                        <td width="35%"><input type="text" name="width"
+                            style={{ width: "60px" }}
+                            value={this.state.width}
+                            disabled={this.state.model == "3" ? true : false}
+                            onChange={this.widthChange.bind(this)} />px</td>
                         <td width="20%">{culture.height}:</td>
-                        <td width="30%"><input type="text" name="height" style={{ width: "60px" }} value={this.state.height} onChange={this.heightChange.bind(this)} />px</td>
+                        <td width="30%"><input type="text" name="height"
+                            style={{ width: "60px" }}
+                            value={this.state.height}
+                            disabled={this.state.model == "2" ? true : false}
+                            onChange={this.heightChange.bind(this)} />px</td>
                     </tr>
                     <tr>
                         <td colSpan="4" className="convertBtn" onClick={this.Ok.bind(this)}>{culture.ok}</td>

@@ -62,7 +62,6 @@ var http = {
     },
     getFile: function (url, success, error) {
         var xhr = new XMLHttpRequest();
-        xhr.setRequestHeader("AuthCode", authCode);
         xhr.onload = function (event) {
             var target = event.srcElement || event.target;
             success(target.responseText);
