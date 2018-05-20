@@ -154,7 +154,7 @@ class Container extends React.Component {
                 component = typeof (ConfigContainer) === "undefined" ? Overview : ConfigContainer;
                 break;
             case "users":
-                component = typeof (User) === "undefined" ? Overview : User;
+                component = typeof (UserContainer) === "undefined" ? Overview : UserContainer;
                 break;
             default:
                 component = Overview;

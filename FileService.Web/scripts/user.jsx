@@ -155,7 +155,10 @@ class User extends React.Component {
         return (
             <div className="main">
                 <h1>{culture.user}</h1>
-                <TitleArrow title={culture.all + culture.user} show={this.state.pageShow}
+                <UserToolBar section={this.props.section}
+                    onSectionChange={this.props.onSectionChange} />
+                <TitleArrow title={culture.all + culture.user}
+                    show={this.state.pageShow}
                     count={this.state.data.count}
                     onShowChange={this.onPageShow.bind(this)} />
                 <Pagination show={this.state.pageShow}
@@ -187,4 +190,51 @@ class User extends React.Component {
     }
 }
 for (var item in CommonUsePagination) User.prototype[item] = CommonUsePagination[item];
-//Object.assign(User.prototype, CommonUsePagination);
+
+class UserToolBar extends React.Component {
+    constructor(props) {
+        super(props);
+    }
+    render() {
+        return (
+            <div className="config_toolbar">
+                <div className={this.props.section == "department" ? "config_info select" : "config_info"}
+                    onClick={this.props.onSectionChange}
+                    id="department">{culture.department_right}
+                </div>
+                <div className={this.props.section == "user" ? "config_info select" : "config_info"} onClick={this.props.onSectionChange}
+                    id="user">{culture.user}
+                </div>
+            </div>
+        )
+    }
+}
+class UserContainer extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            section: localStorage.storageUserSection || "user"
+        }
+    }
+    onSectionChange(e) {
+        var value = e.target.id.toLowerCase();
+        localStorage.storageUserSection = value;
+        this.setState({ section: value });
+    }
+    onRefreshChange(value) {
+        this.refs.config.onRefreshChange(value);
+    }
+    render() {
+        if (this.state.section == "user") {
+            return <User ref="config"
+                refresh={this.props.refresh}
+                section={this.state.section}
+                onSectionChange={this.onSectionChange.bind(this)} />
+        } else {
+            return <Department ref="config"
+                refresh={this.props.refresh}
+                section={this.state.section}
+                onSectionChange={this.onSectionChange.bind(this)} />
+        }
+    }
+}

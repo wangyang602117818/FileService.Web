@@ -24,6 +24,7 @@ namespace FileService.Web.Controllers
         FilesConvert filesConvert = new FilesConvert();
         MongoFileConvert mongoFileConvert = new MongoFileConvert();
         User user = new User();
+        Department department = new Department();
         Converter converter = new Converter();
         Task task = new Task();
         Thumbnail thumbnail = new Thumbnail();
@@ -445,6 +446,13 @@ namespace FileService.Web.Controllers
                 return new ResponseModel<string>(ErrorCode.success, "");
             }
             return new ResponseModel<string>(ErrorCode.server_exception, "");
+        }
+        [Authorize(Roles = "admin")]
+        public ActionResult GetDepartment(int pageIndex = 1, int pageSize = 10, string filter = "")
+        {
+            long count = 0;
+            IEnumerable<BsonDocument> result = department.GetPageList(pageIndex, pageSize, "CreateTime", filter, new List<string>() { "DepartmentName" }, new List<string>() { }, out count);
+            return new ResponseModel<IEnumerable<BsonDocument>>(ErrorCode.success, result, count);
         }
         [Authorize(Roles = "admin")]
         public ActionResult Delete(string id)

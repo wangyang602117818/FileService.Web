@@ -64,19 +64,6 @@ class ConfigItem extends React.Component {
         )
     }
 }
-class ConfigToolBar extends React.Component {
-    constructor(props) {
-        super(props);
-    }
-    render() {
-        return (
-            <div className="config_toolbar">
-                <div className={this.props.section == "application" ? "config_info select" : "config_info"} onClick={this.props.onSectionChange} id="application">{culture.application}</div>
-                <div className={this.props.section == "config" ? "config_info select" : "config_info"} onClick={this.props.onSectionChange} id="config">{culture.config}</div>
-            </div>
-        )
-    }
-}
 class DeleteConfig extends React.Component {
     constructor(props) {
         super(props);
@@ -170,10 +157,10 @@ class Config extends React.Component {
     render() {
         return (
             <div className="main">
-                <h1>{culture.config}</h1>
+                <h1>{culture.extension}</h1>
                 <ConfigToolBar section={this.props.section}
                     onSectionChange={this.props.onSectionChange} />
-                <TitleArrow title={culture.all + culture.config}
+                <TitleArrow title={culture.all + culture.extension}
                     show={this.state.configShow}
                     count={this.state.data.count}
                     onShowChange={this.onPageShow.bind(this)} />
@@ -188,7 +175,7 @@ class Config extends React.Component {
                     nextPage={this.nextPage.bind(this)} />
                 <ConfigData data={this.state.data.result}
                     onExtensionClick={this.onExtensionClick.bind(this)} />
-                <TitleArrow title={culture.update + culture.config}
+                <TitleArrow title={culture.update + culture.extension}
                     show={this.state.configShow}
                     onShowChange={this.onConfigShow.bind(this)} />
                 <AddConfig
@@ -197,7 +184,7 @@ class Config extends React.Component {
                     ref="addconfig" />
                 {this.state.deleteShow ?
                     <TitleArrow
-                        title={culture.delete + culture.config + "(" + this.state.deleteName + ")"}
+                        title={culture.delete + culture.extension + "(" + this.state.deleteName + ")"}
                         show={this.state.deleteToggle}
                         onShowChange={this.onDeleteShow.bind(this)} /> : null}
                 {this.state.deleteShow ?
@@ -210,15 +197,29 @@ class Config extends React.Component {
 }
 for (var item in CommonUsePagination) Config.prototype[item] = CommonUsePagination[item];
 
+class ConfigToolBar extends React.Component {
+    constructor(props) {
+        super(props);
+    }
+    render() {
+        return (
+            <div className="config_toolbar">
+                <div className={this.props.section == "application" ? "config_info select" : "config_info"} onClick={this.props.onSectionChange} id="application">{culture.application}</div>
+                <div className={this.props.section == "config" ? "config_info select" : "config_info"} onClick={this.props.onSectionChange} id="config">{culture.extension}</div>
+            </div>
+        )
+    }
+}
 class ConfigContainer extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            section: "config"
+            section: localStorage.storageConfigSection || "config"
         }
     }
     onSectionChange(e) {
         var value = e.target.id.toLowerCase();
+        localStorage.storageConfigSection = value;
         this.setState({ section: value });
     }
     onRefreshChange(value) {

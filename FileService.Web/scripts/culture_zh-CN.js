@@ -123,5 +123,8 @@ var culture = {
     role: "角色",
     password_not_match: "密码不匹配",
     confirm: "确认",
-    auth_code: "认证编码"
+    auth_code: "认证编码",
+
+    department:"部门",
+    department_right: "部门权限"
 }

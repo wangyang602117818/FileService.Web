@@ -123,6 +123,8 @@ var culture = {
     role: "Role",
     password_not_match: "PassWord not matched",
     confirm: "confirm",
-    auth_code: "AuthCode"
+    auth_code: "AuthCode",
 
+    department:"Department",
+    department_right:"DepartmentACL"
 }

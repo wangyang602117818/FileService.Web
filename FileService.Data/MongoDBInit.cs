@@ -76,6 +76,21 @@ namespace FileService.Data
             {
                 Log4Net.InfoLog(ex.Message);
             }
+            try
+            {
+                database.CreateCollection("Department");
+                database.GetCollection<BsonDocument>("Department").InsertOne(new BsonDocument()
+                {
+                    {"DepartmentName","company" },
+                    {"Layer",1 },
+                    {"SubDepartment",new BsonArray() },
+                    {"CreateTime", DateTime.Now }
+                });
+            }
+            catch (Exception ex)
+            {
+                Log4Net.InfoLog(ex.Message);
+            }
         }
     }
 }
