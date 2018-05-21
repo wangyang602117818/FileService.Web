@@ -81,10 +81,11 @@ namespace FileService.Data
                 database.CreateCollection("Department");
                 database.GetCollection<BsonDocument>("Department").InsertOne(new BsonDocument()
                 {
-                    {"DepartmentName","company" },
-                    {"Layer",1 },
-                    {"SubDepartment",new BsonArray() },
-                    {"CreateTime", DateTime.Now }
+                    {"DepartmentName","Company" },
+                    {"Order",0 },
+                    {"Layer",0 },
+                    {"CreateTime", DateTime.Now },
+                    {"SubDepartment",new BsonArray() }
                 });
             }
             catch (Exception ex)
