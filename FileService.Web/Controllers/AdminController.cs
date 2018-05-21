@@ -119,13 +119,13 @@ namespace FileService.Web.Controllers
         public ActionResult GetTasks(int pageIndex = 1, int pageSize = 10, string filter = "")
         {
             long count = 0;
-            IEnumerable<BsonDocument> result = task.GetPageList(pageIndex, pageSize, "CreateTime", filter, new List<string>() { "FileName", "StateDesc", "HandlerId", "StateDesc", "Type" }, new List<string>() { }, out count);
+            IEnumerable<BsonDocument> result = task.GetPageList(pageIndex, pageSize, "CreateTime", filter, new List<string>() { "FileId","FileName", "StateDesc", "HandlerId", "StateDesc", "Type" }, new List<string>() { }, out count);
             return new ResponseModel<IEnumerable<BsonDocument>>(ErrorCode.success, result, count);
         }
         public ActionResult GetFiles(int pageIndex = 1, int pageSize = 10, string filter = "")
         {
             long count = 0;
-            IEnumerable<BsonDocument> result = files.GetPageList(pageIndex, pageSize, "uploadDate", filter, new List<string>() { "filename", "metadata.From", "metadata.FileType" }, new List<string>() { }, out count);
+            IEnumerable<BsonDocument> result = files.GetPageList(pageIndex, pageSize, "uploadDate", filter, new List<string>() { "_id","filename", "metadata.From", "metadata.FileType" }, new List<string>() { }, out count);
             return new ResponseModel<IEnumerable<BsonDocument>>(ErrorCode.success, result, count);
         }
         public ActionResult GetConvertFiles(int pageIndex = 1, int pageSize = 10, string filter = "")
@@ -228,7 +228,7 @@ namespace FileService.Web.Controllers
         public ActionResult GetLogs(int pageIndex = 1, int pageSize = 10, string filter = "")
         {
             long count = 0;
-            IEnumerable<BsonDocument> result = log.GetPageList(pageIndex, pageSize, "CreateTime", filter, new List<string>() { "AppName", "Content", "FileId" }, new List<string>() { }, out count);
+            IEnumerable<BsonDocument> result = log.GetPageList(pageIndex, pageSize, "CreateTime", filter, new List<string>() {"_id", "AppName", "Content", "FileId" }, new List<string>() { }, out count);
             return new ResponseModel<IEnumerable<BsonDocument>>(ErrorCode.success, result, count);
         }
         [Authorize(Roles = "admin,management")]

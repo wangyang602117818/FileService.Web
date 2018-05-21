@@ -65,7 +65,7 @@ namespace FileService.Data
         {
             return MongoCollection.ReplaceOne(new BsonDocument("_id", document["_id"].AsObjectId), document, new UpdateOptions() { IsUpsert = true }).IsAcknowledged;
         }
-        protected virtual FilterDefinition<BsonDocument> GetPageFilters(IEnumerable<string> fields,string filter)
+        protected virtual FilterDefinition<BsonDocument> GetPageFilters(IEnumerable<string> fields, string filter)
         {
             FilterDefinition<BsonDocument> filterBuilder = null;
             if (!string.IsNullOrEmpty(filter))
@@ -73,7 +73,17 @@ namespace FileService.Data
                 List<FilterDefinition<BsonDocument>> list = new List<FilterDefinition<BsonDocument>>();
                 foreach (string field in fields)
                 {
-                    list.Add(FilterBuilder.Regex(field, new Regex("^.*" + filter + ".*$", RegexOptions.IgnoreCase)));
+                    if (field == "_id" || field == "FileId")
+                    {
+                        if (ObjectId.TryParse(filter, out ObjectId objectId))
+                        {
+                            list.Add(FilterBuilder.Eq(field, objectId));
+                        }
+                    }
+                    else
+                    {
+                        list.Add(FilterBuilder.Regex(field, new Regex("^.*" + filter + ".*$", RegexOptions.IgnoreCase)));
+                    }
                 }
                 filterBuilder = FilterBuilder.Or(list);
             }

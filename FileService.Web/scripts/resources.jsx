@@ -18,7 +18,9 @@
                         <th width="4%">{culture.del}</th>
                     </tr>
                 </thead>
-                <ResourcesList data={this.props.data} deleteItem={this.props.deleteItem} onIdClick={this.props.onIdClick} />
+                <ResourcesList data={this.props.data}
+                    deleteItem={this.props.deleteItem}
+                    onIdClick={this.props.onIdClick} />
             </table>
         );
     }
@@ -70,13 +72,18 @@ class ResourceItem extends React.Component {
                 <td className="link"
                     data-type={this.props.resource.metadata.FileType.removeHTML()}
                     data-fileName={this.props.resource.filename.removeHTML()}
-                    data-fileId={this.props.resource._id.$oid}
-                    onClick={this.props.onIdClick}
-                ><b>{this.props.resource._id.$oid}</b>
+                    data-fileId={this.props.resource._id.$oid.removeHTML()}
+                    onClick={this.props.onIdClick}>
+                    <b
+                        data-type={this.props.resource.metadata.FileType.removeHTML()}
+                        data-fileName={this.props.resource.filename.removeHTML()}
+                        data-fileId={this.props.resource._id.$oid.removeHTML()}
+                        dangerouslySetInnerHTML={{ __html: this.props.resource._id.$oid }}>
+                    </b>
                 </td>
                 <td title={this.props.resource.filename.removeHTML()}>
                     <i className={"iconfont " + getIconNameByFileName(this.props.resource.filename.removeHTML())}></i>&nbsp;
-                    <span dangerouslySetInnerHTML={{ __html: this.props.resource.filename.getFileName(15) }}>
+                    <span dangerouslySetInnerHTML={{ __html: this.props.resource.filename.getFileName(15)}}>
                     </span>
                 </td>
                 <td>{convertFileSize(this.props.resource.length)}</td>
@@ -206,7 +213,7 @@ class Resources extends React.Component {
             fileType = "",
             fileName = "",
             subComponent = null;
-        if (e.target.nodeName.toLowerCase() == "b") {
+        if (e.target.nodeName.toLowerCase() == "span") {
             fileId = e.target.parentElement.getAttribute("data-fileId");
             fileName = e.target.parentElement.getAttribute("data-fileName");
             fileType = e.target.parentElement.getAttribute("data-type");

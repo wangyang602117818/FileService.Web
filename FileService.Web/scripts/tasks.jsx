@@ -18,7 +18,7 @@
                         <th width="4%">{culture.reDo}</th>
                     </tr>
                 </thead>
-                <TaskList data={this.props.data} getData={this.props.getData} onNameClick={this.props.onNameClick} />
+                <TaskList data={this.props.data} getData={this.props.getData} onIdClick={this.props.onIdClick} />
             </table>
         );
     }
@@ -42,7 +42,7 @@ class TaskList extends React.Component {
                 <tbody>
                     {this.props.data.map(function (item, i) {
                         return (
-                            <TaskItem task={item} key={i} getData={that.props.getData} onNameClick={that.props.onNameClick} />
+                            <TaskItem task={item} key={i} getData={that.props.getData} onIdClick={that.props.onIdClick} />
                         )
                     })}
                 </tbody>
@@ -75,8 +75,15 @@ class TaskItem extends React.Component {
         return (
             <tr>
                 <td className="link"
-                    onClick={this.props.onNameClick}
-                    id={this.props.task._id.$oid}><b>{this.props.task.FileId.$oid}</b></td>
+                    onClick={this.props.onIdClick}
+                    id={this.props.task._id.$oid.removeHTML()}
+                    data-name={this.props.task.FileName.removeHTML()}>
+                    <b
+                        id={this.props.task._id.$oid.removeHTML()}
+                        data-name={this.props.task.FileName.removeHTML()}
+                        dangerouslySetInnerHTML={{ __html: this.props.task.FileId.$oid }}
+                    ></b>
+                </td>
                 <td title={this.props.task.FileName.removeHTML()}>
                     <i className={"iconfont " + getIconNameByFileName(this.props.task.FileName.removeHTML())}></i>&nbsp;
                     <span dangerouslySetInnerHTML={{ __html: this.props.task.FileName.getFileName(10) }}></span>
@@ -129,14 +136,14 @@ class Tasks extends React.Component {
             this.setState({ taskToggle: true });
         }
     }
-    onNameClick(e) {
+    onIdClick(e) {
         var that = this;
         var id = e.target.id || e.target.parentElement.id;
         var name = "";
-        if (e.target.nodeName.toLowerCase() == "b") {
-            name = e.target.parentElement.nextElementSibling.title;
+        if (e.target.nodeName.toLowerCase() == "span") {
+            name = e.target.parentElement.getAttribute("data-name");
         } else {
-            name = e.target.nextElementSibling.title;
+            name = e.target.getAttribute("data-name");
         }
         this.setState({ taskShow: true, taskToggle: true, updateFileName: name }, function () {
             that.refs.update_task.getTaskById(id);
@@ -178,11 +185,11 @@ class Tasks extends React.Component {
                     nextPage={this.nextPage.bind(this)} />
                 <TasksData data={this.state.data.result}
                     getData={this.getData.bind(this)}
-                    onNameClick={this.onNameClick.bind(this)} />
+                    onIdClick={this.onIdClick.bind(this)} />
                 {this.state.taskShow ?
                     <TitleArrow title={culture.update + culture.task + "(" + this.state.updateFileName + ")"}
                         show={this.state.taskToggle}
-                onShowChange={this.onTaskShow.bind(this)} /> : null}
+                        onShowChange={this.onTaskShow.bind(this)} /> : null}
                 {this.state.taskShow ?
                     <TasksUpdate show={this.state.taskToggle} ref="update_task"
                         updateImage={this.updateImage.bind(this)}

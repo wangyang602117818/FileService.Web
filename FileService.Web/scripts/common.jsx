@@ -47,7 +47,9 @@ class Pagination extends React.Component {
 
                     {'\u00A0'}{'\u00A0'}{'\u00A0'}{'\u00A0'}
                     {culture.filter}:
-                    <input type="text" name="filter" value={this.props.filter}
+                    <input type="text" name="filter"
+                        size="25"
+                        value={this.props.filter}
                         className="filter"
                         onChange={this.props.onInput}
                         onKeyPress={this.props.onKeyPress} />
@@ -100,11 +102,11 @@ var CommonUsePagination = {
                     if (keyword.indexOf(".") > -1) {
                         var keywordArray = keyword.split(".");
                         if (doc[keywordArray[0]] && doc[keywordArray[0]][keywordArray[1]]) {
-                            doc[keywordArray[0]][keywordArray[1]] = doc[keywordArray[0]][keywordArray[1]].replace(new RegExp("" + this.state.filter + "", "ig"), this.matchKeyWord);
+                            doc[keywordArray[0]][keywordArray[1]] = doc[keywordArray[0]][keywordArray[1]].replace(new RegExp("" + trim(this.state.filter) + "", "ig"), this.matchKeyWord);
                         }
                     } else {
                         if (doc[keyword] && typeof doc[keyword]=="string") {
-                            doc[keyword] = doc[keyword].replace(new RegExp("" + this.state.filter + "", "ig"), this.matchKeyWord);
+                            doc[keyword] = doc[keyword].replace(new RegExp("" + trim(this.state.filter) + "", "ig"), this.matchKeyWord);
                         }
                     }
                 }

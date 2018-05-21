@@ -1,5 +1,8 @@
 ﻿var authCode = "3c9deb1f8f6e";
-var keywords = ["HandlerId",
+var keywords = [
+    "_id.$oid",
+    "FileId.$oid",
+    "HandlerId",
     "MachineName",
     "FileName",
     "StateDesc",

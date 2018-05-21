@@ -64,7 +64,8 @@ class LogItem extends React.Component {
     render() {
         return (
             <tr>
-                <td>{this.props.log._id.$oid}</td>
+                <td dangerouslySetInnerHTML={{ __html: this.props.log._id.$oid }}
+                ></td>
                 <td dangerouslySetInnerHTML={{ __html: this.props.log.AppName }}
                     id={this.props.log.AppName.removeHTML()}
                     onMouseOver={this.onMouseOver.bind(this)}>

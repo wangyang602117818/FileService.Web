@@ -4,7 +4,7 @@
     }
     render() {
         return (
-            <table className="table" style={{ width: "45%" }}>
+            <table className="table" style={{ width: "50%" }}>
                 <thead>
                     <tr>
                         <th width="25%">{culture.applicationName}</th>
