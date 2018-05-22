@@ -403,7 +403,7 @@ namespace FileService.Web.Controllers
         public ActionResult GetUsers(int pageIndex = 1, int pageSize = 10, string filter = "")
         {
             long count = 0;
-            IEnumerable<BsonDocument> result = user.GetPageList(pageIndex, pageSize, "CreateTime", filter, new List<string>() { "UserName", "Role" }, new List<string>() { "PassWord" }, out count);
+            IEnumerable<BsonDocument> result = user.GetPageList(pageIndex, pageSize, "CreateTime", filter, new List<string>() { "_id","UserName", "Role" }, new List<string>() { "PassWord" }, out count);
             return new ResponseModel<IEnumerable<BsonDocument>>(ErrorCode.success, result, count);
         }
         [Authorize(Roles = "admin")]
