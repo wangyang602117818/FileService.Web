@@ -4,17 +4,18 @@
     }
     render() {
         return (
-            <table className="table" style={{ width: "50%" }}>
+            <table className="table" style={{ width: "70%" }}>
                 <thead>
                     <tr>
-                        <th width="25%">{culture.applicationName}</th>
-                        <th width="20%">{culture.auth_code}</th>
-                        <th width="20%">{culture.action}</th>
-                        <th width="35%">{culture.createTime}</th>
+                        <td width="25%">{culture.id}</td>
+                        <th width="20%">{culture.applicationName}</th>
+                        <th width="15%">{culture.auth_code}</th>
+                        <th width="10%">{culture.action}</th>
+                        <th width="30%">{culture.createTime}</th>
                     </tr>
                 </thead>
                 <ApplicationList data={this.props.data}
-                    onAppNameClick={this.props.onAppNameClick}
+                    onIdClick={this.props.onIdClick}
                     deleteItem={this.props.deleteItem} />
             </table>
         );
@@ -40,7 +41,7 @@ class ApplicationList extends React.Component {
                     {this.props.data.map(function (item, i) {
                         return (
                             <ApplicationItem application={item} key={i}
-                                onAppNameClick={this.props.onAppNameClick}
+                                onIdClick={this.props.onIdClick}
                                 deleteItem={that.props.deleteItem} />
                         )
                     }.bind(this))}
@@ -56,9 +57,13 @@ class ApplicationItem extends React.Component {
     render() {
         return (
             <tr>
-                <td className="link" onClick={this.props.onAppNameClick} id={this.props.application._id.$oid}>
-                    <b dangerouslySetInnerHTML={{ __html: this.props.application.ApplicationName }}
-                        id={this.props.application._id.$oid}></b>
+                <td className="link"
+                    id={this.props.application._id.$oid.removeHTML()}
+                    onClick={this.props.onIdClick}>
+                    <b id={this.props.application._id.$oid.removeHTML()}
+                        dangerouslySetInnerHTML={{ __html: this.props.application._id.$oid }}></b>
+                </td>
+                <td dangerouslySetInnerHTML={{ __html: this.props.application.ApplicationName }}>
                 </td>
                 <td>{this.props.application.AuthCode}</td>
                 <td dangerouslySetInnerHTML={{ __html: this.props.application.Action }}></td>
@@ -149,11 +154,12 @@ class Application extends React.Component {
             this.setState({ deleteToggle: true });
         }
     }
-    onAppNameClick(e) {
+    onIdClick(e) {
         var id = e.target.id;
+        if (e.target.nodeName.toLowerCase() == "span") id = e.target.parentElement.id;
         http.get(urls.application.getapplicationUrl + "?id=" + id, function (data) {
             if (data.code == 0) {
-                this.refs.addApplication.onAppNameClick(data.result.ApplicationName, data.result.AuthCode, data.result.Action);
+                this.refs.addApplication.onIdClick(data.result.ApplicationName, data.result.AuthCode, data.result.Action);
                 this.setState({ deleteShow: true, deleteId: data.result._id.$oid, deleteName: data.result.ApplicationName });
             }
         }.bind(this));
@@ -177,7 +183,7 @@ class Application extends React.Component {
                     lastPage={this.lastPage.bind(this)}
                     nextPage={this.nextPage.bind(this)} />
                 <ApplicationData data={this.state.data.result}
-                    onAppNameClick={this.onAppNameClick.bind(this)}
+                    onIdClick={this.onIdClick.bind(this)}
                 />
                 <TitleArrow title={culture.add + culture.application}
                     show={this.state.applicationShow}

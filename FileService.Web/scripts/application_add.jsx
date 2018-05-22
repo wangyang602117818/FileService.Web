@@ -39,7 +39,7 @@
             });
         }
     }
-    onAppNameClick(appName, authCode, action) {
+    onIdClick(appName, authCode, action) {
         this.setState({ applicationName: appName, authCode: authCode, action: action });
     }
     render() {

@@ -119,13 +119,13 @@ namespace FileService.Web.Controllers
         public ActionResult GetTasks(int pageIndex = 1, int pageSize = 10, string filter = "")
         {
             long count = 0;
-            IEnumerable<BsonDocument> result = task.GetPageList(pageIndex, pageSize, "CreateTime", filter, new List<string>() { "FileId","FileName", "StateDesc", "HandlerId", "StateDesc", "Type" }, new List<string>() { }, out count);
+            IEnumerable<BsonDocument> result = task.GetPageList(pageIndex, pageSize, "CreateTime", filter, new List<string>() { "FileId", "FileName", "StateDesc", "HandlerId", "StateDesc", "Type" }, new List<string>() { }, out count);
             return new ResponseModel<IEnumerable<BsonDocument>>(ErrorCode.success, result, count);
         }
         public ActionResult GetFiles(int pageIndex = 1, int pageSize = 10, string filter = "")
         {
             long count = 0;
-            IEnumerable<BsonDocument> result = files.GetPageList(pageIndex, pageSize, "uploadDate", filter, new List<string>() { "_id","filename", "metadata.From", "metadata.FileType" }, new List<string>() { }, out count);
+            IEnumerable<BsonDocument> result = files.GetPageList(pageIndex, pageSize, "uploadDate", filter, new List<string>() { "_id", "filename", "metadata.From", "metadata.FileType" }, new List<string>() { }, out count);
             return new ResponseModel<IEnumerable<BsonDocument>>(ErrorCode.success, result, count);
         }
         public ActionResult GetConvertFiles(int pageIndex = 1, int pageSize = 10, string filter = "")
@@ -165,10 +165,6 @@ namespace FileService.Web.Controllers
                 if (doc.Contains("_id") && doc["_id"].AsObjectId != ObjectId.Empty)
                 {
                     result.Add(filesConvert.FindOne(doc["_id"].AsObjectId));
-                }
-                else
-                {
-                    result.Add(doc);
                 }
             }
             return new ResponseModel<List<BsonDocument>>(ErrorCode.success, result);
@@ -228,14 +224,14 @@ namespace FileService.Web.Controllers
         public ActionResult GetLogs(int pageIndex = 1, int pageSize = 10, string filter = "")
         {
             long count = 0;
-            IEnumerable<BsonDocument> result = log.GetPageList(pageIndex, pageSize, "CreateTime", filter, new List<string>() {"_id", "AppName", "Content", "FileId" }, new List<string>() { }, out count);
+            IEnumerable<BsonDocument> result = log.GetPageList(pageIndex, pageSize, "CreateTime", filter, new List<string>() { "_id", "AppName", "Content", "FileId" }, new List<string>() { }, out count);
             return new ResponseModel<IEnumerable<BsonDocument>>(ErrorCode.success, result, count);
         }
         [Authorize(Roles = "admin,management")]
         public ActionResult GetConfigs(int pageIndex = 1, int pageSize = 10, string filter = "")
         {
             long count = 0;
-            IEnumerable<BsonDocument> result = config.GetPageList(pageIndex, pageSize, "", filter, new List<string>() { "Extension", "Type", "Action" }, new List<string>() { }, out count);
+            IEnumerable<BsonDocument> result = config.GetPageList(pageIndex, pageSize, "", filter, new List<string>() { "_id", "Extension", "Type", "Action" }, new List<string>() { }, out count);
             return new ResponseModel<IEnumerable<BsonDocument>>(ErrorCode.success, result, count);
         }
         [Authorize(Roles = "admin,management")]
@@ -268,7 +264,7 @@ namespace FileService.Web.Controllers
         public ActionResult GetApplications(int pageIndex = 1, int pageSize = 10, string filter = "")
         {
             long count = 0;
-            IEnumerable<BsonDocument> result = application.GetPageList(pageIndex, pageSize, "", filter, new List<string>() { "ApplicationName", "Action" }, new List<string>() { }, out count);
+            IEnumerable<BsonDocument> result = application.GetPageList(pageIndex, pageSize, "", filter, new List<string>() { "_id", "ApplicationName", "Action" }, new List<string>() { }, out count);
             return new ResponseModel<IEnumerable<BsonDocument>>(ErrorCode.success, result, count);
         }
         [Authorize(Roles = "admin,management")]
@@ -432,9 +428,9 @@ namespace FileService.Web.Controllers
             return new ResponseModel<string>(ErrorCode.success, "");
         }
         [Authorize(Roles = "admin")]
-        public ActionResult GetUser(string name)
+        public ActionResult GetUser(string id)
         {
-            BsonDocument document = user.GetUser(name);
+            BsonDocument document = user.FindOne(ObjectId.Parse(id));
             return new ResponseModel<BsonDocument>(ErrorCode.success, document);
         }
         [Authorize(Roles = "admin")]

@@ -4,17 +4,18 @@
     }
     render() {
         return (
-            <table className="table" style={{ width: "50%" }}>
+            <table className="table" style={{width:"70%"}}>
                 <thead>
                     <tr>
-                        <th width="20%">{culture.extension}</th>
+                        <th width="25%">{culture.id}</th>
+                        <th width="15%">{culture.extension}</th>
                         <th width="20%">{culture.type}</th>
-                        <th width="20%">{culture.action}</th>
-                        <th width="40%">{culture.createTime}</th>
+                        <th width="10%">{culture.action}</th>
+                        <th width="30%">{culture.createTime}</th>
                     </tr>
                 </thead>
                 <ConfigList data={this.props.data}
-                    onExtensionClick={this.props.onExtensionClick}
+                    onIdClick={this.props.onIdClick}
                     deleteItem={this.props.deleteItem} />
             </table>
         );
@@ -40,7 +41,7 @@ class ConfigList extends React.Component {
                     {this.props.data.map(function (item, i) {
                         return (
                             <ConfigItem config={item} key={i}
-                                onExtensionClick={this.props.onExtensionClick}
+                                onIdClick={this.props.onIdClick}
                                 deleteItem={that.props.deleteItem} />
                         )
                     }.bind(this))}
@@ -56,7 +57,14 @@ class ConfigItem extends React.Component {
     render() {
         return (
             <tr>
-                <td className="link" onClick={this.props.onExtensionClick} id={this.props.config._id.$oid}><b dangerouslySetInnerHTML={{ __html: this.props.config.Extension }} id={this.props.config._id.$oid}></b></td>
+                <td className="link"
+                    onClick={this.props.onIdClick}
+                    id={this.props.config._id.$oid.removeHTML()}>
+                    <b id={this.props.config._id.$oid.removeHTML()}
+                        dangerouslySetInnerHTML={{ __html: this.props.config._id.$oid }}></b>
+                </td>
+                <td dangerouslySetInnerHTML={{ __html: this.props.config.Extension }}>
+                </td>
                 <td dangerouslySetInnerHTML={{ __html: this.props.config.Type }}></td>
                 <td dangerouslySetInnerHTML={{ __html: this.props.config.Action }}></td>
                 <td>{parseBsonTime(this.props.config.CreateTime)}</td>
@@ -145,11 +153,12 @@ class Config extends React.Component {
             this.setState({ deleteToggle: true });
         }
     }
-    onExtensionClick(e) {
+    onIdClick(e) {
         var id = e.target.id;
+        if (e.target.nodeName.toLowerCase() == "span") id = e.target.parentElement.id;
         http.get(urls.config.getConfigUrl + "/" + id, function (data) {
             if (data.code == 0) {
-                this.refs.addconfig.onExtensionClick(data.result.Extension, data.result.Type, data.result.Action);
+                this.refs.addconfig.onIdClick(data.result.Extension, data.result.Type, data.result.Action);
                 this.setState({ deleteShow: true, deleteId: data.result._id.$oid, deleteName: data.result.Extension });
             }
         }.bind(this));
@@ -174,7 +183,7 @@ class Config extends React.Component {
                     lastPage={this.lastPage.bind(this)}
                     nextPage={this.nextPage.bind(this)} />
                 <ConfigData data={this.state.data.result}
-                    onExtensionClick={this.onExtensionClick.bind(this)} />
+                    onIdClick={this.onIdClick.bind(this)} />
                 <TitleArrow title={culture.update + culture.extension}
                     show={this.state.configShow}
                     onShowChange={this.onConfigShow.bind(this)} />

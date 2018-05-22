@@ -7,13 +7,14 @@
             <table className="table table_user">
                 <thead>
                     <tr>
+                        <td width="25%">{culture.id}</td>
                         <th width="20%">{culture.username}</th>
-                        <th width="30%">{culture.password}</th>
-                        <th width="20%">{culture.role}</th>
+                        <th width="15%">{culture.password}</th>
+                        <th width="10%">{culture.role}</th>
                         <th width="30%">{culture.createTime}</th>
                     </tr>
                 </thead>
-                <UserList data={this.props.data} onNameClick={this.props.onNameClick} />
+                <UserList data={this.props.data} onIdClick={this.props.onIdClick} />
             </table>
         );
     }
@@ -36,7 +37,7 @@ class UserList extends React.Component {
                 <tbody>
                     {this.props.data.map(function (item, i) {
                         return (
-                            <UserItem user={item} key={i} onNameClick={this.props.onNameClick} />
+                            <UserItem user={item} key={i} onIdClick={this.props.onIdClick} />
                         )
                     }.bind(this))}
                 </tbody>
@@ -51,8 +52,14 @@ class UserItem extends React.Component {
     render() {
         return (
             <tr>
-                <td className="link" onClick={this.props.onNameClick}>
-                    <b dangerouslySetInnerHTML={{ __html: this.props.user.UserName }}></b>
+                <td className="link"
+                    id={this.props.user._id.$oid.removeHTML()}
+                    onClick={this.props.onIdClick}
+                >
+                    <b id={this.props.user._id.$oid.removeHTML()}
+                        dangerouslySetInnerHTML={{ __html: this.props.user._id.$oid }}></b>
+                </td>
+                <td dangerouslySetInnerHTML={{ __html: this.props.user.UserName }}>
                 </td>
                 <td>******</td>
                 <td dangerouslySetInnerHTML={{ __html: this.props.user.Role }}></td>
@@ -119,19 +126,15 @@ class User extends React.Component {
             this.setState({ deleteToggle: true });
         }
     }
-    onNameClick(e) {
-        var name = e.target.innerText;
-        var role = "";
-        if (e.target.nodeName.toLowerCase() == "b") {
-            role = e.target.parentElement.nextElementSibling.nextElementSibling.innerText;
-        } else if (e.target.nodeName.toLowerCase() == "span") {
-            name = e.target.parentElement.innerText;
-            role = e.target.parentElement.parentElement.nextElementSibling.nextElementSibling.innerText;
-        } else {
-            role = e.target.nextElementSibling.nextElementSibling.innerText;
-        }
-        this.refs.add_user.changeState(name, role);
-        this.setState({ deleteShow: true, deleteName: name });
+    onIdClick(e) {
+        var id = e.target.id;
+        if (e.target.nodeName.toLowerCase() == "span") id = e.target.parentElement.id;
+        http.get(urls.user.getUserUrl + "/" + id, function (data) {
+            if (data.code == 0) {
+                this.refs.add_user.changeState(data.result.UserName, data.result.Role);
+                this.setState({ deleteShow: true, deleteName: data.result.UserName });
+            }
+        }.bind(this));
     }
     addUser(obj, success) {
         var that = this;
@@ -171,7 +174,7 @@ class User extends React.Component {
                     lastPage={this.lastPage.bind(this)}
                     nextPage={this.nextPage.bind(this)} />
                 <UserData data={this.state.data.result}
-                    onNameClick={this.onNameClick.bind(this)} />
+                    onIdClick={this.onIdClick.bind(this)} />
                 <TitleArrow title={culture.add + culture.user}
                     show={this.state.userShow}
                     onShowChange={this.onUserShow.bind(this)} />

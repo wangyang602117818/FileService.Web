@@ -29,7 +29,7 @@
             });
         }
     }
-    onExtensionClick(extension, type, action) {
+    onIdClick(extension, type, action) {
         this.setState({ extension: extension, type: type, action: action });
     }
     render() {
