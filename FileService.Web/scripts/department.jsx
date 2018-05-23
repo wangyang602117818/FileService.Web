@@ -4,7 +4,7 @@
     }
     render() {
         return (
-            <table className="table" style={{ width: "60%" }}>
+            <table className="table" style={{ width: "70%" }}>
                 <thead>
                     <tr>
                         <th width="30%">{culture.id}</th>
@@ -131,7 +131,7 @@ class Department extends React.Component {
                     nextPage={this.nextPage.bind(this)} />
                 <DepartmentData
                     data={this.state.data.result}
-                    onDepartmentClick={this.onDepartmentClick.bind(this)} />
+                    onIdClick={this.onIdClick.bind(this)} />
 
             </div>
         );
