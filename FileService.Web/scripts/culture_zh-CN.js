@@ -1,7 +1,7 @@
 ﻿var current_culture = "zh-CN";
 var culture = {
     lang: "EN",
-    all:"所有",
+    all: "所有",
     username: "用户名",
     password: "密码",
     login: "登陆",
@@ -16,9 +16,9 @@ var culture = {
     tasks: "转换任务",
     task: "任务",
     resources: "资源列表",
-    resource:"资源",
+    resource: "资源",
     logs: "操作日志",
-    log:"日志",
+    log: "日志",
     configs: "配置管理",
     config: "配置",
     users: "用户管理",
@@ -125,6 +125,10 @@ var culture = {
     confirm: "确认",
     auth_code: "认证编码",
 
-    department:"部门",
-    department_right: "部门权限"
+    department: "部门",
+    department_right: "部门权限",
+    department_name: "部门名称",
+    modified: "已修改",
+    order: "顺序",
+    layer: "层级"
 }

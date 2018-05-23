@@ -84,8 +84,8 @@ namespace FileService.Data
                     {"DepartmentName","Company" },
                     {"Order",0 },
                     {"Layer",0 },
-                    {"CreateTime", DateTime.Now },
-                    {"SubDepartment",new BsonArray() }
+                    {"Department",new BsonArray() },
+                    {"CreateTime", DateTime.Now }
                 });
             }
             catch (Exception ex)

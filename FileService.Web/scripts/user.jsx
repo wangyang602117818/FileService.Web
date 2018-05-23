@@ -11,7 +11,8 @@
                         <th width="20%">{culture.username}</th>
                         <th width="15%">{culture.password}</th>
                         <th width="10%">{culture.role}</th>
-                        <th width="30%">{culture.createTime}</th>
+                        <th width="10%">{culture.modified}</th>
+                        <th width="20%">{culture.createTime}</th>
                     </tr>
                 </thead>
                 <UserList data={this.props.data} onIdClick={this.props.onIdClick} />
@@ -63,6 +64,7 @@ class UserItem extends React.Component {
                 </td>
                 <td>******</td>
                 <td dangerouslySetInnerHTML={{ __html: this.props.user.Role }}></td>
+                <td>{this.props.user.Modified.toString()}</td>
                 <td>{parseBsonTime(this.props.user.CreateTime)}</td>
             </tr>
 
@@ -85,7 +87,6 @@ class DeleteUser extends React.Component {
                         </tr>
                     </tbody>
                 </table>
-
             </div>
         )
     }

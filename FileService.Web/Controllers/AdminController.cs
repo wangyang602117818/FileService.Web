@@ -403,7 +403,7 @@ namespace FileService.Web.Controllers
         public ActionResult GetUsers(int pageIndex = 1, int pageSize = 10, string filter = "")
         {
             long count = 0;
-            IEnumerable<BsonDocument> result = user.GetPageList(pageIndex, pageSize, "CreateTime", filter, new List<string>() { "_id","UserName", "Role" }, new List<string>() { "PassWord" }, out count);
+            IEnumerable<BsonDocument> result = user.GetPageList(pageIndex, pageSize, "CreateTime", filter, new List<string>() { "_id", "UserName", "Role" }, new List<string>() { "PassWord" }, out count);
             return new ResponseModel<IEnumerable<BsonDocument>>(ErrorCode.success, result, count);
         }
         [Authorize(Roles = "admin")]
@@ -444,11 +444,16 @@ namespace FileService.Web.Controllers
             return new ResponseModel<string>(ErrorCode.server_exception, "");
         }
         [Authorize(Roles = "admin")]
-        public ActionResult GetDepartment(int pageIndex = 1, int pageSize = 10, string filter = "")
+        public ActionResult GetDepartments(int pageIndex = 1, int pageSize = 10, string filter = "")
         {
             long count = 0;
-            IEnumerable<BsonDocument> result = department.GetPageList(pageIndex, pageSize, "CreateTime", filter, new List<string>() { "DepartmentName" }, new List<string>() { }, out count);
+            IEnumerable<BsonDocument> result = department.GetPageList(pageIndex, pageSize, "CreateTime", filter, new List<string>() { "_id", "DepartmentName" }, new List<string>() { }, out count);
             return new ResponseModel<IEnumerable<BsonDocument>>(ErrorCode.success, result, count);
+        }
+        [Authorize(Roles = "admin")]
+        public ActionResult GetDepartment(string id)
+        {
+            return new ResponseModel<BsonDocument>(ErrorCode.success, department.FindOne(ObjectId.Parse(id)));
         }
         [Authorize(Roles = "admin")]
         public ActionResult Delete(string id)

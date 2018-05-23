@@ -125,6 +125,10 @@ var culture = {
     confirm: "confirm",
     auth_code: "AuthCode",
 
-    department:"Department",
-    department_right:"DepartmentACL"
+    department: "Department",
+    department_right: "DepartmentACL",
+    department_name: "DepartmentName",
+    modified: "Modified",
+    order: "Order",
+    layer: "Layer"
 }

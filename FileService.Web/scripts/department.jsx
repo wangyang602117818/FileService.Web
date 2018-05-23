@@ -4,16 +4,19 @@
     }
     render() {
         return (
-            <table className="table" style={{ width: "50%" }}>
+            <table className="table" style={{ width: "60%" }}>
                 <thead>
                     <tr>
-                        <th width="50%">{culture.department}</th>
-                        <th width="50%">{culture.createTime}</th>
+                        <th width="30%">{culture.id}</th>
+                        <th width="20%">{culture.department_name}</th>
+                        <th width="10%">{culture.order}</th>
+                        <th width="10%">{culture.layer}</th>
+                        <th width="30%">{culture.createTime}</th>
                     </tr>
                 </thead>
                 <DepartmentList
                     data={this.props.data}
-                    onDepartmentClick={this.props.onDepartmentClick}
+                    onIdClick={this.props.onIdClick}
                     deleteItem={this.props.deleteItem} />
             </table>
         );
@@ -39,7 +42,7 @@ class DepartmentList extends React.Component {
                     {this.props.data.map(function (item, i) {
                         return (
                             <DepartmentItem department={item} key={i}
-                                onDepartmentClick={this.props.onDepartmentClick}
+                                onIdClick={this.props.onIdClick}
                                 deleteItem={that.props.deleteItem} />
                         )
                     }.bind(this))}
@@ -56,10 +59,14 @@ class DepartmentItem extends React.Component {
         return (
             <tr>
                 <td className="link"
-                    onClick={this.props.onDepartmentClick}
-                    id={this.props.department._id.$oid}>
-                    <b dangerouslySetInnerHTML={{ __html: this.props.department.DepartmentName }} id={this.props.department._id.$oid}></b>
+                    id={this.props.department._id.$oid.removeHTML()}>
+                    <b id={this.props.department._id.$oid.removeHTML()}
+                       dangerouslySetInnerHTML={{ __html: this.props.department._id.$oid }}>
+                    </b>
                 </td>
+                <td dangerouslySetInnerHTML={{ __html: this.props.department.DepartmentName }}></td>
+                <td>{this.props.department.Order}</td>
+                <td>{this.props.department.Layer}</td>
                 <td>{parseBsonTime(this.props.department.CreateTime)}</td>
             </tr>
         )
@@ -94,9 +101,9 @@ class Department extends React.Component {
             localStorage.department_add = true;
         }
     }
-    onDepartmentClick(e) {
-        var id = e.target.id;
-        http.get(urls.department.getConfigUrl + "/" + id, function (data) {
+    onIdClick(e) {
+        var id = e.target.id || e.target.parentElement.id;
+        http.get(urls.department.getDepartmentUrl + "/" + id, function (data) {
             //if (data.code == 0) {
             //    this.refs.addconfig.onExtensionClick(data.result.Extension, data.result.Type, data.result.Action);
             //    this.setState({ deleteShow: true, deleteId: data.result._id.$oid, deleteName: data.result.Extension });

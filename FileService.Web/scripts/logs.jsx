@@ -85,7 +85,7 @@ class Logs extends React.Component {
         this.state = {
             pageShow: localStorage.log ? eval(localStorage.log) : true,
             pageIndex: 1,
-            pageSize: localStorage.log_pageSize || 10,
+            pageSize: localStorage.log_pageSize || 15,
             pageCount: 1,
             filter: "",
             data: { code: 0, message: "", count: 0, result: [] }

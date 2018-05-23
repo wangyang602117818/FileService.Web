@@ -146,7 +146,8 @@ var urls = {
         deleteUserUrl: appDomain + "admin/deleteuser"
     },
     department: {
-        getUrl: appDomain + "admin/getdepartment",
+        getUrl: appDomain + "admin/getdepartments",
+        getDepartmentUrl: appDomain + "admin/getdepartment"
     }
 }
 function setCookie(cname, cvalue, exdays) {
