@@ -130,5 +130,6 @@ var culture = {
     department_name: "DepartmentName",
     modified: "Modified",
     order: "Order",
-    layer: "Layer"
+    layer: "Layer",
+    add_sub_department:"Add Sub Department"
 }

@@ -130,5 +130,6 @@ var culture = {
     department_name: "部门名称",
     modified: "已修改",
     order: "顺序",
-    layer: "层级"
+    layer: "层级",
+    add_sub_department: "添加子部门"
 }

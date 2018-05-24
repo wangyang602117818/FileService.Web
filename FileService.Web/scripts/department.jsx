@@ -132,7 +132,10 @@ class Department extends React.Component {
                 <DepartmentData
                     data={this.state.data.result}
                     onIdClick={this.onIdClick.bind(this)} />
-
+                <TitleArrow title={culture.add_sub_department}
+                    show={this.state.departmentShow}
+                    onShowChange={this.onDepartmentShow.bind(this)} />
+                <AddSubDepartment show={this.state.departmentShow}/>
             </div>
         );
     }
