@@ -40,7 +40,8 @@
                             <td colSpan="2"><input type="button"
                                 value={culture.add}
                                 className="button"
-                                onClick={this.addDepartment.bind(this)} /><font color="red">{" " + this.state.message}</font></td>
+                                onClick={this.addDepartment.bind(this)} /><font color="red">{" " + this.state.message}</font>
+                            </td>
                         </ tr>
                     </tbody>
                 </table>
