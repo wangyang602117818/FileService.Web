@@ -8,8 +8,14 @@
             message: ""
         };
     }
-    nameChanged() {
-
+    nameChanged(e) {
+        this.setState({ departmentName: e.target.value });
+    }
+    orderChanged(e) {
+        this.setState({ order: e.target.value });
+    }
+    layerChanged(e) {
+        this.setState({ layer: e.target.value });
     }
     addDepartment() {
 
@@ -30,11 +36,23 @@
                         </tr>
                         <tr>
                             <td>{culture.order}:</td>
-                            <td></td>
+                            <td>
+                                <input type="text"
+                                    name="order"
+                                    size="6"
+                                    value={this.state.order}
+                                    onChange={this.orderChanged.bind(this)} /><font color="red">*</font>
+                            </td>
                         </tr>
                         <tr>
                             <td>{culture.layer}:</td>
-                            <td></td>
+                            <td>
+                                <input type="text"
+                                    name="layer"
+                                    size="6"
+                                    value={this.state.layer}
+                                    onChange={this.layerChanged.bind(this)} /><font color="red">*</font>
+                            </td>
                         </tr>
                         <tr>
                             <td colSpan="2"><input type="button"

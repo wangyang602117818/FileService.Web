@@ -24,7 +24,7 @@ namespace FileService.Web.Controllers
         FilesConvert filesConvert = new FilesConvert();
         MongoFileConvert mongoFileConvert = new MongoFileConvert();
         User user = new User();
-        Department department = new Department();
+        Business.Department department = new Business.Department();
         Converter converter = new Converter();
         Task task = new Task();
         Thumbnail thumbnail = new Thumbnail();
@@ -442,6 +442,12 @@ namespace FileService.Web.Controllers
                 return new ResponseModel<string>(ErrorCode.success, "");
             }
             return new ResponseModel<string>(ErrorCode.server_exception, "");
+        }
+        [Authorize(Roles = "admin")]
+        public ActionResult AddDepartment(DepartmentForm departmentForm)
+        {
+            department.Insert(departmentForm.ToBsonDocument());
+            return new ResponseModel<string>(ErrorCode.success, null);
         }
         [Authorize(Roles = "admin")]
         public ActionResult GetDepartments(int pageIndex = 1, int pageSize = 10, string filter = "")
