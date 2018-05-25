@@ -46,6 +46,7 @@
   <ItemGroup>
     <Compile Include="AttachmentOutput.cs" />
     <Compile Include="ConverterStateEnum.cs" />
+    <Compile Include="DepartmentSelect.cs" />
     <Compile Include="ImageModelEnum.cs" />
     <Compile Include="ImageOutPut.cs" />
     <Compile Include="OfficeFormatList.cs" />

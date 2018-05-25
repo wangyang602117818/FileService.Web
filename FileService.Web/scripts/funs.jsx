@@ -17,7 +17,8 @@ var keywords = [
     "Action",
     "ApplicationName",
     "UserName",
-    "Role"];
+    "Role",
+    "DepartmentName", "DepartmentCode"];
 var http = {
     post: function (url, data, success, progress, error) {
         var formData = new FormData();
@@ -147,7 +148,10 @@ var urls = {
     },
     department: {
         getUrl: appDomain + "admin/getdepartments",
-        getDepartmentUrl: appDomain + "admin/getdepartment"
+        addDepartmentUrl: appDomain + "admin/adddepartment",
+        getDepartmentUrl: appDomain + "admin/getdepartment",
+        getDepartmentSelect: appDomain + "admin/getdepartmentselect",
+        deleteUrl: appDomain + "admin/deletedepartment"
     }
 }
 function setCookie(cname, cvalue, exdays) {

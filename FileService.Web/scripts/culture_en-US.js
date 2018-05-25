@@ -131,5 +131,10 @@ var culture = {
     modified: "Modified",
     order: "Order",
     layer: "Layer",
-    add_sub_department:"Add Sub Department"
+    add_sub_department: "Add Sub Department",
+    update_department: "Update Department",
+    department_code: "DepartmentCode",
+    parent_code: "ParentCode",
+    delete_department: "Delete Department",
+    parent_department: "Parent Department"
 }

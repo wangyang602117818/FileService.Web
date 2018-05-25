@@ -24,7 +24,7 @@ namespace FileService.Web.Controllers
         FilesConvert filesConvert = new FilesConvert();
         MongoFileConvert mongoFileConvert = new MongoFileConvert();
         User user = new User();
-        Business.Department department = new Business.Department();
+        Department department = new Department();
         Converter converter = new Converter();
         Task task = new Task();
         Thumbnail thumbnail = new Thumbnail();
@@ -446,6 +446,9 @@ namespace FileService.Web.Controllers
         [Authorize(Roles = "admin")]
         public ActionResult AddDepartment(DepartmentForm departmentForm)
         {
+            if (departmentForm.Order == null) departmentForm.Order = 0;
+            departmentForm.CreateTime = DateTime.Now;
+            departmentForm.Layer = department.GetLayer(departmentForm.ParentCode) + 1;
             department.Insert(departmentForm.ToBsonDocument());
             return new ResponseModel<string>(ErrorCode.success, null);
         }
@@ -453,13 +456,29 @@ namespace FileService.Web.Controllers
         public ActionResult GetDepartments(int pageIndex = 1, int pageSize = 10, string filter = "")
         {
             long count = 0;
-            IEnumerable<BsonDocument> result = department.GetPageList(pageIndex, pageSize, "CreateTime", filter, new List<string>() { "_id", "DepartmentName" }, new List<string>() { }, out count);
+            IEnumerable<BsonDocument> result = department.GetPageList(pageIndex, pageSize, "CreateTime", filter, new List<string>() { "_id", "DepartmentName", "DepartmentCode" }, new List<string>() { }, out count);
             return new ResponseModel<IEnumerable<BsonDocument>>(ErrorCode.success, result, count);
         }
         [Authorize(Roles = "admin")]
         public ActionResult GetDepartment(string id)
         {
             return new ResponseModel<BsonDocument>(ErrorCode.success, department.FindOne(ObjectId.Parse(id)));
+        }
+        [Authorize(Roles = "admin")]
+        public ActionResult GetDepartmentSelect()
+        {
+            DepartmentSelect departmentSelect = department.GetDepartmentSelect();
+            return new ResponseModel<DepartmentSelect>(ErrorCode.success, departmentSelect);
+        }
+        [Authorize(Roles = "admin")]
+        public ActionResult DeleteDepartment(string id)
+        {
+            if (department.DeleteOne(ObjectId.Parse(id)))
+            {
+                Log("-", "DeleteDepartment");
+                return new ResponseModel<string>(ErrorCode.success, "");
+            }
+            return new ResponseModel<string>(ErrorCode.server_exception, "");
         }
         [Authorize(Roles = "admin")]
         public ActionResult Delete(string id)

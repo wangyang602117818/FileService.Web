@@ -82,9 +82,10 @@ namespace FileService.Data
                 database.GetCollection<BsonDocument>("Department").InsertOne(new BsonDocument()
                 {
                     {"DepartmentName","Company" },
+                    {"DepartmentCode",new Random().RandomCodeHex(12) },
                     {"Order",0 },
                     {"Layer",0 },
-                    {"Department",new BsonArray() },
+                    {"ParentCode",BsonNull.Value },
                     {"CreateTime", DateTime.Now }
                 });
             }

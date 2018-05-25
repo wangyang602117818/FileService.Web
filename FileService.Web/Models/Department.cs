@@ -11,9 +11,11 @@ namespace FileService.Web.Models
         [Required]
         public string DepartmentName { get; set; }
         [Required]
+        public string DepartmentCode { get; set; }
         public int? Order { get; set; }
-        [Required]
         public int? Layer { get; set; }
-        public List<DepartmentForm> Department { get; set; }
+        [Required]
+        public string ParentCode { get; set; }
+        public DateTime CreateTime { get; set; }
     }
 }

@@ -105,7 +105,7 @@ class Application extends React.Component {
             deleteShow: false,
             deleteToggle: false,
             deleteName: "",
-            deleteId:"",
+            deleteId: "",
             pageIndex: 1,
             pageSize: localStorage.application_pageSize || 10,
             pageCount: 1,
@@ -155,8 +155,7 @@ class Application extends React.Component {
         }
     }
     onIdClick(e) {
-        var id = e.target.id;
-        if (e.target.nodeName.toLowerCase() == "span") id = e.target.parentElement.id;
+        var id = e.target.id || e.target.parentElement.id;
         http.get(urls.application.getapplicationUrl + "?id=" + id, function (data) {
             if (data.code == 0) {
                 this.refs.addApplication.onIdClick(data.result.ApplicationName, data.result.AuthCode, data.result.Action);
@@ -188,7 +187,10 @@ class Application extends React.Component {
                 <TitleArrow title={culture.add + culture.application}
                     show={this.state.applicationShow}
                     onShowChange={this.onApplicationShow.bind(this)} />
-                <AddApplication show={this.state.applicationShow} addApplication={this.addApplication.bind(this)} ref="addApplication" />
+                <AddApplication show={this.state.applicationShow}
+                    ref="addApplication"
+                    addApplication={this.addApplication.bind(this)}
+                />
                 {this.state.deleteShow ?
                     <TitleArrow
                         title={culture.delete + culture.application + "(" + this.state.deleteName + ")"}

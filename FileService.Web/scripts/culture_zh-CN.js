@@ -131,5 +131,10 @@ var culture = {
     modified: "已修改",
     order: "顺序",
     layer: "层级",
-    add_sub_department: "添加子部门"
+    add_sub_department: "添加子部门",
+    update_department: "修改部门",
+    department_code: "部门编码",
+    parent_code: "上级编码",
+    delete_department: "删除部门",
+    parent_department:"上级部门"
 }
