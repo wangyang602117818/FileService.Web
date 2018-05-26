@@ -88,6 +88,7 @@ namespace FileService.Web
                 .Include("~/css/iconfont.css")
                 .Include("~/css/index.css")
                 .Include("~/css/page.css")
+                .Include("~/css/org_chart.css")
             );
             bundles.Add(new StyleBundle("~/css/preview")
                .Include("~/css/preview.css")

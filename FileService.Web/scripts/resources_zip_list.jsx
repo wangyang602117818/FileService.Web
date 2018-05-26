@@ -60,7 +60,7 @@ class ZipFileList extends React.Component {
                 <tbody>
                     {this.props.data.map(function (item, i) {
                         return (
-                            <tr>
+                            <tr key={i}>
                                 <td>{item._id.$oid}</td>
                                 <td>{item.FileName}</td>
                                 <td>{convertFileSize(item.Length)}</td>

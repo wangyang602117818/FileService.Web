@@ -8,11 +8,9 @@
                 <thead>
                     <tr>
                         <th width="25%">{culture.id}</th>
-                        <th width="20%">{culture.department_name}</th>
-                        <th width="15%">{culture.department_code}</th>
-                        <th width="10%">{culture.order}</th>
-                        <th width="10%">{culture.layer}</th>
-                        <th width="20%">{culture.createTime}</th>
+                        <th width="25%">{culture.department_name}</th>
+                        <th width="25%">{culture.department_code}</th>
+                        <th width="25%">{culture.createTime}</th>
                     </tr>
                 </thead>
                 <DepartmentList
@@ -68,49 +66,21 @@ class DepartmentItem extends React.Component {
                 </td>
                 <td dangerouslySetInnerHTML={{ __html: this.props.department.DepartmentName }}></td>
                 <td dangerouslySetInnerHTML={{ __html: this.props.department.DepartmentCode }}></td>
-                <td>{this.props.department.Order}</td>
-                <td>{this.props.department.Layer}</td>
                 <td>{parseBsonTime(this.props.department.CreateTime)}</td>
             </tr>
         )
     }
 }
-class DeleteDepartment extends React.Component {
-    constructor(props) {
-        super(props);
-    }
-    render() {
-        return (
-            <div className={this.props.show ? "show" : "hidden"}>
-                <table className="table" style={{ border: "0" }}>
-                    <tbody>
-                        <tr>
-                            <td style={{ border: "0" }}>
-                                <input type="button"
-                                    value={culture.delete}
-                                    className="button"
-                                    onClick={this.props.deleteItem.bind(this)} />
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        )
-    }
-}
+
 class Department extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             pageShow: localStorage.department ? eval(localStorage.department) : true,
             addDepartmentShow: localStorage.department_add ? eval(localStorage.department_add) : true,
-            updateDepartmentShow: localStorage.update_department_show ? eval(localStorage.update_department_show) : true,
-            deleteShow: false,
-            deleteToggle: false,
-            id: "",
-            departmentName: "",
-            departmentCode: "",
-            randomCode: "",
+            replaceDepartmentShow: localStorage.replace_department_show ? eval(localStorage.replace_department_show) : true,
+            departmentDetailShow: false,
+            department: null,
             pageIndex: 1,
             pageSize: localStorage.department_pageSize || 10,
             pageCount: 1,
@@ -131,40 +101,12 @@ class Department extends React.Component {
         }
     }
     onUpdateDepartmentShow() {
-        if (this.state.updateDepartmentShow) {
-            this.setState({ updateDepartmentShow: false });
-            localStorage.update_department_show = false;
+        if (this.state.replaceDepartmentShow) {
+            this.setState({ replaceDepartmentShow: false });
+            localStorage.replace_department_show = false;
         } else {
-            this.setState({ updateDepartmentShow: true });
-            localStorage.update_department_show = true;
-        }
-    }
-    onDeleteShow(e) {
-        if (this.state.deleteToggle) {
-            this.setState({ deleteToggle: false });
-        } else {
-            this.setState({ deleteToggle: true });
-        }
-    }
-    addDepartment(para, success) {
-        http.post(urls.department.addDepartmentUrl, para, function (data) {
-            if (data.code == 0) this.getData();
-            success(data);
-        }.bind(this));
-    }
-    deleteDepartment() {
-        var id = this.state.id;
-        if (window.confirm(" " + culture.delete + " ?")) {
-            var that = this;
-            http.get(urls.department.deleteUrl + "/" + id, function (data) {
-                if (data.code == 0) {
-                    that.getData();
-                    that.setState({ deleteShow: false });
-                }
-                else {
-                    alert(data.message);
-                }
-            });
+            this.setState({ replaceDepartmentShow: true });
+            localStorage.replace_department_show = true;
         }
     }
     onIdClick(e) {
@@ -176,8 +118,8 @@ class Department extends React.Component {
                 //    data.result.Order,
                 //    data.result.ParentId);
                 //this.setState({ deleteShow: true, deleteId: data.result._id.$oid, deleteName: data.result.Extension });
-                this.setState({ id: data.result._id.$oid, departmentName: data.result.DepartmentName, departmentCode: data.result.DepartmentCode, deleteShow: true });
-                this.refs.addDepartment.getHexCode();
+                this.setState({ departmentDetailShow: true, department: data.result });
+                this.refs.replaceDepartment.getHexCode();
             }
         }.bind(this));
     }
@@ -203,26 +145,19 @@ class Department extends React.Component {
                 <DepartmentData
                     data={this.state.data.result}
                     onIdClick={this.onIdClick.bind(this)} />
-                <TitleArrow title={culture.update_department}
-                    show={this.state.updateDepartmentShow}
-                    onShowChange={this.onUpdateDepartmentShow.bind(this)} />
-                <UpdateDepartment show={this.state.updateDepartmentShow} />
-                <TitleArrow title={culture.add_sub_department + "(" + this.state.departmentName + ")"}
-                    show={this.state.addDepartmentShow}
-                    onShowChange={this.onDepartmentShow.bind(this)} />
-                <AddSubDepartment ref="addDepartment"
-                    randomCode={this.state.randomCode}
-                    addDepartment={this.addDepartment.bind(this)}
-                    show={this.state.addDepartmentShow}
-                    departmentCode={this.state.departmentCode} />
-                {this.state.deleteShow ?
-                    <TitleArrow title={culture.delete_department + "(" + this.state.departmentName + ")"}
-                        show={this.state.deleteToggle}
-                        onShowChange={this.onDeleteShow.bind(this)} /> : null}
-                {this.state.deleteShow ?
-                    <DeleteDepartment
-                        show={this.state.deleteToggle}
-                        deleteItem={this.deleteDepartment.bind(this)} /> : null}
+                {this.state.departmentDetailShow ?
+                    <TitleArrow title={culture.update_department}
+                        show={this.state.replaceDepartmentShow}
+                        onShowChange={this.onUpdateDepartmentShow.bind(this)} /> : null}
+                {this.state.departmentDetailShow ?
+                    <ReplaceDepartment
+                        ref="replaceDepartment"
+                        department={this.state.department}
+                        show={this.state.replaceDepartmentShow}
+                    /> : null}
+
+
+
             </div>
         );
     }

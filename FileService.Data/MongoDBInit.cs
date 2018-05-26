@@ -83,9 +83,7 @@ namespace FileService.Data
                 {
                     {"DepartmentName","Company" },
                     {"DepartmentCode",new Random().RandomCodeHex(12) },
-                    {"Order",0 },
-                    {"Layer",0 },
-                    {"ParentCode",BsonNull.Value },
+                    {"Department",new BsonArray() },
                     {"CreateTime", DateTime.Now }
                 });
             }

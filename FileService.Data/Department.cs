@@ -11,9 +11,6 @@ namespace FileService.Data
     public class Department: MongoBase
     {
         public Department() : base("Department") { }
-        public BsonDocument GetByDepartmentCode(string departmentCode)
-        {
-            return MongoCollection.Find(FilterBuilder.Eq("DepartmentCode", departmentCode)).FirstOrDefault();
-        }
+        
     }
 }
