@@ -119,7 +119,7 @@ class Department extends React.Component {
                 //    data.result.ParentId);
                 //this.setState({ deleteShow: true, deleteId: data.result._id.$oid, deleteName: data.result.Extension });
                 this.setState({ departmentDetailShow: true, department: data.result });
-                this.refs.replaceDepartment.getHexCode();
+                //this.refs.departmentDetail.getHexCode();
             }
         }.bind(this));
     }
@@ -146,12 +146,12 @@ class Department extends React.Component {
                     data={this.state.data.result}
                     onIdClick={this.onIdClick.bind(this)} />
                 {this.state.departmentDetailShow ?
-                    <TitleArrow title={culture.update_department}
+                    <TitleArrow title={culture.detail_department}
                         show={this.state.replaceDepartmentShow}
                         onShowChange={this.onUpdateDepartmentShow.bind(this)} /> : null}
                 {this.state.departmentDetailShow ?
-                    <ReplaceDepartment
-                        ref="replaceDepartment"
+                    <DepartmentDetail
+                        ref="departmentDetail"
                         department={this.state.department}
                         show={this.state.replaceDepartmentShow}
                     /> : null}

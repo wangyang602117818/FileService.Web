@@ -136,5 +136,6 @@ var culture = {
     department_code: "DepartmentCode",
     parent_code: "ParentCode",
     delete_department: "Delete Department",
-    parent_department: "Parent Department"
+    detail_department: "Department Detail",
+
 }

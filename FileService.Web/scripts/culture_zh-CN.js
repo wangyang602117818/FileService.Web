@@ -136,5 +136,5 @@ var culture = {
     department_code: "部门编码",
     parent_code: "上级编码",
     delete_department: "删除部门",
-    parent_department:"上级部门"
+    detail_department:"部门详情"
 }

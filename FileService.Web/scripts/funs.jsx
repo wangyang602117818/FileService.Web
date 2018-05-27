@@ -466,57 +466,57 @@ function getEchartOptionBar(xData, yData) {
         ]
     }
 }
-function orgChart() {
-    var orgChart = document.getElementsByClassName("orgChart")[0];
-    var topLi = orgChart.children[0].children[0];
-    var tableHtml = getChildNode(topLi);
-    var e = document.createElement('div');
-    e.innerHTML = tableHtml;
-    orgChart.appendChild(e.firstChild);
-}
-function getChildNode(topLi) {
-    var tableHtml = '<table class="pc" cellSpacing="0" cellPadding="0" border="0"><tbody>';
-    var dataNode = topLi.children[0],
-        childNodeLiArray = topLi.children.length == 1 ?
-            [] :
-            topLi.children[1].children;
-    if (childNodeLiArray.length == 0) {
-        return tableHtml + "<tr><td>" + dataNode.outerHTML + "</td></tr></tbody></table>";
-    } else {
-        var topHtml = '<tr><td colSpan="' + childNodeLiArray.length * 2 + '">' + dataNode.outerHTML + "</td></tr>";
-        var lineHtml = '<tr><td colSpan="' + childNodeLiArray.length * 2 + '"><span class="line_down">&nbsp;</span></td>',
-            orgLineHtml = "<tr class=\"org_line\">", orgDataHtml = "<tr>";
-        if (childNodeLiArray.length == 1) {
-            orgLineHtml += '<td class="trans_right">&nbsp;</td>';
-            orgLineHtml += '<td class="oleft">&nbsp;</td>';
-        } else {
-            for (var i = 0; i < childNodeLiArray.length * 2; i++) {
-                if (i == 0) { //第一行
-                    orgLineHtml += '<td class="trans_right">&nbsp;</td>';
-                } else {
-                    if (i + 1 == childNodeLiArray.length * 2) {  //最后一行
-                        orgLineHtml += '<td class="trans_left">&nbsp;</td>';
-                    } else {
-                        if (i == childNodeLiArray.length * 2 - 2) {
-                            orgLineHtml += '<td class="otop oright">&nbsp;</td>';
-                        } else {
-                            if (i % 2 == 1) orgLineHtml += '<td class="otop oleft">&nbsp;</td>';
-                            if (i % 2 == 0) orgLineHtml += '<td class="otop trans_right">&nbsp;</td>';
-                        }
-                    }
-                }
-            }
-        }
-        for (var i = 0; i < childNodeLiArray.length; i++) {
-            var subHtml = getChildNode(childNodeLiArray[i]);
-            orgDataHtml += '<td colSpan="2">' + subHtml + '</td>';
-        }
-        orgLineHtml += '</tr>';
-        lineHtml += '</tr>';
-        orgDataHtml += '</tr>';
-        return tableHtml + topHtml + lineHtml + orgLineHtml + orgDataHtml + "</tbody></table>";
-    }
-}
+//function orgChart() {
+//    var orgChart = document.getElementsByClassName("orgChart")[0];
+//    var topLi = orgChart.children[0].children[0];
+//    var tableHtml = getChildNode(topLi);
+//    var e = document.createElement('div');
+//    e.innerHTML = tableHtml;
+//    orgChart.appendChild(e.firstChild);
+//}
+//function getChildNode(topLi) {
+//    var tableHtml = '<table class="pc" cellSpacing="0" cellPadding="0" border="0"><tbody>';
+//    var dataNode = topLi.children[0],
+//        childNodeLiArray = topLi.children.length == 1 ?
+//            [] :
+//            topLi.children[1].children;
+//    if (childNodeLiArray.length == 0) {
+//        return tableHtml + "<tr><td>" + dataNode.outerHTML + "</td></tr></tbody></table>";
+//    } else {
+//        var topHtml = '<tr><td colSpan="' + childNodeLiArray.length * 2 + '">' + dataNode.outerHTML + "</td></tr>";
+//        var lineHtml = '<tr><td colSpan="' + childNodeLiArray.length * 2 + '"><span class="line_down">&nbsp;</span></td>',
+//            orgLineHtml = "<tr class=\"org_line\">", orgDataHtml = "<tr>";
+//        if (childNodeLiArray.length == 1) {
+//            orgLineHtml += '<td class="trans_right">&nbsp;</td>';
+//            orgLineHtml += '<td class="oleft">&nbsp;</td>';
+//        } else {
+//            for (var i = 0; i < childNodeLiArray.length * 2; i++) {
+//                if (i == 0) { //第一行
+//                    orgLineHtml += '<td class="trans_right">&nbsp;</td>';
+//                } else {
+//                    if (i + 1 == childNodeLiArray.length * 2) {  //最后一行
+//                        orgLineHtml += '<td class="trans_left">&nbsp;</td>';
+//                    } else {
+//                        if (i == childNodeLiArray.length * 2 - 2) {
+//                            orgLineHtml += '<td class="otop oright">&nbsp;</td>';
+//                        } else {
+//                            if (i % 2 == 1) orgLineHtml += '<td class="otop oleft">&nbsp;</td>';
+//                            if (i % 2 == 0) orgLineHtml += '<td class="otop trans_right">&nbsp;</td>';
+//                        }
+//                    }
+//                }
+//            }
+//        }
+//        for (var i = 0; i < childNodeLiArray.length; i++) {
+//            var subHtml = getChildNode(childNodeLiArray[i]);
+//            orgDataHtml += '<td colSpan="2">' + subHtml + '</td>';
+//        }
+//        orgLineHtml += '</tr>';
+//        lineHtml += '</tr>';
+//        orgDataHtml += '</tr>';
+//        return tableHtml + topHtml + lineHtml + orgLineHtml + orgDataHtml + "</tbody></table>";
+//    }
+//}
 
 Array.prototype.sortAndUnique = function () {
     this.sort(); //先排序
