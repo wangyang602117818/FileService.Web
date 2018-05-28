@@ -1,4 +1,6 @@
-﻿using System;
+﻿using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -8,14 +10,12 @@ namespace FileService.Web.Models
 {
     public class DepartmentForm
     {
+        [BsonId]
+        public string Id { get; set; }
         [Required]
         public string DepartmentName { get; set; }
         [Required]
         public string DepartmentCode { get; set; }
-        public int? Order { get; set; }
-        public int? Layer { get; set; }
-        [Required]
-        public string ParentCode { get; set; }
-        public DateTime CreateTime { get; set; }
+        public List<DepartmentForm> Department { get; set; }
     }
 }

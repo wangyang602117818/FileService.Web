@@ -201,6 +201,7 @@
     <Content Include="css\iconfont.svg" />
     <Content Include="css\index.css" />
     <Content Include="css\login.css" />
+    <Content Include="css\org_chart.css" />
     <Content Include="css\page.css" />
     <Content Include="css\preview.css" />
     <Content Include="Global.asax" />

@@ -1,0 +1,94 @@
+﻿.orgChart {
+    margin-top:15px;
+    width: 100%;
+}
+
+    .orgChart .pc {
+        width: 100%;
+    }
+
+        .orgChart .pc td {
+            text-align: center;
+            vertical-align: top;
+            /*border:1px solid red;*/
+        }
+
+        .orgChart .pc .otop {
+            border-top: 1px solid #ccc;
+        }
+
+        .orgChart .pc .oleft {
+            border-left: 1px solid #ccc;
+        }
+
+        .orgChart .pc .oright {
+            border-right: 1px solid #ccc;
+        }
+
+        .orgChart .pc .trans_right {
+            border-right: 1px solid rgba(0,0,0,0);
+        }
+
+        .orgChart .pc .trans_left {
+            border-left: 1px solid rgba(0,0,0,0);
+        }
+
+        .orgChart .pc .org_line {
+            height: 22px;
+        }
+
+        .orgChart .pc .line_down {
+            display: inline-block;
+            height: 22px;
+            width: 1px;
+            background-color: #ccc;
+        }
+
+        .orgChart .pc .node {
+            margin: 0 4px;
+        }
+
+    .orgChart .node {
+        display: inline-block;
+        position: relative;
+        height: 60px;
+        width: 80px;
+        border: 1px solid #ccc;
+        text-align: center;
+        font-size: 9px;
+        vertical-align:bottom;
+    }
+        .orgChart .node .node_title {
+            position: absolute;
+            left: 0;
+            top: 0;
+            right: 0;
+            background: linear-gradient(bottom, #e0e0e0 10%, #f0f0f0 90%);
+            background: -o-linear-gradient(bottom, #e0e0e0 10%, #f0f0f0 90%);
+            background: -moz-linear-gradient(bottom, #e0e0e0 10%, #f0f0f0 90%);
+            background: -webkit-linear-gradient(bottom, #e0e0e0 10%, #f0f0f0 90%);
+            background: -ms-linear-gradient(bottom, #e0e0e0 10%, #f0f0f0 90%);
+            border-bottom: 1px solid #E0DEDB;
+            height: 20px;
+            line-height:20px;
+            cursor: move;
+        }
+
+        .orgChart .node .node_bottom {
+            display: flex;
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            right: 0;
+            height: 20px;
+            line-height: 20px;
+        }
+
+            .orgChart .node .node_bottom i {
+                flex: 1;
+            }
+                .orgChart .node .node_bottom i:hover {
+                    color: #000;
+                    background-color:#eee;
+                }
+

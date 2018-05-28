@@ -71,13 +71,13 @@ class ResourceItem extends React.Component {
             <tr>
                 <td className="link"
                     data-type={this.props.resource.metadata.FileType.removeHTML()}
-                    data-fileName={this.props.resource.filename.removeHTML()}
-                    data-fileId={this.props.resource._id.$oid.removeHTML()}
+                    data-filename={this.props.resource.filename.removeHTML()}
+                    data-fileid={this.props.resource._id.$oid.removeHTML()}
                     onClick={this.props.onIdClick}>
                     <b
                         data-type={this.props.resource.metadata.FileType.removeHTML()}
-                        data-fileName={this.props.resource.filename.removeHTML()}
-                        data-fileId={this.props.resource._id.$oid.removeHTML()}
+                        data-filename={this.props.resource.filename.removeHTML()}
+                        data-fileid={this.props.resource._id.$oid.removeHTML()}
                         dangerouslySetInnerHTML={{ __html: this.props.resource._id.$oid }}>
                     </b>
                 </td>
@@ -214,12 +214,12 @@ class Resources extends React.Component {
             fileName = "",
             subComponent = null;
         if (e.target.nodeName.toLowerCase() == "span") {
-            fileId = e.target.parentElement.getAttribute("data-fileId");
-            fileName = e.target.parentElement.getAttribute("data-fileName");
+            fileId = e.target.parentElement.getAttribute("data-fileid");
+            fileName = e.target.parentElement.getAttribute("data-filename");
             fileType = e.target.parentElement.getAttribute("data-type");
         } else {
-            fileId = e.target.getAttribute("data-fileId");
-            fileName = e.target.getAttribute("data-fileName");
+            fileId = e.target.getAttribute("data-fileid");
+            fileName = e.target.getAttribute("data-filename");
             fileType = e.target.getAttribute("data-type");
         }
         this.state.subFileArray = [];

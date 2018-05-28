@@ -444,19 +444,18 @@ namespace FileService.Web.Controllers
             return new ResponseModel<string>(ErrorCode.server_exception, "");
         }
         [Authorize(Roles = "admin")]
-        public ActionResult AddDepartment(DepartmentForm departmentForm)
+        public ActionResult RepalceDepartment(string id,DepartmentForm departmentForm)
         {
-            if (departmentForm.Order == null) departmentForm.Order = 0;
-            departmentForm.CreateTime = DateTime.Now;
-            departmentForm.Layer = department.GetLayer(departmentForm.ParentCode) + 1;
-            department.Insert(departmentForm.ToBsonDocument());
+            departmentForm.Id = id;
+            BsonDocument d = departmentForm.ToBsonDocument();
+            
             return new ResponseModel<string>(ErrorCode.success, null);
         }
         [Authorize(Roles = "admin")]
         public ActionResult GetDepartments(int pageIndex = 1, int pageSize = 10, string filter = "")
         {
             long count = 0;
-            IEnumerable<BsonDocument> result = department.GetPageList(pageIndex, pageSize, "CreateTime", filter, new List<string>() { "_id", "DepartmentName", "DepartmentCode" }, new List<string>() { }, out count);
+            IEnumerable<BsonDocument> result = department.GetPageList(pageIndex, pageSize, "CreateTime", filter, new List<string>() { "_id", "DepartmentName", "DepartmentCode" }, new List<string>() { "Department" }, out count);
             return new ResponseModel<IEnumerable<BsonDocument>>(ErrorCode.success, result, count);
         }
         [Authorize(Roles = "admin")]
@@ -464,12 +463,12 @@ namespace FileService.Web.Controllers
         {
             return new ResponseModel<BsonDocument>(ErrorCode.success, department.FindOne(ObjectId.Parse(id)));
         }
-        [Authorize(Roles = "admin")]
-        public ActionResult GetDepartmentSelect()
-        {
-            DepartmentSelect departmentSelect = department.GetDepartmentSelect();
-            return new ResponseModel<DepartmentSelect>(ErrorCode.success, departmentSelect);
-        }
+        //[Authorize(Roles = "admin")]
+        //public ActionResult GetDepartmentSelect()
+        //{
+        //    DepartmentSelect departmentSelect = department.GetDepartmentSelect();
+        //    return new ResponseModel<DepartmentSelect>(ErrorCode.success, departmentSelect);
+        //}
         [Authorize(Roles = "admin")]
         public ActionResult DeleteDepartment(string id)
         {
