@@ -9,7 +9,6 @@
     }
     componentDidMount() {
         this.getHexCode();
-        //orgChart();
     }
     getHexCode() {
         http.get(urls.getHexCodeUrl + "/12", function (data) {
@@ -19,8 +18,6 @@
         }.bind(this));
     }
     render() {
-        
-
         return (
             <div className={this.props.show ? "show" : "hidden"}>
                 <table className="table" style={{ width: "40%" }}>

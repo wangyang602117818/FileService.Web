@@ -209,7 +209,6 @@
     <Content Include="hlsplayer\flowplayer.swf" />
     <Content Include="hlsplayer\flowplayerhls.swf" />
     <Content Include="hlsplayer\hlsplayer.min.js" />
-    <Content Include="hlsplayer\jquery-3.3.1.min.js" />
     <Content Include="image\data.ico" />
     <Content Include="image\logo.png" />
     <Content Include="pdfview\images\annotation-check.svg" />
@@ -323,6 +322,10 @@
     <Content Include="scripts\funs.jsx" />
     <Content Include="scripts\handlers.jsx" />
     <Content Include="scripts\index.jsx" />
+    <Content Include="scripts\jquery-3.3.1.js" />
+    <Content Include="scripts\jquery-3.3.1.min.js" />
+    <Content Include="scripts\jquery-ui.js" />
+    <Content Include="scripts\jquery-ui.min.js" />
     <Content Include="scripts\login.jsx" />
     <Content Include="scripts\logs.jsx" />
     <Content Include="scripts\overview.jsx" />
