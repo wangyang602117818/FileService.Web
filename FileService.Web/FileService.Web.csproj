@@ -328,6 +328,8 @@
     <Content Include="scripts\jquery-ui.min.js" />
     <Content Include="scripts\login.jsx" />
     <Content Include="scripts\logs.jsx" />
+    <Content Include="scripts\nestedsortable.js" />
+    <Content Include="scripts\nestedsortable.min.js" />
     <Content Include="scripts\overview.jsx" />
     <Content Include="scripts\preview.jsx" />
     <Content Include="scripts\preview_converting.jsx" />

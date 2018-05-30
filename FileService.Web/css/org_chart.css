@@ -1,5 +1,5 @@
 ﻿.orgChart {
-    margin-top:15px;
+    margin-top: 15px;
     width: 100%;
 }
 
@@ -56,8 +56,9 @@
         border: 1px solid #ccc;
         text-align: center;
         font-size: 9px;
-        vertical-align:bottom;
+        vertical-align: bottom;
     }
+
         .orgChart .node .node_title {
             position: absolute;
             left: 0;
@@ -70,7 +71,7 @@
             background: -ms-linear-gradient(bottom, #e0e0e0 10%, #f0f0f0 90%);
             border-bottom: 1px solid #E0DEDB;
             height: 20px;
-            line-height:20px;
+            line-height: 20px;
             cursor: move;
         }
 
@@ -87,8 +88,32 @@
             .orgChart .node .node_bottom i {
                 flex: 1;
             }
+
                 .orgChart .node .node_bottom i:hover {
                     color: #000;
-                    background-color:#eee;
+                    background-color: #eee;
                 }
 
+ol {
+    list-style-type: none;
+}
+
+    ol li {
+        width:350px;
+    }
+
+.sortable {
+    margin-top: 20px;
+}
+
+    .sortable ol {
+        margin-left: 30px;
+    }
+
+ol .sortable_node {
+    border: 1px solid #ccc;
+    margin-top: 10px;
+    height: 30px;
+    line-height: 30px;
+    width: 100%;
+}

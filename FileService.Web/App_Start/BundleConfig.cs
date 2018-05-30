@@ -20,6 +20,7 @@ namespace FileService.Web
                 .Include("~/scripts/react.js")
                 .Include("~/scripts/react-dom.js")
                 .Include("~/scripts/echarts.js")
+                .Include("~/scripts/nestedsortable.js")
             );
             //login
             bundles.Add(new BabelBundle("~/scripts/index-login-jsx")
