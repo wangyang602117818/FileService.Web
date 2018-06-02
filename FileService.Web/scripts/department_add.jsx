@@ -9,7 +9,23 @@
     }
     componentDidMount() {
         this.getHexCode();
-        //orgChart();
+        $('ol.sortable').nestedSortable({
+            disableNesting: 'no-nest',
+            forcePlaceholderSize: true,
+            handle: '.icon-menu',
+            helper: 'clone',
+            items: 'li',
+            maxLevels: 10,
+            opacity: .6,
+            placeholder: 'placeholder',
+            revert: 250,
+            tabSize: 25,
+            tolerance: 'pointer',
+            toleranceElement: '> div',
+            change: function () {
+                console.log("x");
+            }
+        });
     }
     getHexCode() {
         http.get(urls.getHexCodeUrl + "/12", function (data) {
@@ -19,45 +35,51 @@
         }.bind(this));
     }
     render() {
-        
-
         return (
-            <div className={this.props.show ? "show" : "hidden"}>
-                <table className="table" style={{ width: "40%" }}>
-                    <thead>
-                        <tr>
-                            <th width="50%">{culture.department_name}</th>
-                            <th width="50%">{culture.department_code}</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>{this.props.department.DepartmentName}</td>
-                            <td>{this.props.department.DepartmentCode}</td>
-                        </tr>
-                        <tr>
-                            <td>|- {this.props.department.DepartmentName}</td>
-                            <td>{this.props.department.DepartmentCode}</td>
-                        </tr>
-                        <tr>
-                            <td>|-- {this.props.department.DepartmentName}</td>
-                            <td>{this.props.department.DepartmentCode}</td>
-                        </tr>
-                        <tr>
-                            <td>|--- {this.props.department.DepartmentName}</td>
-                            <td>{this.props.department.DepartmentCode}</td>
-                        </tr>
-
-                    </tbody>
-                </table>
+            <div className="department_container">
+                <ol className="sortable">
+                    {this.props.department.Department.map(function (item, i) {
+                        return <DepartmentLi item={item} key={i} />
+                    })}
+                </ol>
             </div>
         )
     }
 }
-function getHtmlTr(departments) {
-    var trHtml = null;
-    while (departments.length > 0) {
-         trHtml+=<td></td>
+class DepartmentLi extends React.Component {
+    constructor(props) {
+        super(props);
+    }
+    render() {
+        return (
+            <li id={this.props.item.DepartmentCode} >
+                <div className="sortable_node">
+                    <i className="iconfont icon-menu"></i>
+                    <span className="sortable_node_title">{this.props.item.DepartmentName}</span>
+                    <i className="iconfont icon-dot"></i>
+                    <i className="iconfont icon-remove"></i>
+                    <i className="iconfont icon-add1"></i>
+                    <i className="iconfont icon-edit"></i>
+                </div>
+                {this.props.item.Department.length > 0 ?
+                    <DepartmentSubLi item={this.props.item.Department} /> : null
+                }
+            </li>
+        )
+    }
+}
+class DepartmentSubLi extends React.Component {
+    constructor(props) {
+        super(props);
+    }
+    render() {
+        return (
+            <ol>
+                {this.props.item.map(function (item, i) {
+                    <DepartmentLi item={item} key={i} />
+                })}
+            </ol>
+        );
     }
 }
 class DepartmentTr extends React.Component {
@@ -72,7 +94,7 @@ class DepartmentTr extends React.Component {
                         <td>{item.DepartmentName}</td>
                         <td>{item.DepartmentCode}</td>
                     </tr>
-                  
+
                 })}
             </div>
         );
