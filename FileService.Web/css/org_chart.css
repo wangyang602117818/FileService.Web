@@ -87,7 +87,8 @@
 }
 
     .sortable_node:hover {
-        border: 1px solid #FF8207;
+        background-color:#f0f0f0;
+        cursor:pointer;
     }
 
     .sortable_node .sortable_node_title {
@@ -107,6 +108,7 @@
         }
 
     .sortable_node .icon-dot,
+    .sortable_node .icon-right1,
     .sortable_node .icon-down1,
     .sortable_node .icon-remove,
     .sortable_node .icon-add1,
@@ -118,9 +120,16 @@
         color: #8D8784;
     }
 
+        .sortable_node .icon-dot:hover {
+            color: #8D8784;
+            cursor: default;
+        }
+
+        .sortable_node .icon-right1:hover,
         .sortable_node .icon-down1:hover,
         .sortable_node .icon-remove:hover,
-        .sortable_node .icon-edit,
-        .sortable_node .icon-add1 {
+        .sortable_node .icon-edit:hover,
+        .sortable_node .icon-add1:hover {
             cursor: pointer;
+            color: #f60;
         }

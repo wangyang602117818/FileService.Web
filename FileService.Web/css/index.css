@@ -270,10 +270,9 @@ h1 {
     cursor: pointer;
 }
 
-.table .iconfont:hover {
-    color: #000;
-    margin-left: 1px;
-}
+    .iconfont:hover {
+        color: #f60;
+    }
 
 .icon-last, .icon-next {
     color: #484848;

@@ -45,7 +45,8 @@ class DepartmentLi extends React.Component {
         return (
             <li id={this.props.item.DepartmentCode} >
                 <DataNode name={this.props.item.DepartmentName}
-                    id={this.props.item.DepartmentCode} />
+                    id={this.props.item.DepartmentCode}
+                    count={this.props.item.Department.length} />
                 {this.props.item.Department.length > 0 ?
                     <DepartmentSubLi item={this.props.item.Department} /> : null
                 }
@@ -77,7 +78,10 @@ class DataNode extends React.Component {
             <div className="sortable_node">
                 <i className="iconfont icon-menu"></i>
                 <span className="sortable_node_title">{this.props.name}</span>
-                <i className="iconfont icon-dot"></i>
+                {this.props.count > 0 ?
+                    <i className="iconfont icon-right1"></i> :
+                    <i className="iconfont icon-dot"></i>
+                }
                 <i className="iconfont icon-remove"></i>
                 <i className="iconfont icon-add1"></i>
                 <i className="iconfont icon-edit"></i>
