@@ -1,12 +1,12 @@
 ﻿@{
     Layout = null;
 }
-@using System.Threading;
 <!DOCTYPE html>
 <html>
 <head>
     <meta name="viewport" content="width=device-width" />
     <link rel="icon" href="~/image/data.ico" type="image/x-ico" />
+    @Scripts.Render("~/scripts/index-common-js")
     @{
         if (CultureInfo.GetCulture() == "zh-CN")
         {
@@ -19,9 +19,6 @@
             @Scripts.Render("~/scripts/culture_en-US")
         }
     }
-    <script src="~/scripts/react.js"></script>
-    <script src="~/scripts/react-dom.js"></script>
-    <script src="~/scripts/echarts.min.js"></script>
     @Styles.Render("~/css/index")
 
 </head>
@@ -31,7 +28,7 @@
     <input type="hidden" name="role" id="role" value="@ViewBag.Role" />
 </body>
 </html>
-@Scripts.Render("~/scripts/index-head")
+@Scripts.Render("~/scripts/index-head-jsx")
 
 @if (@ViewBag.Role == "management" || @ViewBag.Role == "admin")
 {

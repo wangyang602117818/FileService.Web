@@ -59,51 +59,17 @@
         vertical-align: bottom;
     }
 
-        .orgChart .node .node_title {
-            position: absolute;
-            left: 0;
-            top: 0;
-            right: 0;
-            background: linear-gradient(bottom, #e0e0e0 10%, #f0f0f0 90%);
-            background: -o-linear-gradient(bottom, #e0e0e0 10%, #f0f0f0 90%);
-            background: -moz-linear-gradient(bottom, #e0e0e0 10%, #f0f0f0 90%);
-            background: -webkit-linear-gradient(bottom, #e0e0e0 10%, #f0f0f0 90%);
-            background: -ms-linear-gradient(bottom, #e0e0e0 10%, #f0f0f0 90%);
-            border-bottom: 1px solid #E0DEDB;
-            height: 20px;
-            line-height: 20px;
-            cursor: move;
-        }
-
-        .orgChart .node .node_bottom {
-            display: flex;
-            position: absolute;
-            left: 0;
-            bottom: 0;
-            right: 0;
-            height: 20px;
-            line-height: 20px;
-        }
-
-            .orgChart .node .node_bottom i {
-                flex: 1;
-            }
-
-                .orgChart .node .node_bottom i:hover {
-                    color: #000;
-                    background-color: #eee;
-                }
 /*****************************************/
 /*****************************************/
 .department_container {
     width: 70%;
     margin-top: 15px;
-    border: 1px solid red;
+    /*border: 1px solid red;*/
 }
 
 .sortable, .sortable ol {
     list-style-type: none;
-    /*margin-left: 30px;*/
+    margin-left: 30px;
     /*border:1px solid red;*/
 }
 
@@ -121,7 +87,7 @@
 }
 
     .sortable_node:hover {
-        border: 1px solid blue;
+        border: 1px solid #FF8207;
     }
 
     .sortable_node .sortable_node_title {

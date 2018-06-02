@@ -146,7 +146,7 @@ class Department extends React.Component {
                     data={this.state.data.result}
                     onIdClick={this.onIdClick.bind(this)} />
                 {this.state.departmentDetailShow ?
-                    <TitleArrow title={culture.detail_department}
+                    <TitleArrow title={culture.detail_department + "(" + this.state.department.DepartmentName + ")"}
                         show={this.state.replaceDepartmentShow}
                         onShowChange={this.onUpdateDepartmentShow.bind(this)} /> : null}
                 {this.state.departmentDetailShow ?

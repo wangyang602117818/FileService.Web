@@ -13,13 +13,22 @@ namespace FileService.Web
                         "~/scripts/culture_zh-CN.js"));
             bundles.Add(new ScriptBundle("~/scripts/culture_en-US").Include(
                         "~/scripts/culture_en-US.js"));
+            //js-boundles
+            bundles.Add(new ScriptBundle("~/scripts/index-common-js")
+                .Include("~/scripts/jquery-3.3.1.js")
+                .Include("~/scripts/jquery-ui.js")
+                .Include("~/scripts/react.js")
+                .Include("~/scripts/react-dom.js")
+                .Include("~/scripts/echarts.js")
+                .Include("~/scripts/nestedsortable.js")
+            );
             //login
-            bundles.Add(new BabelBundle("~/scripts/login")
+            bundles.Add(new BabelBundle("~/scripts/index-login-jsx")
                 .Include("~/scripts/funs.jsx")
                 .Include("~/scripts/login.jsx")
             );
-            //index-head
-            bundles.Add(new BabelBundle("~/scripts/index-head")
+            //index-head-jsx
+            bundles.Add(new BabelBundle("~/scripts/index-head-jsx")
                 .Include("~/scripts/funs.jsx")
                 .Include("~/scripts/common.jsx")
                 .Include("~/scripts/overview.jsx")
