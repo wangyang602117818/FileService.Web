@@ -119,15 +119,19 @@ class Department extends React.Component {
             }
         }.bind(this));
     }
-    updateNode(e) {
-        var id = e.target.parentElement.id;
-        var name = e.target.parentElement.getAttribute("name");
-        this.setState({
-            updateDepartmentShow: true,
-            updateDepartment: { departmentCode: id, departmentName: name }
-        }, function () {
-            this.refs.updateDepartment.onUpdate(name, id);
-        });
+    itemClick(e) {
+        if (e.target.nodeName.toLowerCase() == "div") {
+            var id = e.target.id;
+            var name = e.target.getAttribute("name");
+            this.setState({
+                updateDepartmentShow: true,
+                updateDepartment: { departmentCode: id, departmentName: name }
+            }, function () {
+                this.refs.updateDepartment.onUpdate(name, id);
+            });
+        }
+
+        
 
     }
     render() {
@@ -161,7 +165,7 @@ class Department extends React.Component {
                         ref="departmentDetail"
                         department={this.state.department}
                         show={this.state.departmentDetailToggle}
-                        updateNode={this.updateNode.bind(this)}
+                        itemClick={this.itemClick.bind(this)}
                     /> : null}
                 {this.state.updateDepartmentShow ?
                     <TitleArrow title={culture.update_department + "(" + this.state.updateDepartment.departmentName + ")"}

@@ -31,7 +31,7 @@
                 <ol className="sortable" style={{ marginLeft: "0px" }}>
                     {this.props.department.Department.map(function (item, i) {
                         return <DepartmentLi item={item} key={i}
-                            updateNode={this.props.updateNode} />
+                            itemClick={this.props.itemClick} />
                     }.bind(this))}
                 </ol>
             </div>
@@ -49,12 +49,12 @@ class DepartmentLi extends React.Component {
                     name={this.props.item.DepartmentName}
                     id={this.props.item.DepartmentCode}
                     count={this.props.item.Department.length}
-                    updateNode={this.props.updateNode}
+                    itemClick={this.props.itemClick}
                 />
                 {this.props.item.Department.length > 0 ?
                     <DepartmentSubLi
                         item={this.props.item.Department}
-                        updateNode={this.props.updateNode} /> : null
+                        itemClick={this.props.itemClick} /> : null
                 }
             </li>
         )
@@ -69,7 +69,7 @@ class DepartmentSubLi extends React.Component {
             <ol style={{ display: "none" }}>
                 {this.props.item.map(function (item, i) {
                     return <DepartmentLi item={item} key={i}
-                        updateNode={this.props.updateNode} />
+                        itemClick={this.props.itemClick} />
                 }.bind(this))}
             </ol>
         );
@@ -88,19 +88,20 @@ class DataNode extends React.Component {
             e.target.parentElement.nextElementSibling.style.display = "block";
             e.target.className = "iconfont icon-down1";
         }
+        
     }
     render() {
         return (
-            <div className="sortable_node" id={this.props.id} name={this.props.name}>
+            <div className="sortable_node"
+                id={this.props.id} name={this.props.name}
+                onClick={this.props.itemClick}
+            >
                 <i className="iconfont icon-menu"></i>
                 <span className="sortable_node_title">{this.props.name}</span>
                 {this.props.count > 0 ?
                     <i className="iconfont icon-right1" onClick={this.showChildLi}></i> :
                     <i className="iconfont icon-dot"></i>
                 }
-                <i className="iconfont icon-remove"></i>
-                <i className="iconfont icon-add1"></i>
-                <i className="iconfont icon-edit" onClick={this.props.updateNode}></i>
             </div>
         )
     }
