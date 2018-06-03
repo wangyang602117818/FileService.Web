@@ -60,7 +60,7 @@ class DepartmentSubLi extends React.Component {
     }
     render() {
         return (
-            <ol>
+            <ol style={{ display:"none" }}>
                 {this.props.item.map(function (item, i) {
                     return <DepartmentLi item={item} key={i} />
                 })}
@@ -73,13 +73,23 @@ class DataNode extends React.Component {
     constructor(props) {
         super(props);
     }
+    showChildLi(e) {
+        if (e.target.parentElement.nextElementSibling.style.display == "block") {
+            e.target.parentElement.nextElementSibling.style.display = "none";
+            e.target.className = "iconfont icon-right1";
+        } else {
+            e.target.parentElement.nextElementSibling.style.display = "block";
+            e.target.className = "iconfont icon-down1";
+        }
+
+    }
     render() {
         return (
             <div className="sortable_node">
                 <i className="iconfont icon-menu"></i>
                 <span className="sortable_node_title">{this.props.name}</span>
                 {this.props.count > 0 ?
-                    <i className="iconfont icon-right1"></i> :
+                    <i className="iconfont icon-right1" onClick={this.showChildLi}></i> :
                     <i className="iconfont icon-dot"></i>
                 }
                 <i className="iconfont icon-remove"></i>
