@@ -316,7 +316,7 @@
     <Content Include="scripts\culture_en-US.js" />
     <Content Include="scripts\culture_zh-CN.js" />
     <Content Include="scripts\department.jsx" />
-    <Content Include="scripts\department_add.jsx" />
+    <Content Include="scripts\department_detail.jsx" />
     <Content Include="scripts\echarts.js" />
     <Content Include="scripts\echarts.min.js" />
     <Content Include="scripts\funs.jsx" />

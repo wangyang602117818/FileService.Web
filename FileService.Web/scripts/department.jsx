@@ -78,9 +78,14 @@ class Department extends React.Component {
         this.state = {
             pageShow: localStorage.department ? eval(localStorage.department) : true,
             addDepartmentShow: localStorage.department_add ? eval(localStorage.department_add) : true,
-            replaceDepartmentShow: localStorage.replace_department_show ? eval(localStorage.replace_department_show) : true,
             departmentDetailShow: false,
+            departmentDetailToggle: true,
             department: null,
+
+            updateDepartmentShow: false,
+            updateDepartmentToggle: true,
+            updateDepartment: null,
+
             pageIndex: 1,
             pageSize: localStorage.department_pageSize || 10,
             pageCount: 1,
@@ -91,37 +96,39 @@ class Department extends React.Component {
         this.storagePageShowKey = "department";
         this.storagePageSizeKey = "department_pageSize";
     }
-    onDepartmentShow() {
-        if (this.state.addDepartmentShow) {
-            this.setState({ addDepartmentShow: false });
-            localStorage.department_add = false;
+    onUpdateDepartmentShow() {
+        if (this.state.updateDepartmentToggle) {
+            this.setState({ updateDepartmentToggle: false });
         } else {
-            this.setState({ addDepartmentShow: true });
-            localStorage.department_add = true;
+            this.setState({ updateDepartmentToggle: true });
         }
     }
-    onUpdateDepartmentShow() {
-        if (this.state.replaceDepartmentShow) {
-            this.setState({ replaceDepartmentShow: false });
-            localStorage.replace_department_show = false;
+    onDepartmentDetailShow() {
+        if (this.state.departmentDetailToggle) {
+            this.setState({ departmentDetailToggle: false });
         } else {
-            this.setState({ replaceDepartmentShow: true });
-            localStorage.replace_department_show = true;
+            this.setState({ departmentDetailToggle: true });
         }
     }
     onIdClick(e) {
         var id = e.target.id || e.target.parentElement.id;
         http.get(urls.department.getDepartmentUrl + "/" + id, function (data) {
             if (data.code == 0) {
-                //this.refs.addDepartment.onIdClick(data.result._id.$oid,
-                //    data.result.DepartmentName,
-                //    data.result.Order,
-                //    data.result.ParentId);
-                //this.setState({ deleteShow: true, deleteId: data.result._id.$oid, deleteName: data.result.Extension });
                 this.setState({ departmentDetailShow: true, department: data.result });
                 //this.refs.departmentDetail.getHexCode();
             }
         }.bind(this));
+    }
+    updateNode(e) {
+        var id = e.target.parentElement.id;
+        var name = e.target.parentElement.getAttribute("name");
+        this.setState({
+            updateDepartmentShow: true,
+            updateDepartment: { departmentCode: id, departmentName: name }
+        }, function () {
+            this.refs.updateDepartment.onUpdate(name, id);
+        });
+
     }
     render() {
         return (
@@ -147,16 +154,24 @@ class Department extends React.Component {
                     onIdClick={this.onIdClick.bind(this)} />
                 {this.state.departmentDetailShow ?
                     <TitleArrow title={culture.detail_department + "(" + this.state.department.DepartmentName + ")"}
-                        show={this.state.replaceDepartmentShow}
-                        onShowChange={this.onUpdateDepartmentShow.bind(this)} /> : null}
+                        show={this.state.departmentDetailToggle}
+                        onShowChange={this.onDepartmentDetailShow.bind(this)} /> : null}
                 {this.state.departmentDetailShow ?
                     <DepartmentDetail
                         ref="departmentDetail"
                         department={this.state.department}
-                        show={this.state.replaceDepartmentShow}
+                        show={this.state.departmentDetailToggle}
+                        updateNode={this.updateNode.bind(this)}
                     /> : null}
-
-
+                {this.state.updateDepartmentShow ?
+                    <TitleArrow title={culture.update_department + "(" + this.state.updateDepartment.departmentName + ")"}
+                        show={this.state.updateDepartmentToggle}
+                        onShowChange={this.onUpdateDepartmentShow.bind(this)} /> : null}
+                {this.state.updateDepartmentShow ?
+                    <UpdateDepartment
+                        ref="updateDepartment"
+                        show={this.state.updateDepartmentToggle}
+                    /> : null}
 
             </div>
         );
