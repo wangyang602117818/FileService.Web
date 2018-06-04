@@ -156,6 +156,7 @@ class Department extends React.Component {
             function (data) {
                 if (data.code == 0) {
                     this.setState({ updateDepartmentShow: false, department: this.state.department });
+
                 }
             }.bind(this));
     }
