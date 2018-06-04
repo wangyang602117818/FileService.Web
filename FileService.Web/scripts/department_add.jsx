@@ -58,7 +58,7 @@ class NestedUl extends React.Component {
                 {this.props.data.map(function (item, i) {
                     return (
                         <li key={i}>
-                            <DataNode name={item.DepartmentName} id={item.DepartmentCode} />
+                            <DataNode name={item.DepartmentName} id={item.DepartmentCode} count={item.Department.length}/>
                             {item.Department.length > 0 ?
                                 <NestedUl data={item.Department} /> : null
                             }
@@ -78,6 +78,7 @@ class DataNode extends React.Component {
             <div className="sortable_node"
                 id={this.props.id}>
                 {this.props.name}
+                {this.props.count}
             </div>
         )
     }

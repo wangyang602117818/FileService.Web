@@ -99,7 +99,7 @@ ol {
 }
 
     ol li {
-        width:350px;
+        width: 350px;
     }
 
 .sortable {
@@ -111,8 +111,10 @@ ol {
     }
 
 ol .sortable_node {
-    border: 1px solid #ccc;
-    margin-top: 10px;
+    border: 1px solid #f60;
+    /*background-color: #FF944C;*/
+    margin-top:10px;
+    padding-left: 10px;
     height: 30px;
     line-height: 30px;
     width: 100%;
