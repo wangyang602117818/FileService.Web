@@ -18,7 +18,8 @@ var keywords = [
     "ApplicationName",
     "UserName",
     "Role",
-    "DepartmentName", "DepartmentCode"];
+    "DepartmentName",
+    "DepartmentCode"];
 var http = {
     post: function (url, data, success, progress, error) {
         var formData = new FormData();
@@ -52,6 +53,19 @@ var http = {
         xhr.open('post', url);
         xhr.setRequestHeader("AuthCode", authCode);
         xhr.send(formData);
+    },
+    postJson: function (url, data, success) {
+        var xhr = new XMLHttpRequest();
+        xhr.open("post", url, true);
+        xhr.setRequestHeader("Content-type", "application/json");
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState == 4 && xhr.status == 200) {
+                var json = JSON.parse(xhr.responseText);
+                success(json);
+            }
+        }
+        var data = JSON.stringify(data);
+        xhr.send(data);
     },
     get: function (url, success, error) {
         var xhr = new XMLHttpRequest();
@@ -148,7 +162,7 @@ var urls = {
     },
     department: {
         getUrl: appDomain + "admin/getdepartments",
-        replaceDepartmentUrl: appDomain + "admin/repalcedepartment",
+        updateDepartmentUrl: appDomain + "admin/updatedepartment",
         getDepartmentUrl: appDomain + "admin/getdepartment",
         getDepartmentSelect: appDomain + "admin/getdepartmentselect",
     }

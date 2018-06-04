@@ -444,12 +444,10 @@ namespace FileService.Web.Controllers
             return new ResponseModel<string>(ErrorCode.server_exception, "");
         }
         [Authorize(Roles = "admin")]
-        public ActionResult RepalceDepartment(string id,DepartmentForm departmentForm)
+        public ActionResult UpdateDepartment(string id, DepartmentForm departmentForm)
         {
-            departmentForm.Id = id;
             BsonDocument d = departmentForm.ToBsonDocument();
-            
-            return new ResponseModel<string>(ErrorCode.success, null);
+            return new ResponseModel<bool>(ErrorCode.success, department.UpdateDepartment(id, d));
         }
         [Authorize(Roles = "admin")]
         public ActionResult GetDepartments(int pageIndex = 1, int pageSize = 10, string filter = "")

@@ -10,12 +10,15 @@ namespace FileService.Web.Models
 {
     public class DepartmentForm
     {
-        [BsonId]
-        public string Id { get; set; }
+        private string departmentName = "";
+        private string departmentCode = "";
+        private List<DepartmentForm> department = new List<DepartmentForm>();
+
         [Required]
-        public string DepartmentName { get; set; }
+        public string DepartmentName { get => departmentName; set => departmentName = value; }
         [Required]
-        public string DepartmentCode { get; set; }
-        public List<DepartmentForm> Department { get; set; }
+        public string DepartmentCode { get => departmentCode; set => departmentCode = value; }
+        public List<DepartmentForm> Department { get => department; set => department = value; }
+
     }
 }
