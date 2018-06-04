@@ -11,7 +11,10 @@ namespace FileService.Business
     public class Department : ModelBase<Data.Department>
     {
         public Department() : base(new Data.Department()) { }
-        
+        public bool UpdateDepartment(string id, BsonDocument document)
+        {
+            return mongoData.UpdateDepartment(ObjectId.Parse(id), document);
+        }
         //public BsonDocument GetByDepartmentCode(string departmentCode)
         //{
         //    return mongoData.GetByDepartmentCode(departmentCode);
