@@ -167,6 +167,11 @@ var urls = {
         getDepartmentSelect: appDomain + "admin/getdepartmentselect",
     }
 }
+//随机数
+function selectFrom(lowerValue, upperValue) {
+    var choices = upperValue - lowerValue + 1;
+    return Math.floor(Math.random() * choices + lowerValue);
+}
 function setCookie(cname, cvalue, exdays) {
     var d = new Date();
     d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
