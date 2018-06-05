@@ -81,17 +81,16 @@
     width: 99%;
     border: 1px solid #ddd;
     margin-top: 3px;
-    background-color: #fff;
 }
-
-    .sortable_node:hover {
-        background-color: #e7e7e8;
-        cursor: pointer;
-    }
 
 .sortable_select {
     background-color: #e7e7e8;
     border: 1px solid #d9d9d9;
+}
+
+.sortable_node:hover {
+    background-color: #e7e7e8;
+    cursor: pointer;
 }
 
 .sortable_node .sortable_node_title {

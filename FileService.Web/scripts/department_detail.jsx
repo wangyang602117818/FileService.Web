@@ -14,7 +14,10 @@
             handle: '.icon-menu',
             helper: 'clone',
             items: 'li',
-            maxLevels: 10,
+            maxLevels: 15,
+            relocate: function () {
+                this.props.onOrderChange(null, null);
+            }.bind(this)
         });
     }
     render() {
@@ -73,7 +76,6 @@ class DepartmentSubLi extends React.Component {
         );
     }
 }
-
 class DataNode extends React.Component {
     constructor(props) {
         super(props);
@@ -178,5 +180,106 @@ class UpdateDepartment extends React.Component {
                 </table>
             </div>
         );
+    }
+}
+class AddSubDepartment extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            departmentName: "",
+            departmentCode: ""
+        }
+    }
+    getHexCode() {
+        http.get(urls.getHexCodeUrl + "/12", function (data) {
+            if (data.code == 0) {
+                this.setState({ departmentCode: data.result });
+            }
+        }.bind(this));
+    }
+    nameChange(e) {
+        this.setState({ departmentName: e.target.value });
+    }
+    codeChange(e) {
+        this.setState({ departmentCode: e.target.value });
+    }
+    addSubDepartment(e) {
+        if (this.state.departmentName && this.state.departmentCode) {
+            this.props.addSubDepartment(this.state.departmentName, this.state.departmentCode, function (data) {
+                if (data.code == 0) this.setState({ departmentName: "", departmentCode: "" })
+            }.bind(this));
+        }
+    }
+    render() {
+        return (
+            <div className={this.props.show ? "show" : "hidden"}>
+                <table className="table" style={{ width: "35%" }}>
+                    <tbody>
+                        <tr>
+                            <td>{culture.department_name}:</td>
+                            <td>
+                                <input type="text" name="departmentName"
+                                    value={this.state.departmentName}
+                                    onChange={this.nameChange.bind(this)} />
+                                <font color="red">*</font>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>{culture.department_code}:</td>
+                            <td><input type="text"
+                                name="departmentCode"
+                                value={this.state.departmentCode}
+                                onChange={this.codeChange.bind(this)} />
+                                <font color="red">*</font>&nbsp;
+                                <i className="iconfont icon-get"
+                                    onClick={this.getHexCode.bind(this)}></i>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colSpan="2">
+                                <input type="button"
+                                    value={culture.add}
+                                    className="button"
+                                    onClick={this.addSubDepartment.bind(this)} />
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        );
+    }
+}
+class DeleteDepartment extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            message: ""
+        }
+    }
+    deleteItem(e) {
+        this.props.deleteItem(function (message) {
+            this.setState({ message: message });
+        }.bind(this))
+    }
+    messageEmpty() {
+        this.setState({ message: "" });
+    }
+    render() {
+        return (
+            <div className={this.props.show ? "show" : "hidden"}>
+                <table className="table" style={{ border: "0" }}>
+                    <tbody>
+                        <tr>
+                            <td style={{ border: "0" }}>
+                                <input type="button"
+                                    value={culture.delete}
+                                    className="button"
+                                    onClick={this.deleteItem.bind(this)} />&nbsp;<font color="red">{this.state.message}</font>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        )
     }
 }

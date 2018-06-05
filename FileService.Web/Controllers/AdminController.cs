@@ -447,7 +447,14 @@ namespace FileService.Web.Controllers
         public ActionResult UpdateDepartment(string id, DepartmentForm departmentForm)
         {
             BsonDocument d = departmentForm.ToBsonDocument();
-            return new ResponseModel<bool>(ErrorCode.success, department.UpdateDepartment(id, d));
+            if (department.UpdateDepartment(id, d))
+            {
+                return new ResponseModel<string>(ErrorCode.success, "");
+            }
+            else
+            {
+                return new ResponseModel<string>(ErrorCode.server_exception, "");
+            }
         }
         [Authorize(Roles = "admin")]
         public ActionResult GetDepartments(int pageIndex = 1, int pageSize = 10, string filter = "")

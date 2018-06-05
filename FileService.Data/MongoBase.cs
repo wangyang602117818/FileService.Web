@@ -97,8 +97,13 @@ namespace FileService.Data
         {
             FilterDefinition<BsonDocument> filterBuilder = GetPageFilters(fields, filter);
             count = MongoCollection.Count(filterBuilder);
+            var exclude = Builders<BsonDocument>.Projection.Exclude("PassWord");
+            foreach (string ex in excludeFields)
+            {
+                exclude = exclude.Exclude(ex);
+            }
             var find = MongoCollection.Find(filterBuilder)
-               .Project(Builders<BsonDocument>.Projection.Exclude("PassWord"));
+               .Project(exclude);
             if (!string.IsNullOrEmpty(sortField)) find = find.SortByDescending(sort => sort[sortField]);
             return find
                 .Skip((pageIndex - 1) * pageSize)

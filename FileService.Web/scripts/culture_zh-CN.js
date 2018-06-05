@@ -136,5 +136,6 @@ var culture = {
     department_code: "部门编码",
     parent_code: "上级编码",
     delete_department: "删除部门",
-    detail_department:"部门详情"
+    detail_department: "部门详情",
+    do_not_delete_topnode:"顶层节点无法删除",
 }

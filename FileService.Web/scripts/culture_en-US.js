@@ -137,5 +137,6 @@ var culture = {
     parent_code: "ParentCode",
     delete_department: "Delete Department",
     detail_department: "Department Detail",
+    do_not_delete_topnode: "Do Not Delete TopNode",
 
 }

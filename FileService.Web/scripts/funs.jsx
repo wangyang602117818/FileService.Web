@@ -61,7 +61,7 @@ var http = {
         xhr.onreadystatechange = function () {
             if (xhr.readyState == 4 && xhr.status == 200) {
                 var json = JSON.parse(xhr.responseText);
-                success(json);
+                if (success) success(json);
             }
         }
         var data = JSON.stringify(data);
