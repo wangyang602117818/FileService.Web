@@ -128,21 +128,21 @@ class Department extends React.Component {
     }
     onIdClick(e) {
         var id = e.target.id || e.target.parentElement.id;
-        
+        var _this = this;
         http.get(urls.department.getDepartmentUrl + "/" + id, function (data) {
             if (data.code == 0) {
-                this.setState({
+                _this.setState({
                     departmentDetailShow: true,
                     department: data.result,
                     updateDepartment: { departmentCode: data.result.DepartmentCode, departmentName: data.result.DepartmentName },
                     updateDepartmentShow: true
                 }, function () {
-                    this.refs.updateDepartment.onUpdate(data.result.DepartmentName, data.result.DepartmentCode);
-                    this.refs.addSubDepartment.getHexCode();
-                    this.refs.deleteDepartment.messageEmpty();
+                    _this.refs.updateDepartment.onUpdate(data.result.DepartmentName, data.result.DepartmentCode);
+                    _this.refs.addSubDepartment.getHexCode();
+                    _this.refs.deleteDepartment.messageEmpty();
                 });
             }
-        }.bind(this));
+        });
     }
     itemClick(e) {
         var code = e.target.getAttribute("data-code");
@@ -163,7 +163,15 @@ class Department extends React.Component {
         var ol = document.getElementsByClassName("sortable")[0];
         var innerData = this.getDataNodeIterate(ol, null, null, false);
         this.state.department.Department = innerData;
-        http.postJson(urls.department.updateDepartmentUrl + "/" + this.state.department._id.$oid, this.state.department);
+
+        this.setState({
+            department: {
+                DepartmentName: this.state.department.DepartmentName,
+                DepartmentCode: this.state.department.DepartmentCode,
+                Department: innerData
+            }
+        });
+        //http.postJson(urls.department.updateDepartmentUrl + "/" + this.state.department._id.$oid, this.state.department);
     }
     deleteItem(func) {
         var deleteCode = this.state.updateDepartment.departmentCode;
