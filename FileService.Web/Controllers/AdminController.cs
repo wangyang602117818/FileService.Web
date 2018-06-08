@@ -457,6 +457,19 @@ namespace FileService.Web.Controllers
             }
         }
         [Authorize(Roles = "admin")]
+        public ActionResult DepartmentChangeOrder(string id, List<DepartmentForm> departmentForms)
+        {
+            IEnumerable<BsonDocument> bsonDocument = departmentForms.Select(s => s.ToBsonDocument());
+            if(department.ChangeOrder(id, bsonDocument))
+            {
+                return new ResponseModel<string>(ErrorCode.success, "");
+            }
+            else
+            {
+                return new ResponseModel<string>(ErrorCode.server_exception, "");
+            }
+        }
+        [Authorize(Roles = "admin")]
         public ActionResult GetDepartments(int pageIndex = 1, int pageSize = 10, string filter = "")
         {
             long count = 0;

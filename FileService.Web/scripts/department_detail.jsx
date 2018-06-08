@@ -8,11 +8,11 @@
         };
     }
     componentDidMount() {
-        $('ol.sortable').nestedSortable({
-            disableNesting: 'no-nest',
-            forcePlaceholderSize: true,
+        this.initSortable();
+    }
+    initSortable() {
+         $('ol.sortable').nestedSortable({
             handle: '.icon-menu',
-            helper: 'clone',
             items: 'li',
             maxLevels: 15,
             relocate: function () {

@@ -162,16 +162,7 @@ class Department extends React.Component {
     onOrderChange() {
         var ol = document.getElementsByClassName("sortable")[0];
         var innerData = this.getDataNodeIterate(ol, null, null, false);
-        this.state.department.Department = innerData;
-
-        this.setState({
-            department: {
-                DepartmentName: this.state.department.DepartmentName,
-                DepartmentCode: this.state.department.DepartmentCode,
-                Department: innerData
-            }
-        });
-        //http.postJson(urls.department.updateDepartmentUrl + "/" + this.state.department._id.$oid, this.state.department);
+        http.postJson(urls.department.changeOrder + "/" + this.state.department._id.$oid, innerData);
     }
     deleteItem(func) {
         var deleteCode = this.state.updateDepartment.departmentCode;

@@ -15,5 +15,9 @@ namespace FileService.Data
         {
             return MongoCollection.UpdateOne(FilterBuilder.Eq("_id", id), new BsonDocument("$set", document)).IsAcknowledged;
         }
+        public bool ChangeOrder(ObjectId id, BsonArray departments)
+        {
+            return MongoCollection.UpdateOne(FilterBuilder.Eq("_id", id), Builders<BsonDocument>.Update.Set("Department", departments)).IsAcknowledged;
+        }
     }
 }
