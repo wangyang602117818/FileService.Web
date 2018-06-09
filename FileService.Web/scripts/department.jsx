@@ -194,12 +194,6 @@ class Department extends React.Component {
                 if (data.code == 0) this.getDepartmentDetail(department._id.$oid);
             }.bind(this)
         );
-        //var _this = this;
-        //var ol = document.getElementsByClassName("sortable")[0];
-        //var innerData = this.getDataNodeIterate(ol, null, null, false);
-        //http.postJson(urls.department.changeOrder + "/" + this.state.department._id.$oid,
-        //    innerData
-        //);
     }
     deleteItem(func) {
         if (!window.confirm(" " + culture.delete + " ?")) return;
