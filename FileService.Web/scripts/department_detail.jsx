@@ -106,7 +106,7 @@ class DataNode extends React.Component {
                     onClick={this.stopProp}></i>
                 <span className="sortable_node_title"
                     data-code={this.props.id}
-                    data-name={this.props.name}>{this.props.name}</span>
+                    data-name={this.props.name}>{this.props.name + "(" + this.props.id+")"}</span>
                 {this.props.count > 0 ?
                     <i className="iconfont icon-right1" onClick={this.showChildLi}></i> :
                     <i className="iconfont icon-dot"
