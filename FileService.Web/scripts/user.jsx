@@ -4,7 +4,7 @@
     }
     render() {
         return (
-            <table className="table table_user">
+            <table className="table">
                 <thead>
                     <tr>
                         <td width="25%">{culture.id}</td>
@@ -82,7 +82,10 @@ class DeleteUser extends React.Component {
                     <tbody>
                         <tr>
                             <td style={{ border: "0" }}>
-                                <input type="button" value={culture.delete} className="button" onClick={this.props.deleteUser.bind(this)} />
+                                <input type="button"
+                                    value={culture.delete}
+                                    className="button"
+                                    onClick={this.props.deleteUser.bind(this)} />
                             </td>
                         </tr>
                     </tbody>

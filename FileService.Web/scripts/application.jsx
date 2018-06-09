@@ -4,7 +4,7 @@
     }
     render() {
         return (
-            <table className="table" style={{ width: "70%" }}>
+            <table className="table">
                 <thead>
                     <tr>
                         <td width="25%">{culture.id}</td>

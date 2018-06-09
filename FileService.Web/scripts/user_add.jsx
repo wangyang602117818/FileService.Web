@@ -51,7 +51,7 @@
     render() {
         return (
             <div className={this.props.show ? "show" : "hidden" }>
-                <table className="table table_user">
+                <table className="table table_user" style={{ width: "45%" }}>
                     <tbody>
                         <tr>
                             <td>{culture.username}:</td>
