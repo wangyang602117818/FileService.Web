@@ -81,12 +81,14 @@ class DataNode extends React.Component {
         super(props);
     }
     showChildLi(e) {
-        if (e.target.parentElement.nextElementSibling.style.display == "block") {
-            e.target.parentElement.nextElementSibling.style.display = "none";
-            e.target.className = "iconfont icon-right1";
-        } else {
-            e.target.parentElement.nextElementSibling.style.display = "block";
-            e.target.className = "iconfont icon-down1";
+        if (e.target.parentElement.nextElementSibling) {
+            if (e.target.parentElement.nextElementSibling.style.display == "block") {
+                e.target.parentElement.nextElementSibling.style.display = "none";
+                e.target.className = "iconfont icon-right1";
+            } else {
+                e.target.parentElement.nextElementSibling.style.display = "block";
+                e.target.className = "iconfont icon-down1";
+            }
         }
         e.stopPropagation();
     }
@@ -256,16 +258,6 @@ class DeleteDepartment extends React.Component {
             message: ""
         }
     }
-    deleteItem(e) {
-        if (window.confirm(" " + culture.delete + " ?")) {
-            this.props.deleteItem(function (message) {
-                this.setState({ message: message });
-            }.bind(this))
-        }
-    }
-    messageEmpty() {
-        this.setState({ message: "" });
-    }
     render() {
         return (
             <div className={this.props.show ? "show" : "hidden"}>
@@ -276,12 +268,82 @@ class DeleteDepartment extends React.Component {
                                 <input type="button"
                                     value={culture.delete}
                                     className="button"
-                                    onClick={this.deleteItem.bind(this)} />&nbsp;<font color="red">{this.state.message}</font>
+                                    onClick={this.props.deleteItem.bind(this)} />
                             </td>
                         </tr>
                     </tbody>
                 </table>
             </div>
         )
+    }
+}
+class AddTopDepartment extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            departmentName: "",
+            departmentCode: ""
+        }
+    }
+    componentDidMount() {
+        this.getHexCode();
+    }
+    getHexCode() {
+        http.get(urls.getHexCodeUrl + "/12", function (data) {
+            if (data.code == 0) {
+                this.setState({ departmentCode: data.result });
+            }
+        }.bind(this));
+    }
+    nameChange(e) {
+        this.setState({ departmentName: e.target.value });
+    }
+    codeChange(e) {
+        this.setState({ departmentCode: e.target.value });
+    }
+    addTopDepartment(e) {
+        if (this.state.departmentName && this.state.departmentCode) {
+            this.props.addTopDepartment(this.state.departmentName, this.state.departmentCode, function (data) {
+                if (data.code == 0) this.setState({ departmentName: "", departmentCode: "" })
+            }.bind(this));
+        }
+    }
+    render() {
+        return (
+            <div className={this.props.show ? "show" : "hidden"}>
+                <table className="table" style={{ width: "35%" }}>
+                    <tbody>
+                        <tr>
+                            <td>{culture.department_name}:</td>
+                            <td>
+                                <input type="text" name="departmentName"
+                                    value={this.state.departmentName}
+                                    onChange={this.nameChange.bind(this)} />
+                                <font color="red">*</font>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>{culture.department_code}:</td>
+                            <td><input type="text"
+                                name="departmentCode"
+                                value={this.state.departmentCode}
+                                onChange={this.codeChange.bind(this)} />
+                                <font color="red">*</font>&nbsp;
+                                <i className="iconfont icon-get"
+                                    onClick={this.getHexCode.bind(this)}></i>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colSpan="2">
+                                <input type="button"
+                                    value={culture.add}
+                                    className="button"
+                                    onClick={this.addTopDepartment.bind(this)} />
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        );
     }
 }

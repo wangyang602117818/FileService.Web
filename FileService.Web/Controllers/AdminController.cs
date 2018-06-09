@@ -444,6 +444,26 @@ namespace FileService.Web.Controllers
             return new ResponseModel<string>(ErrorCode.server_exception, "");
         }
         [Authorize(Roles = "admin")]
+        public ActionResult AddTopDepartment(DepartmentForm departmentForm)
+        {
+            BsonDocument bson = departmentForm.ToBsonDocument();
+            bson.Add("CreateTime", DateTime.Now);
+            department.Insert(bson);
+            return new ResponseModel<string>(ErrorCode.success, "");
+        }
+        [Authorize(Roles = "admin")]
+        public ActionResult DeleteTopDepartment(string id)
+        {
+            if (department.DeleteOne(ObjectId.Parse(id)))
+            {
+                return new ResponseModel<string>(ErrorCode.success, "");
+            }
+            else
+            {
+                return new ResponseModel<string>(ErrorCode.server_exception, "");
+            }
+        }
+        [Authorize(Roles = "admin")]
         public ActionResult UpdateDepartment(string id, DepartmentForm departmentForm)
         {
             BsonDocument d = departmentForm.ToBsonDocument();
@@ -460,7 +480,7 @@ namespace FileService.Web.Controllers
         public ActionResult DepartmentChangeOrder(string id, List<DepartmentForm> departmentForms)
         {
             IEnumerable<BsonDocument> bsonDocument = departmentForms.Select(s => s.ToBsonDocument());
-            if(department.ChangeOrder(id, bsonDocument))
+            if (department.ChangeOrder(id, bsonDocument))
             {
                 return new ResponseModel<string>(ErrorCode.success, "");
             }

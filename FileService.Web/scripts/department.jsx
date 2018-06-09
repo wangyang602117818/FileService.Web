@@ -77,6 +77,8 @@ class Department extends React.Component {
         super(props);
         this.state = {
             pageShow: localStorage.department ? eval(localStorage.department) : true,
+            addTopDepartmentShow: true,
+            addTopDepartmentToggle: true,
             addDepartmentShow: localStorage.department_add ? eval(localStorage.department_add) : true,
             departmentDetailShow: false,
             departmentDetailToggle: true,
@@ -98,6 +100,13 @@ class Department extends React.Component {
         this.url = urls.department.getUrl;
         this.storagePageShowKey = "department";
         this.storagePageSizeKey = "department_pageSize";
+    }
+    onTopDepartmentShow() {
+        if (this.state.addTopDepartmentToggle) {
+            this.setState({ addTopDepartmentToggle: false });
+        } else {
+            this.setState({ addTopDepartmentToggle: true });
+        }
     }
     onUpdateDepartmentShow() {
         if (this.state.updateDepartmentToggle) {
@@ -131,8 +140,8 @@ class Department extends React.Component {
         var id = e.target.id || e.target.parentElement.id;
         this.setState({
             id: id,
-            departmentDetailShow: false,
-            updateDepartmentShow: false
+            departmentDetailShow: false,  //暂时卸载
+            updateDepartmentShow: false   //暂时卸载
         }, function () {
             this.getDepartmentDetail(id);
         }.bind(this));
@@ -142,14 +151,14 @@ class Department extends React.Component {
         http.get(urls.department.getDepartmentUrl + "/" + id, function (data) {
             if (data.code == 0) {
                 _this.setState({
-                    departmentDetailShow: true,
-                    updateDepartmentShow: true,
+                    addTopDepartmentShow: false,
+                    departmentDetailShow: true,  //再次开启
+                    updateDepartmentShow: true,  //再次开启
                     department: data.result,
                     updateDepartment: { departmentCode: data.result.DepartmentCode, departmentName: data.result.DepartmentName }
                 }, function () {
                     _this.refs.updateDepartment.onUpdate(data.result.DepartmentName, data.result.DepartmentCode);
                     _this.refs.addSubDepartment.getHexCode();
-                    _this.refs.deleteDepartment.messageEmpty();
                 });
             }
         });
@@ -163,7 +172,6 @@ class Department extends React.Component {
         }, function () {
             this.refs.updateDepartment.onUpdate(name, code);
             this.refs.addSubDepartment.getHexCode();
-            this.refs.deleteDepartment.messageEmpty();
         });
     }
     updateDepartment(name, code) {
@@ -174,24 +182,24 @@ class Department extends React.Component {
         var ol = document.getElementsByClassName("sortable")[0];
         var innerData = this.getDataNodeIterate(ol, null, null, false);
         http.postJson(urls.department.changeOrder + "/" + this.state.department._id.$oid,
-            innerData,
-            function (data) {
-                var id = _this.state.id;
-                _this.setState({
-                    id: id,
-                    departmentDetailShow: false,
-                    updateDepartmentShow: false
-                }, function () {
-                    _this.getDepartmentDetail(id);
-                });
-            }
+            innerData
         );
     }
     deleteItem(func) {
+        if (!window.confirm(" " + culture.delete + " ?")) return;
         var deleteCode = this.state.updateDepartment.departmentCode;
         var deleteName = this.state.updateDepartment.departmentName;
         if (deleteCode == this.state.department.DepartmentCode || deleteName == this.state.department.DepartmentName) {
-            func(culture.do_not_delete_topnode);
+            http.get(urls.department.deleteTopDepartment + "/" + this.state.department._id.$oid, function (data) {
+                if (data.code == 0) {
+                    this.setState({
+                        addTopDepartmentShow: true,
+                        departmentDetailShow: false,
+                        updateDepartmentShow: false
+                    });
+                    this.getData();
+                }
+            }.bind(this));
             return;
         }
         var ol = document.getElementsByClassName("sortable")[0];
@@ -232,6 +240,13 @@ class Department extends React.Component {
                 success(data);
             }.bind(this)
         );
+    }
+    addTopDepartment(name, code, success) {
+        var obj = { departmentName: name, departmentCode: code };
+        http.postJson(urls.department.addTopDepartment, obj, function (data) {
+            if (data.code == 0) this.getData();
+            success(data);
+        }.bind(this));
     }
     setDataNodeIterate(departments, topCode, topName, dept) { //递归state中department数据，并且添加子节点
         if (departments.length <= 0) return;
@@ -310,6 +325,15 @@ class Department extends React.Component {
                 <DepartmentData
                     data={this.state.data.result}
                     onIdClick={this.onIdClick.bind(this)} />
+                {this.state.addTopDepartmentShow ?
+                    <TitleArrow title={culture.add_top_department}
+                        show={this.state.addTopDepartmentToggle}
+                        onShowChange={this.onTopDepartmentShow.bind(this)} /> : null}
+                {this.state.addTopDepartmentShow ?
+                    <AddTopDepartment
+                        addTopDepartment={this.addTopDepartment.bind(this)}
+                        show={this.state.addTopDepartmentToggle}
+                    /> : null}
                 {this.state.departmentDetailShow ?
                     <TitleArrow title={culture.detail_department + "(" + this.state.department.DepartmentName + ")"}
                         show={this.state.departmentDetailToggle}

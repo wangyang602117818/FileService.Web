@@ -162,6 +162,8 @@ var urls = {
     },
     department: {
         getUrl: appDomain + "admin/getdepartments",
+        addTopDepartment: appDomain + "admin/addtopdepartment",
+        deleteTopDepartment: appDomain + "admin/deletetopdepartment",
         updateDepartmentUrl: appDomain + "admin/updatedepartment",
         getDepartmentUrl: appDomain + "admin/getdepartment",
         changeOrder: appDomain + "admin/departmentchangeorder",
