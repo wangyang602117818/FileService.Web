@@ -23,6 +23,7 @@ var culture = {
     config: "配置",
     users: "用户管理",
     update: "更新",
+    save: "保存",
 
     last_update: "上次更新",
     every: "每",

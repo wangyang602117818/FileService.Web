@@ -138,29 +138,29 @@ class Department extends React.Component {
     }
     onIdClick(e) {
         var id = e.target.id || e.target.parentElement.id;
-        this.setState({
+        this.getDepartmentDetail(id);
+    }
+    getDepartmentDetail(id) {
+        var _this = this;
+        _this.setState({
             id: id,
             departmentDetailShow: false,  //暂时卸载
             updateDepartmentShow: false   //暂时卸载
         }, function () {
-            this.getDepartmentDetail(id);
-        }.bind(this));
-    }
-    getDepartmentDetail(id) {
-        var _this = this;
-        http.get(urls.department.getDepartmentUrl + "/" + id, function (data) {
-            if (data.code == 0) {
-                _this.setState({
-                    addTopDepartmentShow: false,
-                    departmentDetailShow: true,  //再次开启
-                    updateDepartmentShow: true,  //再次开启
-                    department: data.result,
-                    updateDepartment: { departmentCode: data.result.DepartmentCode, departmentName: data.result.DepartmentName }
-                }, function () {
-                    _this.refs.updateDepartment.onUpdate(data.result.DepartmentName, data.result.DepartmentCode);
-                    _this.refs.addSubDepartment.getHexCode();
-                });
-            }
+            http.get(urls.department.getDepartmentUrl + "/" + id, function (data) {
+                if (data.code == 0) {
+                    _this.setState({
+                        addTopDepartmentShow: false,
+                        departmentDetailShow: true,  //再次开启
+                        updateDepartmentShow: true,  //再次开启
+                        department: data.result,
+                        updateDepartment: { departmentCode: data.result.DepartmentCode, departmentName: data.result.DepartmentName }
+                    }, function () {
+                        _this.refs.updateDepartment.onUpdate(data.result.DepartmentName, data.result.DepartmentCode);
+                        _this.refs.addSubDepartment.getHexCode();
+                    });
+                }
+            });
         });
     }
     itemClick(e) {
@@ -175,15 +175,31 @@ class Department extends React.Component {
         });
     }
     updateDepartment(name, code) {
-        this.getDataNode(name, code);
-    }
-    onOrderChange() {
-        var _this = this;
-        var ol = document.getElementsByClassName("sortable")[0];
-        var innerData = this.getDataNodeIterate(ol, null, null, false);
-        http.postJson(urls.department.changeOrder + "/" + this.state.department._id.$oid,
-            innerData
+        var department = this.getDataNode(name, code);
+        http.postJson(urls.department.updateDepartmentUrl + "/" + department._id.$oid,
+            department,
+            function (data) {
+                if (data.code == 0) {
+                    this.getData();
+                    this.refs.updateDepartment.onUpdate("", "");
+                }
+            }.bind(this)
         );
+    }
+    onOrderSave() {
+        var department = this.getDataNode(null, null);
+        http.postJson(urls.department.updateDepartmentUrl + "/" + department._id.$oid,
+            department,
+            function (data) {
+                if (data.code == 0) this.getDepartmentDetail(department._id.$oid);
+            }.bind(this)
+        );
+        //var _this = this;
+        //var ol = document.getElementsByClassName("sortable")[0];
+        //var innerData = this.getDataNodeIterate(ol, null, null, false);
+        //http.postJson(urls.department.changeOrder + "/" + this.state.department._id.$oid,
+        //    innerData
+        //);
     }
     deleteItem(func) {
         if (!window.confirm(" " + culture.delete + " ?")) return;
@@ -270,15 +286,7 @@ class Department extends React.Component {
             this.state.department.DepartmentCode = code;
         }
         this.state.department.Department = data;
-        http.postJson(urls.department.updateDepartmentUrl + "/" + this.state.department._id.$oid,
-            this.state.department,
-            function (data) {
-                if (data.code == 0) {
-                    this.getData();
-                    this.refs.updateDepartment.onUpdate("", "");
-                }
-            }.bind(this)
-        );
+        return this.state.department;
     }
     getDataNodeIterate(ol, name, code, del) {
         var dataArray = [];
@@ -343,7 +351,7 @@ class Department extends React.Component {
                         ref="departmentDetail"
                         department={this.state.department}
                         updateDepartment={this.state.updateDepartment}
-                        onOrderChange={this.onOrderChange.bind(this)}
+                        onOrderSave={this.onOrderSave.bind(this)}
                         show={this.state.departmentDetailToggle}
                         itemClick={this.itemClick.bind(this)}
                     /> : null}

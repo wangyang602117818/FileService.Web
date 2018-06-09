@@ -15,9 +15,9 @@
             handle: '.icon-menu',
             items: 'li',
             maxLevels: 15,
-            relocate: function () {
-                this.props.onOrderChange(null, null);
-            }.bind(this)
+            //relocate: function () {
+            //    this.props.onOrderChange(null, null);
+            //}.bind(this)
         });
     }
     render() {
@@ -32,6 +32,11 @@
                             itemClick={this.props.itemClick} />
                     }.bind(this))}
                 </ol>
+                <br/>
+                <input type="button"
+                    value={culture.save}
+                    className="button"
+                    onClick={this.props.onOrderSave.bind(this)} />
             </div>
         )
     }
@@ -101,12 +106,14 @@ class DataNode extends React.Component {
                 data-select={this.props.id == this.props.updateDepartment.departmentCode ? "1" : "0"}
                 data-code={this.props.id}
                 data-name={this.props.name}
-                onClick={this.props.itemClick}>
+                onClick={this.props.itemClick}
+                title={this.props.id}
+            >
                 <i className="iconfont icon-menu"
                     onClick={this.stopProp}></i>
                 <span className="sortable_node_title"
                     data-code={this.props.id}
-                    data-name={this.props.name}>{this.props.name + "(" + this.props.id+")"}</span>
+                    data-name={this.props.name}>{this.props.name}</span>
                 {this.props.count > 0 ?
                     <i className="iconfont icon-right1" onClick={this.showChildLi}></i> :
                     <i className="iconfont icon-dot"

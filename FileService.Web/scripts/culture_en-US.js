@@ -23,6 +23,7 @@ var culture = {
     config: "Config",
     users: "Users",
     update: "Update ",
+    save:"Save",
 
     last_update: "Last update",
     every: "every",
