@@ -11,7 +11,7 @@
         this.initSortable();
     }
     initSortable() {
-         $('ol.sortable').nestedSortable({
+        $('ol.sortable').nestedSortable({
             handle: '.icon-menu',
             items: 'li',
             maxLevels: 15,
@@ -257,9 +257,11 @@ class DeleteDepartment extends React.Component {
         }
     }
     deleteItem(e) {
-        this.props.deleteItem(function (message) {
-            this.setState({ message: message });
-        }.bind(this))
+        if (window.confirm(" " + culture.delete + " ?")) {
+            this.props.deleteItem(function (message) {
+                this.setState({ message: message });
+            }.bind(this))
+        }
     }
     messageEmpty() {
         this.setState({ message: "" });

@@ -80,6 +80,7 @@ class Department extends React.Component {
             addDepartmentShow: localStorage.department_add ? eval(localStorage.department_add) : true,
             departmentDetailShow: false,
             departmentDetailToggle: true,
+            id: null,
             department: null,
 
             updateDepartmentShow: false,
@@ -128,14 +129,23 @@ class Department extends React.Component {
     }
     onIdClick(e) {
         var id = e.target.id || e.target.parentElement.id;
+        this.setState({
+            id: id,
+            departmentDetailShow: false,
+            updateDepartmentShow: false
+        }, function () {
+            this.getDepartmentDetail(id);
+        }.bind(this));
+    }
+    getDepartmentDetail(id) {
         var _this = this;
         http.get(urls.department.getDepartmentUrl + "/" + id, function (data) {
             if (data.code == 0) {
                 _this.setState({
                     departmentDetailShow: true,
+                    updateDepartmentShow: true,
                     department: data.result,
-                    updateDepartment: { departmentCode: data.result.DepartmentCode, departmentName: data.result.DepartmentName },
-                    updateDepartmentShow: true
+                    updateDepartment: { departmentCode: data.result.DepartmentCode, departmentName: data.result.DepartmentName }
                 }, function () {
                     _this.refs.updateDepartment.onUpdate(data.result.DepartmentName, data.result.DepartmentCode);
                     _this.refs.addSubDepartment.getHexCode();
@@ -160,9 +170,22 @@ class Department extends React.Component {
         this.getDataNode(name, code);
     }
     onOrderChange() {
+        var _this = this;
         var ol = document.getElementsByClassName("sortable")[0];
         var innerData = this.getDataNodeIterate(ol, null, null, false);
-        http.postJson(urls.department.changeOrder + "/" + this.state.department._id.$oid, innerData);
+        http.postJson(urls.department.changeOrder + "/" + this.state.department._id.$oid,
+            innerData,
+            function (data) {
+                var id = _this.state.id;
+                _this.setState({
+                    id: id,
+                    departmentDetailShow: false,
+                    updateDepartmentShow: false
+                }, function () {
+                    _this.getDepartmentDetail(id);
+                });
+            }
+        );
     }
     deleteItem(func) {
         var deleteCode = this.state.updateDepartment.departmentCode;
