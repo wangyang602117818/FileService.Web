@@ -15,9 +15,9 @@
             handle: '.icon-menu',
             items: 'li',
             maxLevels: 15,
-            //relocate: function () {
-            //    this.props.onOrderChange(null, null);
-            //}.bind(this)
+            relocate: function () {
+                this.props.onOrderChange(null, null);
+            }.bind(this)
         });
     }
     render() {
@@ -36,6 +36,7 @@
                 <input type="button"
                     value={culture.save}
                     className="button"
+                    disabled={this.props.orderBtnDisabled}
                     onClick={this.props.onOrderSave.bind(this)} />
             </div>
         )
@@ -182,6 +183,7 @@ class UpdateDepartment extends React.Component {
                                 <input type="button"
                                     value={culture.update}
                                     className="button"
+                                    disabled={this.props.updateBtnDisabled}
                                     onClick={this.updateDepartment.bind(this)} />
                             </td>
                         </tr>
@@ -249,6 +251,7 @@ class AddSubDepartment extends React.Component {
                                 <input type="button"
                                     value={culture.add}
                                     className="button"
+                                    disabled={this.props.addSubBtnDisabled}
                                     onClick={this.addSubDepartment.bind(this)} />
                             </td>
                         </tr>
@@ -275,6 +278,7 @@ class DeleteDepartment extends React.Component {
                                 <input type="button"
                                     value={culture.delete}
                                     className="button"
+                                    disabled={this.props.deleteBtnDisabled}
                                     onClick={this.props.deleteItem.bind(this)} />
                             </td>
                         </tr>

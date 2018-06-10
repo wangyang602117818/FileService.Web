@@ -39,6 +39,11 @@ h1 {
         cursor: pointer;
     }
 
+    .button:disabled {
+        background: #ccc;
+        cursor:default;
+    }
+
 .link {
     text-align: center;
     cursor: pointer;

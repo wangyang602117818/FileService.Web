@@ -91,6 +91,10 @@ class Department extends React.Component {
             deleteDepartmentToggle: true,
             updateDepartment: null,
 
+            orderBtnDisabled: true,
+            updateBtnDisabled: false,
+            addSubBtnDisabled: false,
+            deleteBtnDisabled: false,
             pageIndex: 1,
             pageSize: localStorage.department_pageSize || 10,
             pageCount: 1,
@@ -186,12 +190,25 @@ class Department extends React.Component {
             }.bind(this)
         );
     }
+    onOrderChange() {
+        this.setState({
+            orderBtnDisabled: false,
+            updateBtnDisabled: true,
+            addSubBtnDisabled: true,
+            deleteBtnDisabled: true });
+    }
     onOrderSave() {
         var department = this.getDataNode(null, null);
         http.postJson(urls.department.updateDepartmentUrl + "/" + department._id.$oid,
             department,
             function (data) {
                 if (data.code == 0) this.getDepartmentDetail(department._id.$oid);
+                this.setState({
+                    orderBtnDisabled: true,
+                    updateBtnDisabled: false,
+                    addSubBtnDisabled: false,
+                    deleteBtnDisabled: false
+                });
             }.bind(this)
         );
     }
@@ -346,6 +363,8 @@ class Department extends React.Component {
                         department={this.state.department}
                         updateDepartment={this.state.updateDepartment}
                         onOrderSave={this.onOrderSave.bind(this)}
+                        onOrderChange={this.onOrderChange.bind(this)}
+                        orderBtnDisabled={this.state.orderBtnDisabled}
                         show={this.state.departmentDetailToggle}
                         itemClick={this.itemClick.bind(this)}
                     /> : null}
@@ -357,6 +376,7 @@ class Department extends React.Component {
                     <UpdateDepartment
                         ref="updateDepartment"
                         updateDepartment={this.updateDepartment.bind(this)}
+                        updateBtnDisabled={this.state.updateBtnDisabled}
                         show={this.state.updateDepartmentToggle}
                     /> : null}
                 {this.state.updateDepartmentShow ?
@@ -368,6 +388,7 @@ class Department extends React.Component {
                         show={this.state.addSubDepartmentToggle}
                         ref="addSubDepartment"
                         addSubDepartment={this.addSubDepartment.bind(this)}
+                        addSubBtnDisabled={this.state.addSubBtnDisabled}
                     /> : null}
                 {this.state.updateDepartmentShow ?
                     <TitleArrow title={culture.delete_department + "(" + this.state.updateDepartment.departmentName + ")"}
@@ -377,6 +398,7 @@ class Department extends React.Component {
                     <DeleteDepartment
                         ref="deleteDepartment"
                         show={this.state.deleteDepartmentToggle}
+                        deleteBtnDisabled={this.state.deleteBtnDisabled}
                         deleteItem={this.deleteItem.bind(this)} /> : null}
 
             </div>
