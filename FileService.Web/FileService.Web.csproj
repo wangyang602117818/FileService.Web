@@ -380,6 +380,7 @@
     <Content Include="Views\Admin\partial_pdfview.cshtml" />
     <Content Include="Views\Admin\Preview.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
+    <Content Include="Views\Admin\Test.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\FileService.Business\FileService.Business.csproj">

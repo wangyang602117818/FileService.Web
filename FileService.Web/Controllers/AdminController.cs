@@ -549,5 +549,10 @@ namespace FileService.Web.Controllers
             return new ResponseModel<string>(ErrorCode.success, "");
         }
 
+        [AllowAnonymous]
+        public ActionResult Test()
+        {
+            return View();
+        }
     }
 }

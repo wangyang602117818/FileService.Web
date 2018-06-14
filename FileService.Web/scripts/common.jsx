@@ -38,7 +38,7 @@ class Pagination extends React.Component {
                         className="pageIndex"
                         onChange={this.props.onInput}
                         onKeyPress={this.props.onKeyPress} />
-                    {" "+culture.of}{'\u00A0'}
+                    {" " + culture.of}{'\u00A0'}
                     {this.props.pageCount}
                     {'\u00A0'}{'\u00A0'}{'\u00A0'}
                     <i className="iconfont icon-last" title={culture.last_page} onClick={this.props.lastPage}></i>
@@ -105,7 +105,7 @@ var CommonUsePagination = {
                             doc[keywordArray[0]][keywordArray[1]] = doc[keywordArray[0]][keywordArray[1]].replace(new RegExp("" + trim(this.state.filter) + "", "ig"), this.matchKeyWord);
                         }
                     } else {
-                        if (doc[keyword] && typeof doc[keyword]=="string") {
+                        if (doc[keyword] && typeof doc[keyword] == "string") {
                             doc[keyword] = doc[keyword].replace(new RegExp("" + trim(this.state.filter) + "", "ig"), this.matchKeyWord);
                         }
                     }
@@ -114,7 +114,7 @@ var CommonUsePagination = {
         }
     },
     matchKeyWord(word) {
-        return '<span class="search_word">' + word +'</span>';
+        return '<span class="search_word">' + word + '</span>';
     },
     onPageShow(e) {
         if (this.state.pageShow) {
@@ -161,3 +161,180 @@ var CommonUsePagination = {
         this.getData();
     }
 }
+////////////////////////////////////////////////////
+//////////////////DropDownList/////////////////////
+///////////////////////////////////////////////////
+
+class DropDownList extends React.Component {
+    constructor(props) {
+        super(props);
+    }
+    render() {
+        return (
+            <div className="ddl">
+                <div className="ddl_line">
+                    <DDLDataNodeDown />
+                </div>
+                <div className="ddl_line">
+                    <DDLButtonTriple />
+                    <DDLDataNodeDown />
+                </div>
+                <div className="ddl_line">
+                    <DDLOrgDown />
+                    <DDLOrgDownRight />
+                    <DDLDataNode />
+                </div>
+                <div className="ddl_line">
+                    <DDLOrgDown />
+                    <DDLOrgHalfDownRight />
+                    <DDLDataNode />
+                </div>
+                <div className="ddl_line">
+                    <DDLOrgHalfDownRight />
+                    <DDLDataNode />
+                </div>
+            </div>
+        );
+    }
+}
+class DDLine extends React.Component {
+    constructor(props) {
+        super(props);
+    }
+    render() {
+        return (
+            <div className="ddl_line">
+
+            </div>
+        )
+    }
+}
+class DDLDataNodeDown extends React.Component {
+    constructor(props) {
+        super(props);
+    }
+    render() {
+        return (
+            <div className="node_wrap">
+                <div className="node_main">
+                    <div className="line_wrap v_wrap"></div>
+                    <div className="node">Tip</div>
+                    <div className="line_wrap v_wrap"><span className="v_line"></span></div>
+                </div>
+            </div>
+        )
+    }
+}
+class DDLDataNode extends React.Component {
+    constructor(props) {
+        super(props);
+    }
+    render() {
+        return (
+            <div className="node_wrap">
+                <div className="node_main">
+                    <div className="line_wrap v_wrap"></div>
+                    <div className="node">Tip</div>
+                    <div className="line_wrap v_wrap"></div>
+                </div>
+            </div>
+        )
+    }
+}
+class DDLButtonTriple extends React.Component {
+    constructor(props) {
+        super(props);
+    }
+    render() {
+        return (
+            <div className="node_wrap">
+                <div className="line_wrap h_wrap_flex"></div>
+                <div className="btn_wrap">
+                    <div className="line_wrap v_wrap_flex">
+                        <span className="v_line"></span>
+                    </div>
+                    <div className="btn">
+                        <DDLSvgButton />
+                    </div>
+                    <div className="line_wrap v_wrap_flex">
+                        <span className="v_line"></span>
+                    </div>
+                </div>
+                <div className="line_wrap h_wrap_flex">
+                    <div className="h_line"></div>
+                </div>
+            </div>
+        )
+    }
+}
+class DDLOrgDown extends React.Component {
+    constructor(props) {
+        super(props);
+    }
+    render() {
+        return (
+            <div className="node_wrap">
+                <div className="line_wrap v_wrap_flex">
+                    <span className="v_line"></span>
+                </div>
+            </div>
+        )
+    }
+}
+class DDLOrgDownRight extends React.Component {
+    constructor(props) {
+        super(props);
+    }
+    render() {
+        return (
+            <div className="node_wrap">
+                <div className="line_wrap h_wrap_flex"></div>
+                <div className="btn_wrap_none">
+                    <div className="line_wrap v_wrap_flex">
+                        <span className="v_line"></span>
+                    </div>
+                </div>
+                <div className="line_wrap h_wrap_flex">
+                    <span className="h_line"></span>
+                </div>
+            </div>
+        )
+    }
+}
+class DDLOrgHalfDownRight extends React.Component {
+    constructor(props) {
+        super(props);
+    }
+    render() {
+        return (
+            <div className="node_wrap">
+                <div className="line_wrap h_wrap_flex"></div>
+                <div className="btn_wrap_none">
+                    <div className="line_wrap v_wrap_flex">
+                        <span className="v_line"></span>
+                    </div>
+                    <div className="line_wrap v_wrap_flex">
+                        <span className="v_line_trans"></span>
+                    </div>
+                </div>
+                <div className="line_wrap h_wrap_flex">
+                    <div className="h_line"></div>
+                </div>
+            </div>
+        )
+    }
+}
+class DDLSvgButton extends React.Component {
+    constructor(props) {
+        super(props);
+    }
+    render() {
+        return (
+            <svg viewBox="0 0 1024 1024" width="16" height="16"><path d="M512 12C236.31 12 12 236.3 12 512s224.31 500 500 500 500-224.3 500-500S787.69 12 512 12z m0 944.44C266.94 956.44 67.56 757.06 67.56 512S266.94 67.56 512 67.56 956.44 266.94 956.44 512 757.06 956.44 512 956.44z" p-id="1765"></path><path d="M762 484.22H262a27.78 27.78 0 0 0 0 55.56h500a27.78 27.78 0 0 0 0-55.56z" p-id="1766"></path></svg>
+        )
+    }
+}
+ReactDOM.render(
+    <DropDownList />,
+    document.getElementById('index')
+);
