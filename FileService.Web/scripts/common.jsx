@@ -168,13 +168,29 @@ var CommonUsePagination = {
 class DropDownList extends React.Component {
     constructor(props) {
         super(props);
+        this.state = {
+            DepartmentName: "",
+            DepartmentCode: "",
+            Department: []
+        }
+    }
+    componentDidMount() {
+        http.get(urls.department.getDepartmentUrl + "/" + this.props.id, function (data) {
+            if (data.code == 0) {
+                this.setState({ department: data.result });
+            }
+        }.bind(this));
     }
     render() {
         return (
             <div className="ddl">
-                <div className="ddl_line">
-                    <DDLDataNodeDown />
-                </div>
+                {this.state.DepartmentCode ?
+                    <div className="ddl_line">
+                        <DDLDataNodeDown departmentName={this.state.DepartmentName}
+                            departmentCode={this.state.DepartmentCode} />
+                    </div> : null
+                }
+                {this.state.Department.map()}
                 <div className="ddl_line">
                     <DDLButtonTriple />
                     <DDLDataNodeDown />
@@ -197,7 +213,7 @@ class DropDownList extends React.Component {
         );
     }
 }
-class DDLine extends React.Component {
+class DropDownListIterate extends React.Component {
     constructor(props) {
         super(props);
     }
@@ -254,7 +270,7 @@ class DDLButtonTriple extends React.Component {
                         <span className="v_line"></span>
                     </div>
                     <div className="btn">
-                        <DDLSvgButton />
+                        <DDLSvgButtonMinus />
                     </div>
                     <div className="line_wrap v_wrap_flex">
                         <span className="v_line"></span>
@@ -324,17 +340,27 @@ class DDLOrgHalfDownRight extends React.Component {
         )
     }
 }
-class DDLSvgButton extends React.Component {
+class DDLSvgButtonMinus extends React.Component {
     constructor(props) {
         super(props);
     }
     render() {
         return (
-            <svg viewBox="0 0 1024 1024" width="16" height="16"><path d="M512 12C236.31 12 12 236.3 12 512s224.31 500 500 500 500-224.3 500-500S787.69 12 512 12z m0 944.44C266.94 956.44 67.56 757.06 67.56 512S266.94 67.56 512 67.56 956.44 266.94 956.44 512 757.06 956.44 512 956.44z" p-id="1765"></path><path d="M762 484.22H262a27.78 27.78 0 0 0 0 55.56h500a27.78 27.78 0 0 0 0-55.56z" p-id="1766"></path></svg>
+            <svg viewBox="0 0 1024 1024" width="16" height="16"><path d="M512 12C236.31 12 12 236.3 12 512s224.31 500 500 500 500-224.3 500-500S787.69 12 512 12z m0 944.44C266.94 956.44 67.56 757.06 67.56 512S266.94 67.56 512 67.56 956.44 266.94 956.44 512 757.06 956.44 512 956.44z"></path><path d="M762 484.22H262a27.78 27.78 0 0 0 0 55.56h500a27.78 27.78 0 0 0 0-55.56z"></path></svg>
+        )
+    }
+}
+class DDLSvgButtonAdd extends React.Component {
+    constructor(props) {
+        super(props);
+    }
+    render() {
+        return (
+            <svg viewBox="0 0 1024 1024" width="16" height="16"><path d="M512 0C229.68 0 0 229.68 0 512s229.68 512 512 512 512-229.68 512-512S794.32 0 512 0z m0 967.11C261.06 967.11 56.89 762.94 56.89 512S261.06 56.89 512 56.89 967.11 261.06 967.11 512 762.94 967.11 512 967.11z"></path><path d="M768 483.56H540.44V256a28.44 28.44 0 1 0-56.89 0v227.56H256a28.44 28.44 0 1 0 0 56.89h227.56V768a28.44 28.44 0 1 0 56.89 0V540.44H768a28.44 28.44 0 0 0 0-56.89z" p-id="1591"></path></svg>
         )
     }
 }
 ReactDOM.render(
-    <DropDownList />,
+    <DropDownList id="5b0e18c6c4180813fc692aa3" />,
     document.getElementById('index')
 );

@@ -1,6 +1,6 @@
 ﻿.ddl {
     border: 1px solid red;
-    width:180px;
+    
 }
 
 .ddl_line {
@@ -13,7 +13,7 @@
         flex-direction: row;
         width: 60px;
         height: 35px;
-        /*border: 1px dotted blue;*/
+        border: 1px dotted blue;
         vertical-align: top;
         overflow: hidden;
     }
