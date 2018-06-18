@@ -179,14 +179,17 @@ class DropDownList extends React.Component {
         if (e.target.nodeName == "svg") {
             var name = e.target.getAttribute("node-name");
             var code = e.target.getAttribute("node-code");
+            var absoluteLayer = e.target.getAttribute("layer-absolute");
             this.dataNodeIterate(this.state.Department, name, code, "btn");
-            console.log(this.state.Department);
+
+            this.setState({ Department: this.state.Department });
+
         }
         if (e.target.nodeName.toLowerCase() == "div" && e.target.className == "node") {
             var name = e.target.getAttribute("node-name");
             var code = e.target.getAttribute("node-code");
             this.dataNodeIterate(this.state.Department, name, code, "select");
-            console.log(this.state.Department);
+            this.setState({ Department: this.state.Department });
         }
     }
     dataNodeIterate(departments, name, code, type) {
@@ -257,6 +260,8 @@ class DropDownListIterate extends React.Component {
                     //当前层的子元素个数
                     var subCount = item.Department.length;
                     var downLineHide = isEnd && subCount > 0;
+                    var collapse = false;
+                    if (item.Collapse) collapse = true;
 
                     return (
                         <React.Fragment key={i}>
@@ -269,6 +274,7 @@ class DropDownListIterate extends React.Component {
                                 totalLayer={this.props.departments.length}
                                 index={i}
                                 layer={this.props.layer}
+
                                 layerAbsolute={this.props.layerAbsolute + "-" + i}
                             />
                             <DropDownListIterate
@@ -276,6 +282,7 @@ class DropDownListIterate extends React.Component {
                                 downLineHide={downLineHide}
                                 topLayerCount={this.props.topLayerCount}
                                 layer={this.props.layer + 1}
+
                                 layerAbsolute={this.props.layerAbsolute + "-" + i}
                             />
                         </React.Fragment>
@@ -302,7 +309,7 @@ class DropDownLine extends React.Component {
                 }
             } else if (layer - 1 == i) { //倒数第二个
                 if (this.props.subCount > 0) {
-                    html += '<div class="node_wrap_btn"><div class="line_wrap h_wrap_flex"></div><div class="btn_wrap"><div class="line_wrap v_wrap_flex"><span class="v_line"></span></div><div class="btn"><svg node-name=' + this.props.department.DepartmentName + ' node-code=' + this.props.department.DepartmentCode + ' viewBox="0 0 1024 1024" width="16" height="16"><path d="M512 12C236.31 12 12 236.3 12 512s224.31 500 500 500 500-224.3 500-500S787.69 12 512 12z m0 944.44C266.94 956.44 67.56 757.06 67.56 512S266.94 67.56 512 67.56 956.44 266.94 956.44 512 757.06 956.44 512 956.44z" p-id="1765"></path><path d="M762 484.22H262a27.78 27.78 0 0 0 0 55.56h500a27.78 27.78 0 0 0 0-55.56z" p-id="1766"></path></svg></div><div class="line_wrap v_wrap_flex">';
+                    html += '<div class="node_wrap_btn"><div class="line_wrap h_wrap_flex"></div><div class="btn_wrap"><div class="line_wrap v_wrap_flex"><span class="v_line"></span></div><div class="btn"><svg node-name=' + this.props.department.DepartmentName + ' node-code=' + this.props.department.DepartmentCode + ' layer-absolute=' + this.props.layerAbsolute + ' viewBox="0 0 1024 1024" width="16" height="16"><path d="M512 12C236.31 12 12 236.3 12 512s224.31 500 500 500 500-224.3 500-500S787.69 12 512 12z m0 944.44C266.94 956.44 67.56 757.06 67.56 512S266.94 67.56 512 67.56 956.44 266.94 956.44 512 757.06 956.44 512 956.44z" p-id="1765"></path><path d="M762 484.22H262a27.78 27.78 0 0 0 0 55.56h500a27.78 27.78 0 0 0 0-55.56z" p-id="1766"></path></svg></div><div class="line_wrap v_wrap_flex">';
                     if (!this.props.isEnd) html += '<span class="v_line"></span>';
                     html += '</div></div><div class="line_wrap h_wrap_flex"><div class="h_line"></div></div></div>';
                 } else {
@@ -328,17 +335,21 @@ class DropDownLine extends React.Component {
                 }
             }
         }
+
+
         return (
             <div className="ddl_line"
                 sub-count={this.props.subCount}
                 top-layer-count={this.props.topLayerCount}
                 layer={layer}
+
                 total-layer={this.props.totalLayer}
                 layer-absolute={this.props.layerAbsolute}
                 code={this.props.department.DepartmentCode}
                 name={this.props.department.DepartmentName}
                 isend={this.props.isEnd.toString()}
                 index={this.props.index}
+
                 down-hide={this.props.downLineHide.toString()}
                 dangerouslySetInnerHTML={{ __html: html }}>
 
