@@ -169,46 +169,77 @@ class DropDownList extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            topLayerCount: 0,
             DepartmentName: "",
             DepartmentCode: "",
             Department: []
         }
     }
+    ddlClick(e) {
+        if (e.target.nodeName == "svg") {
+            var name = e.target.getAttribute("node-name");
+            var code = e.target.getAttribute("node-code");
+            this.dataNodeIterate(this.state.Department, name, code, "btn");
+            console.log(this.state.Department);
+        }
+        if (e.target.nodeName.toLowerCase() == "div" && e.target.className == "node") {
+            var name = e.target.getAttribute("node-name");
+            var code = e.target.getAttribute("node-code");
+            this.dataNodeIterate(this.state.Department, name, code, "select");
+            console.log(this.state.Department);
+        }
+    }
+    dataNodeIterate(departments, name, code, type) {
+        for (var i = 0; i < departments.length; i++) {
+            if (departments[i].DepartmentCode == code) {
+                if (type == "btn") {
+                    departments[i].Collapse = !departments[i].Collapse;
+                    break;
+                }
+                if (type == "select") {
+                    departments[i].Select = !departments[i].Select;
+                }
+            }
+            this.dataNodeIterate(departments[i].Department, name, code, type);
+        }
+    }
     componentDidMount() {
         http.get(urls.department.getDepartmentUrl + "/" + this.props.id, function (data) {
             if (data.code == 0) {
-                this.setState({ department: data.result });
+                this.setState({
+                    topLayerCount: data.result.Department.length,
+                    DepartmentName: data.result.DepartmentName,
+                    DepartmentCode: data.result.DepartmentCode,
+                    Department: data.result.Department
+                });
             }
         }.bind(this));
     }
     render() {
         return (
-            <div className="ddl">
+            <div className="ddl" onClick={this.ddlClick.bind(this)}>
                 {this.state.DepartmentCode ?
-                    <div className="ddl_line">
-                        <DDLDataNodeDown departmentName={this.state.DepartmentName}
-                            departmentCode={this.state.DepartmentCode} />
+                    <div className="ddl_line"
+                        layer={0}>
+                        <div className="node_wrap">
+                            <div className="node_main">
+                                <div className="line_wrap v_wrap"></div>
+                                <div className="node"
+                                    node-name={this.state.DepartmentName}
+                                    node-code={this.state.DepartmentCode}
+                                >{this.state.DepartmentName}</div>
+                                <div className="line_wrap v_wrap">
+                                    <span className="v_line"></span>
+                                </div>
+                            </div>
+                        </div>
                     </div> : null
                 }
-                {this.state.Department.map()}
-                <div className="ddl_line">
-                    <DDLButtonTriple />
-                    <DDLDataNodeDown />
-                </div>
-                <div className="ddl_line">
-                    <DDLOrgDown />
-                    <DDLOrgDownRight />
-                    <DDLDataNode />
-                </div>
-                <div className="ddl_line">
-                    <DDLOrgDown />
-                    <DDLOrgHalfDownRight />
-                    <DDLDataNode />
-                </div>
-                <div className="ddl_line">
-                    <DDLOrgHalfDownRight />
-                    <DDLDataNode />
-                </div>
+                <DropDownListIterate
+                    departments={this.state.Department}
+                    topLayerCount={this.state.topLayerCount}
+                    layerAbsolute="1"
+                    layer={1} />
             </div>
         );
     }
@@ -219,147 +250,105 @@ class DropDownListIterate extends React.Component {
     }
     render() {
         return (
-            <div className="ddl_line">
+            <React.Fragment>
+                {this.props.departments.map(function (item, i) {
+                    //是否当前层的最后一个节点
+                    var isEnd = this.props.departments.length == i + 1;
+                    //当前层的子元素个数
+                    var subCount = item.Department.length;
+                    var downLineHide = isEnd && subCount > 0;
+
+                    return (
+                        <React.Fragment key={i}>
+                            <DropDownLine
+                                department={item}
+                                subCount={subCount}
+                                topLayerCount={this.props.topLayerCount}
+                                isEnd={isEnd}
+                                downLineHide={this.props.downLineHide || downLineHide}
+                                totalLayer={this.props.departments.length}
+                                index={i}
+                                layer={this.props.layer}
+                                layerAbsolute={this.props.layerAbsolute + "-" + i}
+                            />
+                            <DropDownListIterate
+                                departments={item.Department}
+                                downLineHide={downLineHide}
+                                topLayerCount={this.props.topLayerCount}
+                                layer={this.props.layer + 1}
+                                layerAbsolute={this.props.layerAbsolute + "-" + i}
+                            />
+                        </React.Fragment>
+                    )
+                }.bind(this))}
+            </React.Fragment>
+        )
+    }
+}
+class DropDownLine extends React.Component {
+    constructor(props) {
+        super(props);
+    }
+
+    render() {
+        var html = "";
+        var layer = this.props.layer;
+        for (var i = 0; i <= layer; i++) {
+            if (layer == i) { //最后一个
+                if (this.props.subCount > 0) {
+                    html += '<div class="node_wrap"><div class="node_main"><div class="line_wrap v_wrap"></div><div class="node" node-name=' + this.props.department.DepartmentName + ' node-code=' + this.props.department.DepartmentCode + ' > ' + this.props.department.DepartmentName + '</div > <div class="line_wrap v_wrap"><span class="v_line"></span></div></div ></div > ';
+                } else {
+                    html += '<div class="node_wrap"><div class="node_main"><div class="line_wrap v_wrap"></div><div class="node" node-name=' + this.props.department.DepartmentName + ' node-code=' + this.props.department.DepartmentCode + ' >' + this.props.department.DepartmentName + '</div><div class="line_wrap v_wrap"></div></div></div>';
+                }
+            } else if (layer - 1 == i) { //倒数第二个
+                if (this.props.subCount > 0) {
+                    html += '<div class="node_wrap_btn"><div class="line_wrap h_wrap_flex"></div><div class="btn_wrap"><div class="line_wrap v_wrap_flex"><span class="v_line"></span></div><div class="btn"><svg node-name=' + this.props.department.DepartmentName + ' node-code=' + this.props.department.DepartmentCode + ' viewBox="0 0 1024 1024" width="16" height="16"><path d="M512 12C236.31 12 12 236.3 12 512s224.31 500 500 500 500-224.3 500-500S787.69 12 512 12z m0 944.44C266.94 956.44 67.56 757.06 67.56 512S266.94 67.56 512 67.56 956.44 266.94 956.44 512 757.06 956.44 512 956.44z" p-id="1765"></path><path d="M762 484.22H262a27.78 27.78 0 0 0 0 55.56h500a27.78 27.78 0 0 0 0-55.56z" p-id="1766"></path></svg></div><div class="line_wrap v_wrap_flex">';
+                    if (!this.props.isEnd) html += '<span class="v_line"></span>';
+                    html += '</div></div><div class="line_wrap h_wrap_flex"><div class="h_line"></div></div></div>';
+                } else {
+                    html += '<div class="node_wrap_btn"><div class="line_wrap h_wrap_flex"></div><div class="btn_wrap_none"><div class="line_wrap v_wrap_flex"><span class="v_line"></span></div><div class="line_wrap v_wrap_flex">';
+                    if (this.props.isEnd) {
+                        html += '<span class="v_line_trans"></span>';
+                    } else {
+                        html += '<span class="v_line"></span>';
+                    }
+                    html += '</div></div><div class="line_wrap h_wrap_flex"><span class= "h_line"></span></div></div>';
+                }
+            } else {  //其他
+                var topLayerCount = this.props.topLayerCount - 1;
+                var regex = new RegExp("^1-" + topLayerCount + "-\\d$");
+                if (i == 0 && regex.test(this.props.layerAbsolute)) {
+                    html += '<div class="node_wrap_btn"><div class="line_wrap v_wrap_flex"></div></div>';
+                } else {
+                    if (i > 0 && i < layer && this.props.downLineHide) {  //结束尾线
+                        html += '<div class="node_wrap_btn"><div class="line_wrap v_wrap_flex"></div></div>';
+                    } else {
+                        html += '<div class="node_wrap_btn"><div class="line_wrap v_wrap_flex"><span class="v_line"></span></div></div>';
+                    }
+                }
+            }
+        }
+        return (
+            <div className="ddl_line"
+                sub-count={this.props.subCount}
+                top-layer-count={this.props.topLayerCount}
+                layer={layer}
+                total-layer={this.props.totalLayer}
+                layer-absolute={this.props.layerAbsolute}
+                code={this.props.department.DepartmentCode}
+                name={this.props.department.DepartmentName}
+                isend={this.props.isEnd.toString()}
+                index={this.props.index}
+                down-hide={this.props.downLineHide.toString()}
+                dangerouslySetInnerHTML={{ __html: html }}>
+
 
             </div>
         )
     }
 }
-class DDLDataNodeDown extends React.Component {
-    constructor(props) {
-        super(props);
-    }
-    render() {
-        return (
-            <div className="node_wrap">
-                <div className="node_main">
-                    <div className="line_wrap v_wrap"></div>
-                    <div className="node">Tip</div>
-                    <div className="line_wrap v_wrap"><span className="v_line"></span></div>
-                </div>
-            </div>
-        )
-    }
-}
-class DDLDataNode extends React.Component {
-    constructor(props) {
-        super(props);
-    }
-    render() {
-        return (
-            <div className="node_wrap">
-                <div className="node_main">
-                    <div className="line_wrap v_wrap"></div>
-                    <div className="node">Tip</div>
-                    <div className="line_wrap v_wrap"></div>
-                </div>
-            </div>
-        )
-    }
-}
-class DDLButtonTriple extends React.Component {
-    constructor(props) {
-        super(props);
-    }
-    render() {
-        return (
-            <div className="node_wrap">
-                <div className="line_wrap h_wrap_flex"></div>
-                <div className="btn_wrap">
-                    <div className="line_wrap v_wrap_flex">
-                        <span className="v_line"></span>
-                    </div>
-                    <div className="btn">
-                        <DDLSvgButtonMinus />
-                    </div>
-                    <div className="line_wrap v_wrap_flex">
-                        <span className="v_line"></span>
-                    </div>
-                </div>
-                <div className="line_wrap h_wrap_flex">
-                    <div className="h_line"></div>
-                </div>
-            </div>
-        )
-    }
-}
-class DDLOrgDown extends React.Component {
-    constructor(props) {
-        super(props);
-    }
-    render() {
-        return (
-            <div className="node_wrap">
-                <div className="line_wrap v_wrap_flex">
-                    <span className="v_line"></span>
-                </div>
-            </div>
-        )
-    }
-}
-class DDLOrgDownRight extends React.Component {
-    constructor(props) {
-        super(props);
-    }
-    render() {
-        return (
-            <div className="node_wrap">
-                <div className="line_wrap h_wrap_flex"></div>
-                <div className="btn_wrap_none">
-                    <div className="line_wrap v_wrap_flex">
-                        <span className="v_line"></span>
-                    </div>
-                </div>
-                <div className="line_wrap h_wrap_flex">
-                    <span className="h_line"></span>
-                </div>
-            </div>
-        )
-    }
-}
-class DDLOrgHalfDownRight extends React.Component {
-    constructor(props) {
-        super(props);
-    }
-    render() {
-        return (
-            <div className="node_wrap">
-                <div className="line_wrap h_wrap_flex"></div>
-                <div className="btn_wrap_none">
-                    <div className="line_wrap v_wrap_flex">
-                        <span className="v_line"></span>
-                    </div>
-                    <div className="line_wrap v_wrap_flex">
-                        <span className="v_line_trans"></span>
-                    </div>
-                </div>
-                <div className="line_wrap h_wrap_flex">
-                    <div className="h_line"></div>
-                </div>
-            </div>
-        )
-    }
-}
-class DDLSvgButtonMinus extends React.Component {
-    constructor(props) {
-        super(props);
-    }
-    render() {
-        return (
-            <svg viewBox="0 0 1024 1024" width="16" height="16"><path d="M512 12C236.31 12 12 236.3 12 512s224.31 500 500 500 500-224.3 500-500S787.69 12 512 12z m0 944.44C266.94 956.44 67.56 757.06 67.56 512S266.94 67.56 512 67.56 956.44 266.94 956.44 512 757.06 956.44 512 956.44z"></path><path d="M762 484.22H262a27.78 27.78 0 0 0 0 55.56h500a27.78 27.78 0 0 0 0-55.56z"></path></svg>
-        )
-    }
-}
-class DDLSvgButtonAdd extends React.Component {
-    constructor(props) {
-        super(props);
-    }
-    render() {
-        return (
-            <svg viewBox="0 0 1024 1024" width="16" height="16"><path d="M512 0C229.68 0 0 229.68 0 512s229.68 512 512 512 512-229.68 512-512S794.32 0 512 0z m0 967.11C261.06 967.11 56.89 762.94 56.89 512S261.06 56.89 512 56.89 967.11 261.06 967.11 512 762.94 967.11 512 967.11z"></path><path d="M768 483.56H540.44V256a28.44 28.44 0 1 0-56.89 0v227.56H256a28.44 28.44 0 1 0 0 56.89h227.56V768a28.44 28.44 0 1 0 56.89 0V540.44H768a28.44 28.44 0 0 0 0-56.89z" p-id="1591"></path></svg>
-        )
-    }
-}
+
+
 ReactDOM.render(
     <DropDownList id="5b0e18c6c4180813fc692aa3" />,
     document.getElementById('index')

@@ -1,6 +1,6 @@
 ﻿.ddl {
     border: 1px solid red;
-    
+    display: inline-block;
 }
 
 .ddl_line {
@@ -8,88 +8,107 @@
     justify-content: flex-start;
 }
 
+    .ddl_line svg {
+        cursor: pointer;
+    }
+
     .ddl_line .node_wrap {
         display: inline-flex;
         flex-direction: row;
-        width: 60px;
+        width: 100px;
         height: 35px;
-        border: 1px dotted blue;
+        /*border: 1px dotted blue;*/
         vertical-align: top;
         overflow: hidden;
     }
 
-        .ddl_line .node_wrap .line_wrap {
-            display: flex;
-            align-items: center;
-            justify-content: center;
+    .ddl_line .node_wrap_btn {
+        width: 40px;
+        height: 35px;
+        display: inline-flex;
+        flex-direction: row;
+        /*border: 1px dotted blue;*/
+        vertical-align: top;
+        overflow: hidden;
+    }
+
+    .ddl_line .line_wrap {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .ddl_line .h_wrap {
+        width: 10px;
+    }
+
+    .ddl_line .h_wrap_flex {
+        flex: 1;
+    }
+
+    .ddl_line .v_wrap {
+        width: 40px;
+        height: 5px;
+    }
+
+    .ddl_line .v_wrap_flex {
+        flex: 1;
+        display: flex;
+        justify-content: center;
+    }
+
+    .ddl_line .h_line {
+        display: inline-block;
+        border-bottom: 1px solid #000;
+        width: 100%;
+    }
+
+    .ddl_line .v_line {
+        display: inline-block;
+        border-right: 1px solid #000;
+        height: 100%;
+    }
+
+    .ddl_line .v_line_trans {
+        display: inline-block;
+        border: 0;
+        height: 100%;
+    }
+
+    .ddl_line .node_main {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        /*border: 1px dotted blue;*/
+    }
+
+    .ddl_line .node {
+        flex: 1;
+        display: flex;
+        border: 1px solid #000;
+        align-items: center;
+        justify-content: center;
+        cursor:pointer;
+    }
+        .ddl_line .node:hover {
+            background-color: #e7e7e8;
         }
 
-        .ddl_line .node_wrap .h_wrap {
-            width: 10px;
-        }
+    .ddl_line .btn_wrap {
+        width: 16px;
+        display: flex;
+        flex-direction: column;
+    }
 
-        .ddl_line .node_wrap .h_wrap_flex {
-            flex: 1;
-        }
+    .ddl_line .btn {
+        height: 16px;
+    }
 
-        .ddl_line .node_wrap .v_wrap {
-            height: 5px;
-        }
-
-        .ddl_line .node_wrap .v_wrap_flex {
-            flex: 1;
-            display: flex;
-            justify-content: center;
-        }
-
-        .ddl_line .node_wrap .h_line {
-            display: inline-block;
-            border-bottom: 1px solid #000;
-            width: 100%;
-        }
-
-        .ddl_line .node_wrap .v_line {
-            display: inline-block;
-            border-right: 1px solid #000;
-            height: 100%;
-        }
-
-        .ddl_line .node_wrap .v_line_trans {
-            display: inline-block;
-            border: 0;
-            height: 100%;
-        }
-
-        .ddl_line .node_wrap .node_main {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            /*border: 1px dotted blue;*/
-        }
-
-        .ddl_line .node_wrap .node {
-            flex: 1;
-            display: flex;
-            border: 1px solid #000;
-            align-items: center;
-            justify-content:center;
-        }
-
-        .ddl_line .node_wrap .btn_wrap {
-            width: 16px;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .ddl_line .node_wrap .btn {
-            height: 16px;
-        }
-
-        .ddl_line .node_wrap .btn_wrap_none {
-            width: 1px;
-            display: flex;
-            flex-direction: column;
-        }
+    .ddl_line .btn_wrap_none {
+        width: 1px;
+        display: flex;
+        flex-direction: column;
+    }
 
 /*****************************************/
 /*****************************************/
