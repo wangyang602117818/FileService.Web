@@ -179,31 +179,38 @@ class DropDownList extends React.Component {
         if (e.target.nodeName == "svg") {
             var name = e.target.getAttribute("node-name");
             var code = e.target.getAttribute("node-code");
-            var absoluteLayer = e.target.getAttribute("layer-absolute");
-            this.dataNodeIterate(this.state.Department, name, code, "btn");
-
+            this.dataNodeIterate(this.state.Department, name, code, 1, "btn");
+            console.log(this.state.Department);
             this.setState({ Department: this.state.Department });
 
         }
         if (e.target.nodeName.toLowerCase() == "div" && e.target.className == "node") {
             var name = e.target.getAttribute("node-name");
             var code = e.target.getAttribute("node-code");
-            this.dataNodeIterate(this.state.Department, name, code, "select");
+            this.dataNodeIterate(this.state.Department, name, code, 1, "select");
             this.setState({ Department: this.state.Department });
         }
     }
-    dataNodeIterate(departments, name, code, type) {
+    dataNodeIterate(departments, name, code, layer, type, clickLayer) {
         for (var i = 0; i < departments.length; i++) {
+            if (clickLayer) {
+                if (layer > clickLayer) {
+                    departments[i].Collapse = !departments[i].Collapse;
+                    departments[i].Select = !departments[i].Select;
+                } else {
+                    clickLayer = null;
+                }
+            }
             if (departments[i].DepartmentCode == code) {
                 if (type == "btn") {
-                    departments[i].Collapse = !departments[i].Collapse;
-                    break;
+                    //departments[i].Collapse = !departments[i].Collapse;
                 }
                 if (type == "select") {
                     departments[i].Select = !departments[i].Select;
                 }
+                clickLayer = layer;
             }
-            this.dataNodeIterate(departments[i].Department, name, code, type);
+            this.dataNodeIterate(departments[i].Department, name, code, layer + 1, type, clickLayer);
         }
     }
     componentDidMount() {
@@ -262,6 +269,8 @@ class DropDownListIterate extends React.Component {
                     var downLineHide = isEnd && subCount > 0;
                     var collapse = false;
                     if (item.Collapse) collapse = true;
+                    var select = false;
+                    if (item.Select) select = true;
 
                     return (
                         <React.Fragment key={i}>
@@ -274,7 +283,8 @@ class DropDownListIterate extends React.Component {
                                 totalLayer={this.props.departments.length}
                                 index={i}
                                 layer={this.props.layer}
-
+                                collapse={collapse}
+                                select={select}
                                 layerAbsolute={this.props.layerAbsolute + "-" + i}
                             />
                             <DropDownListIterate
@@ -282,7 +292,6 @@ class DropDownListIterate extends React.Component {
                                 downLineHide={downLineHide}
                                 topLayerCount={this.props.topLayerCount}
                                 layer={this.props.layer + 1}
-
                                 layerAbsolute={this.props.layerAbsolute + "-" + i}
                             />
                         </React.Fragment>
@@ -342,14 +351,14 @@ class DropDownLine extends React.Component {
                 sub-count={this.props.subCount}
                 top-layer-count={this.props.topLayerCount}
                 layer={layer}
-
                 total-layer={this.props.totalLayer}
                 layer-absolute={this.props.layerAbsolute}
                 code={this.props.department.DepartmentCode}
                 name={this.props.department.DepartmentName}
                 isend={this.props.isEnd.toString()}
                 index={this.props.index}
-
+                collapse={this.props.collapse.toString()}
+                select={this.props.select.toString()}
                 down-hide={this.props.downLineHide.toString()}
                 dangerouslySetInnerHTML={{ __html: html }}>
 
