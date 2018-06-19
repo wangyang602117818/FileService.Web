@@ -182,7 +182,6 @@ class DropDownList extends React.Component {
             this.dataNodeIterate(this.state.Department, name, code, 1, "btn");
             console.log(this.state.Department);
             this.setState({ Department: this.state.Department });
-
         }
         if (e.target.nodeName.toLowerCase() == "div" && e.target.className == "node") {
             var name = e.target.getAttribute("node-name");
