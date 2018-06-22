@@ -12,26 +12,34 @@
     <style>
         .ddl_input_con {
             border: 1px solid #ccc;
-            display:flex;
-            width:400px;
+            cursor:text;
+            width: 400px;
         }
-        .ddl_item{
-            display:inline-flex;
-            margin-left:10px;
-            
-            /*vertical-align:top;*/
-            /*float:left;*/
-        }
-        .ddl_input {
-            /*flex:1;*/
-            /*float: left;*/
-            border: 0;
-            outline: none;
+
+        .ddl_item {
             display: inline-block;
-            width: 100%;
-            border: 1px dashed red;
-            /*border:1px solid red;*/
+            margin: 2px 2px;
+            background-color: #FDF4E5;
+            padding: 2px 5px;
+            border-radius: 3px;
         }
+
+            
+            .ddl_item .icon-del {
+                display: inline-block;
+                vertical-align: top;
+            }
+
+            .ddl_input {
+                outline: none;
+                border:0;
+                display: inline-block;
+                padding: 2px 5px;
+                /*width: 100%;*/
+                /*border: 1px dashed red;*/
+                width: 50px;
+                /*border:1px solid red;*/
+            }
     </style>
     @Styles.Render("~/css/index")
     @Scripts.Render("~/scripts/index-common-js")
@@ -59,30 +67,14 @@
             <span class="ddl_text">sssss</span>
             <i class="iconfont icon-del"></i>
         </div>
-        <div class="ddl_item">
-            <span class="ddl_text">sssss</span>
-            <i class="iconfont icon-del"></i>
-        </div>
-        <div class="ddl_item">
-            <span class="ddl_text">sssss</span>
-            <i class="iconfont icon-del"></i>
-        </div>
-        <div class="ddl_item">
-            <span class="ddl_text">sssss</span>
-            <i class="iconfont icon-del"></i>
-        </div>
+        
+        <input type="text" name="group" class="ddl_input" />
 
-        @*<input type="text" name="group" class="ddl_input" />*@
+
     </div>
     <br />
     <br />
-    <div style="border:1px solid red;width:300px;">
-        <div style="width:50px;height:30px;border:1px solid blue;display:inline-block;display:inline-flex;">sss</div>
-        <div style="width:50px;height:30px;border:1px solid blue;display:inline-block;display:inline-flex;">sss</div>
-        <div style="width:50px;height:30px;border:1px solid blue;display:inline-block;display:inline-flex;">sss</div>
-        <div style="width:50px;height:30px;border:1px solid blue;display:inline-block;display:inline-flex;">sss</div> <div style="width:50px;height:30px;border:1px solid blue;display:inline-block;display:inline-flex;">sss</div>
-        <div style="width:50px;height:30px;border:1px solid blue;display:inline-block;display:inline-flex;">sss</div>
-    </div>
+    
     <div id="index"></div>
 
 
@@ -90,4 +82,8 @@
 </html>
 <script src="~/scripts/funs.jsx"></script>
 <script src="~/scripts/common.jsx"></script>
-
+<script>
+    $(".ddl_input_con").click(function () {
+        $(".ddl_input").focus();
+    });
+</script>

@@ -172,6 +172,7 @@ class DropDownList extends React.Component {
             topLayerCount: 0,
             DepartmentName: "",
             DepartmentCode: "",
+            Select: false,
             Department: []
         }
     }
@@ -188,31 +189,52 @@ class DropDownList extends React.Component {
         if (e.target.nodeName.toLowerCase() == "div" && e.target.className == "node") {
             var name = e.target.getAttribute("node-name");
             var code = e.target.getAttribute("node-code");
-            this.dataNodeIterate(this.state.Department, name, code, 1, "select");
-            this.setState({ Department: this.state.Department });
+            //顶层node被选中
+            if (name == this.state.DepartmentName && code == this.state.DepartmentCode) {
+                this.state.Select = !this.state.Select;
+                this.selectAll(this.state.Department, this.state.Select);
+            } else {
+                this.dataNodeIterate(this.state.Department, name, code, 1, "select");
+            }
+            this.setState({
+                Select: this.state.Select,
+                Department: this.state.Department
+            });
         }
     }
-    dataNodeIterate(departments, name, code, layer, type, clickLayer) {
+    selectAll(departments, select) {
+        for (var i = 0; i < departments.length; i++) {
+            departments[i].Select = select;
+            this.selectAll(departments[i].Department, select);
+        }
+    }
+    unSelectTop() {
+
+    }
+    dataNodeIterate(departments, name, code, layer, type, clickLayer, select) {
         for (var i = 0; i < departments.length; i++) {
             if (clickLayer) {
                 if (layer > clickLayer) {
-                    if (type == "i") departments[i].Collapse = !departments[i].Collapse;  //用于判断是否隐藏
-                    if (type == "select") departments[i].Select = !departments[i].Select;  //用于判断是否选中
+                    if (type == "i") departments[i].Collapse = !departments[i].Collapse;  //用于判断是否隐藏（子层）
+                    if (type == "select") departments[i].Select = select;  //用于判断是否选中（子层）
+
                 } else {
                     clickLayer = null;
                 }
             }
             if (departments[i].DepartmentCode == code) {
                 if (type == "i") {
-                    //departments[i].Collapse = !departments[i].Collapse;  //用于判断是否隐藏
-                    departments[i].virtualCollapse = !departments[i].virtualCollapse; //用于修改页面
+                    //departments[i].Collapse = !departments[i].Collapse;  //用于判断是否隐藏(当前层)
+                    departments[i].virtualCollapse = !departments[i].virtualCollapse; //用于修改页面(当前层)
                 }
                 if (type == "select") {
-                    departments[i].Select = !departments[i].Select;
+                    departments[i].Select = !departments[i].Select; //(当前层)
+
                 }
                 clickLayer = layer;
             }
-            this.dataNodeIterate(departments[i].Department, name, code, layer + 1, type, clickLayer);
+
+            this.dataNodeIterate(departments[i].Department, name, code, layer + 1, type, clickLayer, departments[i].Select ? true : false);
         }
     }
     componentDidMount() {
@@ -232,13 +254,18 @@ class DropDownList extends React.Component {
             <div className="ddl" onClick={this.ddlClick.bind(this)}>
                 {this.state.DepartmentCode ?
                     <div className="ddl_line"
-                        layer={0}>
+                        layer={0}
+                        layer-absolute={"0-0"}
+                        code={this.state.DepartmentCode}
+                        name={this.state.DepartmentName}
+                        index={0}>
                         <div className="node_wrap">
                             <div className="node_main">
                                 <div className="line_wrap v_wrap"></div>
                                 <div className="node"
                                     node-name={this.state.DepartmentName}
                                     node-code={this.state.DepartmentCode}
+                                    select={this.state.Select.toString()}
                                 >{this.state.DepartmentName}</div>
                                 <div className="line_wrap v_wrap">
                                     <span className="v_line"></span>
@@ -317,13 +344,13 @@ class DropDownLine extends React.Component {
             if (this.props.virtualCollapse) fonttype = "iconfont icon-add1";
             if (layer == i) { //最后一个
                 if (this.props.subCount > 0 && !this.props.virtualCollapse) {
-                    html += '<div class="node_wrap"><div class="node_main"><div class="line_wrap v_wrap"></div><div class="node" node-name=' + this.props.department.DepartmentName + ' node-code=' + this.props.department.DepartmentCode + ' > ' + this.props.department.DepartmentName + '</div><div class="line_wrap v_wrap"><span class="v_line"></span></div></div ></div>';
+                    html += '<div class="node_wrap"><div class="node_main"><div class="line_wrap v_wrap"></div><div class="node" select=' + this.props.select + ' node-name=' + this.props.department.DepartmentName + ' node-code=' + this.props.department.DepartmentCode + ' > ' + this.props.department.DepartmentName + '</div><div class="line_wrap v_wrap"><span class="v_line"></span></div></div ></div>';
                 } else {
-                    html += '<div class="node_wrap"><div class="node_main"><div class="line_wrap v_wrap"></div><div class="node" node-name=' + this.props.department.DepartmentName + ' node-code=' + this.props.department.DepartmentCode + ' >' + this.props.department.DepartmentName + '</div><div class="line_wrap v_wrap"></div></div></div>';
+                    html += '<div class="node_wrap"><div class="node_main"><div class="line_wrap v_wrap"></div><div class="node" select=' + this.props.select + ' node-name=' + this.props.department.DepartmentName + ' node-code=' + this.props.department.DepartmentCode + ' >' + this.props.department.DepartmentName + '</div><div class="line_wrap v_wrap"></div></div></div>';
                 }
             } else if (layer - 1 == i) { //倒数第二个
                 if (this.props.subCount > 0) {
-                    html += '<div class="node_wrap_btn"><div class="line_wrap h_wrap_flex"></div><div class="btn_wrap"><div class="line_wrap v_wrap_flex"><span class="v_line"></span></div><div class="btn"><i class="' + fonttype+'" node-name=' + this.props.department.DepartmentName + ' node-code=' + this.props.department.DepartmentCode + ' layer-absolute=' + this.props.layerAbsolute + '></i></div><div class="line_wrap v_wrap_flex">';
+                    html += '<div class="node_wrap_btn"><div class="line_wrap h_wrap_flex"></div><div class="btn_wrap"><div class="line_wrap v_wrap_flex"><span class="v_line"></span></div><div class="btn"><i class="' + fonttype + '" node-name=' + this.props.department.DepartmentName + ' node-code=' + this.props.department.DepartmentCode + ' layer-absolute=' + this.props.layerAbsolute + '></i></div><div class="line_wrap v_wrap_flex">';
                     if (!this.props.isEnd) html += '<span class="v_line"></span>';
                     html += '</div></div><div class="line_wrap h_wrap_flex"><div class="h_line"></div></div></div>';
                 } else {
@@ -353,18 +380,18 @@ class DropDownLine extends React.Component {
         return (
             <div className="ddl_line"
                 style={{ display: this.props.collapse ? "none" : "block" }}
-                sub-count={this.props.subCount}
-                top-layer-count={this.props.topLayerCount}
+                //sub-count={this.props.subCount}
+                //top-layer-count={this.props.topLayerCount}
                 layer={layer}
-                total-layer={this.props.totalLayer}
+                //total-layer={this.props.totalLayer}
                 layer-absolute={this.props.layerAbsolute}
                 code={this.props.department.DepartmentCode}
                 name={this.props.department.DepartmentName}
-                isend={this.props.isEnd.toString()}
+                //isend={this.props.isEnd.toString()}
                 index={this.props.index}
-                collapse={this.props.collapse.toString()}
-                select={this.props.select.toString()}
-                down-hide={this.props.downLineHide.toString()}
+                //collapse={this.props.collapse.toString()}
+                //select={this.props.select.toString()}
+                //down-hide={this.props.downLineHide.toString()}
                 dangerouslySetInnerHTML={{ __html: html }}>
 
 

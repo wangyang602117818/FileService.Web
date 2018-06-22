@@ -1,9 +1,9 @@
 ﻿.ddl {
     border: 1px solid #ccc;
     display: inline-block;
-    padding: 10px 20px 10px 0;
-    height: 430px;
-    overflow: auto;
+    padding: 10px 20px 10px 5px;
+    /*height: 430px;*/
+    /*overflow: auto;*/
     position: absolute;
 }
 
@@ -12,14 +12,14 @@
     justify-content: flex-start;
 }
 
-    .ddl_line svg {
-        cursor: pointer;
+    .ddl_line i {
+        color: #c7c8ca;
     }
 
     .ddl_line .node_wrap {
         display: inline-flex;
         flex-direction: row;
-        width: 100px;
+        /*width: 100px;*/
         height: 35px;
         /*border: 1px dotted blue;*/
         vertical-align: top;
@@ -27,7 +27,7 @@
     }
 
     .ddl_line .node_wrap_btn {
-        width: 40px;
+        width: 50px;
         height: 35px;
         display: inline-flex;
         flex-direction: row;
@@ -51,7 +51,7 @@
     }
 
     .ddl_line .v_wrap {
-        width: 40px;
+        width: 50px;
         height: 5px;
     }
 
@@ -63,13 +63,13 @@
 
     .ddl_line .h_line {
         display: inline-block;
-        border-bottom: 1px solid #000;
+        border-bottom: 1px solid #c7c8ca;
         width: 100%;
     }
 
     .ddl_line .v_line {
         display: inline-block;
-        border-right: 1px solid #000;
+        border-right: 1px solid #c7c8ca;
         height: 100%;
     }
 
@@ -89,14 +89,19 @@
     .ddl_line .node {
         flex: 1;
         display: flex;
-        border: 1px solid #000;
+        border: 1px solid #c7c8ca;
         align-items: center;
         justify-content: center;
+        padding: 3px 6px;
         cursor: pointer;
     }
 
         .ddl_line .node:hover {
-            background-color: #e7e7e8;
+            background-color: #efeee9;
+        }
+
+        .ddl_line .node[select=true] {
+            background-color: #efeee9;
         }
 
     .ddl_line .btn_wrap {
