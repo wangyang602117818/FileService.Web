@@ -170,9 +170,6 @@ class DropDownList extends React.Component {
         super(props);
         this.state = {
             topLayerCount: 0,
-            layerAbsolute: "0-0",
-            currentLayer: 0,
-            index: 0,
             Select: false,
             DepartmentName: "",
             DepartmentCode: "",
@@ -202,17 +199,24 @@ class DropDownList extends React.Component {
                 Select: this.state.Select,
                 Department: this.state.Department
             }, function () {
-                var codeArray = [];
-                if (this.state.Select) codeArray.push(this.state.DepartmentCode);
-                this.getSelectCode(codeArray, this.state.Department);
-                console.log(codeArray);
+                    var codeArray = [];
+                    var nameArray = [];
+                    if (this.state.Select) {
+                        codeArray.push(this.state.DepartmentCode);
+                        nameArray.push(this.state.DepartmentName);
+                    } 
+                this.getSelectCode(codeArray,nameArray, this.state.Department);
+                this.props.selectNode(codeArray, nameArray);
             }.bind(this));
         }
     }
-    getSelectCode(codeArray, departments) {
+    getSelectCode(codeArray, nameArray, departments) {
         for (var i = 0; i < departments.length; i++) {
-            if (departments[i].Select) codeArray.push(departments[i].DepartmentCode);
-            this.getSelectCode(codeArray, departments[i].Department);
+            if (departments[i].Select) {
+                codeArray.push(departments[i].DepartmentCode);
+                nameArray.push(departments[i].DepartmentName);
+            } 
+            this.getSelectCode(codeArray, nameArray,departments[i].Department);
         }
     }
     selectAll(departments, select) {
@@ -271,7 +275,8 @@ class DropDownList extends React.Component {
 
     render() {
         return (
-            <div className="ddl" onClick={this.ddlClick.bind(this)}>
+            <div className="ddl" style={{ display: this.props.departmentShow }}
+                onClick={this.ddlClick.bind(this)}>
                 {this.state.DepartmentCode ?
                     <div className="ddl_line"
                         layer={0}

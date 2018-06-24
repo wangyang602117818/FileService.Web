@@ -5,8 +5,9 @@
             userName: "",
             passWord: "",
             confirm: "",
-            departmentShow: true,
-            department: "",
+            departmentShow: false,
+            codeArray: "",
+            nameArray: "",
             role: "",
             message: ""
         };
@@ -50,6 +51,22 @@
             }
         }
     }
+    groupFocus() {
+        event.preventDefault();
+        //this.refs.group_input.focus();
+    };
+    onDepartmentShow() {
+        this.setState({ departmentShow: true });
+    }
+    onDepartmentHidden() {
+        this.setState({ departmentShow: false });
+    }
+    selectNode(codeArray, nameArray) {
+        this.setState({
+            codeArray: codeArray,
+            nameArray: nameArray
+        })
+    }
     render() {
         return (
             <div className={this.props.show ? "show" : "hidden"}>
@@ -69,11 +86,27 @@
                         <tr>
                             <td>{culture.department}:</td>
                             <td>
-                                <input type="text" name="department" value={this.state.department} />
-                                <br />
-                                {this.state.departmentShow ?
-                                    <DropDownList id="5b0e18c6c4180813fc692aa3" type="user" /> : null}
-                                
+                                <label for="group">
+                                    <div className="ddl_input_con">
+                                        <div className="ddl_item">
+                                            <span className="ddl_text">sssss</span>
+                                            <i className="iconfont icon-del"></i>
+                                        </div>
+                                        <div className="ddl_item">
+                                            <span className="ddl_text">aaaa</span>
+                                            <i className="iconfont icon-del"></i>
+                                        </div>
+                                        <input type="text"
+                                            name="group"
+                                            id="group"
+                                            ref="group_input"
+                                            className="ddl_input" />
+                                    </div>
+                                    <DropDownList id="5b0e18c6c4180813fc692aa3"
+                                        type="user"
+                                        departmentShow={this.state.departmentShow ? "block" : "none"}
+                                        selectNode={this.selectNode.bind(this)} />
+                                </label>
                             </td>
                         </tr>
                         <tr>
