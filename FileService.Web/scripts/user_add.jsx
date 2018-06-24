@@ -5,11 +5,13 @@
             userName: "",
             passWord: "",
             confirm: "",
+            departmentShow: true,
+            department: "",
             role: "",
             message: ""
         };
     }
-    changeState(userName,userRole) {
+    changeState(userName, userRole) {
         this.setState({ userName: userName, role: userRole });
     }
     nameChanged(e) {
@@ -50,7 +52,7 @@
     }
     render() {
         return (
-            <div className={this.props.show ? "show" : "hidden" }>
+            <div className={this.props.show ? "show" : "hidden"}>
                 <table className="table table_user" style={{ width: "45%" }}>
                     <tbody>
                         <tr>
@@ -62,6 +64,16 @@
                             <td>
                                 <input type="password" name="passWord" value={this.state.passWord} onChange={this.passWordChanged.bind(this)} /><font color="red">*</font><br />
                                 <input type="password" name="confirm" value={this.state.confirm} onChange={this.confirmChanged.bind(this)} /><font color="red">*</font>({culture.confirm})
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>{culture.department}:</td>
+                            <td>
+                                <input type="text" name="department" value={this.state.department} />
+                                <br />
+                                {this.state.departmentShow ?
+                                    <DropDownList id="5b0e18c6c4180813fc692aa3" type="user" /> : null}
+                                
                             </td>
                         </tr>
                         <tr>

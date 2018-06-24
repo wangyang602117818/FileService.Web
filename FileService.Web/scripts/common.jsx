@@ -170,14 +170,14 @@ class DropDownList extends React.Component {
         super(props);
         this.state = {
             topLayerCount: 0,
+            layerAbsolute: "0-0",
+            currentLayer: 0,
+            index: 0,
+            Select: false,
             DepartmentName: "",
             DepartmentCode: "",
-            Select: false,
             Department: []
         }
-    }
-    groupChecked(name, code) {
-
     }
     ddlClick(e) {
         if (e.target.nodeName.toLowerCase() == "i") {
@@ -189,35 +189,48 @@ class DropDownList extends React.Component {
         if (e.target.nodeName.toLowerCase() == "div" && e.target.className == "node") {
             var name = e.target.getAttribute("node-name");
             var code = e.target.getAttribute("node-code");
+            var unselect = e.target.getAttribute("unselect");
+            if (unselect == "true") return;
             //顶层node被选中
             if (name == this.state.DepartmentName && code == this.state.DepartmentCode) {
                 this.state.Select = !this.state.Select;
-                this.selectAll(this.state.Department, this.state.Select);
+                if (this.props.type != "user") this.selectAll(this.state.Department, this.state.Select);
             } else {
                 this.dataNodeIterate(this.state.Department, name, code, 1, "select");
             }
             this.setState({
                 Select: this.state.Select,
                 Department: this.state.Department
-            });
+            }, function () {
+                var codeArray = [];
+                if (this.state.Select) codeArray.push(this.state.DepartmentCode);
+                this.getSelectCode(codeArray, this.state.Department);
+                console.log(codeArray);
+            }.bind(this));
+        }
+    }
+    getSelectCode(codeArray, departments) {
+        for (var i = 0; i < departments.length; i++) {
+            if (departments[i].Select) codeArray.push(departments[i].DepartmentCode);
+            this.getSelectCode(codeArray, departments[i].Department);
         }
     }
     selectAll(departments, select) {
         for (var i = 0; i < departments.length; i++) {
-            departments[i].Select = select;
+            departments[i].UnSelect = select;
+            departments[i].Select = false;
             this.selectAll(departments[i].Department, select);
         }
     }
-    unSelectTop() {
-
-    }
-    dataNodeIterate(departments, name, code, layer, type, clickLayer, select) {
+    dataNodeIterate(departments, name, code, layer, type, clickLayer, collapse, select) {
         for (var i = 0; i < departments.length; i++) {
             if (clickLayer) {
                 if (layer > clickLayer) {
-                    if (type == "i") departments[i].Collapse = !departments[i].Collapse;  //用于判断是否隐藏（子层）
-                    if (type == "select") departments[i].Select = select;  //用于判断是否选中（子层）
-
+                    if (type == "i") departments[i].Collapse = collapse;  //用于判断是否隐藏（子层）
+                    if (type == "select" && this.props.type != "user") {
+                        departments[i].UnSelect = select;  //用于判断是否选中（子层）
+                        departments[i].Select = false;  //（父元素选中了，子层不选中）
+                    }
                 } else {
                     clickLayer = null;
                 }
@@ -225,21 +238,27 @@ class DropDownList extends React.Component {
             if (departments[i].DepartmentCode == code) {
                 if (type == "i") {
                     //departments[i].Collapse = !departments[i].Collapse;  //用于判断是否隐藏(当前层)
-                    departments[i].virtualCollapse = !departments[i].virtualCollapse; //用于修改页面(当前层)
+                    departments[i].virtualCollapse = !departments[i].virtualCollapse; //用于修改页面(当前层按钮样式，只有一个)
                 }
                 if (type == "select") {
                     departments[i].Select = !departments[i].Select; //(当前层)
-
                 }
                 clickLayer = layer;
             }
-
-            this.dataNodeIterate(departments[i].Department, name, code, layer + 1, type, clickLayer, departments[i].Select ? true : false);
+            this.dataNodeIterate(departments[i].Department,
+                name,
+                code,
+                layer + 1,
+                type,
+                clickLayer,
+                departments[i].Collapse || departments[i].virtualCollapse,
+                departments[i].Select || departments[i].UnSelect);
         }
     }
     componentDidMount() {
         http.get(urls.department.getDepartmentUrl + "/" + this.props.id, function (data) {
             if (data.code == 0) {
+
                 this.setState({
                     topLayerCount: data.result.Department.length,
                     DepartmentName: data.result.DepartmentName,
@@ -249,6 +268,7 @@ class DropDownList extends React.Component {
             }
         }.bind(this));
     }
+
     render() {
         return (
             <div className="ddl" onClick={this.ddlClick.bind(this)}>
@@ -300,6 +320,8 @@ class DropDownListIterate extends React.Component {
                     if (item.Collapse) collapse = true;
                     var select = false;
                     if (item.Select) select = true;
+                    var unselect = false;
+                    if (item.UnSelect) unselect = true;
                     virtualCollapse = false;
                     if (item.virtualCollapse) virtualCollapse = true;
                     return (
@@ -316,6 +338,7 @@ class DropDownListIterate extends React.Component {
                                 collapse={collapse}
                                 virtualCollapse={virtualCollapse}
                                 select={select}
+                                unselect={unselect}
                                 layerAbsolute={this.props.layerAbsolute + "-" + i}
                             />
                             <DropDownListIterate
@@ -344,9 +367,9 @@ class DropDownLine extends React.Component {
             if (this.props.virtualCollapse) fonttype = "iconfont icon-add1";
             if (layer == i) { //最后一个
                 if (this.props.subCount > 0 && !this.props.virtualCollapse) {
-                    html += '<div class="node_wrap"><div class="node_main"><div class="line_wrap v_wrap"></div><div class="node" select=' + this.props.select + ' node-name=' + this.props.department.DepartmentName + ' node-code=' + this.props.department.DepartmentCode + ' > ' + this.props.department.DepartmentName + '</div><div class="line_wrap v_wrap"><span class="v_line"></span></div></div ></div>';
+                    html += '<div class="node_wrap"><div class="node_main"><div class="line_wrap v_wrap"></div><div class="node" select=' + this.props.select + ' node-name=' + this.props.department.DepartmentName + ' node-code=' + this.props.department.DepartmentCode + ' unselect=' + this.props.unselect + '> ' + this.props.department.DepartmentName + '</div><div class="line_wrap v_wrap"><span class="v_line"></span></div></div ></div>';
                 } else {
-                    html += '<div class="node_wrap"><div class="node_main"><div class="line_wrap v_wrap"></div><div class="node" select=' + this.props.select + ' node-name=' + this.props.department.DepartmentName + ' node-code=' + this.props.department.DepartmentCode + ' >' + this.props.department.DepartmentName + '</div><div class="line_wrap v_wrap"></div></div></div>';
+                    html += '<div class="node_wrap"><div class="node_main"><div class="line_wrap v_wrap"></div><div class="node" select=' + this.props.select + ' node-name=' + this.props.department.DepartmentName + ' node-code=' + this.props.department.DepartmentCode + ' unselect=' + this.props.unselect + '>' + this.props.department.DepartmentName + '</div><div class="line_wrap v_wrap"></div></div></div>';
                 }
             } else if (layer - 1 == i) { //倒数第二个
                 if (this.props.subCount > 0) {
@@ -380,18 +403,19 @@ class DropDownLine extends React.Component {
         return (
             <div className="ddl_line"
                 style={{ display: this.props.collapse ? "none" : "block" }}
-                //sub-count={this.props.subCount}
-                //top-layer-count={this.props.topLayerCount}
+                sub-count={this.props.subCount}
+                top-layer-count={this.props.topLayerCount}
                 layer={layer}
-                //total-layer={this.props.totalLayer}
+                total-layer={this.props.totalLayer}
                 layer-absolute={this.props.layerAbsolute}
                 code={this.props.department.DepartmentCode}
                 name={this.props.department.DepartmentName}
-                //isend={this.props.isEnd.toString()}
+                isend={this.props.isEnd.toString()}
                 index={this.props.index}
-                //collapse={this.props.collapse.toString()}
-                //select={this.props.select.toString()}
-                //down-hide={this.props.downLineHide.toString()}
+                collapse={this.props.collapse.toString()}
+                select={this.props.select.toString()}
+                unselect={this.props.unselect.toString()}
+                down-hide={this.props.downLineHide.toString()}
                 dangerouslySetInnerHTML={{ __html: html }}>
 
 
@@ -401,7 +425,9 @@ class DropDownLine extends React.Component {
 }
 
 
-ReactDOM.render(
-    <DropDownList id="5b0e18c6c4180813fc692aa3" />,
-    document.getElementById('index')
-);
+//ReactDOM.render(
+//    <DropDownList id="5b0e18c6c4180813fc692aa3"
+        
+//        type="user" />,
+//    document.getElementById('index')
+//);

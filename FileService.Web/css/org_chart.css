@@ -1,10 +1,12 @@
 ﻿.ddl {
-    border: 1px solid #ccc;
+    border: 1px #aaa solid;
     display: inline-block;
-    padding: 10px 20px 10px 5px;
-    /*height: 430px;*/
-    /*overflow: auto;*/
+    padding: 2px 20px 10px 5px;
+    margin-bottom: 20px;
+    height: 400px;
+    overflow: auto;
     position: absolute;
+    background-color: #f8f8f8;
 }
 
 .ddl_line {
@@ -97,12 +99,22 @@
     }
 
         .ddl_line .node:hover {
-            background-color: #efeee9;
+            color: #000;
         }
 
         .ddl_line .node[select=true] {
-            background-color: #efeee9;
+            background-color: #ff6600;
+            border-color: #ff6600;
+            color: #fff;
         }
+
+        .ddl_line .node[unselect=true] {
+            background-color: #f0f0f0;
+        }
+
+            .ddl_line .node[unselect=true]:hover {
+                cursor: default;
+            }
 
     .ddl_line .btn_wrap {
         width: 16px;
