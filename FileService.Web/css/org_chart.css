@@ -92,7 +92,7 @@
     .ddl_line .node {
         flex: 1;
         display: flex;
-        border: 1px solid #c7c8ca;
+        border: 1px solid #999;
         align-items: center;
         justify-content: center;
         padding: 3px 6px;
@@ -138,6 +138,7 @@
     cursor: text;
     padding:2px 2px;
     width: 300px;
+    background-color:#fff;
 }
 
 .ddl_item {
