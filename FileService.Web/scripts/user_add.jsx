@@ -3,6 +3,8 @@
         super(props);
         this.state = {
             userName: "",
+            company: "",
+            companys: [],
             passWord: "",
             confirm: "",
             departmentShow: false,
@@ -11,6 +13,11 @@
             role: "",
             message: ""
         };
+    }
+    componentDidMount() {
+        http.get(urls.department.getUrl + "?pageIndex=1&pageSize=100", function (data) {
+            if (data.code == 0) this.setState({ companys: data.result });
+        }.bind(this))
     }
     changeState(userName, userRole) {
         this.setState({ userName: userName, role: userRole });
@@ -26,6 +33,9 @@
     }
     roleChanged(e) {
         this.setState({ role: e.target.value });
+    }
+    companyChanged(e) {
+        this.setState({ company: e.target.value });
     }
     tagClick(e) {
         if (e.target.innerText == "none") {
@@ -71,10 +81,7 @@
         this.refs.ddl.selectNode(this.state.nameArray[index], this.state.codeArray[index]);
         this.state.codeArray.splice(index, 1);
         this.state.nameArray.splice(index, 1);
-        this.setState({
-            codeArray: this.state.codeArray,
-            nameArray: this.state.nameArray
-        });
+        this.setState({ codeArray: this.state.codeArray, nameArray: this.state.nameArray });
         e.stopPropagation();
         return false;
     }
@@ -104,8 +111,10 @@
                         <tr>
                             <td>{culture.company}:</td>
                             <td>
-                                <select name="company">
-                                    <option value="01">01</option>
+                                <select name="company" value={this.state.company} onChange={this.companyChanged.bind(this)}>
+                                    {this.state.companys.map(function (item, i) {
+                                        return <option value={item._id.$oid} key={i}>{item.DepartmentName}</option>
+                                    })}
                                 </select>
                             </td>
                         </tr>
@@ -152,7 +161,7 @@
                         </tr>
                         <tr>
                             <td colSpan="2"><input type="button"
-                                value={culture.add}
+                                value={culture.save}
                                 className="button"
                                 onClick={this.addUser.bind(this)} /><font color="red">{" " + this.state.message}</font></td>
                         </tr>
