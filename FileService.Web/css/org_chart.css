@@ -4,6 +4,7 @@
     padding: 2px 20px 10px 5px;
     margin-bottom: 20px;
     height: 400px;
+    min-width:250px;
     overflow: auto;
     position: absolute;
     background-color: #f8f8f8;
@@ -133,8 +134,9 @@
     }
 
 .ddl_input_con {
-    border: 1px solid #ccc;
+    border: 1px solid #999;
     cursor: text;
+    padding:2px 2px;
     width: 300px;
 }
 

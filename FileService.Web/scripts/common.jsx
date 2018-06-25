@@ -188,35 +188,39 @@ class DropDownList extends React.Component {
             var code = e.target.getAttribute("node-code");
             var unselect = e.target.getAttribute("unselect");
             if (unselect == "true") return;
-            //顶层node被选中
-            if (name == this.state.DepartmentName && code == this.state.DepartmentCode) {
-                this.state.Select = !this.state.Select;
-                if (this.props.type != "user") this.selectAll(this.state.Department, this.state.Select);
-            } else {
-                this.dataNodeIterate(this.state.Department, name, code, 1, "select");
-            }
-            this.setState({
-                Select: this.state.Select,
-                Department: this.state.Department
-            }, function () {
-                    var codeArray = [];
-                    var nameArray = [];
-                    if (this.state.Select) {
-                        codeArray.push(this.state.DepartmentCode);
-                        nameArray.push(this.state.DepartmentName);
-                    } 
-                this.getSelectCode(codeArray,nameArray, this.state.Department);
-                this.props.selectNode(codeArray, nameArray);
-            }.bind(this));
+            this.selectNode(name, code);
         }
+        e.stopPropagation();
+    }
+    selectNode(name, code) {
+        //顶层node被选中
+        if (name == this.state.DepartmentName && code == this.state.DepartmentCode) {
+            this.state.Select = !this.state.Select;
+            if (this.props.type != "user") this.selectAll(this.state.Department, this.state.Select);
+        } else {
+            this.dataNodeIterate(this.state.Department, name, code, 1, "select");
+        }
+        this.setState({
+            Select: this.state.Select,
+            Department: this.state.Department
+        }, function () {
+            var codeArray = [];
+            var nameArray = [];
+            if (this.state.Select) {
+                codeArray.push(this.state.DepartmentCode);
+                nameArray.push(this.state.DepartmentName);
+            }
+            this.getSelectCode(codeArray, nameArray, this.state.Department);
+            this.props.onSelectNode(codeArray, nameArray);
+        }.bind(this));
     }
     getSelectCode(codeArray, nameArray, departments) {
         for (var i = 0; i < departments.length; i++) {
             if (departments[i].Select) {
                 codeArray.push(departments[i].DepartmentCode);
                 nameArray.push(departments[i].DepartmentName);
-            } 
-            this.getSelectCode(codeArray, nameArray,departments[i].Department);
+            }
+            this.getSelectCode(codeArray, nameArray, departments[i].Department);
         }
     }
     selectAll(departments, select) {
@@ -262,7 +266,6 @@ class DropDownList extends React.Component {
     componentDidMount() {
         http.get(urls.department.getDepartmentUrl + "/" + this.props.id, function (data) {
             if (data.code == 0) {
-
                 this.setState({
                     topLayerCount: data.result.Department.length,
                     DepartmentName: data.result.DepartmentName,
@@ -272,10 +275,9 @@ class DropDownList extends React.Component {
             }
         }.bind(this));
     }
-
     render() {
         return (
-            <div className="ddl" style={{ display: this.props.departmentShow }}
+            <div className="ddl" style={{ display: this.props.departmentShow ? "block" : "none" }}
                 onClick={this.ddlClick.bind(this)}>
                 {this.state.DepartmentCode ?
                     <div className="ddl_line"
@@ -423,7 +425,6 @@ class DropDownLine extends React.Component {
                 down-hide={this.props.downLineHide.toString()}
                 dangerouslySetInnerHTML={{ __html: html }}>
 
-
             </div>
         )
     }
@@ -432,7 +433,7 @@ class DropDownLine extends React.Component {
 
 //ReactDOM.render(
 //    <DropDownList id="5b0e18c6c4180813fc692aa3"
-        
+
 //        type="user" />,
 //    document.getElementById('index')
 //);

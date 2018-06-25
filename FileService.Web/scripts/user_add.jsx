@@ -6,8 +6,8 @@
             passWord: "",
             confirm: "",
             departmentShow: false,
-            codeArray: "",
-            nameArray: "",
+            codeArray: [],
+            nameArray: [],
             role: "",
             message: ""
         };
@@ -51,21 +51,32 @@
             }
         }
     }
-    groupFocus() {
-        event.preventDefault();
-        //this.refs.group_input.focus();
-    };
     onDepartmentShow() {
         this.setState({ departmentShow: true });
     }
     onDepartmentHidden() {
         this.setState({ departmentShow: false });
     }
-    selectNode(codeArray, nameArray) {
+    groupInputFocus(e) {
+        this.refs.group_input.focus();
+    }
+    onSelectNode(codeArray, nameArray) {
         this.setState({
             codeArray: codeArray,
             nameArray: nameArray
         })
+    }
+    delNode(e) {
+        var index = parseInt(e.target.id);
+        this.refs.ddl.selectNode(this.state.nameArray[index], this.state.codeArray[index]);
+        this.state.codeArray.splice(index, 1);
+        this.state.nameArray.splice(index, 1);
+        this.setState({
+            codeArray: this.state.codeArray,
+            nameArray: this.state.nameArray
+        });
+        e.stopPropagation();
+        return false;
     }
     render() {
         return (
@@ -74,39 +85,60 @@
                     <tbody>
                         <tr>
                             <td>{culture.username}:</td>
-                            <td><input type="text" name="userName" value={this.state.userName} onChange={this.nameChanged.bind(this)} /><font color="red">*</font></td>
+                            <td><input type="text"
+                                name="userName"
+                                value={this.state.userName}
+                                onChange={this.nameChanged.bind(this)} /><font color="red">*</font></td>
                         </tr>
                         <tr>
                             <td>{culture.password}:</td>
                             <td>
-                                <input type="password" name="passWord" value={this.state.passWord} onChange={this.passWordChanged.bind(this)} /><font color="red">*</font><br />
-                                <input type="password" name="confirm" value={this.state.confirm} onChange={this.confirmChanged.bind(this)} /><font color="red">*</font>({culture.confirm})
+                                <input type="password" name="passWord"
+                                    value={this.state.passWord}
+                                    onChange={this.passWordChanged.bind(this)} /><font color="red">*</font><br />
+                                <input type="password" name="confirm"
+                                    value={this.state.confirm}
+                                    onChange={this.confirmChanged.bind(this)} /><font color="red">*</font>({culture.confirm})
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>{culture.company}:</td>
+                            <td>
+                                <select name="company">
+                                    <option value="01">01</option>
+                                </select>
                             </td>
                         </tr>
                         <tr>
                             <td>{culture.department}:</td>
                             <td>
-                                <label for="group">
-                                    <div className="ddl_input_con">
-                                        <div className="ddl_item">
-                                            <span className="ddl_text">sssss</span>
-                                            <i className="iconfont icon-del"></i>
-                                        </div>
-                                        <div className="ddl_item">
-                                            <span className="ddl_text">aaaa</span>
-                                            <i className="iconfont icon-del"></i>
-                                        </div>
-                                        <input type="text"
-                                            name="group"
-                                            id="group"
-                                            ref="group_input"
-                                            className="ddl_input" />
-                                    </div>
-                                    <DropDownList id="5b0e18c6c4180813fc692aa3"
-                                        type="user"
-                                        departmentShow={this.state.departmentShow ? "block" : "none"}
-                                        selectNode={this.selectNode.bind(this)} />
-                                </label>
+                                <div className="ddl_input_con"
+                                    tag="open_ddl"
+                                    onClick={this.groupInputFocus.bind(this)}>
+                                    {this.state.codeArray.map(function (item, i) {
+                                        return (
+                                            <div className="ddl_item"
+                                                key={i}
+                                                name={this.state.nameArray[i]}
+                                                code={item}
+                                                tag="open_ddl">
+                                                <span className="ddl_text" tag="open_ddl">{this.state.nameArray[i]}</span>
+                                                <i className="iconfont icon-del" id={i} onClick={this.delNode.bind(this)}></i>
+                                            </div>)
+                                    }.bind(this))}
+                                    <input type="text"
+                                        name="group_input"
+                                        id="group_input"
+                                        ref="group_input"
+                                        tag="open_ddl"
+                                        className="ddl_input" />
+                                </div>
+                                <DropDownList id="5b0e18c6c4180813fc692aa3"
+                                    type="user"
+                                    ref="ddl"
+                                    selected={this.state.codeArray}
+                                    departmentShow={this.state.departmentShow}
+                                    onSelectNode={this.onSelectNode.bind(this)} />
                             </td>
                         </tr>
                         <tr>
@@ -119,7 +151,10 @@
                             </td>
                         </tr>
                         <tr>
-                            <td colSpan="2"><input type="button" value={culture.add} className="button" onClick={this.addUser.bind(this)} /><font color="red">{" " + this.state.message}</font></td>
+                            <td colSpan="2"><input type="button"
+                                value={culture.add}
+                                className="button"
+                                onClick={this.addUser.bind(this)} /><font color="red">{" " + this.state.message}</font></td>
                         </tr>
                     </tbody>
                 </table>

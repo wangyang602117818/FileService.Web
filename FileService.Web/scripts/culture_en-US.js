@@ -23,7 +23,7 @@ var culture = {
     config: "Config",
     users: "Users",
     update: "Update ",
-    save:"Save",
+    save: "Save",
 
     last_update: "Last update",
     every: "every",
@@ -139,6 +139,7 @@ var culture = {
     parent_code: "ParentCode",
     delete_department: "Delete Department",
     detail_department: "Department Detail",
-    do_not_delete_topnode: "Do Not Delete TopNode",
+    company: "Company"
+
 
 }

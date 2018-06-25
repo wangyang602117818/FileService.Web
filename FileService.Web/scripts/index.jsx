@@ -175,9 +175,18 @@ class Container extends React.Component {
         this.setState({ refresh: e.target.value });
         this.refs.main.onRefreshChange(e.target.value);
     }
+    contentClick(e) {
+        var tag = e.target.getAttribute("tag");
+        if (document.getElementsByClassName("ddl").length <= 0) return;
+        if (tag == "open_ddl") {
+            document.getElementsByClassName("ddl")[0].style.display = "block";
+        } else {
+            document.getElementsByClassName("ddl")[0].style.display = "none";
+        }
+    }
     render() {
         return (
-            <div className="container">
+            <div className="container" onClick={this.contentClick.bind(this)} >
                 <Top />
                 <Menu style={this.state.menuStyle}
                     menuClick={this.menuClick.bind(this)} />
