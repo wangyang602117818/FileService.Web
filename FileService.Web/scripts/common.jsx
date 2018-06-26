@@ -176,6 +176,26 @@ class DropDownList extends React.Component {
             Department: []
         }
     }
+    getDepartmentNamesByCodes(codes) {
+        var names = [];
+        for (var i = 0; i < codes.length; i++) {
+            if (codes[i] == this.state.DepartmentCode) {
+                names.push(this.state.DepartmentName);
+            } else {
+                this.getDepartmentNamesInternal(codes[i], this.state.Department, names);
+            }
+        }
+        return names;
+    }
+    getDepartmentNamesInternal(code, departmens, names) {
+        for (var i = 0; i < departmens.length; i++) {
+            if (departmens[i].DepartmentCode == code) {
+                names.push(departmens[i].DepartmentName);
+                return;
+            }
+            this.getDepartmentNamesInternal(code, departmens[i].Department, names);
+        }
+    }
     ddlClick(e) {
         if (e.target.nodeName.toLowerCase() == "i") {
             var name = e.target.getAttribute("node-name");
@@ -192,7 +212,7 @@ class DropDownList extends React.Component {
         }
         e.stopPropagation();
     }
-    selectNode(name, code) {
+    selectNode(name, code, single) {
         //顶层node被选中
         if (name == this.state.DepartmentName && code == this.state.DepartmentCode) {
             this.state.Select = !this.state.Select;
@@ -211,7 +231,7 @@ class DropDownList extends React.Component {
                 nameArray.push(this.state.DepartmentName);
             }
             this.getSelectCode(codeArray, nameArray, this.state.Department);
-            this.props.onSelectNode(codeArray, nameArray);
+            if (!single) this.props.onSelectNode(codeArray, nameArray);
         }.bind(this));
     }
     getSelectCode(codeArray, nameArray, departments) {
@@ -264,15 +284,21 @@ class DropDownList extends React.Component {
         }
     }
     componentDidMount() {
-        http.get(urls.department.getDepartmentUrl + "/" + this.props.id, function (data) {
+        this.getData(this.props.id);
+    }
+    getData(id, success) {
+        if (!id) return;
+        http.get(urls.department.getDepartmentUrl + "/" + id, function (data) {
             if (data.code == 0) {
                 this.setState({
                     topLayerCount: data.result.Department.length,
+                    Select: false,
                     DepartmentName: data.result.DepartmentName,
                     DepartmentCode: data.result.DepartmentCode,
                     Department: data.result.Department
                 });
             }
+            if (success) success(data);
         }.bind(this));
     }
     render() {

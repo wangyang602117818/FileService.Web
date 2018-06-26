@@ -19,6 +19,10 @@ namespace FileService.Business
         {
             return mongoData.ChangeOrder(ObjectId.Parse(id), new BsonArray(documents));
         }
+        public IEnumerable<BsonDocument> GetAllDepartment()
+        {
+            return mongoData.GetAllDepartment();
+        }
         //public BsonDocument GetByDepartmentCode(string departmentCode)
         //{
         //    return mongoData.GetByDepartmentCode(departmentCode);

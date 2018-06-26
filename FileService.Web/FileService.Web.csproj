@@ -210,6 +210,7 @@
     <Content Include="hlsplayer\flowplayerhls.swf" />
     <Content Include="hlsplayer\hlsplayer.min.js" />
     <Content Include="image\data.ico" />
+    <Content Include="image\department.svg" />
     <Content Include="image\logo.png" />
     <Content Include="pdfview\images\annotation-check.svg" />
     <Content Include="pdfview\images\annotation-comment.svg" />

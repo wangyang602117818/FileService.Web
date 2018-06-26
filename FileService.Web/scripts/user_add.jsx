@@ -15,12 +15,30 @@
         };
     }
     componentDidMount() {
-        http.get(urls.department.getUrl + "?pageIndex=1&pageSize=100", function (data) {
-            if (data.code == 0) this.setState({ companys: data.result });
+        http.get(urls.department.getAllDepartment, function (data) {
+            if (data.code == 0) {
+                this.setState({ companys: data.result });
+                if (data.result.length > 0) {
+                    this.setState({ company: data.result[0]._id.$oid });
+                    this.refs.ddl.getData(data.result[0]._id.$oid);
+                }
+            }
         }.bind(this))
     }
-    changeState(userName, userRole) {
-        this.setState({ userName: userName, role: userRole });
+    changeState(userName, userRole, company, codeArray) {
+        this.refs.ddl.getData(company, function (data) {
+            var nameArray = this.refs.ddl.getDepartmentNamesByCodes(codeArray);
+            this.setState({
+                userName: userName,
+                role: userRole,
+                company: company,
+                codeArray: codeArray,
+                nameArray: nameArray
+            });
+            for (var i = 0; i < codeArray.length; i++) {
+                this.refs.ddl.selectNode(nameArray[i], codeArray[i], true);
+            }
+        }.bind(this));
     }
     nameChanged(e) {
         this.setState({ userName: e.target.value });
@@ -36,6 +54,7 @@
     }
     companyChanged(e) {
         this.setState({ company: e.target.value });
+        this.refs.ddl.getData(e.target.value);
     }
     tagClick(e) {
         if (e.target.innerText == "none") {
@@ -48,9 +67,14 @@
         var that = this;
         if (this.state.userName && this.state.passWord && this.state.confirm) {
             if (this.state.passWord === this.state.confirm) {
-                this.props.addUser(this.state, function (data) {
+                this.props.addUser({
+                    userName: this.state.userName,
+                    passWord: this.state.passWord,
+                    company: this.state.company,
+                    department: this.state.codeArray
+                }, function (data) {
                     if (data.code == 0) {
-                        that.setState({ userName: "", passWord: "", confirm: "", role: "", message: "" });
+                        that.setState({ userName: "", passWord: "", confirm: "", role: "", codeArray: [], nameArray: [], message: "" });
                     } else {
                         that.setState({ message: data.message });
                     }
@@ -78,13 +102,14 @@
     }
     delNode(e) {
         var index = parseInt(e.target.id);
-        this.refs.ddl.selectNode(this.state.nameArray[index], this.state.codeArray[index]);
+        this.refs.ddl.selectNode(this.state.nameArray[index], this.state.codeArray[index], true);
         this.state.codeArray.splice(index, 1);
         this.state.nameArray.splice(index, 1);
         this.setState({ codeArray: this.state.codeArray, nameArray: this.state.nameArray });
         e.stopPropagation();
         return false;
     }
+
     render() {
         return (
             <div className={this.props.show ? "show" : "hidden"}>
@@ -142,7 +167,7 @@
                                         tag="open_ddl"
                                         className="ddl_input" />
                                 </div>
-                                <DropDownList id="5b0e18c6c4180813fc692aa3"
+                                <DropDownList id={this.state.company}
                                     type="user"
                                     ref="ddl"
                                     selected={this.state.codeArray}

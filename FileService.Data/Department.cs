@@ -19,5 +19,9 @@ namespace FileService.Data
         {
             return MongoCollection.UpdateOne(FilterBuilder.Eq("_id", id), Builders<BsonDocument>.Update.Set("Department", departments)).IsAcknowledged;
         }
+        public IEnumerable<BsonDocument> GetAllDepartment()
+        {
+            return MongoCollection.Find(new BsonDocument()).Project(Builders<BsonDocument>.Projection.Exclude("Department")).ToEnumerable();
+        }
     }
 }

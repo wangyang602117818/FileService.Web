@@ -104,8 +104,8 @@
         }
 
         .ddl_line .node[select=true] {
-            background-color: #EC7700;
-            border-color: #ff6600;
+            background-color: #eb8c00;
+            border-color: #eb8c00;
             color: #fff;
         }
 
@@ -136,9 +136,12 @@
 .ddl_input_con {
     border: 1px solid #999;
     cursor: text;
-    padding:2px 2px;
+    padding: 2px 2px;
     width: 300px;
-    background-color:#fff;
+    background-color: #fff;
+    background-image: url(../image/department.svg);
+    background-position: right 3px center;
+    background-repeat: no-repeat;
 }
 
 .ddl_item {

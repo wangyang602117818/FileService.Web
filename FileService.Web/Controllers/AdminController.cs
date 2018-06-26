@@ -496,6 +496,10 @@ namespace FileService.Web.Controllers
             IEnumerable<BsonDocument> result = department.GetPageList(pageIndex, pageSize, "", filter, new List<string>() { "_id", "DepartmentName", "DepartmentCode" }, new List<string>() { "Department" }, out count);
             return new ResponseModel<IEnumerable<BsonDocument>>(ErrorCode.success, result, count);
         }
+        public ActionResult GetAllDepartment()
+        {
+            return new ResponseModel<IEnumerable<BsonDocument>>(ErrorCode.success, department.GetAllDepartment(), department.Count());
+        }
         [Authorize(Roles = "admin")]
         public ActionResult GetDepartment(string id)
         {

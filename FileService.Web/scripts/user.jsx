@@ -135,14 +135,14 @@ class User extends React.Component {
         if (e.target.nodeName.toLowerCase() == "span") id = e.target.parentElement.id;
         http.get(urls.user.getUserUrl + "/" + id, function (data) {
             if (data.code == 0) {
-                this.refs.add_user.changeState(data.result.UserName, data.result.Role);
+                this.refs.add_user.changeState(data.result.UserName, data.result.Role, data.result.Company, data.result.Department);
                 this.setState({ deleteShow: true, deleteName: data.result.UserName });
             }
         }.bind(this));
     }
     addUser(obj, success) {
         var that = this;
-        http.post(urls.user.addUserUrl, obj, function (data) {
+        http.postJson(urls.user.addUserUrl, obj, function (data) {
             if (data.code == 0) that.getData();
             success(data);
         });

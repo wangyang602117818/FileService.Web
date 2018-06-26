@@ -13,6 +13,9 @@ namespace FileService.Web.Models
         public string UserName { get; set; }
         [Required]
         public string PassWord { get; set; }
+        [Required]
+        public string Company { get; set; }
+        public string[] Department { get; set; }
         public string Role { get; set; }
         [BsonIgnoreIfNull]
         public DateTime? CreateTime { get; set; }
