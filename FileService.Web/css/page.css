@@ -183,12 +183,13 @@
 
 .convertBtn {
     text-align: center;
-    background-color: #f0f0f0;
+    background-color: #d9d9d9;
     cursor: pointer;
+    border-radius: 3px;
 }
 
     .convertBtn:hover {
-        background-color: #f3f3f3;
+        background-color: #b2b2b3;
     }
 
 .config_toolbar {
