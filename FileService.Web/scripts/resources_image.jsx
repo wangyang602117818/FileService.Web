@@ -163,6 +163,7 @@ class AccessAuthority extends React.Component {
                                 nameArray={this.state.nameArray}
                                 onSelectNodeChanged={this.onSelectNodeChanged.bind(this)}
                             />
+                            
                         </td>
                     </tr>
                     <tr>

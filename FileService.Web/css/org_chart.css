@@ -4,7 +4,7 @@
     padding: 2px 20px 10px 5px;
     margin-bottom: 20px;
     height: 400px;
-    min-width:250px;
+    min-width: 250px;
     overflow: auto;
     position: absolute;
     background-color: #f8f8f8;
@@ -134,6 +134,7 @@
     }
 
 .ddl_input_con {
+    display: inline-block;
     border: 1px solid #999;
     cursor: text;
     padding: 2px 2px;
@@ -237,4 +238,33 @@
     .sortable_node .icon-add1:hover {
         cursor: pointer;
         color: #f60;
+    }
+
+.department_bar {
+    display: inline-block;
+    vertical-align: top;
+}
+
+.department_bar_item {
+    display: inline-block;
+    padding: 1px 3px;
+    margin-left: 8px;
+    border: 1px solid #888;
+    cursor: pointer;
+    border-radius: 3px;
+    color: #444;
+}
+
+    .department_bar_item :hover {
+        color: #000;
+    }
+
+.department_bar .current {
+    background-color: #eb8c00;
+    border-color: #f60;
+    color: #fff
+}
+
+    .department_bar .current:hover {
+        cursor: default;
     }

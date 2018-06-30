@@ -141,5 +141,9 @@ var culture = {
     detail_department: "部门详情",
     company: "公司",
 
-    access_authority:"访问权限",
+    access_authority: "访问权限",
+    authority: "权限",
+    only_current: "仅当前",
+    current_and_sub: "当前及下属",
+    current_and_sup: "当前及上级"
 }

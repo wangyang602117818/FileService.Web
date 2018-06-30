@@ -328,7 +328,13 @@ class DepartmentDropDownList extends React.Component {
 class DepartmentDropDownListWrap extends React.Component {
     constructor(props) {
         super(props);
-
+        this.state = {
+            department_authority: "0"
+        }
+    }
+    departmentAuthorityChange(e) {
+        var id = e.target.getAttribute("index");
+        this.setState({ department_authority: id });
     }
     groupInputFocus(e) {
         this.refs.group_input.focus();
@@ -382,6 +388,16 @@ class DepartmentDropDownListWrap extends React.Component {
                         ref="group_input"
                         tag="open_ddl"
                         className="ddl_input" />
+                </div>
+                <div className="department_bar">&nbsp;
+                    {culture.authority}:
+                    <span className={this.state.department_authority == "0" ? "department_bar_item current" : "department_bar_item"} index="0"
+                        onClick={this.departmentAuthorityChange.bind(this)}>{culture.only_current}</span>
+                    <span className={this.state.department_authority == "1" ? "department_bar_item current" : "department_bar_item"} index="1"
+                        onClick={this.departmentAuthorityChange.bind(this)}>{culture.current_and_sub}</span>
+                    <span className={this.state.department_authority == "2" ? "department_bar_item current" : "department_bar_item"} index="2"
+                        onClick={this.departmentAuthorityChange.bind(this)}>{culture.current_and_sup}</span>
+
                 </div>
                 <DepartmentDropDownList
                     type="user"
