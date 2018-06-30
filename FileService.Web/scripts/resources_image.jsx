@@ -121,21 +121,48 @@
 class AccessAuthority extends React.Component {
     constructor(props) {
         super(props);
+        this.state = {
+            company: "",
+            departmentShow: false,
+            codeArray: [],
+            nameArray: [],
+        }
+    }
+    afterCompanyInit(value) {
+        this.refs.departmentDropDownListWrap.getData(value);  //调用deparatment初始化方法
+    }
+    companyChanged(e) {
+        this.setState({ company: e.target.value, codeArray: [], nameArray: [] });
+        this.refs.departmentDropDownListWrap.getData(e.target.value);  //调用deparatment初始化方法
+    }
+    onSelectNodeChanged(codeArray, nameArray) {
+        this.setState({
+            codeArray: codeArray,
+            nameArray: nameArray
+        });
     }
     render() {
         return (
             <table style={{ width: "100%", marginTop: "0", borderCollapse: "collapse" }}>
                 <tbody>
                     <tr>
-                        <td>{culture.company}:</td>
-                        <td>
-
+                        <td width="13%">{culture.company}:</td>
+                        <td width="77%">
+                            <CompanyDropDownList company={this.state.company}
+                                afterCompanyInit={this.afterCompanyInit.bind(this)}
+                                companyChanged={this.companyChanged.bind(this)}
+                            />
                         </td>
                     </tr>
                     <tr>
                         <td>{culture.department}:</td>
                         <td>
-
+                            <DepartmentDropDownListWrap
+                                ref="departmentDropDownListWrap"
+                                codeArray={this.state.codeArray}
+                                nameArray={this.state.nameArray}
+                                onSelectNodeChanged={this.onSelectNodeChanged.bind(this)}
+                            />
                         </td>
                     </tr>
                     <tr>

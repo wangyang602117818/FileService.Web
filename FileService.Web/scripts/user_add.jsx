@@ -124,7 +124,7 @@
                         <tr>
                             <td>{culture.department}:</td>
                             <td>
-                                {/*惰性加载，由comapny加载完成之后手动加载里面的数据*/}
+                                {/*惰性加载，由comapny加载完成之后手动调用getData方法加载里面的数据*/}
                                 <DepartmentDropDownListWrap
                                     ref="departmentDropDownListWrap"
                                     codeArray={this.state.codeArray}
