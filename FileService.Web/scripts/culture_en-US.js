@@ -142,8 +142,8 @@ var culture = {
     company: "Company",
 
     access_authority: "AccessAuthority",
-    authority: "Authority",
-    only_current: "OnlyCurrent",
+    authority_type: "AuthorityType",
+    only_current: "Current",
     current_and_sub: "Current&Sub",
     current_and_sup: "Current&Sup"
 }

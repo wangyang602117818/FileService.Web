@@ -142,7 +142,7 @@ var culture = {
     company: "公司",
 
     access_authority: "访问权限",
-    authority: "权限",
+    authority_type: "权限类型",
     only_current: "仅当前",
     current_and_sub: "当前及下属",
     current_and_sup: "当前及上级"

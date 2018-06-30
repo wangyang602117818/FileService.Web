@@ -159,6 +159,7 @@ class AccessAuthority extends React.Component {
                         <td>
                             <DepartmentDropDownListWrap
                                 ref="departmentDropDownListWrap"
+                                department_bar={true}
                                 codeArray={this.state.codeArray}
                                 nameArray={this.state.nameArray}
                                 onSelectNodeChanged={this.onSelectNodeChanged.bind(this)}

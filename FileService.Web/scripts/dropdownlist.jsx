@@ -343,7 +343,7 @@ class DepartmentDropDownListWrap extends React.Component {
         var index = parseInt(e.target.id);
         var nameArray = this.props.nameArray;
         var codeArray = this.props.codeArray;
-        this.refs.ddl.selectNode(nameArray[index], codeArray[index], true);
+        this.refs.departmentDdl.selectNode(nameArray[index], codeArray[index], true);
         codeArray.splice(index, 1);
         nameArray.splice(index, 1);
         this.props.onSelectNodeChanged(codeArray, nameArray);
@@ -355,15 +355,15 @@ class DepartmentDropDownListWrap extends React.Component {
     }
     //反选，吧input的内容反映到结构中
     selectNode(names, codes, b) {
-        this.refs.ddl.selectNode(names, codes, b);
+        this.refs.departmentDdl.selectNode(names, codes, b);
     }
     //初始化方法,油company初始化完成之后，或者company发生改变之后调用
     getData(companyId, success) {
-        this.refs.ddl.getData(companyId, success);
+        this.refs.departmentDdl.getData(companyId, success);
     }
     //工具方法，根据codes获取names
     getDepartmentNamesByCodes(codeArray) {
-        return this.refs.ddl.getDepartmentNamesByCodes(codeArray);
+        return this.refs.departmentDdl.getDepartmentNamesByCodes(codeArray);
     }
     render() {
         return (
@@ -389,19 +389,19 @@ class DepartmentDropDownListWrap extends React.Component {
                         tag="open_ddl"
                         className="ddl_input" />
                 </div>
-                <div className="department_bar">&nbsp;
-                    {culture.authority}:
+                {this.props.department_bar ?
+                    <div className="department_bar">&nbsp;
+                    {culture.authority_type}:
                     <span className={this.state.department_authority == "0" ? "department_bar_item current" : "department_bar_item"} index="0"
-                        onClick={this.departmentAuthorityChange.bind(this)}>{culture.only_current}</span>
-                    <span className={this.state.department_authority == "1" ? "department_bar_item current" : "department_bar_item"} index="1"
-                        onClick={this.departmentAuthorityChange.bind(this)}>{culture.current_and_sub}</span>
-                    <span className={this.state.department_authority == "2" ? "department_bar_item current" : "department_bar_item"} index="2"
-                        onClick={this.departmentAuthorityChange.bind(this)}>{culture.current_and_sup}</span>
-
-                </div>
+                            onClick={this.departmentAuthorityChange.bind(this)}>{culture.only_current}</span>
+                        <span className={this.state.department_authority == "1" ? "department_bar_item current" : "department_bar_item"} index="1"
+                            onClick={this.departmentAuthorityChange.bind(this)}>{culture.current_and_sub}</span>
+                        <span className={this.state.department_authority == "2" ? "department_bar_item current" : "department_bar_item"} index="2"
+                            onClick={this.departmentAuthorityChange.bind(this)}>{culture.current_and_sup}</span>
+                    </div> : null}
                 <DepartmentDropDownList
                     type="user"
-                    ref="ddl"
+                    ref="departmentDdl"
                     selected={this.props.codeArray}
                     departmentShow={this.props.departmentShow}
                     onSelectNodeChanged={this.onSelectNodeChanged.bind(this)} />

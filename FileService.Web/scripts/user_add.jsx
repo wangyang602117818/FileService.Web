@@ -42,7 +42,7 @@
         this.setState({ role: e.target.value });
     }
     companyChanged(e) {
-        this.setState({ company: e.target.value, codeArray: [], nameArray:[] });
+        this.setState({ company: e.target.value, codeArray: [], nameArray: [] });
         this.refs.departmentDropDownListWrap.getData(e.target.value);  //调用deparatment初始化方法
     }
     afterCompanyInit(value) {
@@ -127,6 +127,7 @@
                                 {/*惰性加载，由comapny加载完成之后手动调用getData方法加载里面的数据*/}
                                 <DepartmentDropDownListWrap
                                     ref="departmentDropDownListWrap"
+                                    department_bar={false}
                                     codeArray={this.state.codeArray}
                                     nameArray={this.state.nameArray}
                                     onSelectNodeChanged={this.onSelectNodeChanged.bind(this)}
