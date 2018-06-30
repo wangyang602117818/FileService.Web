@@ -54,10 +54,11 @@ namespace FileService.Web
             );
             //admin
             bundles.Add(new BabelBundle("~/scripts/admin")
+                .Include("~/scripts/dropdownlist.jsx")
                 .Include("~/scripts/department.jsx")
                 .Include("~/scripts/department_detail.jsx")
-               .Include("~/scripts/user.jsx")
-               .Include("~/scripts/user_add.jsx")
+                .Include("~/scripts/user.jsx")
+                .Include("~/scripts/user_add.jsx")
             );
             //index
             bundles.Add(new BabelBundle("~/scripts/index")

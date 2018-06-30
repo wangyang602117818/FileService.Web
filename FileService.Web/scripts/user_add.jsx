@@ -4,7 +4,6 @@
         this.state = {
             userName: "",
             company: "",
-            companys: [],
             passWord: "",
             confirm: "",
             departmentShow: false,
@@ -14,20 +13,10 @@
             message: ""
         };
     }
-    componentDidMount() {
-        http.get(urls.department.getAllDepartment, function (data) {
-            if (data.code == 0) {
-                this.setState({ companys: data.result });
-                if (data.result.length > 0) {
-                    this.setState({ company: data.result[0]._id.$oid });
-                    this.refs.ddl.getData(data.result[0]._id.$oid);
-                }
-            }
-        }.bind(this))
-    }
+    //父组件调用，用于点击某一个用户之后。回显状态
     changeState(userName, userRole, company, codeArray) {
-        this.refs.ddl.getData(company, function (data) {
-            var nameArray = this.refs.ddl.getDepartmentNamesByCodes(codeArray);
+        this.refs.departmentDropDownListWrap.getData(company, function (data) {
+            var nameArray = this.refs.departmentDropDownListWrap.getDepartmentNamesByCodes(codeArray);
             this.setState({
                 userName: userName,
                 role: userRole,
@@ -36,7 +25,7 @@
                 nameArray: nameArray
             });
             for (var i = 0; i < codeArray.length; i++) {
-                this.refs.ddl.selectNode(nameArray[i], codeArray[i], true);
+                this.refs.departmentDropDownListWrap.selectNode(nameArray[i], codeArray[i], true);
             }
         }.bind(this));
     }
@@ -53,8 +42,11 @@
         this.setState({ role: e.target.value });
     }
     companyChanged(e) {
-        this.setState({ company: e.target.value });
-        this.refs.ddl.getData(e.target.value);
+        this.setState({ company: e.target.value, codeArray: [], nameArray:[] });
+        this.refs.departmentDropDownListWrap.getData(e.target.value);  //调用deparatment初始化方法
+    }
+    afterCompanyInit(value) {
+        this.refs.departmentDropDownListWrap.getData(value);  //调用deparatment初始化方法
     }
     tagClick(e) {
         if (e.target.innerText == "none") {
@@ -91,25 +83,12 @@
     onDepartmentHidden() {
         this.setState({ departmentShow: false });
     }
-    groupInputFocus(e) {
-        this.refs.group_input.focus();
-    }
-    onSelectNode(codeArray, nameArray) {
+    onSelectNodeChanged(codeArray, nameArray) {
         this.setState({
             codeArray: codeArray,
             nameArray: nameArray
-        })
+        });
     }
-    delNode(e) {
-        var index = parseInt(e.target.id);
-        this.refs.ddl.selectNode(this.state.nameArray[index], this.state.codeArray[index], true);
-        this.state.codeArray.splice(index, 1);
-        this.state.nameArray.splice(index, 1);
-        this.setState({ codeArray: this.state.codeArray, nameArray: this.state.nameArray });
-        e.stopPropagation();
-        return false;
-    }
-
     render() {
         return (
             <div className={this.props.show ? "show" : "hidden"}>
@@ -136,43 +115,22 @@
                         <tr>
                             <td>{culture.company}:</td>
                             <td>
-                                <select name="company" value={this.state.company} onChange={this.companyChanged.bind(this)}>
-                                    {this.state.companys.map(function (item, i) {
-                                        return <option value={item._id.$oid} key={i}>{item.DepartmentName}</option>
-                                    })}
-                                </select>
+                                <CompanyDropDownList company={this.state.company}
+                                    afterCompanyInit={this.afterCompanyInit.bind(this)}
+                                    companyChanged={this.companyChanged.bind(this)}
+                                />
                             </td>
                         </tr>
                         <tr>
                             <td>{culture.department}:</td>
                             <td>
-                                <div className="ddl_input_con"
-                                    tag="open_ddl"
-                                    onClick={this.groupInputFocus.bind(this)}>
-                                    {this.state.codeArray.map(function (item, i) {
-                                        return (
-                                            <div className="ddl_item"
-                                                key={i}
-                                                name={this.state.nameArray[i]}
-                                                code={item}
-                                                tag="open_ddl">
-                                                <span className="ddl_text" tag="open_ddl">{this.state.nameArray[i]}</span>
-                                                <i className="iconfont icon-del" id={i} onClick={this.delNode.bind(this)}></i>
-                                            </div>)
-                                    }.bind(this))}
-                                    <input type="text"
-                                        name="group_input"
-                                        id="group_input"
-                                        ref="group_input"
-                                        tag="open_ddl"
-                                        className="ddl_input" />
-                                </div>
-                                <DropDownList id={this.state.company}
-                                    type="user"
-                                    ref="ddl"
-                                    selected={this.state.codeArray}
-                                    departmentShow={this.state.departmentShow}
-                                    onSelectNode={this.onSelectNode.bind(this)} />
+                                {/*惰性加载，由comapny加载完成之后手动加载里面的数据*/}
+                                <DepartmentDropDownListWrap
+                                    ref="departmentDropDownListWrap"
+                                    codeArray={this.state.codeArray}
+                                    nameArray={this.state.nameArray}
+                                    onSelectNodeChanged={this.onSelectNodeChanged.bind(this)}
+                                />
                             </td>
                         </tr>
                         <tr>

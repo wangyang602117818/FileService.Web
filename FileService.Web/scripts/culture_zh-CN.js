@@ -139,5 +139,7 @@ var culture = {
     parent_code: "上级编码",
     delete_department: "删除部门",
     detail_department: "部门详情",
-    company: "公司"
+    company: "公司",
+
+    access_authority:"访问权限",
 }

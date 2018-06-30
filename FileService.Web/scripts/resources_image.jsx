@@ -118,11 +118,46 @@
         )
     }
 }
+class AccessAuthority extends React.Component {
+    constructor(props) {
+        super(props);
+    }
+    render() {
+        return (
+            <table style={{ width: "100%", marginTop: "0", borderCollapse: "collapse" }}>
+                <tbody>
+                    <tr>
+                        <td>{culture.company}:</td>
+                        <td>
+
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>{culture.department}:</td>
+                        <td>
+
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>{culture.user}:</td>
+                        <td>
+
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colSpan="4" className="convertBtn">{culture.ok}</td>
+                    </tr>
+                </tbody>
+            </table>
+        )
+    }
+}
 class AddImage extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             convertShow: false,
+            accessShow: true,
             errorMsg: "",
             buttonValue: culture.upload,
             buttonDisabled: false,
@@ -132,11 +167,17 @@ class AddImage extends React.Component {
     showConvert(e) {
         this.state.convertShow ? this.setState({ convertShow: false }) : this.setState({ convertShow: true });
     }
+    showAccess(e) {
+        this.state.accessShow ? this.setState({ accessShow: false }) : this.setState({ accessShow: true });
+    }
     imageOk(obj) {
         this.state.thumbnails.push(obj);
         this.setState({
             thumbnails: this.state.thumbnails
         });
+    }
+    accessOk(obj) {
+
     }
     delImage(e) {
         var id = e.target.parentElement.id;
@@ -181,7 +222,7 @@ class AddImage extends React.Component {
                             <td>{culture.image}:</td>
                             <td colSpan="2"><input type="file" multiple name="image" accept="image/gif,image/jpeg,image/png,image/bmp" onChange={this.fileChanged.bind(this)} /></td>
                         </tr>
-                        <tr style={{ height: "40px" }}>
+                        <tr style={{ height: "35px" }}>
                             <td width="15%">{culture.convert}:</td>
                             <td width="75%">
                                 {
@@ -189,7 +230,8 @@ class AddImage extends React.Component {
                                         return (
                                             <span className="convert_flag" title={JSON.stringify(item)} key={i} id={i}>
                                                 <span className="flag_txt">{item.flag}</span>
-                                                <span className="flag_txt flag_del" onClick={this.delImage.bind(this)}>×</span>
+                                                <span className="flag_txt flag_del"
+                                                    onClick={this.delImage.bind(this)}>×</span>
                                             </span>
                                         );
                                     }.bind(this))
@@ -200,6 +242,16 @@ class AddImage extends React.Component {
                         <tr>
                             <td colSpan="4">
                                 {this.state.convertShow ? <ConvertImage imageOk={this.imageOk.bind(this)} /> : null}
+                            </td>
+                        </tr>
+                        <tr style={{ height: "35px" }}>
+                            <td>{culture.access_authority}:</td>
+                            <td></td>
+                            <td width="10%" className="link" onClick={this.showAccess.bind(this)}><i className="iconfont icon-add"></i></td>
+                        </tr>
+                        <tr>
+                            <td colSpan="4">
+                                {this.state.accessShow ? <AccessAuthority accessOk={this.accessOk.bind(this)} /> : null}
                             </td>
                         </tr>
                         <tr>

@@ -71,7 +71,6 @@ class DepartmentItem extends React.Component {
         )
     }
 }
-
 class Department extends React.Component {
     constructor(props) {
         super(props);
@@ -195,7 +194,8 @@ class Department extends React.Component {
             orderBtnDisabled: false,
             updateBtnDisabled: true,
             addSubBtnDisabled: true,
-            deleteBtnDisabled: true });
+            deleteBtnDisabled: true
+        });
     }
     onOrderSave() {
         var department = this.getDataNode(null, null);

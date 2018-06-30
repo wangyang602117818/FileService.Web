@@ -318,6 +318,7 @@
     <Content Include="scripts\culture_zh-CN.js" />
     <Content Include="scripts\department.jsx" />
     <Content Include="scripts\department_detail.jsx" />
+    <Content Include="scripts\dropdownlist.jsx" />
     <Content Include="scripts\echarts.js" />
     <Content Include="scripts\echarts.min.js" />
     <Content Include="scripts\funs.jsx" />

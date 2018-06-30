@@ -139,7 +139,7 @@ var culture = {
     parent_code: "ParentCode",
     delete_department: "Delete Department",
     detail_department: "Department Detail",
-    company: "Company"
+    company: "Company",
 
-
+    access_authority: "AccessAuthority",
 }
