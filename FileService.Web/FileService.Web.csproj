@@ -212,6 +212,7 @@
     <Content Include="image\data.ico" />
     <Content Include="image\department.svg" />
     <Content Include="image\logo.png" />
+    <Content Include="image\user.svg" />
     <Content Include="pdfview\images\annotation-check.svg" />
     <Content Include="pdfview\images\annotation-comment.svg" />
     <Content Include="pdfview\images\annotation-help.svg" />

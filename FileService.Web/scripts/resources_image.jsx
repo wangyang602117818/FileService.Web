@@ -124,22 +124,29 @@ class AccessAuthority extends React.Component {
         this.state = {
             company: "",
             departmentShow: false,
+            userShow: true,
             codeArray: [],
             nameArray: [],
+            userArray: []
         }
     }
     afterCompanyInit(value) {
         this.refs.departmentDropDownListWrap.getData(value);  //调用deparatment初始化方法
+        this.refs.userDropDownListWrap.getData(value);
     }
     companyChanged(e) {
-        this.setState({ company: e.target.value, codeArray: [], nameArray: [] });
+        this.setState({ company: e.target.value, codeArray: [], nameArray: [], userArray:[] });
         this.refs.departmentDropDownListWrap.getData(e.target.value);  //调用deparatment初始化方法
+        this.refs.userDropDownListWrap.getData(e.target.value);
     }
     onSelectNodeChanged(codeArray, nameArray) {
         this.setState({
             codeArray: codeArray,
             nameArray: nameArray
         });
+    }
+    onSelectUserChange(users) {
+        this.setState({ userArray: users });
     }
     render() {
         return (
@@ -164,13 +171,17 @@ class AccessAuthority extends React.Component {
                                 nameArray={this.state.nameArray}
                                 onSelectNodeChanged={this.onSelectNodeChanged.bind(this)}
                             />
-                            
                         </td>
                     </tr>
                     <tr>
                         <td>{culture.user}:</td>
                         <td>
-
+                            <UserDropDownListWrap
+                                ref="userDropDownListWrap"
+                                userShow={this.state.userShow}
+                                userArray={this.state.userArray}
+                                onSelectUserChange={this.onSelectUserChange.bind(this)}
+                            />
                         </td>
                     </tr>
                     <tr>

@@ -65,9 +65,10 @@ namespace FileService.Data
         {
             return MongoCollection.ReplaceOne(new BsonDocument("_id", document["_id"].AsObjectId), document, new UpdateOptions() { IsUpsert = true }).IsAcknowledged;
         }
-        protected virtual FilterDefinition<BsonDocument> GetPageFilters(IEnumerable<string> fields, string filter)
+        protected virtual FilterDefinition<BsonDocument> GetPageFilters(BsonDocument eqs, IEnumerable<string> fields, string filter)
         {
             FilterDefinition<BsonDocument> filterBuilder = null;
+            
             if (!string.IsNullOrEmpty(filter))
             {
                 List<FilterDefinition<BsonDocument>> list = new List<FilterDefinition<BsonDocument>>();
@@ -91,11 +92,13 @@ namespace FileService.Data
             {
                 filterBuilder = new BsonDocument();
             }
+            if (eqs != null) filterBuilder = FilterBuilder.And(eqs, filterBuilder);
             return filterBuilder;
         }
-        public IEnumerable<BsonDocument> GetPageList(int pageIndex, int pageSize, string sortField, string filter, IEnumerable<string> fields, IEnumerable<string> excludeFields, out long count)
+
+        public IEnumerable<BsonDocument> GetPageList(int pageIndex, int pageSize, BsonDocument eqs, string sortField, string filter, IEnumerable<string> fields, IEnumerable<string> excludeFields, out long count)
         {
-            FilterDefinition<BsonDocument> filterBuilder = GetPageFilters(fields, filter);
+            FilterDefinition<BsonDocument> filterBuilder = GetPageFilters(eqs, fields, filter);
             count = MongoCollection.Count(filterBuilder);
             var exclude = Builders<BsonDocument>.Projection.Exclude("PassWord");
             foreach (string ex in excludeFields)

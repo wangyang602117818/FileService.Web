@@ -47,6 +47,7 @@
     }
     afterCompanyInit(value) {
         this.refs.departmentDropDownListWrap.getData(value);  //调用deparatment初始化方法
+        this.state.company = value;
     }
     tagClick(e) {
         if (e.target.innerText == "none") {
@@ -63,10 +64,17 @@
                     userName: this.state.userName,
                     passWord: this.state.passWord,
                     company: this.state.company,
-                    department: this.state.codeArray
+                    department: this.state.codeArray,
+                    role: this.state.role
                 }, function (data) {
                     if (data.code == 0) {
-                        that.setState({ userName: "", passWord: "", confirm: "", role: "", codeArray: [], nameArray: [], message: "" });
+                        that.setState({
+                            userName: "",
+                            passWord: "",
+                            confirm: "",
+                            role: "",
+                            message: ""
+                        });
                     } else {
                         that.setState({ message: data.message });
                     }

@@ -3,11 +3,20 @@
     display: inline-block;
     padding: 2px 20px 10px 5px;
     margin-bottom: 20px;
-    height: 400px;
-    min-width: 250px;
     overflow: auto;
     position: absolute;
     background-color: #f8f8f8;
+}
+
+.ddl_department_con {
+    height: 400px;
+    min-width: 250px;
+}
+
+.ddl_user_con {
+    height: 200px;
+    min-width: 200px;
+    padding: 0;
 }
 
 .ddl_line {
@@ -145,6 +154,10 @@
     background-repeat: no-repeat;
 }
 
+.ddl_user {
+    background-image: url(../image/user.svg);
+}
+
 .ddl_item {
     display: inline-block;
     margin: 1px 2px;
@@ -163,8 +176,40 @@
     border: 0;
     display: inline-block;
     padding: 0px 5px;
-    width: 70px;
-    background-color:transparent;
+    width: 50px;
+    background-color: transparent;
+}
+
+.user_item_line {
+    padding: 5px 5px;
+    margin-top: 2px;
+    cursor: pointer;
+    color: #444;
+}
+
+.page_end {
+    text-align: center;
+    color: #666;
+    height: 10px;
+    border-bottom:1px dashed #666;
+    margin-bottom:10px;
+}
+
+.user_item_line[select=true] {
+    background-color: #eb8c00;
+    border-color: #eb8c00;
+    color: #fff;
+}
+
+    .user_item_line[select=true]:hover {
+        cursor: default;
+        background-color: #eb8c00;
+        border-color: #eb8c00;
+        color: #fff;
+    }
+
+.user_item_line:hover {
+    color: #000;
 }
 /*****************************************/
 /*****************************************/

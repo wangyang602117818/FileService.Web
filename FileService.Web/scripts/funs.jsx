@@ -155,6 +155,7 @@ var urls = {
     },
     user: {
         getUrl: appDomain + "admin/getusers",
+        getCompanyUsersUrl: appDomain + "admin/getcompanyusers",
         addUserUrl: appDomain + "admin/adduser",
         getUserUrl: appDomain + "admin/getuser",
         updateUserUrl: appDomain + "admin/updateuser",
@@ -166,7 +167,7 @@ var urls = {
         deleteTopDepartment: appDomain + "admin/deletetopdepartment",
         updateDepartmentUrl: appDomain + "admin/updatedepartment",
         getDepartmentUrl: appDomain + "admin/getdepartment",
-        getAllDepartment: appDomain +"admin/getalldepartment",
+        getAllDepartment: appDomain + "admin/getalldepartment",
         changeOrder: appDomain + "admin/departmentchangeorder",
         getDepartmentSelect: appDomain + "admin/getdepartmentselect",
     }

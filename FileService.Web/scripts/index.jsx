@@ -177,11 +177,17 @@ class Container extends React.Component {
     }
     contentClick(e) {
         var tag = e.target.getAttribute("tag");
-        if (document.getElementsByClassName("ddl").length <= 0) return;
-        if (tag == "open_ddl") {
-            document.getElementsByClassName("ddl")[0].style.display = "block";
+        if (document.getElementsByClassName("ddl_department_con").length <= 0) return;
+        if (tag == "open_department_ddl") {
+            document.getElementsByClassName("ddl_department_con")[0].style.display = "block";
         } else {
-            document.getElementsByClassName("ddl")[0].style.display = "none";
+            document.getElementsByClassName("ddl_department_con")[0].style.display = "none";
+        }
+        if (document.getElementsByClassName("ddl_user_con").length <= 0) return;
+        if (tag == "open_user_ddl") {
+            document.getElementsByClassName("ddl_user_con")[0].style.display = "block";
+        } else {
+            document.getElementsByClassName("ddl_user_con")[0].style.display = "none";
         }
     }
     render() {

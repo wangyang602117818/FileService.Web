@@ -292,7 +292,8 @@ class DepartmentDropDownList extends React.Component {
     }
     render() {
         return (
-            <div className="ddl" style={{ display: this.props.departmentShow ? "block" : "none" }}
+            <div className="ddl ddl_department_con"
+                style={{ display: this.props.departmentShow ? "block" : "none" }}
                 onClick={this.ddlClick.bind(this)}>
                 {this.state.DepartmentCode ?
                     <div className="ddl_line"
@@ -369,7 +370,7 @@ class DepartmentDropDownListWrap extends React.Component {
         return (
             <React.Fragment>
                 <div className="ddl_input_con"
-                    tag="open_ddl"
+                    tag="open_department_ddl"
                     onClick={this.groupInputFocus.bind(this)}>
                     {this.props.codeArray.map(function (item, i) {
                         return (
@@ -377,8 +378,8 @@ class DepartmentDropDownListWrap extends React.Component {
                                 key={i}
                                 name={this.props.nameArray[i]}
                                 code={item}
-                                tag="open_ddl">
-                                <span className="ddl_text" tag="open_ddl">{this.props.nameArray[i]}</span>
+                                tag="open_department_ddl">
+                                <span className="ddl_text" tag="open_department_ddl">{this.props.nameArray[i]}</span>
                                 <i className="iconfont icon-del" id={i} onClick={this.delNode.bind(this)}></i>
                             </div>)
                     }.bind(this))}
@@ -386,7 +387,7 @@ class DepartmentDropDownListWrap extends React.Component {
                         name="group_input"
                         id="group_input"
                         ref="group_input"
-                        tag="open_ddl"
+                        tag="open_department_ddl"
                         className="ddl_input" />
                 </div>
                 {this.props.department_bar ?
@@ -405,6 +406,135 @@ class DepartmentDropDownListWrap extends React.Component {
                     selected={this.props.codeArray}
                     departmentShow={this.props.departmentShow}
                     onSelectNodeChanged={this.onSelectNodeChanged.bind(this)} />
+            </React.Fragment>
+        )
+    }
+}
+////////////////////////////////////////////////////
+//////////////////UserDropDownList/////////////////////
+///////////////////////////////////////////////////
+class UserDropDownList extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            companyId: "",
+            pageIndex: 1,
+            pageSize: 10,
+            users: [],
+            pageEnd: false,
+            selectedUsers: []
+        }
+    }
+    //由外部调用
+    getData(companyId) {
+        http.get(urls.user.getCompanyUsersUrl + "?company=" + companyId + "&pageIndex=" + this.state.pageIndex + "&pageSize=" + this.state.pageSize, function (data) {
+            if (data.code == 0) {
+                data.result.map(function (item, i) { this.state.users.push(item); }.bind(this))
+                this.setState({ users: this.state.users, companyId: companyId });
+                if (data.result.length < this.state.pageSize) {
+                    this.state.pageEnd = true;
+                    this.setState({ pageEnd: this.state.pageEnd })
+                }
+            }
+        }.bind(this))
+    }
+    ddlClick(e) {
+        var user = e.target.innerText;
+        this.selectNode(user);
+        e.stopPropagation();
+        return false;
+    }
+    selectNode(user) {
+        var selected = [];
+        for (var i = 0; i < this.state.users.length; i++) {
+            if (this.state.users[i].UserName == user) {
+                this.state.users[i].Select = !this.state.users[i].Select;
+            }
+            if (this.state.users[i].Select) selected.push(this.state.users[i].UserName);
+        }
+        this.setState({ users: this.state.users, selectedUsers: selected });
+        this.props.onSelectUserChange(selected);
+    }
+    onScroll(e) {
+        var target = e.target;
+        var scrollHeight = target.scrollHeight;  //总高度
+        var scrollTop = target.scrollTop;  //距离上边高度
+        var divHeight = target.clientHeight;  //div总高度
+        var scrollBottom = scrollHeight - scrollTop - divHeight;
+        if (scrollBottom <= 0 && !this.state.pageEnd) {
+            this.state.pageIndex = this.state.pageIndex + 1;
+            this.getData(this.state.companyId);
+        }
+
+    }
+    render() {
+        return (
+            <div className="ddl ddl_user_con"
+                style={{ display: this.props.userShow ? "block" : "none" }}
+                onClick={this.ddlClick.bind(this)}
+                onScroll={this.onScroll.bind(this)}
+            >
+                {this.state.users.map(function (item, i) {
+                    var select = item.Select ? true : false;
+                    return (<div className="user_item_line" key={i} select={select.toString()}>{item.UserName}</div>)
+                })}
+                {this.state.pageEnd ? <div className="page_end"></div> : null}
+
+            </div>
+        );
+    }
+}
+class UserDropDownListWrap extends React.Component {
+    constructor(props) {
+        super(props);
+    }
+    groupInputFocus(e) {
+        this.refs.user_input.focus();
+    }
+    getData(companyId) {
+        this.refs.userDdl.getData(companyId);
+    }
+    onSelectUserChange(users) {
+        this.props.onSelectUserChange(users);
+    }
+    delNode(e) {
+        var index = e.target.id;
+        var users = this.props.userArray;
+        var user = users[index];
+        this.refs.userDdl.selectNode(user);
+        e.stopPropagation();
+        return false;
+    }
+    onUserInput(e) {
+        console.log(e.target.value);
+    }
+    render() {
+        return (
+            <React.Fragment>
+                <div className="ddl_input_con ddl_user"
+                    tag="open_user_ddl"
+                    onClick={this.groupInputFocus.bind(this)}>
+                    {this.props.userArray.map(function (item, i) {
+                        return (
+                            <div className="ddl_item"
+                                key={i}
+                                code={item}
+                                tag="open_user_ddl">
+                                <span className="ddl_text" tag="open_user_ddl">{item}</span>
+                                <i className="iconfont icon-del" id={i} onClick={this.delNode.bind(this)}></i>
+                            </div>)
+                    }.bind(this))}
+                    <input type="text"
+                        name="user_input"
+                        id="user_input"
+                        ref="user_input"
+                        tag="open_user_ddl"
+                        onChange={this.onUserInput}
+                        className="ddl_input" />
+                </div>
+                <UserDropDownList ref="userDdl"
+                    userShow={this.props.userShow}
+                    onSelectUserChange={this.props.onSelectUserChange} />
             </React.Fragment>
         )
     }
