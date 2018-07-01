@@ -135,7 +135,12 @@ class AccessAuthority extends React.Component {
         this.refs.userDropDownListWrap.getData(value);
     }
     companyChanged(e) {
-        this.setState({ company: e.target.value, codeArray: [], nameArray: [], userArray:[] });
+        this.setState({
+            company: e.target.value,
+            codeArray: [],
+            nameArray: [],
+            userArray: []
+        });
         this.refs.departmentDropDownListWrap.getData(e.target.value);  //调用deparatment初始化方法
         this.refs.userDropDownListWrap.getData(e.target.value);
     }

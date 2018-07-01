@@ -417,21 +417,33 @@ class UserDropDownList extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            companyId: "",
-            pageIndex: 1,
-            pageSize: 10,
             users: [],
             pageEnd: false,
             selectedUsers: []
         }
+        this.companyId = "";
+        this.pageIndex = 1;
+        this.pageSize = 10;
+        this.filter = "";
+
+    }
+    onInput() {
+
     }
     //由外部调用
-    getData(companyId) {
-        http.get(urls.user.getCompanyUsersUrl + "?company=" + companyId + "&pageIndex=" + this.state.pageIndex + "&pageSize=" + this.state.pageSize, function (data) {
+    getData(companyId, filter, pageIndex) {
+        this.companyId = companyId;
+        this.pageIndex = pageIndex;
+        if (filter) this.filter = filter
+        var url = urls.user.getCompanyUsersUrl + "?company=" + companyId + "&pageIndex=" + this.pageIndex + "&pageSize=" + this.pageSize + "&filter=" + this.filter;
+        this.getDataInternal(url);
+    }
+    getDataInternal(url) {
+        http.get(url, function (data) {
             if (data.code == 0) {
                 data.result.map(function (item, i) { this.state.users.push(item); }.bind(this))
-                this.setState({ users: this.state.users, companyId: companyId });
-                if (data.result.length < this.state.pageSize) {
+                this.setState({ users: this.state.users });
+                if (data.result.length < this.pageSize) {
                     this.state.pageEnd = true;
                     this.setState({ pageEnd: this.state.pageEnd })
                 }
@@ -462,10 +474,9 @@ class UserDropDownList extends React.Component {
         var divHeight = target.clientHeight;  //div总高度
         var scrollBottom = scrollHeight - scrollTop - divHeight;
         if (scrollBottom <= 0 && !this.state.pageEnd) {
-            this.state.pageIndex = this.state.pageIndex + 1;
+            this.pageIndex = this.pageIndex + 1;
             this.getData(this.state.companyId);
         }
-
     }
     render() {
         return (
@@ -487,12 +498,15 @@ class UserDropDownList extends React.Component {
 class UserDropDownListWrap extends React.Component {
     constructor(props) {
         super(props);
+        this.companyId = null;
+        this.timeInterval = null;
     }
     groupInputFocus(e) {
         this.refs.user_input.focus();
     }
     getData(companyId) {
         this.refs.userDdl.getData(companyId);
+        this.companyId = companyId;
     }
     onSelectUserChange(users) {
         this.props.onSelectUserChange(users);
@@ -506,7 +520,11 @@ class UserDropDownListWrap extends React.Component {
         return false;
     }
     onUserInput(e) {
-        console.log(e.target.value);
+        if (this.timeInterval) window.clearInterval(this.timeInterval);
+        var value = e.target.value;
+        this.timeInterval = window.setTimeout(function () {
+            this.refs.userDdl.getData(this.companyId, value);
+        }.bind(this), 200);
     }
     render() {
         return (
@@ -529,7 +547,7 @@ class UserDropDownListWrap extends React.Component {
                         id="user_input"
                         ref="user_input"
                         tag="open_user_ddl"
-                        onChange={this.onUserInput}
+                        onChange={this.onUserInput.bind(this)}
                         className="ddl_input" />
                 </div>
                 <UserDropDownList ref="userDdl"
