@@ -58,6 +58,7 @@ var http = {
         var xhr = new XMLHttpRequest();
         xhr.open("post", url, true);
         xhr.setRequestHeader("Content-type", "application/json");
+        xhr.setRequestHeader("AuthCode", authCode);
         xhr.onreadystatechange = function () {
             if (xhr.readyState == 4 && xhr.status == 200) {
                 var json = JSON.parse(xhr.responseText);

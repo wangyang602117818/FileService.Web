@@ -433,8 +433,8 @@ class UserDropDownList extends React.Component {
     //由外部调用
     getData(companyId, filter, pageIndex) {
         this.companyId = companyId;
-        this.pageIndex = pageIndex;
-        if (filter) this.filter = filter
+        if (filter) this.filter = filter;
+        if (pageIndex) this.pageIndex = pageIndex;
         var url = urls.user.getCompanyUsersUrl + "?company=" + companyId + "&pageIndex=" + this.pageIndex + "&pageSize=" + this.pageSize + "&filter=" + this.filter;
         this.getDataInternal(url);
     }
