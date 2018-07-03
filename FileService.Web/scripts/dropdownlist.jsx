@@ -428,20 +428,21 @@ class UserDropDownList extends React.Component {
 
     }
     onInput() {
-
+        this.setState({ users: [], pageEnd: false });
     }
     //由外部调用
-    getData(companyId, filter, pageIndex) {
+    getData(companyId) {
         this.companyId = companyId;
-        if (filter) this.filter = filter;
-        if (pageIndex) this.pageIndex = pageIndex;
         var url = urls.user.getCompanyUsersUrl + "?company=" + companyId + "&pageIndex=" + this.pageIndex + "&pageSize=" + this.pageSize + "&filter=" + this.filter;
         this.getDataInternal(url);
     }
     getDataInternal(url) {
         http.get(url, function (data) {
             if (data.code == 0) {
-                data.result.map(function (item, i) { this.state.users.push(item); }.bind(this))
+                data.result.map(function (item, i) {
+                    if (this.state.selectedUsers.indexOf(item.UserName) > -1) item.Select = true;
+                    this.state.users.push(item);
+                }.bind(this))
                 this.setState({ users: this.state.users });
                 if (data.result.length < this.pageSize) {
                     this.state.pageEnd = true;
@@ -451,21 +452,33 @@ class UserDropDownList extends React.Component {
         }.bind(this))
     }
     ddlClick(e) {
-        var user = e.target.innerText;
-        this.selectNode(user);
+        if (e.target.className.toLowerCase() == "user_item_line") {
+            var user = e.target.innerText;
+            this.selectNode(user);
+        }
         e.stopPropagation();
         return false;
     }
     selectNode(user) {
-        var selected = [];
+        var selected = false;
+        for (var i = 0; i < this.state.selectedUsers.length; i++) {
+            if (this.state.selectedUsers[i] == user) {
+                selected = true;
+                this.state.selectedUsers.splice(i, 1);
+                break;
+            } 
+        }
+        if (!selected) {
+            this.state.selectedUsers.push(user);
+            document.getElementsByClassName("ddl_user_con")[0].style.display = "none";
+        } 
         for (var i = 0; i < this.state.users.length; i++) {
             if (this.state.users[i].UserName == user) {
                 this.state.users[i].Select = !this.state.users[i].Select;
             }
-            if (this.state.users[i].Select) selected.push(this.state.users[i].UserName);
         }
-        this.setState({ users: this.state.users, selectedUsers: selected });
-        this.props.onSelectUserChange(selected);
+        this.setState({ users: this.state.users, selectedUsers: this.state.selectedUsers });
+        this.props.onSelectUserChange(this.state.selectedUsers);
     }
     onScroll(e) {
         var target = e.target;
@@ -473,9 +486,10 @@ class UserDropDownList extends React.Component {
         var scrollTop = target.scrollTop;  //距离上边高度
         var divHeight = target.clientHeight;  //div总高度
         var scrollBottom = scrollHeight - scrollTop - divHeight;
+
         if (scrollBottom <= 0 && !this.state.pageEnd) {
             this.pageIndex = this.pageIndex + 1;
-            this.getData(this.state.companyId);
+            this.getData(this.companyId);
         }
     }
     render() {
@@ -498,6 +512,9 @@ class UserDropDownList extends React.Component {
 class UserDropDownListWrap extends React.Component {
     constructor(props) {
         super(props);
+        this.state = {
+            inputValue:""
+        }
         this.companyId = null;
         this.timeInterval = null;
     }
@@ -510,6 +527,9 @@ class UserDropDownListWrap extends React.Component {
     }
     onSelectUserChange(users) {
         this.props.onSelectUserChange(users);
+        this.setState({ inputValue: "" }, function () {
+            this.refs.user_input.focus();
+        }.bind(this));
     }
     delNode(e) {
         var index = e.target.id;
@@ -522,9 +542,22 @@ class UserDropDownListWrap extends React.Component {
     onUserInput(e) {
         if (this.timeInterval) window.clearInterval(this.timeInterval);
         var value = e.target.value;
+        this.setState({ inputValue: value });
         this.timeInterval = window.setTimeout(function () {
+            this.refs.userDdl.pageIndex = 1;
+            this.refs.userDdl.filter = value;
+            this.refs.userDdl.onInput();
             this.refs.userDdl.getData(this.companyId, value);
         }.bind(this), 200);
+    }
+    onKbPress(e) {
+        if (e.keyCode == 40) {//down
+            console.log("down");
+        }
+        if (e.keyCode == 38) {  //up
+            console.log("up");
+
+        }
     }
     render() {
         return (
@@ -547,12 +580,14 @@ class UserDropDownListWrap extends React.Component {
                         id="user_input"
                         ref="user_input"
                         tag="open_user_ddl"
+                        value={this.state.inputValue}
+                        onKeyDown={this.onKbPress.bind(this)}
                         onChange={this.onUserInput.bind(this)}
                         className="ddl_input" />
                 </div>
                 <UserDropDownList ref="userDdl"
                     userShow={this.props.userShow}
-                    onSelectUserChange={this.props.onSelectUserChange} />
+                    onSelectUserChange={this.onSelectUserChange.bind(this)} />
             </React.Fragment>
         )
     }

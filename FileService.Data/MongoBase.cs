@@ -68,7 +68,7 @@ namespace FileService.Data
         protected virtual FilterDefinition<BsonDocument> GetPageFilters(BsonDocument eqs, IEnumerable<string> fields, string filter)
         {
             FilterDefinition<BsonDocument> filterBuilder = null;
-            
+
             if (!string.IsNullOrEmpty(filter))
             {
                 List<FilterDefinition<BsonDocument>> list = new List<FilterDefinition<BsonDocument>>();
@@ -96,7 +96,7 @@ namespace FileService.Data
             return filterBuilder;
         }
 
-        public IEnumerable<BsonDocument> GetPageList(int pageIndex, int pageSize, BsonDocument eqs, string sortField, string filter, IEnumerable<string> fields, IEnumerable<string> excludeFields, out long count)
+        public IEnumerable<BsonDocument> GetPageList(int pageIndex, int pageSize, BsonDocument eqs, Dictionary<string, string> sorts, string filter, IEnumerable<string> fields, IEnumerable<string> excludeFields, out long count)
         {
             FilterDefinition<BsonDocument> filterBuilder = GetPageFilters(eqs, fields, filter);
             count = MongoCollection.Count(filterBuilder);
@@ -107,7 +107,15 @@ namespace FileService.Data
             }
             var find = MongoCollection.Find(filterBuilder)
                .Project(exclude);
-            if (!string.IsNullOrEmpty(sortField)) find = find.SortByDescending(sort => sort[sortField]);
+            if (sorts != null)
+            {
+                foreach (var item in sorts)
+                {
+                    if (item.Value == "asc") find = find.SortBy(sort => sort[item.Key]);
+                    if (item.Value == "desc") find = find.SortByDescending(sort => sort[item.Key]);
+                }
+            }
+            //if (!string.IsNullOrEmpty(sortField)) find = find.SortByDescending(sort => sort[sortField]);
             return find
                 .Skip((pageIndex - 1) * pageSize)
                 .Limit(pageSize)

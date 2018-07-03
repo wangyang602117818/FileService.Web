@@ -56,9 +56,9 @@ namespace FileService.Business
         {
             return mongoData.Replace(document);
         }
-        public IEnumerable<BsonDocument> GetPageList(int pageIndex, int pageSize, BsonDocument eqs, string sortFields, string filter, IEnumerable<string> fields, IEnumerable<string> excludeFields, out long count)
+        public IEnumerable<BsonDocument> GetPageList(int pageIndex, int pageSize, BsonDocument eqs, Dictionary<string,string> sorts, string filter, IEnumerable<string> fields, IEnumerable<string> excludeFields, out long count)
         {
-            return mongoData.GetPageList(pageIndex, pageSize, eqs, sortFields, filter, fields, excludeFields, out count);
+            return mongoData.GetPageList(pageIndex, pageSize, eqs, sorts, filter, fields, excludeFields, out count);
         }
         public long Count()
         {

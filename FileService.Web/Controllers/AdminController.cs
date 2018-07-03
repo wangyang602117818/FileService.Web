@@ -113,25 +113,29 @@ namespace FileService.Web.Controllers
         public ActionResult GetHandlers(int pageIndex = 1, int pageSize = 10, string filter = "")
         {
             long count = 0;
-            IEnumerable<BsonDocument> result = converter.GetPageList(pageIndex, pageSize, null, "StartTime", filter, new List<string>() { "HandlerId", "MachineName" }, new List<string>() { }, out count);
+            Dictionary<string, string> sorts = new Dictionary<string, string> { { "StartTime", "desc" } };
+            IEnumerable<BsonDocument> result = converter.GetPageList(pageIndex, pageSize, null, sorts, filter, new List<string>() { "HandlerId", "MachineName" }, new List<string>() { }, out count);
             return new ResponseModel<IEnumerable<BsonDocument>>(ErrorCode.success, result, count);
         }
         public ActionResult GetTasks(int pageIndex = 1, int pageSize = 10, string filter = "")
         {
             long count = 0;
-            IEnumerable<BsonDocument> result = task.GetPageList(pageIndex, pageSize, null, "CreateTime", filter, new List<string>() { "FileId", "FileName", "StateDesc", "HandlerId", "StateDesc", "Type" }, new List<string>() { }, out count);
+            Dictionary<string, string> sorts = new Dictionary<string, string> { { "CreateTime", "desc" } };
+            IEnumerable<BsonDocument> result = task.GetPageList(pageIndex, pageSize, null, sorts, filter, new List<string>() { "FileId", "FileName", "StateDesc", "HandlerId", "StateDesc", "Type" }, new List<string>() { }, out count);
             return new ResponseModel<IEnumerable<BsonDocument>>(ErrorCode.success, result, count);
         }
         public ActionResult GetFiles(int pageIndex = 1, int pageSize = 10, string filter = "")
         {
             long count = 0;
-            IEnumerable<BsonDocument> result = files.GetPageList(pageIndex, pageSize,null, "uploadDate", filter, new List<string>() { "_id", "filename", "metadata.From", "metadata.FileType" }, new List<string>() { }, out count);
+            Dictionary<string, string> sorts = new Dictionary<string, string> { { "uploadDate", "desc" } };
+            IEnumerable<BsonDocument> result = files.GetPageList(pageIndex, pageSize, null, sorts, filter, new List<string>() { "_id", "filename", "metadata.From", "metadata.FileType" }, new List<string>() { }, out count);
             return new ResponseModel<IEnumerable<BsonDocument>>(ErrorCode.success, result, count);
         }
         public ActionResult GetConvertFiles(int pageIndex = 1, int pageSize = 10, string filter = "")
         {
             long count = 0;
-            IEnumerable<BsonDocument> result = filesConvert.GetPageList(pageIndex, pageSize, null, "uploadDate", filter, new List<string>() { "filename", "metadata.From", "metadata.FileType" }, new List<string>() { }, out count);
+            Dictionary<string, string> sorts = new Dictionary<string, string> { { "uploadDate", "desc" } };
+            IEnumerable<BsonDocument> result = filesConvert.GetPageList(pageIndex, pageSize, null, sorts, filter, new List<string>() { "filename", "metadata.From", "metadata.FileType" }, new List<string>() { }, out count);
             return new ResponseModel<IEnumerable<BsonDocument>>(ErrorCode.success, result, count);
         }
         public ActionResult GetThumbnailMetadata(string id)
@@ -224,14 +228,15 @@ namespace FileService.Web.Controllers
         public ActionResult GetLogs(int pageIndex = 1, int pageSize = 10, string filter = "")
         {
             long count = 0;
-            IEnumerable<BsonDocument> result = log.GetPageList(pageIndex, pageSize,null, "CreateTime", filter, new List<string>() { "_id", "AppName", "Content", "FileId" }, new List<string>() { }, out count);
+            Dictionary<string, string> sorts = new Dictionary<string, string> { { "CreateTime", "desc" } };
+            IEnumerable<BsonDocument> result = log.GetPageList(pageIndex, pageSize, null, sorts, filter, new List<string>() { "_id", "AppName", "Content", "FileId" }, new List<string>() { }, out count);
             return new ResponseModel<IEnumerable<BsonDocument>>(ErrorCode.success, result, count);
         }
         [Authorize(Roles = "admin,management")]
         public ActionResult GetConfigs(int pageIndex = 1, int pageSize = 10, string filter = "")
         {
             long count = 0;
-            IEnumerable<BsonDocument> result = config.GetPageList(pageIndex, pageSize,null, "", filter, new List<string>() { "_id", "Extension", "Type", "Action" }, new List<string>() { }, out count);
+            IEnumerable<BsonDocument> result = config.GetPageList(pageIndex, pageSize, null, null, filter, new List<string>() { "_id", "Extension", "Type", "Action" }, new List<string>() { }, out count);
             return new ResponseModel<IEnumerable<BsonDocument>>(ErrorCode.success, result, count);
         }
         [Authorize(Roles = "admin,management")]
@@ -264,7 +269,7 @@ namespace FileService.Web.Controllers
         public ActionResult GetApplications(int pageIndex = 1, int pageSize = 10, string filter = "")
         {
             long count = 0;
-            IEnumerable<BsonDocument> result = application.GetPageList(pageIndex, pageSize,null, "", filter, new List<string>() { "_id", "ApplicationName", "Action" }, new List<string>() { }, out count);
+            IEnumerable<BsonDocument> result = application.GetPageList(pageIndex, pageSize, null, null, filter, new List<string>() { "_id", "ApplicationName", "Action" }, new List<string>() { }, out count);
             return new ResponseModel<IEnumerable<BsonDocument>>(ErrorCode.success, result, count);
         }
         [Authorize(Roles = "admin,management")]
@@ -404,14 +409,16 @@ namespace FileService.Web.Controllers
         {
             BsonDocument bson = new BsonDocument("Company", company);
             long count = 0;
-            IEnumerable<BsonDocument> result = user.GetPageList(pageIndex, pageSize, bson, "CreateTime", filter, new List<string>() { "_id", "UserName", "Role" }, new List<string>() { "PassWord" }, out count);
+            Dictionary<string, string> sorts = new Dictionary<string, string> { { "UserName", "asc" } };
+            IEnumerable<BsonDocument> result = user.GetPageList(pageIndex, pageSize, bson, sorts, filter, new List<string>() { "UserName" }, new List<string>() { "PassWord" }, out count);
             return new ResponseModel<IEnumerable<BsonDocument>>(ErrorCode.success, result, count);
         }
         [Authorize(Roles = "admin")]
         public ActionResult GetUsers(int pageIndex = 1, int pageSize = 10, string filter = "")
         {
             long count = 0;
-            IEnumerable<BsonDocument> result = user.GetPageList(pageIndex, pageSize,null, "CreateTime", filter, new List<string>() { "_id", "UserName", "Role" }, new List<string>() { "PassWord" }, out count);
+            Dictionary<string, string> sorts = new Dictionary<string, string> { { "CreateTime", "desc" } };
+            IEnumerable<BsonDocument> result = user.GetPageList(pageIndex, pageSize, null, sorts, filter, new List<string>() { "_id", "UserName", "Role" }, new List<string>() { "PassWord" }, out count);
             return new ResponseModel<IEnumerable<BsonDocument>>(ErrorCode.success, result, count);
         }
         [Authorize(Roles = "admin")]
@@ -501,7 +508,7 @@ namespace FileService.Web.Controllers
         public ActionResult GetDepartments(int pageIndex = 1, int pageSize = 10, string filter = "")
         {
             long count = 0;
-            IEnumerable<BsonDocument> result = department.GetPageList(pageIndex, pageSize,null, "", filter, new List<string>() { "_id", "DepartmentName", "DepartmentCode" }, new List<string>() { "Department" }, out count);
+            IEnumerable<BsonDocument> result = department.GetPageList(pageIndex, pageSize, null, null, filter, new List<string>() { "_id", "DepartmentName", "DepartmentCode" }, new List<string>() { "Department" }, out count);
             return new ResponseModel<IEnumerable<BsonDocument>>(ErrorCode.success, result, count);
         }
         public ActionResult GetAllDepartment()
