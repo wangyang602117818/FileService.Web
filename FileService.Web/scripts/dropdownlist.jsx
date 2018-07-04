@@ -438,7 +438,7 @@ class UserDropDownList extends React.Component {
     }
     getDataInternal(url) {
         http.get(url, function (data) {
-            //setKeyWord(data, this.filter);
+            setKeyWord(data, this.filter);
             if (data.code == 0) {
                 data.result.map(function (item, i) {
                     if (this.state.selectedUsers.indexOf(item.UserName.removeHTML()) > -1) item.Select = true;
@@ -453,7 +453,7 @@ class UserDropDownList extends React.Component {
         }.bind(this))
     }
     ddlClick(e) {
-        if (e.target.className.toLowerCase() == "user_item_line") {
+        if (e.target.className.toLowerCase() == "user_item_line" && e.target.getAttribute("select") == "false") {
             var user = e.target.getAttribute("data-name");
             this.selectNode(user);
         }
@@ -461,6 +461,7 @@ class UserDropDownList extends React.Component {
         return false;
     }
     selectNode(user) {
+        //这一段控制层显示还是隐藏
         var selected = false;
         for (var i = 0; i < this.state.selectedUsers.length; i++) {
             if (this.state.selectedUsers[i] == user) {
@@ -471,10 +472,10 @@ class UserDropDownList extends React.Component {
         }
         if (!selected) {
             this.state.selectedUsers.push(user);
-            document.getElementsByClassName("ddl_user_con")[0].style.display = "none";
+            //document.getElementsByClassName("ddl_user_con")[0].style.display = "none";
         }
         for (var i = 0; i < this.state.users.length; i++) {
-            if (this.state.users[i].UserName == user) {
+            if (this.state.users[i].UserName.removeHTML() == user) {
                 this.state.users[i].Select = !this.state.users[i].Select;
             }
         }
@@ -493,6 +494,46 @@ class UserDropDownList extends React.Component {
             this.getData(this.companyId);
         }
     }
+    //小键盘的方向键向下
+    onKeyDown() {  
+        var hasFocus = false;
+        for (var i = 0; i < this.state.users.length; i++) {
+            if (this.state.users[i].Focus) hasFocus = true;
+        }
+        if (hasFocus) {
+            for (var i = 0; i < this.state.users.length; i++) {
+                if (this.state.users[i].Select == true) continue;
+                if (this.state.users[i].Focus == true) {
+                    this.state.users[i].Focus = false;
+                    if (this.state.users[i + 1]) {
+                        this.state.users[i + 1].Focus = true;
+                    } else {
+                        this.state.users[0].Focus = true;
+                    }
+                    break;
+                }
+            }
+        } else {
+            this.state.users[0].Focus = true;
+        }
+        this.setState({ users: this.state.users });
+    }
+    //小键盘的方向键向上
+    onKeyUp() {
+        for (var i = 0; i < this.state.users.length; i++) {
+            if (this.state.users[i].Select == true) continue;
+            if (this.state.users[i].Focus == true) {
+                this.state.users[i].Focus = false;
+                if (this.state.users[i - 1]) {
+                    this.state.users[i - 1].Focus = true;
+                } else {
+                    this.state.users[0].Focus = true;
+                }
+                break;
+            }
+        }
+        this.setState({ users: this.state.users });
+    }
     render() {
         return (
             <div className="ddl ddl_user_con"
@@ -501,7 +542,12 @@ class UserDropDownList extends React.Component {
                 onScroll={this.onScroll.bind(this)}
             >
                 {this.state.users.map(function (item, i) {
-                    return (<div className="user_item_line" key={i}
+                    var select = item.Select ? true : false;
+                    var focus = item.Focus ? true : false;
+                    return (<div className="user_item_line"
+                        key={i}
+                        select={select.toString()}
+                        focus={focus.toString()}
                         dangerouslySetInnerHTML={{ __html: item.UserName }}
                         data-name={item.UserName.removeHTML()}></div>)
                 })}
@@ -523,6 +569,7 @@ class UserDropDownListWrap extends React.Component {
     }
     groupInputFocus(e) {
         this.refs.user_input.focus();
+        this.refs.user_input.click();
     }
     getData(companyId) {
         this.refs.userDdl.getData(companyId);
@@ -553,11 +600,10 @@ class UserDropDownListWrap extends React.Component {
     }
     onKbPress(e) {
         if (e.keyCode == 40) {//down
-            console.log("down");
+            this.refs.userDdl.onKeyDown();
         }
         if (e.keyCode == 38) {  //up
-            console.log("up");
-
+            this.refs.userDdl.onKeyUp();
         }
     }
     render() {

@@ -187,17 +187,30 @@
     color: #444;
 }
 
+    .user_item_line[select=true] {
+        color: #ccc;
+    }
+
+        .user_item_line[select=true]:hover {
+            color: #ccc;
+            background-color: #fff;
+        }
+
+    .user_item_line[focus=true] {
+        background-color: #efeee9;
+    }
+
+    .user_item_line:hover {
+        color: #000;
+        background-color: #efeee9;
+    }
+
 .page_end {
     text-align: center;
     color: #666;
     height: 10px;
-    border-bottom:1px dashed #666;
-    margin-bottom:10px;
-}
-
-.user_item_line:hover {
-    color: #000;
-    background-color:#efeee9;
+    border-bottom: 1px dashed #666;
+    margin-bottom: 10px;
 }
 /*****************************************/
 /*****************************************/
