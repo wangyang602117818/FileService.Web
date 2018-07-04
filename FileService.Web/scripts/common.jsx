@@ -89,32 +89,9 @@ var CommonUsePagination = {
         var that = this;
         var url = this.url + "?pageindex=" + this.state.pageIndex + "&pagesize=" + this.state.pageSize + "&filter=" + this.state.filter;
         http.get(url, function (result) {
-            that.setKeyWord(result);
+            setKeyWord(result, that.state.filter);
             that.setState({ data: result, pageCount: Math.ceil(result.count / that.state.pageSize) || 1 });
         });
-    },
-    setKeyWord(result) {
-        if (result.result && result.result.length > 0 && this.state.filter) {
-            for (var i = 0; i < result.result.length; i++) {
-                var doc = result.result[i];
-                for (var k = 0; k < keywords.length; k++) {
-                    var keyword = keywords[k];
-                    if (keyword.indexOf(".") > -1) {
-                        var keywordArray = keyword.split(".");
-                        if (doc[keywordArray[0]] && doc[keywordArray[0]][keywordArray[1]]) {
-                            doc[keywordArray[0]][keywordArray[1]] = doc[keywordArray[0]][keywordArray[1]].replace(new RegExp("" + trim(this.state.filter) + "", "ig"), this.matchKeyWord);
-                        }
-                    } else {
-                        if (doc[keyword] && typeof doc[keyword] == "string") {
-                            doc[keyword] = doc[keyword].replace(new RegExp("" + trim(this.state.filter) + "", "ig"), this.matchKeyWord);
-                        }
-                    }
-                }
-            }
-        }
-    },
-    matchKeyWord(word) {
-        return '<span class="search_word">' + word + '</span>';
     },
     onPageShow(e) {
         if (this.state.pageShow) {

@@ -404,6 +404,7 @@ namespace FileService.Web.Controllers
             }
             return new ResponseModel<string>(ErrorCode.server_exception, "");
         }
+        [OutputCache(Duration = 60 * 5)]
         [Authorize(Roles = "admin")]
         public ActionResult GetCompanyUsers(string company, int pageIndex = 1, int pageSize = 10, string filter = "")
         {

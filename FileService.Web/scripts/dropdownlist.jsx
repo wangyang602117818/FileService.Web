@@ -438,9 +438,10 @@ class UserDropDownList extends React.Component {
     }
     getDataInternal(url) {
         http.get(url, function (data) {
+            //setKeyWord(data, this.filter);
             if (data.code == 0) {
                 data.result.map(function (item, i) {
-                    if (this.state.selectedUsers.indexOf(item.UserName) > -1) item.Select = true;
+                    if (this.state.selectedUsers.indexOf(item.UserName.removeHTML()) > -1) item.Select = true;
                     this.state.users.push(item);
                 }.bind(this))
                 this.setState({ users: this.state.users });
@@ -453,7 +454,7 @@ class UserDropDownList extends React.Component {
     }
     ddlClick(e) {
         if (e.target.className.toLowerCase() == "user_item_line") {
-            var user = e.target.innerText;
+            var user = e.target.getAttribute("data-name");
             this.selectNode(user);
         }
         e.stopPropagation();
@@ -466,12 +467,12 @@ class UserDropDownList extends React.Component {
                 selected = true;
                 this.state.selectedUsers.splice(i, 1);
                 break;
-            } 
+            }
         }
         if (!selected) {
             this.state.selectedUsers.push(user);
             document.getElementsByClassName("ddl_user_con")[0].style.display = "none";
-        } 
+        }
         for (var i = 0; i < this.state.users.length; i++) {
             if (this.state.users[i].UserName == user) {
                 this.state.users[i].Select = !this.state.users[i].Select;
@@ -500,8 +501,9 @@ class UserDropDownList extends React.Component {
                 onScroll={this.onScroll.bind(this)}
             >
                 {this.state.users.map(function (item, i) {
-                    var select = item.Select ? true : false;
-                    return (<div className="user_item_line" key={i} select={select.toString()}>{item.UserName}</div>)
+                    return (<div className="user_item_line" key={i}
+                        dangerouslySetInnerHTML={{ __html: item.UserName }}
+                        data-name={item.UserName.removeHTML()}></div>)
                 })}
                 {this.state.pageEnd ? <div className="page_end"></div> : null}
 
@@ -513,7 +515,8 @@ class UserDropDownListWrap extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            inputValue:""
+            inputValue: "",
+
         }
         this.companyId = null;
         this.timeInterval = null;
@@ -527,9 +530,7 @@ class UserDropDownListWrap extends React.Component {
     }
     onSelectUserChange(users) {
         this.props.onSelectUserChange(users);
-        this.setState({ inputValue: "" }, function () {
-            this.refs.user_input.focus();
-        }.bind(this));
+        this.refs.user_input.focus();
     }
     delNode(e) {
         var index = e.target.id;

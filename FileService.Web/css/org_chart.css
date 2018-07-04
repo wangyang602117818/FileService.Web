@@ -183,7 +183,7 @@
 .user_item_line {
     padding: 5px 5px;
     margin-top: 2px;
-    cursor: pointer;
+    cursor: default;
     color: #444;
 }
 
@@ -195,21 +195,9 @@
     margin-bottom:10px;
 }
 
-.user_item_line[select=true] {
-    background-color: #eb8c00;
-    border-color: #eb8c00;
-    color: #fff;
-}
-
-    .user_item_line[select=true]:hover {
-        cursor: default;
-        background-color: #eb8c00;
-        border-color: #eb8c00;
-        color: #fff;
-    }
-
 .user_item_line:hover {
     color: #000;
+    background-color:#efeee9;
 }
 /*****************************************/
 /*****************************************/
