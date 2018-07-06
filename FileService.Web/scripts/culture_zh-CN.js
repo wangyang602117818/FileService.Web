@@ -145,5 +145,6 @@ var culture = {
     authority_type: "权限类型",
     only_current: "仅当前",
     current_and_sub: "当前及下属",
-    current_and_sup: "当前及上级"
+    current_and_sup: "当前及上级",
+    end: "没有记录了",
 }

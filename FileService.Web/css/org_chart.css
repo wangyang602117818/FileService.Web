@@ -14,7 +14,7 @@
 }
 
 .ddl_user_con {
-    height: 200px;
+    height: 300px;
     min-width: 200px;
     padding: 0;
 }
@@ -209,7 +209,6 @@
     text-align: center;
     color: #666;
     height: 10px;
-    border-bottom: 1px dashed #666;
     margin-bottom: 10px;
 }
 /*****************************************/

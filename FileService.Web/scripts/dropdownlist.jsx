@@ -423,7 +423,7 @@ class UserDropDownList extends React.Component {
         }
         this.companyId = "";
         this.pageIndex = 1;
-        this.pageSize = 10;
+        this.pageSize = 15;
         this.filter = "";
 
     }
@@ -495,20 +495,18 @@ class UserDropDownList extends React.Component {
         }
     }
     //小键盘的方向键向下
-    onKeyDown() {  
+    onKeyDown() {
+        if (document.getElementsByClassName("ddl_user_con")[0].style.display == "none") return;
         var hasFocus = false;
         for (var i = 0; i < this.state.users.length; i++) {
             if (this.state.users[i].Focus) hasFocus = true;
         }
         if (hasFocus) {
             for (var i = 0; i < this.state.users.length; i++) {
-                if (this.state.users[i].Select == true) continue;
                 if (this.state.users[i].Focus == true) {
-                    this.state.users[i].Focus = false;
                     if (this.state.users[i + 1]) {
+                        this.state.users[i].Focus = false;
                         this.state.users[i + 1].Focus = true;
-                    } else {
-                        this.state.users[0].Focus = true;
                     }
                     break;
                 }
@@ -516,12 +514,12 @@ class UserDropDownList extends React.Component {
         } else {
             this.state.users[0].Focus = true;
         }
-        this.setState({ users: this.state.users });
+        this.setState({ users: this.state.users }, this.keyMoveAfter);
     }
     //小键盘的方向键向上
     onKeyUp() {
+        if (document.getElementsByClassName("ddl_user_con")[0].style.display == "none") return;
         for (var i = 0; i < this.state.users.length; i++) {
-            if (this.state.users[i].Select == true) continue;
             if (this.state.users[i].Focus == true) {
                 this.state.users[i].Focus = false;
                 if (this.state.users[i - 1]) {
@@ -532,7 +530,40 @@ class UserDropDownList extends React.Component {
                 break;
             }
         }
-        this.setState({ users: this.state.users });
+        this.setState({ users: this.state.users }, this.keyMoveAfter);
+    }
+    keyMoveAfter(e) {
+        var ddl_user_con = document.getElementsByClassName("ddl_user_con")[0];
+        var con_height = ddl_user_con.offsetHeight;
+        var ddl_users = ddl_user_con.getElementsByClassName("user_item_line");
+        for (var i = 0; i < ddl_users.length; i++) {
+            if (ddl_users[i].getAttribute("focus") == "true") {
+                var virtualheight = ddl_users[i].offsetTop - ddl_user_con.scrollTop + ddl_users[i].clientHeight + 4;
+                if (virtualheight >= ddl_user_con.clientHeight) {  //到底了
+                    ddl_user_con.scrollTop = ddl_user_con.scrollTop + ddl_users[i].clientHeight + 2;
+                }
+                var virtualmargintop = ddl_users[i].offsetTop - ddl_user_con.scrollTop - 2;
+                if (virtualmargintop <= 0) { //到顶了
+                    ddl_user_con.scrollTop = ddl_user_con.scrollTop - ddl_users[i].clientHeight - 2;
+                }
+            }
+        }
+    }
+    //
+    onKeyEnter(e) {
+        if (document.getElementsByClassName("ddl_user_con")[0].style.display == "none") return;
+        for (var i = 0; i < this.state.users.length; i++) {
+            if (this.state.users[i].Select == true) continue;
+            if (this.state.users[i].Focus == true) {
+                this.state.users[i].Focus = false;
+                if (this.state.users[i + 1]) {
+                    this.state.users[i + 1].Focus = true;
+                }
+                var user = this.state.users[i].UserName.removeHTML();
+                this.selectNode(user);
+                break;
+            }
+        }
     }
     render() {
         return (
@@ -551,7 +582,7 @@ class UserDropDownList extends React.Component {
                         dangerouslySetInnerHTML={{ __html: item.UserName }}
                         data-name={item.UserName.removeHTML()}></div>)
                 })}
-                {this.state.pageEnd ? <div className="page_end"></div> : null}
+                {this.state.pageEnd ? <div className="page_end">{culture.end}</div> : null}
 
             </div>
         );
@@ -569,7 +600,6 @@ class UserDropDownListWrap extends React.Component {
     }
     groupInputFocus(e) {
         this.refs.user_input.focus();
-        this.refs.user_input.click();
     }
     getData(companyId) {
         this.refs.userDdl.getData(companyId);
@@ -604,6 +634,10 @@ class UserDropDownListWrap extends React.Component {
         }
         if (e.keyCode == 38) {  //up
             this.refs.userDdl.onKeyUp();
+        }
+        if (e.keyCode == 13) {//enter
+            this.refs.user_input.click();
+            this.refs.userDdl.onKeyEnter(e);
         }
     }
     render() {

@@ -145,5 +145,6 @@ var culture = {
     authority_type: "AuthorityType",
     only_current: "Current",
     current_and_sub: "Current&Sub",
-    current_and_sup: "Current&Sup"
+    current_and_sup: "Current&Sup",
+    end:"End",
 }
