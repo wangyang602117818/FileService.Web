@@ -105,11 +105,12 @@
         align-items: center;
         justify-content: center;
         padding: 3px 6px;
-        cursor: pointer;
+        cursor: default;
     }
 
         .ddl_line .node:hover {
             color: #000;
+            background-color: #efeee9;
         }
 
         .ddl_line .node[select=true] {

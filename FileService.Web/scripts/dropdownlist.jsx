@@ -272,12 +272,9 @@ class DepartmentDropDownList extends React.Component {
                 departments[i].Select || departments[i].UnSelect);
         }
     }
-    componentDidMount() {
-        this.getData(this.props.id);
-    }
-    getData(id, success) {
-        if (!id) return;
-        http.get(urls.department.getDepartmentUrl + "/" + id, function (data) {
+    getData(companyId) {
+        if (!companyId) return;
+        http.get(urls.department.getDepartmentUrl + "/" + companyId, function (data) {
             if (data.code == 0) {
                 this.setState({
                     topLayerCount: data.result.Department.length,
@@ -287,18 +284,18 @@ class DepartmentDropDownList extends React.Component {
                     Department: data.result.Department
                 });
             }
-            if (success) success(data);
         }.bind(this));
     }
+
     render() {
         return (
             <div className="ddl ddl_department_con"
-                style={{ display: this.props.departmentShow ? "block" : "none" }}
+                style={{ display: "none" }}
                 onClick={this.ddlClick.bind(this)}>
                 {this.state.DepartmentCode ?
                     <div className="ddl_line"
                         layer={0}
-                        layer-absolute={"0-0"}
+                        layer-absolute={"1-"}
                         code={this.state.DepartmentCode}
                         name={this.state.DepartmentName}
                         index={0}>
@@ -359,12 +356,24 @@ class DepartmentDropDownListWrap extends React.Component {
         this.refs.departmentDdl.selectNode(names, codes, b);
     }
     //初始化方法,油company初始化完成之后，或者company发生改变之后调用
-    getData(companyId, success) {
-        this.refs.departmentDdl.getData(companyId, success);
+    getData(companyId) {
+        this.refs.departmentDdl.getData(companyId);
     }
     //工具方法，根据codes获取names
     getDepartmentNamesByCodes(codeArray) {
         return this.refs.departmentDdl.getDepartmentNamesByCodes(codeArray);
+    }
+    onKbPress(e) {
+        if (e.keyCode == 40) {//down
+            //this.refs.departmentDdl.onKeyDown();
+        }
+        if (e.keyCode == 38) {  //up
+            //this.refs.departmentDdl.onKeyUp();
+        }
+        if (e.keyCode == 13) {//enter
+            this.refs.group_input.click();
+            //this.refs.departmentDdl.onKeyEnter(e);
+        }
     }
     render() {
         return (
@@ -388,6 +397,7 @@ class DepartmentDropDownListWrap extends React.Component {
                         id="group_input"
                         ref="group_input"
                         tag="open_department_ddl"
+                        onKeyDown={this.onKbPress.bind(this)}
                         className="ddl_input" />
                 </div>
                 {this.props.department_bar ?
@@ -432,7 +442,16 @@ class UserDropDownList extends React.Component {
     }
     //由外部调用
     getData(companyId) {
-        this.companyId = companyId;
+        if (this.companyId == "") {
+            this.companyId = companyId;
+        } else {
+            if (this.companyId !== companyId) {
+                this.companyId = companyId;
+                this.pageIndex = 1;
+                this.filter = "";
+                this.setState({ users: [], pageEnd: false, selectedUsers: [] })
+            } 
+        }
         var url = urls.user.getCompanyUsersUrl + "?company=" + companyId + "&pageIndex=" + this.pageIndex + "&pageSize=" + this.pageSize + "&filter=" + this.filter;
         this.getDataInternal(url);
     }
@@ -461,7 +480,6 @@ class UserDropDownList extends React.Component {
         return false;
     }
     selectNode(user) {
-        //这一段控制层显示还是隐藏
         var selected = false;
         for (var i = 0; i < this.state.selectedUsers.length; i++) {
             if (this.state.selectedUsers[i] == user) {
@@ -472,7 +490,6 @@ class UserDropDownList extends React.Component {
         }
         if (!selected) {
             this.state.selectedUsers.push(user);
-            //document.getElementsByClassName("ddl_user_con")[0].style.display = "none";
         }
         for (var i = 0; i < this.state.users.length; i++) {
             if (this.state.users[i].UserName.removeHTML() == user) {

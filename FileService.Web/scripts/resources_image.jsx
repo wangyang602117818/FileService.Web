@@ -123,8 +123,6 @@ class AccessAuthority extends React.Component {
         super(props);
         this.state = {
             company: "",
-            departmentShow: false,
-            userShow: true,
             codeArray: [],
             nameArray: [],
             userArray: []
@@ -183,7 +181,6 @@ class AccessAuthority extends React.Component {
                         <td>
                             <UserDropDownListWrap
                                 ref="userDropDownListWrap"
-                                userShow={this.state.userShow}
                                 userArray={this.state.userArray}
                                 onSelectUserChange={this.onSelectUserChange.bind(this)}
                             />
