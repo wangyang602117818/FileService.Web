@@ -104,7 +104,7 @@ class DropDownLine extends React.Component {
                 }
             } else if (layer - 1 == i) { //倒数第二个
                 if (this.props.subCount > 0) {
-                    html += '<div class="node_wrap_btn"><div class="line_wrap h_wrap_flex"></div><div class="btn_wrap"><div class="line_wrap v_wrap_flex"><span class="v_line"></span></div><div class="btn"><i class="' + fonttype + '" node-name=' + this.props.department.DepartmentName + ' node-code=' + this.props.department.DepartmentCode + ' layer-absolute=' + this.props.layerAbsolute + '></i></div><div class="line_wrap v_wrap_flex">';
+                    html += '<div class="node_wrap_btn"><div class="line_wrap h_wrap_flex"></div><div class="btn_wrap"><div class="line_wrap v_wrap_flex"><span class="v_line"></span></div><div class="btn"><i class="' + fonttype + '" node-name=' + this.props.department.DepartmentName + ' node-code=' + this.props.department.DepartmentCode + ' layer-absolute=' + this.props.layerAbsolute + ' layer=' + this.props.layer + '></i></div><div class="line_wrap v_wrap_flex">';
                     if (!this.props.isEnd) html += '<span class="v_line"></span>';
                     html += '</div></div><div class="line_wrap h_wrap_flex"><div class="h_line"></div></div></div>';
                 } else {
@@ -130,7 +130,6 @@ class DropDownLine extends React.Component {
                 }
             }
         }
-
         return (
             <div className="ddl_line"
                 style={{ display: this.props.collapse ? "none" : "block" }}
@@ -145,7 +144,7 @@ class DropDownLine extends React.Component {
                 index={this.props.index}
                 collapse={this.props.collapse.toString()}
                 select={this.props.select.toString()}
-                unselect={this.props.unselect.toString()}
+                //unselect={this.props.unselect.toString()}
                 down-hide={this.props.downLineHide.toString()}
                 dangerouslySetInnerHTML={{ __html: html }}>
 
@@ -157,11 +156,12 @@ class DepartmentDropDownList extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            topLayerCount: 0,
-            Select: false,
-            DepartmentName: "",
-            DepartmentCode: "",
-            Department: []
+            departments: []
+            //topLayerCount: 0,
+            //Select: false,
+            //DepartmentName: "",
+            //DepartmentCode: "",
+            //Department: []
         }
     }
     //工具，供外部使用
@@ -189,8 +189,41 @@ class DepartmentDropDownList extends React.Component {
         if (e.target.nodeName.toLowerCase() == "i") {
             var name = e.target.getAttribute("node-name");
             var code = e.target.getAttribute("node-code");
-            this.dataNodeIterate(this.state.Department, name, code, 1, "i");
-            this.setState({ Department: this.state.Department });
+            var layer = e.target.getAttribute("layer");
+            var absoluteLayer = e.target.getAttribute("layer-absolute");
+            var regex = new RegExp("^" + absoluteLayer + ".+");
+            var virtualCollapse = null;
+            var collapseLayer = null;  //内部折叠层
+            for (var i = 0; i < this.state.departments.length; i++) {
+                if (this.state.departments[i].LayerAbsolute == absoluteLayer) {  //当前点击的行
+                    this.state.departments[i].VirtualCollapse = !this.state.departments[i].VirtualCollapse;
+                    virtualCollapse = this.state.departments[i].VirtualCollapse;
+                }
+                //当前点击行的子节点
+                if (regex.test(this.state.departments[i].LayerAbsolute)) {
+                    //保证折叠内部的折叠不会随父节点一起打开
+                    if (collapseLayer && new RegExp("^" + collapseLayer + ".+").test(this.state.departments[i].LayerAbsolute)) {
+                        continue;
+                    }
+                    if (virtualCollapse == true) {  //折叠
+                        this.state.departments[i].Collapse = true;
+                    } else {  //展开
+                        //遇到当前的dept是折叠的
+                        if (this.state.departments[i].VirtualCollapse == true) {
+                            collapseLayer = this.state.departments[i].LayerAbsolute;
+                        } else {
+                            collapseLayer = null;
+                        }
+                        this.state.departments[i].Collapse = false;
+                    }
+                }
+            }
+            //this.state.departments.map(function (item, i) {
+            //    console.log("name:" + item.DepartmentName + ",ablayer:" + item.LayerAbsolute + ",collapse:" + item.Collapse + ",virtualCollapse:" + item.VirtualCollapse);
+            //});
+            this.setState({ departments: this.state.departments });
+            //this.dataNodeIterate(this.state.Department, name, code, 1, "i");
+            //this.setState({ Department: this.state.Department });
         }
         if (e.target.nodeName.toLowerCase() == "div" && e.target.className == "node") {
             var name = e.target.getAttribute("node-name");
@@ -276,52 +309,133 @@ class DepartmentDropDownList extends React.Component {
         if (!companyId) return;
         http.get(urls.department.getDepartmentUrl + "/" + companyId, function (data) {
             if (data.code == 0) {
-                this.setState({
-                    topLayerCount: data.result.Department.length,
-                    Select: false,
-                    DepartmentName: data.result.DepartmentName,
-                    DepartmentCode: data.result.DepartmentCode,
-                    Department: data.result.Department
-                });
+                var departments = this.assembleData(data.result);
+                this.setState({ departments: departments });
+                //this.setState({
+                //    topLayerCount: data.result.Department.length,
+                //    Select: false,
+                //    DepartmentName: data.result.DepartmentName,
+                //    DepartmentCode: data.result.DepartmentCode,
+                //    Department: data.result.Department
+                //});
             }
         }.bind(this));
     }
+    assembleData(result) {
+        var virtualData = [];
+        var topLayerCount = result.Department.length;
+        virtualData.push({
+            DepartmentName: result.DepartmentName,
+            DepartmentCode: result.DepartmentCode,
+            Select: false,
+            Collapse: false,
+            VirtualCollapse: false,
+            TopLayerCount: topLayerCount,
+            SubCount: result.Department.length,
+            Layer: 0,
+            TotalLayer: 1,
+            LayerAbsolute: "1-",
+            IsEnd: false,
+            DownLineHide: false,
+            index: 0
+        });
+        this.assembleDataInternal(virtualData, result.Department, 1, "1", false, topLayerCount);
+        return virtualData;
+    }
+    assembleDataInternal(virtualData, departments, layer, layerAbsolute, downLineHide, topLayerCount) {
+        for (var i = 0; i < departments.length; i++) {
+            //是否当前层的最后一个节点
+            var isEnd = departments.length == i + 1;
+            //当前层的子元素个数
+            var subCount = departments[i].Department.length;
+            var downLineHideInner = isEnd && subCount > 0;
+            var downLineH = downLineHide || downLineHideInner;
 
+            virtualData.push({
+                DepartmentName: departments[i].DepartmentName,
+                DepartmentCode: departments[i].DepartmentCode,
+                Select: false,
+                Collapse: false,
+                VirtualCollapse: false,
+                TopLayerCount: topLayerCount,
+                SubCount: subCount,
+                Layer: layer,
+                TotalLayer: departments.length,
+                LayerAbsolute: layerAbsolute + "-" + i,
+                IsEnd: isEnd,
+                DownLineHide: downLineH,
+                Index: i
+            });
+            this.assembleDataInternal(virtualData,
+                departments[i].Department,
+                layer + 1,
+                layerAbsolute + "-" + i,
+                downLineH,
+                topLayerCount);
+        }
+    }
     render() {
         return (
             <div className="ddl ddl_department_con"
-                style={{ display: "none" }}
-                onClick={this.ddlClick.bind(this)}>
-                {this.state.DepartmentCode ?
-                    <div className="ddl_line"
-                        layer={0}
-                        layer-absolute={"1-"}
-                        code={this.state.DepartmentCode}
-                        name={this.state.DepartmentName}
-                        index={0}>
-                        <div className="node_wrap">
-                            <div className="node_main">
-                                <div className="line_wrap v_wrap"></div>
-                                <div className="node"
-                                    node-name={this.state.DepartmentName}
-                                    node-code={this.state.DepartmentCode}
-                                    select={this.state.Select.toString()}
-                                >{this.state.DepartmentName}</div>
-                                <div className="line_wrap v_wrap">
-                                    <span className="v_line"></span>
-                                </div>
-                            </div>
-                        </div>
-                    </div> : null
-                }
-                <DropDownListIterate
-                    departments={this.state.Department}
-                    topLayerCount={this.state.topLayerCount}
-                    layerAbsolute="1"
-                    layer={1} />
+                style={{ display: "block" }}
+                onClick={this.ddlClick.bind(this)}
+            >
+                {this.state.departments.map(function (item, i) {
+                    return (<DropDownLine
+                        key={i}
+                        department={item}
+                        subCount={item.SubCount}
+                        topLayerCount={item.TopLayerCount}
+                        isEnd={item.IsEnd}
+                        downLineHide={item.DownLineHide}
+                        totalLayer={item.TotalLayer}
+                        index={item.Index}
+                        layer={item.Layer}
+                        collapse={item.Collapse}
+                        virtualCollapse={item.VirtualCollapse}
+                        select={item.Select}
+                        layerAbsolute={item.LayerAbsolute}
+                    />)
+                })}
             </div>
-        );
+        )
     }
+    //render() {
+    //    return (
+    //        <div className="ddl ddl_department_con"
+    //            style={{ display:"none" }}
+    //            onClick={this.ddlClick.bind(this)}>
+    //            {this.state.DepartmentCode ?
+    //                <div className="ddl_line"
+    //                    layer={0}
+    //                    layer-absolute={"1-"}
+    //                    code={this.state.DepartmentCode}
+    //                    name={this.state.DepartmentName}
+    //                    index={0}>
+    //                    <div className="node_wrap">
+    //                        <div className="node_main">
+    //                            <div className="line_wrap v_wrap"></div>
+    //                            <div className="node"
+    //                                node-name={this.state.DepartmentName}
+    //                                node-code={this.state.DepartmentCode}
+    //                                select={this.state.Select.toString()}
+    //                            >{this.state.DepartmentName}</div>
+    //                            <div className="line_wrap v_wrap">
+    //                                <span className="v_line"></span>
+    //                            </div>
+    //                        </div>
+    //                    </div>
+    //                </div> : null
+    //            }
+    //            <DropDownListIterate
+    //                departments={this.state.Department}
+    //                topLayerCount={this.state.topLayerCount}
+    //                layerAbsolute="1"
+    //                layer={1} />
+    //        </div>
+    //    );
+    //}
+
 }
 class DepartmentDropDownListWrap extends React.Component {
     constructor(props) {
@@ -450,7 +564,7 @@ class UserDropDownList extends React.Component {
                 this.pageIndex = 1;
                 this.filter = "";
                 this.setState({ users: [], pageEnd: false, selectedUsers: [] })
-            } 
+            }
         }
         var url = urls.user.getCompanyUsersUrl + "?company=" + companyId + "&pageIndex=" + this.pageIndex + "&pageSize=" + this.pageSize + "&filter=" + this.filter;
         this.getDataInternal(url);
