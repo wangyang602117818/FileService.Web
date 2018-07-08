@@ -155,6 +155,9 @@ class AccessAuthority extends React.Component {
     onSelectUserChange(users) {
         this.setState({ userArray: users });
     }
+    Ok() {
+
+    }
     render() {
         return (
             <table style={{ width: "100%", marginTop: "0", borderCollapse: "collapse" }}>
