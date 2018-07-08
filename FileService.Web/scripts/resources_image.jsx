@@ -125,6 +125,7 @@ class AccessAuthority extends React.Component {
             company: "",
             codeArray: [],
             nameArray: [],
+            realCodes:[],
             userArray: []
         }
     }
@@ -142,11 +143,14 @@ class AccessAuthority extends React.Component {
         this.refs.departmentDropDownListWrap.getData(e.target.value);  //调用deparatment初始化方法
         this.refs.userDropDownListWrap.getData(e.target.value);
     }
-    onSelectNodeChanged(codeArray, nameArray) {
+    onSelectNodeChanged(codeArray,nameArray ) {
         this.setState({
             codeArray: codeArray,
             nameArray: nameArray
         });
+    }
+    onRealNodeChanged(codeArray) {
+        this.setState({ realCodes: codeArray });
     }
     onSelectUserChange(users) {
         this.setState({ userArray: users });
@@ -173,6 +177,7 @@ class AccessAuthority extends React.Component {
                                 codeArray={this.state.codeArray}
                                 nameArray={this.state.nameArray}
                                 onSelectNodeChanged={this.onSelectNodeChanged.bind(this)}
+                                onRealNodeChanged={this.onRealNodeChanged.bind(this)}
                             />
                         </td>
                     </tr>
@@ -187,7 +192,7 @@ class AccessAuthority extends React.Component {
                         </td>
                     </tr>
                     <tr>
-                        <td colSpan="4" className="convertBtn">{culture.ok}</td>
+                        <td colSpan="4" className="convertBtn" onClick={this.Ok.bind(this)}>{culture.ok}</td>
                     </tr>
                 </tbody>
             </table>
@@ -289,7 +294,8 @@ class AddImage extends React.Component {
                         <tr style={{ height: "35px" }}>
                             <td>{culture.access_authority}:</td>
                             <td></td>
-                            <td width="10%" className="link" onClick={this.showAccess.bind(this)}><i className="iconfont icon-add"></i></td>
+                            <td width="10%" className="link"
+                                onClick={this.showAccess.bind(this)}><i className="iconfont icon-add"></i></td>
                         </tr>
                         <tr>
                             <td colSpan="4">

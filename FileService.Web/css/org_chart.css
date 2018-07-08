@@ -98,6 +98,10 @@
         /*border: 1px dotted blue;*/
     }
 
+    .ddl_line[focus=true] .node{
+        background-color: #efeee9;
+    }
+
     .ddl_line .node {
         flex: 1;
         display: flex;
@@ -114,18 +118,10 @@
         }
 
         .ddl_line .node[select=true] {
-            background-color: #eb8c00;
-            border-color: #eb8c00;
-            color: #fff;
+            background-color: #fff;
+            color: #ccc;
+            border: 1px solid #aaa;
         }
-
-        .ddl_line .node[unselect=true] {
-            background-color: #f0f0f0;
-        }
-
-            .ddl_line .node[unselect=true]:hover {
-                cursor: default;
-            }
 
     .ddl_line .btn_wrap {
         width: 16px;

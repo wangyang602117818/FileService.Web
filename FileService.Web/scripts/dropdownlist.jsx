@@ -34,58 +34,6 @@ class CompanyDropDownList extends React.Component {
 ////////////////////////////////////////////////////
 //////////////////DepartmentDropDownList/////////////////////
 ///////////////////////////////////////////////////
-class DropDownListIterate extends React.Component {
-    constructor(props) {
-        super(props);
-    }
-    render() {
-        return (
-            <React.Fragment>
-                {this.props.departments.map(function (item, i) {
-                    //是否当前层的最后一个节点
-                    var isEnd = this.props.departments.length == i + 1;
-                    //当前层的子元素个数
-                    var subCount = item.Department.length;
-                    var downLineHide = isEnd && subCount > 0;
-                    var collapse = false;
-                    if (item.Collapse) collapse = true;
-                    var select = false;
-                    if (item.Select) select = true;
-                    var unselect = false;
-                    if (item.UnSelect) unselect = true;
-                    virtualCollapse = false;
-                    if (item.virtualCollapse) virtualCollapse = true;
-                    return (
-                        <React.Fragment key={i}>
-                            <DropDownLine
-                                department={item}
-                                subCount={subCount}
-                                topLayerCount={this.props.topLayerCount}
-                                isEnd={isEnd}
-                                downLineHide={this.props.downLineHide || downLineHide}
-                                totalLayer={this.props.departments.length}
-                                index={i}
-                                layer={this.props.layer}
-                                collapse={collapse}
-                                virtualCollapse={virtualCollapse}
-                                select={select}
-                                unselect={unselect}
-                                layerAbsolute={this.props.layerAbsolute + "-" + i}
-                            />
-                            <DropDownListIterate
-                                departments={item.Department}
-                                downLineHide={downLineHide}
-                                topLayerCount={this.props.topLayerCount}
-                                layer={this.props.layer + 1}
-                                layerAbsolute={this.props.layerAbsolute + "-" + i}
-                            />
-                        </React.Fragment>
-                    )
-                }.bind(this))}
-            </React.Fragment>
-        )
-    }
-}
 class DropDownLine extends React.Component {
     constructor(props) {
         super(props);
@@ -98,9 +46,9 @@ class DropDownLine extends React.Component {
             if (this.props.virtualCollapse) fonttype = "iconfont icon-add1";
             if (layer == i) { //最后一个
                 if (this.props.subCount > 0 && !this.props.virtualCollapse) {
-                    html += '<div class="node_wrap"><div class="node_main"><div class="line_wrap v_wrap"></div><div class="node" select=' + this.props.select + ' node-name=' + this.props.department.DepartmentName + ' node-code=' + this.props.department.DepartmentCode + ' unselect=' + this.props.unselect + '> ' + this.props.department.DepartmentName + '</div><div class="line_wrap v_wrap"><span class="v_line"></span></div></div ></div>';
+                    html += '<div class="node_wrap"><div class="node_main"><div class="line_wrap v_wrap"></div><div class="node" select=' + this.props.select + ' node-name=' + this.props.department.DepartmentName + ' node-code=' + this.props.department.DepartmentCode + ' layer-absolute=' + this.props.layerAbsolute + '> ' + this.props.department.DepartmentName + '</div><div class="line_wrap v_wrap"><span class="v_line"></span></div></div ></div>';
                 } else {
-                    html += '<div class="node_wrap"><div class="node_main"><div class="line_wrap v_wrap"></div><div class="node" select=' + this.props.select + ' node-name=' + this.props.department.DepartmentName + ' node-code=' + this.props.department.DepartmentCode + ' unselect=' + this.props.unselect + '>' + this.props.department.DepartmentName + '</div><div class="line_wrap v_wrap"></div></div></div>';
+                    html += '<div class="node_wrap"><div class="node_main"><div class="line_wrap v_wrap"></div><div class="node" select=' + this.props.select + ' node-name=' + this.props.department.DepartmentName + ' node-code=' + this.props.department.DepartmentCode + ' layer-absolute=' + this.props.layerAbsolute + '>' + this.props.department.DepartmentName + '</div><div class="line_wrap v_wrap"></div></div></div>';
                 }
             } else if (layer - 1 == i) { //倒数第二个
                 if (this.props.subCount > 0) {
@@ -144,7 +92,7 @@ class DropDownLine extends React.Component {
                 index={this.props.index}
                 collapse={this.props.collapse.toString()}
                 select={this.props.select.toString()}
-                //unselect={this.props.unselect.toString()}
+                focus={this.props.focus.toString()}
                 down-hide={this.props.downLineHide.toString()}
                 dangerouslySetInnerHTML={{ __html: html }}>
 
@@ -156,41 +104,87 @@ class DepartmentDropDownList extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            departments: []
-            //topLayerCount: 0,
-            //Select: false,
-            //DepartmentName: "",
-            //DepartmentCode: "",
-            //Department: []
+            departments: [],
+            selectedDepartments: []
         }
     }
     //工具，供外部使用
     getDepartmentNamesByCodes(codes) {
         var names = [];
         for (var i = 0; i < codes.length; i++) {
-            if (codes[i] == this.state.DepartmentCode) {
-                names.push(this.state.DepartmentName);
-            } else {
-                this.getDepartmentNamesInternal(codes[i], this.state.Department, names);
+            var code = codes[i];
+            for (var j = 0; j < this.state.departments.length; j++) {
+                if (code == this.state.departments[j].DepartmentCode) {
+                    names.push(this.state.departments[j].DepartmentName);
+                }
             }
         }
         return names;
     }
-    getDepartmentNamesInternal(code, departmens, names) {
-        for (var i = 0; i < departmens.length; i++) {
-            if (departmens[i].DepartmentCode == code) {
-                names.push(departmens[i].DepartmentName);
-                return;
-            }
-            this.getDepartmentNamesInternal(code, departmens[i].Department, names);
+    getAbsoluteLayer(code) {
+        for (var i = 0; i < this.state.departments.length; i++) {
+            if (code == this.state.departments[i].DepartmentCode)
+                return {
+                    LayerAbsolute: this.state.departments[i].LayerAbsolute,
+                    Layer: this.state.departments[i].Layer
+                };
         }
     }
+    getSubDepartmentSingle(absoluteLayer) {
+        var codes = [];
+        var regex = new RegExp("^" + absoluteLayer + ".+");
+        for (var i = 0; i < this.state.departments.length; i++) {
+            if (regex.test(this.state.departments[i].LayerAbsolute)) {
+                codes.push(this.state.departments[i].DepartmentCode);
+            }
+        }
+        return codes;
+    }
+    getSupDepartmentSingle(absoluteLayer, layer) {//*
+        var codes = [];
+        //var newLayer = absoluteLayer.substring(0, absoluteLayer.lastIndexOf("-"));
+        for (var i = 0; i < this.state.departments.length; i++) {
+            var regex = new RegExp("^" + this.state.departments[i].LayerAbsolute + ".+");
+            if (regex.test(absoluteLayer) && this.state.departments[i].Layer < layer) {
+                codes.push(this.state.departments[i].DepartmentCode);
+            }
+        }
+        return codes;
+    }
+    //工具，供外部使用,获取不重复的下级部门列表
+    getSubDepartments(codes) {
+        var newCodes = [];
+        for (var i = 0; i < codes.length; i++) {
+            if (newCodes.indexOf(codes[i]) == -1) newCodes.push(codes[i]);
+            var absoluteLayer = this.getAbsoluteLayer(codes[i]).LayerAbsolute;
+            var obj_code = this.getSubDepartmentSingle(absoluteLayer);
+            for (var k = 0; k < obj_code.length; k++) {
+                if (newCodes.indexOf(obj_code[k]) == -1) newCodes.push(obj_code[k]);
+            }
+        }
+        return newCodes;
+    }
+    //工具，供外部使用,获取不重复的上级级部门列表 *
+    getSupDepartments(codes) {
+        var newCodes = [];
+        for (var i = 0; i < codes.length; i++) {
+            if (newCodes.indexOf(codes[i]) == -1) newCodes.push(codes[i]);
+            var obj = this.getAbsoluteLayer(codes[i]);
+            var absoluteLayer = obj.LayerAbsolute;
+            var layer = obj.Layer;
+            var obj_code = this.getSupDepartmentSingle(absoluteLayer, layer);
+            for (var k = 0; k < obj_code.length; k++) {
+                if (newCodes.indexOf(obj_code[k]) == -1) newCodes.push(obj_code[k]);
+            }
+        }
+        return newCodes;
+    }
     ddlClick(e) {
+        var name = e.target.getAttribute("node-name");
+        var code = e.target.getAttribute("node-code");
+        var layer = e.target.getAttribute("layer");
+        var absoluteLayer = e.target.getAttribute("layer-absolute");
         if (e.target.nodeName.toLowerCase() == "i") {
-            var name = e.target.getAttribute("node-name");
-            var code = e.target.getAttribute("node-code");
-            var layer = e.target.getAttribute("layer");
-            var absoluteLayer = e.target.getAttribute("layer-absolute");
             var regex = new RegExp("^" + absoluteLayer + ".+");
             var virtualCollapse = null;
             var collapseLayer = null;  //内部折叠层
@@ -218,91 +212,99 @@ class DepartmentDropDownList extends React.Component {
                     }
                 }
             }
-            //this.state.departments.map(function (item, i) {
-            //    console.log("name:" + item.DepartmentName + ",ablayer:" + item.LayerAbsolute + ",collapse:" + item.Collapse + ",virtualCollapse:" + item.VirtualCollapse);
-            //});
             this.setState({ departments: this.state.departments });
-            //this.dataNodeIterate(this.state.Department, name, code, 1, "i");
-            //this.setState({ Department: this.state.Department });
         }
         if (e.target.nodeName.toLowerCase() == "div" && e.target.className == "node") {
-            var name = e.target.getAttribute("node-name");
-            var code = e.target.getAttribute("node-code");
-            var unselect = e.target.getAttribute("unselect");
-            if (unselect == "true") return;
-            this.selectNode(name, code);
+            this.clickNode(code);
         }
         e.stopPropagation();
     }
-    selectNode(name, code, single) {
-        //顶层node被选中
-        if (name == this.state.DepartmentName && code == this.state.DepartmentCode) {
-            this.state.Select = !this.state.Select;
-            if (this.props.type != "user") this.selectAll(this.state.Department, this.state.Select);
-        } else {
-            this.dataNodeIterate(this.state.Department, name, code, 1, "select");
-        }
-        this.setState({
-            Select: this.state.Select,
-            Department: this.state.Department
-        }, function () {
-            var codeArray = [];
-            var nameArray = [];
-            if (this.state.Select) {
-                codeArray.push(this.state.DepartmentCode);
-                nameArray.push(this.state.DepartmentName);
+    clickNode(code) {
+        var departmentCodes = [];
+        var departmentNames = [];
+        for (var i = 0; i < this.state.departments.length; i++) {
+            if (this.state.departments[i].DepartmentCode == code) {
+                this.state.departments[i].Select = !this.state.departments[i].Select;
             }
-            this.getSelectCode(codeArray, nameArray, this.state.Department);
-            if (!single) this.props.onSelectNodeChanged(codeArray, nameArray);
-        }.bind(this));
-    }
-    getSelectCode(codeArray, nameArray, departments) {
-        for (var i = 0; i < departments.length; i++) {
-            if (departments[i].Select) {
-                codeArray.push(departments[i].DepartmentCode);
-                nameArray.push(departments[i].DepartmentName);
+            if (this.state.departments[i].Select) {
+                departmentCodes.push(this.state.departments[i].DepartmentCode);
+                departmentNames.push(this.state.departments[i].DepartmentName);
             }
-            this.getSelectCode(codeArray, nameArray, departments[i].Department);
         }
+        this.setState({ departments: this.state.departments });
+        this.selectNode(departmentCodes, departmentNames);
     }
-    selectAll(departments, select) {
-        for (var i = 0; i < departments.length; i++) {
-            departments[i].UnSelect = select;
-            departments[i].Select = false;
-            this.selectAll(departments[i].Department, select);
+    selectNode(codes, names) {
+        this.props.onSelectNodeChanged(codes, names);
+    }
+    //小键盘的方向键向下
+    onKeyDown() {
+        if (document.getElementsByClassName("ddl_department_con")[0].style.display == "none") return;
+        var hasFocus = false;
+        for (var i = 0; i < this.state.departments.length; i++) {
+            if (this.state.departments[i].Focus) hasFocus = true;
         }
-    }
-    dataNodeIterate(departments, name, code, layer, type, clickLayer, collapse, select) {
-        for (var i = 0; i < departments.length; i++) {
-            if (clickLayer) {
-                if (layer > clickLayer) {
-                    if (type == "i") departments[i].Collapse = collapse;  //用于判断是否隐藏（子层）
-                    if (type == "select" && this.props.type != "user") {
-                        departments[i].UnSelect = select;  //用于判断是否选中（子层）
-                        departments[i].Select = false;  //（父元素选中了，子层不选中）
+        if (hasFocus) {
+            for (var i = 0; i < this.state.departments.length; i++) {
+                if (this.state.departments[i].Focus == true) {
+                    if (this.state.departments[i + 1]) {
+                        this.state.departments[i].Focus = false;
+                        this.state.departments[i + 1].Focus = true;
                     }
+                    break;
+                }
+            }
+        } else {
+            this.state.departments[0].Focus = true;
+        }
+        this.setState({ departments: this.state.departments }, this.keyMoveAfter);
+    }
+    //小键盘的方向键向上
+    onKeyUp() {
+        if (document.getElementsByClassName("ddl_department_con")[0].style.display == "none") return;
+        for (var i = 0; i < this.state.departments.length; i++) {
+            if (this.state.departments[i].Focus == true) {
+                this.state.departments[i].Focus = false;
+                if (this.state.departments[i - 1]) {
+                    this.state.departments[i - 1].Focus = true;
                 } else {
-                    clickLayer = null;
+                    this.state.departments[0].Focus = true;
+                }
+                break;
+            }
+        }
+        this.setState({ departments: this.state.departments }, this.keyMoveAfter);
+    }
+    keyMoveAfter(e) {
+        var ddl_department_con = document.getElementsByClassName("ddl_department_con")[0];
+        var con_height = ddl_department_con.offsetHeight;
+        var ddl_lines = ddl_department_con.getElementsByClassName("ddl_line");
+        for (var i = 0; i < ddl_lines.length; i++) {
+            if (ddl_lines[i].getAttribute("focus") == "true") {
+                var virtualheight = ddl_lines[i].offsetTop - ddl_department_con.scrollTop + ddl_lines[i].clientHeight + 4;
+                if (virtualheight >= ddl_department_con.clientHeight) {  //到底了
+                    ddl_department_con.scrollTop = ddl_department_con.scrollTop + ddl_lines[i].clientHeight + 2;
+                }
+                var virtualmargintop = ddl_lines[i].offsetTop - ddl_department_con.scrollTop - 2;
+                if (virtualmargintop <= 0) { //到顶了
+                    ddl_department_con.scrollTop = ddl_department_con.scrollTop - ddl_lines[i].clientHeight - 2;
                 }
             }
-            if (departments[i].DepartmentCode == code) {
-                if (type == "i") {
-                    //departments[i].Collapse = !departments[i].Collapse;  //用于判断是否隐藏(当前层)
-                    departments[i].virtualCollapse = !departments[i].virtualCollapse; //用于修改页面(当前层按钮样式，只有一个)
+        }
+    }
+    onKeyEnter(e) {
+        if (document.getElementsByClassName("ddl_department_con")[0].style.display == "none") return;
+        for (var i = 0; i < this.state.departments.length; i++) {
+            //if (this.state.users[i].Select == true) continue;
+            if (this.state.departments[i].Focus == true) {
+                this.state.departments[i].Focus = false;
+                if (this.state.departments[i + 1]) {
+                    this.state.departments[i + 1].Focus = true;
                 }
-                if (type == "select") {
-                    departments[i].Select = !departments[i].Select; //(当前层)
-                }
-                clickLayer = layer;
+                var department = this.state.departments[i].DepartmentCode;
+                this.clickNode(department);
+                break;
             }
-            this.dataNodeIterate(departments[i].Department,
-                name,
-                code,
-                layer + 1,
-                type,
-                clickLayer,
-                departments[i].Collapse || departments[i].virtualCollapse,
-                departments[i].Select || departments[i].UnSelect);
         }
     }
     getData(companyId) {
@@ -311,13 +313,6 @@ class DepartmentDropDownList extends React.Component {
             if (data.code == 0) {
                 var departments = this.assembleData(data.result);
                 this.setState({ departments: departments });
-                //this.setState({
-                //    topLayerCount: data.result.Department.length,
-                //    Select: false,
-                //    DepartmentName: data.result.DepartmentName,
-                //    DepartmentCode: data.result.DepartmentCode,
-                //    Department: data.result.Department
-                //});
             }
         }.bind(this));
     }
@@ -330,6 +325,7 @@ class DepartmentDropDownList extends React.Component {
             Select: false,
             Collapse: false,
             VirtualCollapse: false,
+            Focus: false,
             TopLayerCount: topLayerCount,
             SubCount: result.Department.length,
             Layer: 0,
@@ -357,6 +353,7 @@ class DepartmentDropDownList extends React.Component {
                 Select: false,
                 Collapse: false,
                 VirtualCollapse: false,
+                Focus: false,
                 TopLayerCount: topLayerCount,
                 SubCount: subCount,
                 Layer: layer,
@@ -394,48 +391,13 @@ class DepartmentDropDownList extends React.Component {
                         collapse={item.Collapse}
                         virtualCollapse={item.VirtualCollapse}
                         select={item.Select}
+                        focus={item.Focus}
                         layerAbsolute={item.LayerAbsolute}
                     />)
                 })}
             </div>
         )
     }
-    //render() {
-    //    return (
-    //        <div className="ddl ddl_department_con"
-    //            style={{ display:"none" }}
-    //            onClick={this.ddlClick.bind(this)}>
-    //            {this.state.DepartmentCode ?
-    //                <div className="ddl_line"
-    //                    layer={0}
-    //                    layer-absolute={"1-"}
-    //                    code={this.state.DepartmentCode}
-    //                    name={this.state.DepartmentName}
-    //                    index={0}>
-    //                    <div className="node_wrap">
-    //                        <div className="node_main">
-    //                            <div className="line_wrap v_wrap"></div>
-    //                            <div className="node"
-    //                                node-name={this.state.DepartmentName}
-    //                                node-code={this.state.DepartmentCode}
-    //                                select={this.state.Select.toString()}
-    //                            >{this.state.DepartmentName}</div>
-    //                            <div className="line_wrap v_wrap">
-    //                                <span className="v_line"></span>
-    //                            </div>
-    //                        </div>
-    //                    </div>
-    //                </div> : null
-    //            }
-    //            <DropDownListIterate
-    //                departments={this.state.Department}
-    //                topLayerCount={this.state.topLayerCount}
-    //                layerAbsolute="1"
-    //                layer={1} />
-    //        </div>
-    //    );
-    //}
-
 }
 class DepartmentDropDownListWrap extends React.Component {
     constructor(props) {
@@ -446,28 +408,41 @@ class DepartmentDropDownListWrap extends React.Component {
     }
     departmentAuthorityChange(e) {
         var id = e.target.getAttribute("index");
-        this.setState({ department_authority: id });
+        this.state.department_authority = id;
+        this.setState({ department_authority: this.state.department_authority });
+        //实际权限组
+        var realCodes = this.getRealCodeArray(this.props.codeArray);
+        this.props.onRealNodeChanged(realCodes);
+    }
+    getRealCodeArray(codes) {
+        var authorityId = this.state.department_authority;
+        switch (authorityId) {
+            case "0":
+                return codes;
+            case "1":
+                return this.getSubDepartments(codes);
+            case "2":
+                return this.getSupDepartments(codes);
+        }
     }
     groupInputFocus(e) {
         this.refs.group_input.focus();
     }
     delNode(e) {
-        var index = parseInt(e.target.id);
-        var nameArray = this.props.nameArray;
-        var codeArray = this.props.codeArray;
-        this.refs.departmentDdl.selectNode(nameArray[index], codeArray[index], true);
-        codeArray.splice(index, 1);
-        nameArray.splice(index, 1);
-        this.props.onSelectNodeChanged(codeArray, nameArray);
+        var code = e.target.getAttribute("code");
+        this.refs.departmentDdl.clickNode(code);
         e.stopPropagation();
         return false;
     }
     onSelectNodeChanged(codeArray, nameArray) {
         this.props.onSelectNodeChanged(codeArray, nameArray);
+        //实际权限组
+        var realCodes = this.getRealCodeArray(codeArray);
+        this.props.onRealNodeChanged(realCodes);
     }
     //反选，吧input的内容反映到结构中
     selectNode(names, codes, b) {
-        this.refs.departmentDdl.selectNode(names, codes, b);
+        this.refs.departmentDdl.selectNode(names, codes);
     }
     //初始化方法,油company初始化完成之后，或者company发生改变之后调用
     getData(companyId) {
@@ -477,16 +452,24 @@ class DepartmentDropDownListWrap extends React.Component {
     getDepartmentNamesByCodes(codeArray) {
         return this.refs.departmentDdl.getDepartmentNamesByCodes(codeArray);
     }
+    //工具方法，获取下级部门的codes列表
+    getSubDepartments(codeArray) {
+        return this.refs.departmentDdl.getSubDepartments(codeArray);
+    }
+    //工具方法，获取上级级部门的codes列表
+    getSupDepartments(codeArray) {
+        return this.refs.departmentDdl.getSupDepartments(codeArray);
+    }
     onKbPress(e) {
         if (e.keyCode == 40) {//down
-            //this.refs.departmentDdl.onKeyDown();
+            this.refs.departmentDdl.onKeyDown();
         }
         if (e.keyCode == 38) {  //up
-            //this.refs.departmentDdl.onKeyUp();
+            this.refs.departmentDdl.onKeyUp();
         }
         if (e.keyCode == 13) {//enter
             this.refs.group_input.click();
-            //this.refs.departmentDdl.onKeyEnter(e);
+            this.refs.departmentDdl.onKeyEnter(e);
         }
     }
     render() {
@@ -503,7 +486,10 @@ class DepartmentDropDownListWrap extends React.Component {
                                 code={item}
                                 tag="open_department_ddl">
                                 <span className="ddl_text" tag="open_department_ddl">{this.props.nameArray[i]}</span>
-                                <i className="iconfont icon-del" id={i} onClick={this.delNode.bind(this)}></i>
+                                <i className="iconfont icon-del"
+                                    id={i}
+                                    code={item}
+                                    onClick={this.delNode.bind(this)}></i>
                             </div>)
                     }.bind(this))}
                     <input type="text"
@@ -525,11 +511,12 @@ class DepartmentDropDownListWrap extends React.Component {
                             onClick={this.departmentAuthorityChange.bind(this)}>{culture.current_and_sup}</span>
                     </div> : null}
                 <DepartmentDropDownList
-                    type="user"
                     ref="departmentDdl"
-                    selected={this.props.codeArray}
                     departmentShow={this.props.departmentShow}
-                    onSelectNodeChanged={this.onSelectNodeChanged.bind(this)} />
+                    getDepartmentNamesByCodes={this.getDepartmentNamesByCodes.bind(this)}
+                    onSelectNodeChanged={this.onSelectNodeChanged.bind(this)}
+
+                />
             </React.Fragment>
         )
     }
@@ -586,7 +573,7 @@ class UserDropDownList extends React.Component {
         }.bind(this))
     }
     ddlClick(e) {
-        if (e.target.className.toLowerCase() == "user_item_line" && e.target.getAttribute("select") == "false") {
+        if (e.target.className.toLowerCase() == "user_item_line") {
             var user = e.target.getAttribute("data-name");
             this.selectNode(user);
         }
@@ -684,7 +671,7 @@ class UserDropDownList extends React.Component {
     onKeyEnter(e) {
         if (document.getElementsByClassName("ddl_user_con")[0].style.display == "none") return;
         for (var i = 0; i < this.state.users.length; i++) {
-            if (this.state.users[i].Select == true) continue;
+            //if (this.state.users[i].Select == true) continue;
             if (this.state.users[i].Focus == true) {
                 this.state.users[i].Focus = false;
                 if (this.state.users[i + 1]) {
