@@ -374,7 +374,7 @@ class DepartmentDropDownList extends React.Component {
     render() {
         return (
             <div className="ddl ddl_department_con"
-                style={{ display: "block" }}
+                style={{ display: "none" }}
                 onClick={this.ddlClick.bind(this)}
             >
                 {this.state.departments.map(function (item, i) {
