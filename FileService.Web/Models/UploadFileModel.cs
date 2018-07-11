@@ -20,6 +20,7 @@ namespace FileService.Web.Models
         [Required]
         public HttpPostedFileBase[] Images { get; set; }
         public string OutPut { get; set; }
+        public string Access { get; set; }
     }
     public class UploadAttachmentModel
     {

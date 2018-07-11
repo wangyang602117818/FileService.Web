@@ -83,7 +83,7 @@ class ResourceItem extends React.Component {
                 </td>
                 <td title={this.props.resource.filename.removeHTML()}>
                     <i className={"iconfont " + getIconNameByFileName(this.props.resource.filename.removeHTML())}></i>&nbsp;
-                    <span dangerouslySetInnerHTML={{ __html: this.props.resource.filename.getFileName(15)}}>
+                    <span dangerouslySetInnerHTML={{ __html: this.props.resource.filename.getFileName(15) }}>
                     </span>
                 </td>
                 <td>{convertFileSize(this.props.resource.length)}</td>
@@ -179,11 +179,12 @@ class Resources extends React.Component {
             });
         }
     }
-    imageUpload(input, thumbnails, success, process) {
+    imageUpload(input, thumbnails, access, success, process) {
         var that = this;
         http.post(urls.resources.uploadImageUrl, {
             images: input,
-            output: thumbnails.length > 0 ? JSON.stringify(thumbnails) : null
+            output: thumbnails.length > 0 ? JSON.stringify(thumbnails) : null,
+            access: access.length > 0 ? JSON.stringify(success) : null,
         }, function (data) {
             if (data.code == 0) that.getData();
             success(data);

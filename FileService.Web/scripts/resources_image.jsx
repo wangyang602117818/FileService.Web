@@ -122,20 +122,36 @@ class AccessAuthority extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            company: "",
+            company: {
+                companyId: "",
+                companyName: ""
+            },
             codeArray: [],
             nameArray: [],
-            realCodes:[],
+            realCodes: [],
             userArray: []
         }
     }
-    afterCompanyInit(value) {
-        this.refs.departmentDropDownListWrap.getData(value);  //调用deparatment初始化方法
-        this.refs.userDropDownListWrap.getData(value);
+    //由外部调用，主动拉取company数据
+    getCompanyData() {
+        this.refs.companyDropDownListWrap.getData();
+    }
+    afterCompanyInit(companyId, companyName) {
+        this.state.company = {
+            companyId: companyId,
+            companyName: companyName
+        };
+        this.refs.departmentDropDownListWrap.getData(companyId);  //调用deparatment初始化方法
+        this.refs.userDropDownListWrap.getData(companyId);
     }
     companyChanged(e) {
+        var companyId = e.target.value;
+        var companyName = this.refs.companyDropDownListWrap.getCompanyNameById(companyId);
         this.setState({
-            company: e.target.value,
+            company: {
+                companyId: e.target.value,
+                companyName: companyName
+            },
             codeArray: [],
             nameArray: [],
             userArray: []
@@ -143,7 +159,7 @@ class AccessAuthority extends React.Component {
         this.refs.departmentDropDownListWrap.getData(e.target.value);  //调用deparatment初始化方法
         this.refs.userDropDownListWrap.getData(e.target.value);
     }
-    onSelectNodeChanged(codeArray,nameArray ) {
+    onSelectNodeChanged(codeArray, nameArray) {
         this.setState({
             codeArray: codeArray,
             nameArray: nameArray
@@ -156,7 +172,23 @@ class AccessAuthority extends React.Component {
         this.setState({ userArray: users });
     }
     Ok() {
-
+        if (this.state.company.companyId) {
+            this.props.accessOk(
+                this.state.company.companyId,
+                this.state.company.companyName,
+                this.state.codeArray,
+                this.state.nameArray,
+                this.state.realCodes,
+                this.state.userArray, function () {
+                    this.refs.companyDropDownListWrap.getData();
+                    this.setState({
+                        codeArray: [],
+                        nameArray: [],
+                        realCodes: [],
+                        userArray: []
+                    })
+                }.bind(this));
+        }
     }
     render() {
         return (
@@ -165,7 +197,10 @@ class AccessAuthority extends React.Component {
                     <tr>
                         <td width="13%">{culture.company}:</td>
                         <td width="77%">
-                            <CompanyDropDownList company={this.state.company}
+                            <CompanyDropDownList
+                                ref="companyDropDownListWrap"
+                                companyId={this.state.company.companyId}
+                                existsCompany={this.props.existsCompany}
                                 afterCompanyInit={this.afterCompanyInit.bind(this)}
                                 companyChanged={this.companyChanged.bind(this)}
                             />
@@ -207,11 +242,12 @@ class AddImage extends React.Component {
         super(props);
         this.state = {
             convertShow: false,
-            accessShow: true,
+            accessShow: false,
             errorMsg: "",
             buttonValue: culture.upload,
             buttonDisabled: false,
-            thumbnails: []
+            thumbnails: [],
+            accesses: []
         }
     }
     showConvert(e) {
@@ -226,8 +262,9 @@ class AddImage extends React.Component {
             thumbnails: this.state.thumbnails
         });
     }
-    accessOk(obj) {
-
+    accessOk(companyId, companyName, codeArray, nameArray, realCodes, userArray, success) {
+        this.state.accesses.push({ companyId, companyName, codeArray, nameArray, realCodes, userArray });
+        this.setState({ accesses: this.state.accesses }, success);
     }
     delImage(e) {
         var id = e.target.parentElement.id;
@@ -235,6 +272,16 @@ class AddImage extends React.Component {
         this.setState({
             thumbnails: this.state.thumbnails
         });
+    }
+    delAccess(e) {
+        var id = e.target.parentElement.id;
+        this.state.accesses.splice(id, 1);
+        this.setState({
+            accesses: this.state.accesses
+        }, function () {
+            if (this.refs.accessAuthority)
+                this.refs.accessAuthority.getCompanyData();
+        }.bind(this));
     }
     fileChanged(e) {
         this.input = e.target;
@@ -246,7 +293,16 @@ class AddImage extends React.Component {
         var that = this;
         if (this.input && this.input.files.length > 0) {
             this.setState({ buttonDisabled: true });
-            this.props.imageUpload(this.input, this.state.thumbnails, function (data) {
+            var access = [];
+            for (var i = 0; i < this.state.accesses.length; i++) {
+                access.push({
+                    company: this.state.accesses[i].companyId,
+                    departmentCodes: this.state.accesses[i].codeArray,
+                    accessCodes: this.state.accesses[i].realCodes,
+                    accessUsers: this.state.accesses[i].userArray
+                })
+            }
+            this.props.imageUpload(this.input, this.state.thumbnails, access, function (data) {
                 if (data.code == 0) {
                     that.input.value = "";
                     that.setState({ buttonValue: culture.upload, buttonDisabled: false });
@@ -296,13 +352,29 @@ class AddImage extends React.Component {
                         </tr>
                         <tr style={{ height: "35px" }}>
                             <td>{culture.access_authority}:</td>
-                            <td></td>
+                            <td>
+                                {
+                                    this.state.accesses.map(function (item, i) {
+                                        return (
+                                            <span className="convert_flag" title={JSON.stringify(item)} key={i} id={i} data-code={item.companyId}>
+                                                <span className="flag_txt">{item.companyName}</span>
+                                                <span className="flag_txt flag_del"
+                                                    onClick={this.delAccess.bind(this)}>×</span>
+                                            </span>
+                                        );
+                                    }.bind(this))
+                                }
+                            </td>
                             <td width="10%" className="link"
                                 onClick={this.showAccess.bind(this)}><i className="iconfont icon-add"></i></td>
                         </tr>
                         <tr>
                             <td colSpan="4">
-                                {this.state.accessShow ? <AccessAuthority accessOk={this.accessOk.bind(this)} /> : null}
+                                {this.state.accessShow ? <AccessAuthority
+                                    //用于判断下拉框不显示该条数据
+                                    existsCompany={this.state.accesses}
+                                    ref="accessAuthority"
+                                    accessOk={this.accessOk.bind(this)} /> : null}
                             </td>
                         </tr>
                         <tr>

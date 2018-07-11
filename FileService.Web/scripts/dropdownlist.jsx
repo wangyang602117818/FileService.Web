@@ -5,28 +5,47 @@ class CompanyDropDownList extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            company: "",
+            companyId: "",
             companys: [],
         }
     }
+    getCompanyNameById(companyId) {
+        for (var i = 0; i < this.state.companys.length; i++) {
+            if (this.state.companys[i]._id.$oid == companyId) return this.state.companys[i].DepartmentName;
+        }
+    }
     componentDidMount() {
+        this.getData();
+    }
+    getData() {
         http.get(urls.department.getAllDepartment, function (data) {
             if (data.code == 0) {
-                this.setState({ companys: data.result });
-                if (data.result.length > 0) {
-                    this.setState({ company: data.result[0]._id.$oid });
-                    if (this.props.afterCompanyInit) this.props.afterCompanyInit(data.result[0]._id.$oid);
+                var companys = [];
+                for (var i = 0; i < data.result.length; i++) {
+                    var exists = false;
+                    for (var j = 0; j < this.props.existsCompany.length; j++) {
+                        if (this.props.existsCompany[j].companyId == data.result[i]._id.$oid) exists = true;
+                    }
+                    if (!exists) companys.push(data.result[i]);
+                }
+                this.setState({ companys: companys });
+                if (companys.length > 0) {
+                    this.setState({ companyId: companys[0]._id.$oid });
+                    if (this.props.afterCompanyInit) this.props.afterCompanyInit(companys[0]._id.$oid, companys[0].DepartmentName);
+                } else {
+                    this.setState({ companyId: "" });
+                    if (this.props.afterCompanyInit) this.props.afterCompanyInit("", "");
                 }
             }
         }.bind(this))
     }
     render() {
         return (
-            <select name="company" value={this.props.company || this.state.company}
+            <select name="company" value={this.props.companyId || this.state.companyId}
                 onChange={this.props.companyChanged}>
                 {this.state.companys.map(function (item, i) {
                     return <option value={item._id.$oid} key={i}>{item.DepartmentName}</option>
-                })}
+                }.bind(this))}
             </select>
         )
     }
