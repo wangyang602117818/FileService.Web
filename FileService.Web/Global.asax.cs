@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Security.AccessControl;
 using System.Security.Principal;
 using System.Web;
 using System.Web.Mvc;
@@ -22,6 +23,19 @@ namespace FileService.Web
 
             FileInfo fileInfo = new FileInfo(AppDomain.CurrentDomain.BaseDirectory + "bin\\log4net.config");
             log4net.Config.XmlConfigurator.ConfigureAndWatch(fileInfo);
+
+            var fileDirectory = AppDomain.CurrentDomain.BaseDirectory + "App_Data\\Files\\";
+            if (!Directory.Exists(fileDirectory))
+            {
+                //创建文件夹
+                DirectoryInfo directoryInfo = Directory.CreateDirectory(fileDirectory);
+                //获取文件夹权限
+                DirectorySecurity directorySecurity = directoryInfo.GetAccessControl();
+                //添加文件夹权限
+                directorySecurity.AddAccessRule(new FileSystemAccessRule("Everyone", FileSystemRights.FullControl, AccessControlType.Allow));
+                //设置文件夹权限
+                directoryInfo.SetAccessControl(directorySecurity);
+            }
         }
         protected void Application_AuthorizeRequest(object sender, System.EventArgs e)
         {

@@ -1,0 +1,70 @@
+权限问题
+秒传问题
+集群界面问题
+
+FilesWrap
+{
+	_id,
+	FileName:"集群策略.png",
+	Length:"17590",
+	From,
+	FileType,
+	ContentType,
+	Thumbnail,
+	Videos,
+	Files,
+	VideoCpIds,
+	Access,
+	Owner,
+	CreateTime:"",
+}
+
+Thumbnail
+{
+	"_id" : ObjectId("5afe95b0c41809438023c3a4"),
+    "Format" : 0,
+    "Flag" : "mobile"
+}
+
+Videos
+{
+    "_id" : ObjectId("5afe97f0c41809438023c3ac"),
+    "Format" : 0,
+    "Flag" : "mobile"
+}
+
+VideoCpIds
+[ 
+    ObjectId("5afe9863c41809438023c3fe"), 
+    ObjectId("5afe9865c41809438023c400"), 
+    ObjectId("5afe9867c41809438023c402"), 
+]
+
+Access:[
+    {
+		Company:"",
+		DepartmentCodes:[],
+		AccessCodes:[],
+		Users:[],
+	}
+]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

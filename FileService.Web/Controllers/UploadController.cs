@@ -28,70 +28,6 @@ namespace FileService.Web.Controllers
         Queue queue = new Queue();
         Config config = new Config();
         [HttpPost]
-        public ActionResult Video(UploadVideoModel uploadVideo)
-        {
-            var app = application.FindByAuthCode(Request.Headers["AuthCode"]);
-            if (app == null || app["Action"] == "block") return new ResponseModel<string>(ErrorCode.app_not_exist, "");
-            List<VideoItemResponse> response = new List<VideoItemResponse>();
-            List<VideoOutPut> outputs = new List<VideoOutPut>();
-            if (!string.IsNullOrEmpty(uploadVideo.OutPut))
-            {
-                outputs = JsonConvert.DeserializeObject<List<VideoOutPut>>(uploadVideo.OutPut);
-            }
-            foreach (HttpPostedFileBase file in uploadVideo.Videos)
-            {
-                //过滤不正确的格式
-                if (!config.CheckFileExtensionVideo(Path.GetExtension(file.FileName).ToLower()))
-                {
-                    response.Add(new VideoItemResponse()
-                    {
-                        FileId = ObjectId.Empty.ToString(),
-                        FileName = file.FileName,
-                        Videos = new List<VideoItem>()
-                    });
-                    continue;
-                }
-                BsonArray videos = new BsonArray();
-                foreach (VideoOutPut output in outputs)
-                {
-                    output.Id = ObjectId.GenerateNewId();
-                    videos.Add(new BsonDocument()
-                    {
-                        {"_id",output.Id },
-                        {"Format",output.Format },
-                        {"Flag",output.Flag }
-                    });
-                }
-                Task<ObjectId> oId = mongoFile.UploadAsync(file.FileName, file.InputStream, new BsonDocument()
-                    {
-                        {"From", app["ApplicationName"]},
-                        {"FileType","video"},
-                        {"ContentType",file.ContentType},
-                        {"Videos",videos },
-                        {"VideoCpIds",new BsonArray() }
-                    });
-                //日志
-                Log(oId.Result.ToString(), "UploadVideo");
-                foreach (VideoOutPut v in outputs)
-                {
-                    string handlerId = converter.GetHandlerId();
-                    converter.AddCount(handlerId, 1);
-                    ObjectId taskId = ObjectId.GenerateNewId();
-                    //添加转换消息
-                    task.Insert(taskId, oId.Result, file.FileName, "video", v.ToBsonDocument(), handlerId, TaskStateEnum.wait, 0);
-                    //添加队列
-                    queue.Insert(handlerId, "video", "Task", taskId, false, new BsonDocument());
-                }
-                response.Add(new VideoItemResponse()
-                {
-                    FileId = oId.Result.ToString(),
-                    FileName = file.FileName,
-                    Videos = videos.Select(sel => new VideoItem() { FileId = sel["_id"].ToString(), Flag = sel["Flag"].AsString })
-                });
-            }
-            return new ResponseModel<IEnumerable<VideoItemResponse>>(ErrorCode.success, response);
-        }
-        [HttpPost]
         public ActionResult Image(UploadImgModel uploadImgModel)
         {
             var app = application.FindByAuthCode(Request.Headers["AuthCode"]);
@@ -155,6 +91,70 @@ namespace FileService.Web.Controllers
                 });
             }
             return new ResponseModel<IEnumerable<ImageItemResponse>>(ErrorCode.success, response);
+        }
+        [HttpPost]
+        public ActionResult Video(UploadVideoModel uploadVideo)
+        {
+            var app = application.FindByAuthCode(Request.Headers["AuthCode"]);
+            if (app == null || app["Action"] == "block") return new ResponseModel<string>(ErrorCode.app_not_exist, "");
+            List<VideoItemResponse> response = new List<VideoItemResponse>();
+            List<VideoOutPut> outputs = new List<VideoOutPut>();
+            if (!string.IsNullOrEmpty(uploadVideo.OutPut))
+            {
+                outputs = JsonConvert.DeserializeObject<List<VideoOutPut>>(uploadVideo.OutPut);
+            }
+            foreach (HttpPostedFileBase file in uploadVideo.Videos)
+            {
+                //过滤不正确的格式
+                if (!config.CheckFileExtensionVideo(Path.GetExtension(file.FileName).ToLower()))
+                {
+                    response.Add(new VideoItemResponse()
+                    {
+                        FileId = ObjectId.Empty.ToString(),
+                        FileName = file.FileName,
+                        Videos = new List<VideoItem>()
+                    });
+                    continue;
+                }
+                BsonArray videos = new BsonArray();
+                foreach (VideoOutPut output in outputs)
+                {
+                    output.Id = ObjectId.GenerateNewId();
+                    videos.Add(new BsonDocument()
+                    {
+                        {"_id",output.Id },
+                        {"Format",output.Format },
+                        {"Flag",output.Flag }
+                    });
+                }
+                Task<ObjectId> oId = mongoFile.UploadAsync(file.FileName, file.InputStream, new BsonDocument()
+                    {
+                        {"From", app["ApplicationName"]},
+                        {"FileType","video"},
+                        {"ContentType",file.ContentType},
+                        {"Videos",videos },
+                        {"VideoCpIds",new BsonArray() }
+                    });
+                //日志
+                Log(oId.Result.ToString(), "UploadVideo");
+                foreach (VideoOutPut v in outputs)
+                {
+                    string handlerId = converter.GetHandlerId();
+                    converter.AddCount(handlerId, 1);
+                    ObjectId taskId = ObjectId.GenerateNewId();
+                    //添加转换消息
+                    task.Insert(taskId, oId.Result, file.FileName, "video", v.ToBsonDocument(), handlerId, TaskStateEnum.wait, 0);
+                    //添加队列
+                    queue.Insert(handlerId, "video", "Task", taskId, false, new BsonDocument());
+                }
+                response.Add(new VideoItemResponse()
+                {
+                    FileId = oId.Result.ToString(),
+                    FileName = file.FileName,
+                    Videos = videos.Select(sel => new VideoItem() { FileId = sel["_id"].ToString(), Flag = sel["Flag"].AsString })
+                });
+            }
+            return new ResponseModel<IEnumerable<VideoItemResponse>>(ErrorCode.success, response);
         }
         [HttpPost]
         public ActionResult Attachment(UploadAttachmentModel uploadAttachmentModel)
@@ -286,6 +286,13 @@ namespace FileService.Web.Controllers
                 response.Add(id.ToString());
             }
             return new ResponseModel<List<string>>(ErrorCode.success, response, response.Count);
+        }
+
+        //////////////////////////////////////////////
+        [HttpPost]
+        public ActionResult CheckImageMd5(CheckImgMd5Model checkImgMd5Model)
+        {
+
         }
     }
 }

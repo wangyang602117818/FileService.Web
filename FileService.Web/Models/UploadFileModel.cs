@@ -9,17 +9,24 @@ using System.Web;
 
 namespace FileService.Web.Models
 {
-    public class UploadVideoModel
-    {
-        [Required]
-        public HttpPostedFileBase[] Videos { get; set; }
-        public string OutPut { get; set; }
-        public string Access { get; set; }
-    }
     public class UploadImgModel
     {
         [Required]
         public HttpPostedFileBase[] Images { get; set; }
+        public string OutPut { get; set; }
+        public string Access { get; set; }
+    }
+    public class CheckImgMd5Model
+    {
+        public string FileName { get; set; }
+        public string Md5 { get; set; }
+        public string OutPut { get; set; }
+        public string Access { get; set; }
+    }
+    public class UploadVideoModel
+    {
+        [Required]
+        public HttpPostedFileBase[] Videos { get; set; }
         public string OutPut { get; set; }
         public string Access { get; set; }
     }

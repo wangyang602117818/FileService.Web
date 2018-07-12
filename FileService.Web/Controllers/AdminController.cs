@@ -521,12 +521,6 @@ namespace FileService.Web.Controllers
         {
             return new ResponseModel<BsonDocument>(ErrorCode.success, department.FindOne(ObjectId.Parse(id)));
         }
-        //[Authorize(Roles = "admin")]
-        //public ActionResult GetDepartmentSelect()
-        //{
-        //    DepartmentSelect departmentSelect = department.GetDepartmentSelect();
-        //    return new ResponseModel<DepartmentSelect>(ErrorCode.success, departmentSelect);
-        //}
         [Authorize(Roles = "admin")]
         public ActionResult DeleteDepartment(string id)
         {

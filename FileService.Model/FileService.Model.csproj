@@ -44,6 +44,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AccessModel.cs" />
     <Compile Include="AttachmentOutput.cs" />
     <Compile Include="ConverterStateEnum.cs" />
     <Compile Include="DepartmentSelect.cs" />
