@@ -184,26 +184,28 @@ class Resources extends React.Component {
         http.post(urls.resources.uploadImageUrl, {
             images: input,
             output: thumbnails.length > 0 ? JSON.stringify(thumbnails) : null,
-            access: access.length > 0 ? JSON.stringify(success) : null,
+            access: access.length > 0 ? JSON.stringify(access) : null,
         }, function (data) {
             if (data.code == 0) that.getData();
             success(data);
         }, process);
     }
-    videoUpload(input, videos, success, process) {
+    videoUpload(input, videos, access, success, process) {
         var that = this;
         http.post(urls.resources.uploadVideoUrl, {
             videos: input,
-            output: videos.length > 0 ? JSON.stringify(videos) : null
+            output: videos.length > 0 ? JSON.stringify(videos) : null,
+            access: access.length > 0 ? JSON.stringify(access) : null,
         }, function (data) {
             if (data.code == 0) that.getData();
             success(data);
         }, process);
     }
-    attachmentUpload(input, success, process) {
+    attachmentUpload(input, access, success, process) {
         var that = this;
         http.post(urls.resources.uploadAttachmentUrl, {
-            attachments: input
+            attachments: input,
+            access: access.length > 0 ? JSON.stringify(access) : null,
         }, function (data) {
             if (data.code == 0) that.getData();
             success(data);

@@ -14,6 +14,7 @@ namespace FileService.Web.Models
         [Required]
         public HttpPostedFileBase[] Videos { get; set; }
         public string OutPut { get; set; }
+        public string Access { get; set; }
     }
     public class UploadImgModel
     {
@@ -26,6 +27,7 @@ namespace FileService.Web.Models
     {
         [Required]
         public HttpPostedFileBase[] Attachments { get; set; }
+        public string Access { get; set; }
     }
     public class UploadVideoCPModel
     {

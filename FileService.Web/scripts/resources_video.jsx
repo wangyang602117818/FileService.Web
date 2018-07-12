@@ -29,7 +29,7 @@
     }
     render() {
         return (
-            <table style={{ width: "50%", marginTop: "0px",borderCollapse: "collapse" }}>
+            <table style={{ width: "50%", marginTop: "0px", borderCollapse: "collapse" }}>
                 <tbody>
                     <tr>
                         <td width="30%">{culture.outputFormat}:</td>
@@ -69,14 +69,19 @@ class AddVideo extends React.Component {
         super(props);
         this.state = {
             convertShow: false,
+            accessShow: false,
             errorMsg: "",
             buttonValue: culture.upload,
             buttonDisabled: false,
-            videos: []
+            videos: [],
+            accesses: []
         }
     }
     showConvert(e) {
         this.state.convertShow ? this.setState({ convertShow: false }) : this.setState({ convertShow: true });
+    }
+    showAccess(e) {
+        this.state.accessShow ? this.setState({ accessShow: false }) : this.setState({ accessShow: true });
     }
     delVideo(e) {
         var id = e.target.parentElement.id;
@@ -84,6 +89,16 @@ class AddVideo extends React.Component {
         this.setState({
             videos: this.state.videos
         });
+    }
+    delAccess(e) {
+        var id = e.target.parentElement.id;
+        this.state.accesses.splice(id, 1);
+        this.setState({
+            accesses: this.state.accesses
+        }, function () {
+            if (this.refs.accessAuthority)
+                this.refs.accessAuthority.getCompanyData();
+        }.bind(this));
     }
     fileChanged(e) {
         this.input = e.target;
@@ -95,14 +110,22 @@ class AddVideo extends React.Component {
         var that = this;
         if (this.input && this.input.files.length > 0) {
             this.setState({ buttonDisabled: true });
-            this.props.videoUpload(this.input, this.state.videos, function (data) {
+            var access = [];
+            for (var i = 0; i < this.state.accesses.length; i++) {
+                access.push({
+                    company: this.state.accesses[i].companyId,
+                    departmentCodes: this.state.accesses[i].codeArray,
+                    accessCodes: this.state.accesses[i].realCodes,
+                    accessUsers: this.state.accesses[i].userArray
+                })
+            }
+            this.props.videoUpload(this.input, this.state.videos, access, function (data) {
                 if (data.code == 0) {
                     that.input.value = "";
                     that.setState({ buttonValue: culture.upload, buttonDisabled: false });
                 } else {
                     that.setState({ errorMsg: " " + data.message, buttonValue: culture.upload, buttonDisabled: false });
                 }
-                
             }, function (loaded, total) {
                 var precent = ((loaded / total) * 100).toFixed() + "%";
                 that.setState({ buttonValue: precent });
@@ -118,6 +141,10 @@ class AddVideo extends React.Component {
         this.setState({
             videos: this.state.videos
         });
+    }
+    accessOk(companyId, companyName, codeArray, nameArray, realCodes, userArray, success) {
+        this.state.accesses.push({ companyId, companyName, codeArray, nameArray, realCodes, userArray });
+        this.setState({ accesses: this.state.accesses }, success);
     }
     render() {
         return (
@@ -147,6 +174,33 @@ class AddVideo extends React.Component {
                         <tr>
                             <td colSpan="3">
                                 {this.state.convertShow ? <ConvertVideo videoOk={this.videoOk.bind(this)} /> : null}
+                            </td>
+                        </tr>
+                        <tr style={{ height: "35px" }}>
+                            <td>{culture.access_authority}:</td>
+                            <td>
+                                {
+                                    this.state.accesses.map(function (item, i) {
+                                        return (
+                                            <span className="convert_flag" title={JSON.stringify(item)} key={i} id={i} data-code={item.companyId}>
+                                                <span className="flag_txt">{item.companyName}</span>
+                                                <span className="flag_txt flag_del"
+                                                    onClick={this.delAccess.bind(this)}>×</span>
+                                            </span>
+                                        );
+                                    }.bind(this))
+                                }
+                            </td>
+                            <td width="10%" className="link"
+                                onClick={this.showAccess.bind(this)}><i className="iconfont icon-add"></i></td>
+                        </tr>
+                        <tr>
+                            <td colSpan="4">
+                                {this.state.accessShow ? <AccessAuthority
+                                    //用于判断下拉框不显示该条数据
+                                    existsCompany={this.state.accesses}
+                                    ref="accessAuthority"
+                                    accessOk={this.accessOk.bind(this)} /> : null}
                             </td>
                         </tr>
                         <tr>

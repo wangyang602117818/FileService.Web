@@ -3,9 +3,24 @@
         super(props);
         this.state = {
             errorMsg: "",
+            accessShow: false,
             buttonValue: culture.upload,
-            buttonDisabled: false
+            buttonDisabled: false,
+            accesses: []
         }
+    }
+    showAccess(e) {
+        this.state.accessShow ? this.setState({ accessShow: false }) : this.setState({ accessShow: true });
+    }
+    delAccess(e) {
+        var id = e.target.parentElement.id;
+        this.state.accesses.splice(id, 1);
+        this.setState({
+            accesses: this.state.accesses
+        }, function () {
+            if (this.refs.accessAuthority)
+                this.refs.accessAuthority.getCompanyData();
+        }.bind(this));
     }
     fileChanged(e) {
         this.input = e.target;
@@ -13,11 +28,24 @@
             errorMsg: ""
         })
     }
+    accessOk(companyId, companyName, codeArray, nameArray, realCodes, userArray, success) {
+        this.state.accesses.push({ companyId, companyName, codeArray, nameArray, realCodes, userArray });
+        this.setState({ accesses: this.state.accesses }, success);
+    }
     upload() {
         var that = this;
         if (this.input && this.input.files.length > 0) {
             this.setState({ buttonDisabled: true });
-            this.props.attachmentUpload(this.input,
+            var access = [];
+            for (var i = 0; i < this.state.accesses.length; i++) {
+                access.push({
+                    company: this.state.accesses[i].companyId,
+                    departmentCodes: this.state.accesses[i].codeArray,
+                    accessCodes: this.state.accesses[i].realCodes,
+                    accessUsers: this.state.accesses[i].userArray
+                })
+            }
+            this.props.attachmentUpload(this.input, access,
                 function (data) {
                     if (data.code == 0) {
                         that.input.value = "";  //清空input框
@@ -41,11 +69,38 @@
                 <table className="table_modify">
                     <tbody>
                         <tr>
-                            <td width="15%">{culture.attachment}:</td>
-                            <td width="85%"><input type="file" multiple name="video" onChange={this.fileChanged.bind(this)} /></td>
+                            <td >{culture.attachment}:</td>
+                            <td colSpan="2"><input type="file" multiple name="video" onChange={this.fileChanged.bind(this)} /></td>
+                        </tr>
+                        <tr style={{ height: "35px" }}>
+                            <td width="15%">{culture.access_authority}:</td>
+                            <td width="75%">
+                                {
+                                    this.state.accesses.map(function (item, i) {
+                                        return (
+                                            <span className="convert_flag" title={JSON.stringify(item)} key={i} id={i} data-code={item.companyId}>
+                                                <span className="flag_txt">{item.companyName}</span>
+                                                <span className="flag_txt flag_del"
+                                                    onClick={this.delAccess.bind(this)}>×</span>
+                                            </span>
+                                        );
+                                    }.bind(this))
+                                }
+                            </td>
+                            <td className="link" width="10%"
+                                onClick={this.showAccess.bind(this)}><i className="iconfont icon-add"></i></td>
                         </tr>
                         <tr>
-                            <td colSpan="2">
+                            <td colSpan="4">
+                                {this.state.accessShow ? <AccessAuthority
+                                    //用于判断下拉框不显示该条数据
+                                    existsCompany={this.state.accesses}
+                                    ref="accessAuthority"
+                                    accessOk={this.accessOk.bind(this)} /> : null}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colSpan="3">
                                 <input type="button" name="btnAttachment" className="button"
                                        value={this.state.buttonValue}
                                        onClick={this.upload.bind(this)}
