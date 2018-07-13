@@ -34,9 +34,15 @@ namespace FileService.Web.Controllers
             if (app == null || app["Action"] == "block") return new ResponseModel<string>(ErrorCode.app_not_exist, "");
             List<ImageItemResponse> response = new List<ImageItemResponse>();
             List<ImageOutPut> output = new List<ImageOutPut>();
+            List<AccessModel> accessList = new List<AccessModel>();
+
             if (!string.IsNullOrEmpty(uploadImgModel.OutPut))
             {
                 output = JsonConvert.DeserializeObject<List<ImageOutPut>>(uploadImgModel.OutPut);
+            }
+            if (!string.IsNullOrEmpty(uploadImgModel.Access))
+            {
+                accessList = JsonConvert.DeserializeObject<List<AccessModel>>(uploadImgModel.Access);
             }
             //预先组织好缩略图对象
             foreach (HttpPostedFileBase file in uploadImgModel.Images)
@@ -63,18 +69,20 @@ namespace FileService.Web.Controllers
                             {"Flag", thumb.Flag}
                         });
                 }
+                BsonArray access = new BsonArray(accessList.Select(a => a.ToBsonDocument()));
                 //上传
                 Task<ObjectId> oId = mongoFile.UploadAsync(file.FileName, file.InputStream, new BsonDocument()
                     {
                         {"From", app["ApplicationName"]},
                         {"FileType","image"},
                         {"ContentType",ImageExtention.GetContentType(file.FileName)},
-                        {"Thumbnail",thumbnail }
+                        {"Thumbnail",thumbnail },
+                        {"Access",access },
+                        {"Owner",Request.Headers["UserName"] ?? User.Identity.Name }
                     });
+                string handlerId = converter.GetHandlerId();
                 foreach (ImageOutPut o in output)
                 {
-                    //添加转换消息
-                    string handlerId = converter.GetHandlerId();
                     converter.AddCount(handlerId, 1);
                     ObjectId taskId = ObjectId.GenerateNewId();
                     task.Insert(taskId, oId.Result, file.FileName, "image", o.ToBsonDocument(), handlerId, TaskStateEnum.wait, 0);
@@ -99,9 +107,14 @@ namespace FileService.Web.Controllers
             if (app == null || app["Action"] == "block") return new ResponseModel<string>(ErrorCode.app_not_exist, "");
             List<VideoItemResponse> response = new List<VideoItemResponse>();
             List<VideoOutPut> outputs = new List<VideoOutPut>();
+            List<AccessModel> accessList = new List<AccessModel>();
             if (!string.IsNullOrEmpty(uploadVideo.OutPut))
             {
                 outputs = JsonConvert.DeserializeObject<List<VideoOutPut>>(uploadVideo.OutPut);
+            }
+            if (!string.IsNullOrEmpty(uploadVideo.Access))
+            {
+                accessList = JsonConvert.DeserializeObject<List<AccessModel>>(uploadVideo.Access);
             }
             foreach (HttpPostedFileBase file in uploadVideo.Videos)
             {
@@ -127,19 +140,22 @@ namespace FileService.Web.Controllers
                         {"Flag",output.Flag }
                     });
                 }
+                BsonArray access = new BsonArray(accessList.Select(a => a.ToBsonDocument()));
                 Task<ObjectId> oId = mongoFile.UploadAsync(file.FileName, file.InputStream, new BsonDocument()
                     {
                         {"From", app["ApplicationName"]},
                         {"FileType","video"},
                         {"ContentType",file.ContentType},
                         {"Videos",videos },
-                        {"VideoCpIds",new BsonArray() }
+                        {"VideoCpIds",new BsonArray() },
+                        {"Access",access },
+                        {"Owner",Request.Headers["UserName"] ?? User.Identity.Name }
                     });
                 //日志
                 Log(oId.Result.ToString(), "UploadVideo");
+                string handlerId = converter.GetHandlerId();
                 foreach (VideoOutPut v in outputs)
                 {
-                    string handlerId = converter.GetHandlerId();
                     converter.AddCount(handlerId, 1);
                     ObjectId taskId = ObjectId.GenerateNewId();
                     //添加转换消息
@@ -162,6 +178,11 @@ namespace FileService.Web.Controllers
             var app = application.FindByAuthCode(Request.Headers["AuthCode"]);
             if (app == null || app["Action"] == "block") return new ResponseModel<string>(ErrorCode.app_not_exist, "");
             List<AttachmentResponse> response = new List<AttachmentResponse>();
+            List<AccessModel> accessList = new List<AccessModel>();
+            if (!string.IsNullOrEmpty(uploadAttachmentModel.Access))
+            {
+                accessList = JsonConvert.DeserializeObject<List<AccessModel>>(uploadAttachmentModel.Access);
+            }
             foreach (HttpPostedFileBase file in uploadAttachmentModel.Attachments)
             {
                 string fileExt = Path.GetExtension(file.FileName).ToLower();
@@ -186,12 +207,15 @@ namespace FileService.Web.Controllers
                     });
                 }
                 //上传
+                BsonArray access = new BsonArray(accessList.Select(a => a.ToBsonDocument()));
                 Task<ObjectId> oId = mongoFile.UploadAsync(file.FileName, file.InputStream, new BsonDocument()
                     {
                         {"From", app["ApplicationName"]},
                         {"FileType","attachment"},
                         {"ContentType",file.ContentType},
-                        {"Files",files }
+                        {"Files",files },
+                        {"Access",access },
+                        {"Owner",Request.Headers["UserName"] ?? User.Identity.Name }
                     });
                 //office转换任务
                 if (OfficeFormatList.offices.Contains(fileExt))
@@ -288,11 +312,6 @@ namespace FileService.Web.Controllers
             return new ResponseModel<List<string>>(ErrorCode.success, response, response.Count);
         }
 
-        //////////////////////////////////////////////
-        [HttpPost]
-        public ActionResult CheckImageMd5(CheckImgMd5Model checkImgMd5Model)
-        {
 
-        }
     }
 }

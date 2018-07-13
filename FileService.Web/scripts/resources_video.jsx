@@ -113,8 +113,9 @@ class AddVideo extends React.Component {
             var access = [];
             for (var i = 0; i < this.state.accesses.length; i++) {
                 access.push({
-                    company: this.state.accesses[i].companyId,
+                    company: this.state.accesses[i].companyCode,
                     departmentCodes: this.state.accesses[i].codeArray,
+                    authority: this.state.accesses[i].authority,
                     accessCodes: this.state.accesses[i].realCodes,
                     accessUsers: this.state.accesses[i].userArray
                 })
@@ -142,8 +143,8 @@ class AddVideo extends React.Component {
             videos: this.state.videos
         });
     }
-    accessOk(companyId, companyName, codeArray, nameArray, realCodes, userArray, success) {
-        this.state.accesses.push({ companyId, companyName, codeArray, nameArray, realCodes, userArray });
+    accessOk(companyId, companyCode, companyName, authority, codeArray, nameArray, realCodes, userArray, success) {
+        this.state.accesses.push({ companyId, companyCode, companyName, authority, codeArray, nameArray, realCodes, userArray });
         this.setState({ accesses: this.state.accesses }, success);
     }
     render() {

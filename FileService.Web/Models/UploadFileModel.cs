@@ -16,13 +16,6 @@ namespace FileService.Web.Models
         public string OutPut { get; set; }
         public string Access { get; set; }
     }
-    public class CheckImgMd5Model
-    {
-        public string FileName { get; set; }
-        public string Md5 { get; set; }
-        public string OutPut { get; set; }
-        public string Access { get; set; }
-    }
     public class UploadVideoModel
     {
         [Required]
@@ -49,5 +42,14 @@ namespace FileService.Web.Models
         public string FileId { get; set; }
         [Required]
         public HttpPostedFileBase[] VideoCPs { get; set; }
+    }
+    public class CheckMd5Model
+    {
+        [Required]
+        public string FileName { get; set; }
+        [Required]
+        public string Md5 { get; set; }
+        public string OutPut { get; set; }
+        public string Access { get; set; }
     }
 }

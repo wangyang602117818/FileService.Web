@@ -5,6 +5,7 @@
 FilesWrap
 {
 	_id,
+	FileId:ObjectId(),  //刚插入为empty
 	FileName:"集群策略.png",
 	Length:"17590",
 	From,
@@ -52,6 +53,7 @@ Access:[
 
 
 
+1：文件存到 TempFiles 目录
 
 
 

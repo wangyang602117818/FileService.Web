@@ -24,7 +24,7 @@ namespace FileService.Web
             FileInfo fileInfo = new FileInfo(AppDomain.CurrentDomain.BaseDirectory + "bin\\log4net.config");
             log4net.Config.XmlConfigurator.ConfigureAndWatch(fileInfo);
 
-            var fileDirectory = AppDomain.CurrentDomain.BaseDirectory + "App_Data\\Files\\";
+            var fileDirectory = AppDomain.CurrentDomain.BaseDirectory + "App_Data\\TempFiles\\";
             if (!Directory.Exists(fileDirectory))
             {
                 //创建文件夹

@@ -14,6 +14,11 @@ class CompanyDropDownList extends React.Component {
             if (this.state.companys[i]._id.$oid == companyId) return this.state.companys[i].DepartmentName;
         }
     }
+    getCompanyCodeById(companyId) {
+        for (var i = 0; i < this.state.companys.length; i++) {
+            if (this.state.companys[i]._id.$oid == companyId) return this.state.companys[i].DepartmentCode;
+        }
+    }
     componentDidMount() {
         this.getData();
     }
@@ -31,10 +36,10 @@ class CompanyDropDownList extends React.Component {
                 this.setState({ companys: companys });
                 if (companys.length > 0) {
                     this.setState({ companyId: companys[0]._id.$oid });
-                    if (this.props.afterCompanyInit) this.props.afterCompanyInit(companys[0]._id.$oid, companys[0].DepartmentName);
+                    if (this.props.afterCompanyInit) this.props.afterCompanyInit(companys[0]._id.$oid, companys[0].DepartmentCode, companys[0].DepartmentName);
                 } else {
                     this.setState({ companyId: "" });
-                    if (this.props.afterCompanyInit) this.props.afterCompanyInit("", "");
+                    if (this.props.afterCompanyInit) this.props.afterCompanyInit("", "", "");
                 }
             }
         }.bind(this))
@@ -431,7 +436,7 @@ class DepartmentDropDownListWrap extends React.Component {
         this.setState({ department_authority: this.state.department_authority });
         //实际权限组
         var realCodes = this.getRealCodeArray(this.props.codeArray);
-        this.props.onRealNodeChanged(realCodes);
+        this.props.onRealNodeChanged(realCodes, this.state.department_authority);
     }
     getRealCodeArray(codes) {
         var authorityId = this.state.department_authority;
@@ -454,10 +459,10 @@ class DepartmentDropDownListWrap extends React.Component {
         return false;
     }
     onSelectNodeChanged(codeArray, nameArray) {
-        this.props.onSelectNodeChanged(codeArray, nameArray);
+        this.props.onSelectNodeChanged(codeArray, nameArray, this.state.department_authority);
         //实际权限组
         var realCodes = this.getRealCodeArray(codeArray);
-        this.props.onRealNodeChanged(realCodes);
+        this.props.onRealNodeChanged(realCodes, this.state.department_authority);
     }
     //反选，吧input的内容反映到结构中
     selectNode(names, codes, b) {

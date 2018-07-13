@@ -124,8 +124,10 @@ class AccessAuthority extends React.Component {
         this.state = {
             company: {
                 companyId: "",
+                companyCode: "",
                 companyName: ""
             },
+            authority: 0,
             codeArray: [],
             nameArray: [],
             realCodes: [],
@@ -136,9 +138,10 @@ class AccessAuthority extends React.Component {
     getCompanyData() {
         this.refs.companyDropDownListWrap.getData();
     }
-    afterCompanyInit(companyId, companyName) {
+    afterCompanyInit(companyId, companyCode, companyName) {
         this.state.company = {
             companyId: companyId,
+            companyCode: companyCode,
             companyName: companyName
         };
         this.refs.departmentDropDownListWrap.getData(companyId);  //调用deparatment初始化方法
@@ -147,9 +150,11 @@ class AccessAuthority extends React.Component {
     companyChanged(e) {
         var companyId = e.target.value;
         var companyName = this.refs.companyDropDownListWrap.getCompanyNameById(companyId);
+        var companyCode = this.refs.companyDropDownListWrap.getCompanyCodeById(companyId);
         this.setState({
             company: {
                 companyId: e.target.value,
+                companyCode: companyCode,
                 companyName: companyName
             },
             codeArray: [],
@@ -159,15 +164,19 @@ class AccessAuthority extends React.Component {
         this.refs.departmentDropDownListWrap.getData(e.target.value);  //调用deparatment初始化方法
         this.refs.userDropDownListWrap.getData(e.target.value);
     }
-    onSelectNodeChanged(codeArray, nameArray) {
+    //当用户选取了部门之后触发 参数是选取的数组和当前权限类型
+    onSelectNodeChanged(codeArray, nameArray, authority) {
         this.setState({
             codeArray: codeArray,
-            nameArray: nameArray
+            nameArray: nameArray,
+            authority: authority
         });
     }
-    onRealNodeChanged(codeArray) {
-        this.setState({ realCodes: codeArray });
+    //当用户选取了部门或者点击了权限类型之后触发，参数是要真是需要验证的code列表和当前权限类型
+    onRealNodeChanged(codeArray, authority) {
+        this.setState({ realCodes: codeArray, authority: authority });
     }
+    //当用户选取了人员触发
     onSelectUserChange(users) {
         this.setState({ userArray: users });
     }
@@ -175,7 +184,9 @@ class AccessAuthority extends React.Component {
         if (this.state.company.companyId) {
             this.props.accessOk(
                 this.state.company.companyId,
+                this.state.company.companyCode,
                 this.state.company.companyName,
+                this.state.authority,
                 this.state.codeArray,
                 this.state.nameArray,
                 this.state.realCodes,
@@ -262,8 +273,8 @@ class AddImage extends React.Component {
             thumbnails: this.state.thumbnails
         });
     }
-    accessOk(companyId, companyName, codeArray, nameArray, realCodes, userArray, success) {
-        this.state.accesses.push({ companyId, companyName, codeArray, nameArray, realCodes, userArray });
+    accessOk(companyId, companyCode, companyName, authority, codeArray, nameArray, realCodes, userArray, success) {
+        this.state.accesses.push({ companyId, companyCode, companyName, authority, codeArray, nameArray, realCodes, userArray });
         this.setState({ accesses: this.state.accesses }, success);
     }
     delImage(e) {
@@ -296,8 +307,9 @@ class AddImage extends React.Component {
             var access = [];
             for (var i = 0; i < this.state.accesses.length; i++) {
                 access.push({
-                    company: this.state.accesses[i].companyId,
+                    company: this.state.accesses[i].companyCode,
                     departmentCodes: this.state.accesses[i].codeArray,
+                    authority: this.state.accesses[i].authority,
                     accessCodes: this.state.accesses[i].realCodes,
                     accessUsers: this.state.accesses[i].userArray
                 })
