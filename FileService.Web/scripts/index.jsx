@@ -179,16 +179,31 @@ class Container extends React.Component {
         var tag = e.target.getAttribute("tag");
         if (document.getElementsByClassName("ddl_department_con").length <= 0) return;
         if (tag == "open_department_ddl") {
-            document.getElementsByClassName("ddl_department_con")[0].style.display = "block";
+            var target = this.findParentNoTag(e.target);
+            target.getElementsByClassName("ddl_department_con")[0].style.display = "block";
         } else {
-            document.getElementsByClassName("ddl_department_con")[0].style.display = "none";
+            var ddlDepartment = document.getElementsByClassName("ddl_department_con");
+            for (var i = 0; i < ddlDepartment.length; i++) {
+                ddlDepartment[i].style.display = "none";
+            }
         }
         if (document.getElementsByClassName("ddl_user_con").length <= 0) return;
         if (tag == "open_user_ddl") {
-            document.getElementsByClassName("ddl_user_con")[0].style.display = "block";
+            var target = this.findParentNoTag(e.target);
+            target.getElementsByClassName("ddl_user_con")[0].style.display = "block";
         } else {
-            document.getElementsByClassName("ddl_user_con")[0].style.display = "none";
+            var ddlUser = document.getElementsByClassName("ddl_user_con");
+            for (var i = 0; i < ddlUser.length; i++) {
+                ddlUser[i].style.display = "none";
+            }
         }
+    }
+    findParentNoTag(target) {
+        target = target.parentNode;
+        while (target.getAttribute("tag")) {
+            target = target.parentNode;
+        }
+        return target;
     }
     render() {
         return (
