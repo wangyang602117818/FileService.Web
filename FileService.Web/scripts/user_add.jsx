@@ -3,10 +3,12 @@
         super(props);
         this.state = {
             userName: "",
-            company: "",
+            companyId: "",
+            companyCode: "",
             passWord: "",
             confirm: "",
             departmentShow: false,
+            existsCompany: [],
             codeArray: [],
             nameArray: [],
             role: "",
@@ -14,20 +16,14 @@
         };
     }
     //父组件调用，用于点击某一个用户之后。回显状态
-    changeState(userName, userRole, company, codeArray) {
-        this.refs.departmentDropDownListWrap.getData(company, function (data) {
-            var nameArray = this.refs.departmentDropDownListWrap.getDepartmentNamesByCodes(codeArray);
-            this.setState({
-                userName: userName,
-                role: userRole,
-                company: company,
-                codeArray: codeArray,
-                nameArray: nameArray
-            });
-            for (var i = 0; i < codeArray.length; i++) {
-                this.refs.departmentDropDownListWrap.selectNode(nameArray[i], codeArray[i], true);
-            }
-        }.bind(this));
+    changeState(userName, userRole, companyCode, codeArray) {
+        this.setState({
+            userName: userName,
+            role: userRole,
+            companyCode: companyCode,
+        });
+        //this.refs.companyDropDownList.getData();
+        this.refs.departmentDropDownListWrap.unSelectNode(codeArray);
     }
     nameChanged(e) {
         this.setState({ userName: e.target.value });
@@ -42,12 +38,25 @@
         this.setState({ role: e.target.value });
     }
     companyChanged(e) {
-        this.setState({ company: e.target.value, codeArray: [], nameArray: [] });
-        this.refs.departmentDropDownListWrap.getData(e.target.value);  //调用deparatment初始化方法
+        var companyCode = e.target.value;
+        var companyId = this.refs.companyDropDownList.getCompanyIdByCode(companyCode);
+        this.setState({
+            companyId: companyId,
+            companyCode: companyCode,
+            codeArray: [],
+            nameArray: []
+        });
+        this.refs.departmentDropDownListWrap.getData(companyId);  //调用deparatment初始化方法
     }
-    afterCompanyInit(value) {
-        this.refs.departmentDropDownListWrap.getData(value);  //调用deparatment初始化方法
-        this.state.company = value;
+    afterCompanyInit(companyId, companyCode, companyName) {
+        this.setState({
+            companyId: companyId,
+            companyCode: companyCode
+        });
+        //调用deparatment初始化方法
+        this.refs.departmentDropDownListWrap.getData(companyId);
+
+        //console.log(this.state.company);
     }
     tagClick(e) {
         if (e.target.innerText == "none") {
@@ -63,7 +72,7 @@
                 this.props.addUser({
                     userName: this.state.userName,
                     passWord: this.state.passWord,
-                    company: this.state.company,
+                    company: this.state.companyCode,
                     department: this.state.codeArray,
                     role: this.state.role
                 }, function (data) {
@@ -123,7 +132,10 @@
                         <tr>
                             <td>{culture.company}:</td>
                             <td>
-                                <CompanyDropDownList company={this.state.company}
+                                <CompanyDropDownList
+                                    companyCode={this.state.companyCode}
+                                    ref="companyDropDownList"
+                                    existsCompany={this.state.existsCompany}
                                     afterCompanyInit={this.afterCompanyInit.bind(this)}
                                     companyChanged={this.companyChanged.bind(this)}
                                 />
