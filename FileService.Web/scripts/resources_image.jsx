@@ -145,7 +145,7 @@ class AccessAuthority extends React.Component {
             companyName: companyName
         };
         this.refs.departmentDropDownListWrap.getData(companyId);  //调用deparatment初始化方法
-        this.refs.userDropDownListWrap.getData(companyId);
+        this.refs.userDropDownListWrap.getData(companyCode);
     }
     companyChanged(e) {
         var companyCode = e.target.value;
@@ -162,7 +162,7 @@ class AccessAuthority extends React.Component {
             userArray: []
         });
         this.refs.departmentDropDownListWrap.getData(companyId);  //调用deparatment初始化方法
-        this.refs.userDropDownListWrap.getData(companyId);
+        this.refs.userDropDownListWrap.getData(companyCode);
     }
     //当用户选取了部门之后触发 参数是选取的数组和当前权限类型
     onSelectNodeChanged(codeArray, nameArray, authority) {

@@ -21,9 +21,12 @@
             userName: userName,
             role: userRole,
             companyCode: companyCode,
+        }, function () {
+            var companyId = this.refs.companyDropDownList.getCompanyIdByCode(companyCode);
+            this.refs.departmentDropDownListWrap.getData(companyId, function () {
+                this.refs.departmentDropDownListWrap.unSelectNode(codeArray);
+            }.bind(this));
         });
-        //this.refs.companyDropDownList.getData();
-        this.refs.departmentDropDownListWrap.unSelectNode(codeArray);
     }
     nameChanged(e) {
         this.setState({ userName: e.target.value });

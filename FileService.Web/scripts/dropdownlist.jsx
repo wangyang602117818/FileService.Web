@@ -357,13 +357,14 @@ class DepartmentDropDownList extends React.Component {
             }
         }
     }
-    getData(companyId) {
+    getData(companyId, success) {
         if (!companyId) return;
         http.get(urls.department.getDepartmentUrl + "/" + companyId, function (data) {
             if (data.code == 0) {
                 var departments = this.assembleData(data.result);
                 this.setState({ departments: departments });
             }
+            if (success) success();
         }.bind(this));
     }
     assembleData(result) {
@@ -497,8 +498,8 @@ class DepartmentDropDownListWrap extends React.Component {
         this.refs.departmentDdl.unSelectNode(codes);
     }
     //初始化方法,油company初始化完成之后，或者company发生改变之后调用
-    getData(companyId) {
-        this.refs.departmentDdl.getData(companyId);
+    getData(companyId, successs) {
+        this.refs.departmentDdl.getData(companyId, successs);
     }
     //工具方法，根据codes获取names
     getDepartmentNamesByCodes(codeArray) {
