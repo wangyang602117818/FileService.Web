@@ -89,7 +89,11 @@
                                 }
                             </td>
                             <td className="link" width="10%"
-                                onClick={this.showAccess.bind(this)}><i className="iconfont icon-add"></i></td>
+                                onClick={this.showAccess.bind(this)}>
+                                {this.state.accessShow ?
+                                    <i className="iconfont icon-delete"></i> :
+                                    <i className="iconfont icon-add"></i>}
+                            </td>
                         </tr>
                         <tr>
                             <td colSpan="4">
