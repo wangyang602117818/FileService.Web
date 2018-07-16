@@ -170,7 +170,12 @@ class AddVideo extends React.Component {
                                     }.bind(this))
                                 }
                             </td>
-                            <td width="10%" className="link" onClick={this.showConvert.bind(this)}><i className="iconfont icon-add"></i></td>
+                            <td width="10%" className="link"
+                                onClick={this.showConvert.bind(this)}>
+                                {this.state.convertShow ?
+                                    <i className="iconfont icon-delete"></i> :
+                                    <i className="iconfont icon-add"></i>}
+                            </td>
                         </tr>
                         <tr>
                             <td colSpan="3">
@@ -193,7 +198,11 @@ class AddVideo extends React.Component {
                                 }
                             </td>
                             <td width="10%" className="link"
-                                onClick={this.showAccess.bind(this)}><i className="iconfont icon-add"></i></td>
+                                onClick={this.showAccess.bind(this)}>
+                                {this.state.accessShow ?
+                                    <i className="iconfont icon-delete"></i> :
+                                    <i className="iconfont icon-add"></i>}
+                            </td>
                         </tr>
                         <tr>
                             <td colSpan="4">

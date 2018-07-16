@@ -6,17 +6,22 @@ class CompanyDropDownList extends React.Component {
         super(props);
         this.state = {
             companyId: "",
+            companyCode: "",
             companys: [],
         }
     }
-    getCompanyNameById(companyId) {
+    getCompanyIdByCode(code) {
         for (var i = 0; i < this.state.companys.length; i++) {
-            if (this.state.companys[i]._id.$oid == companyId) return this.state.companys[i].DepartmentName;
+            if (this.state.companys[i].DepartmentCode == code) {
+                return this.state.companys[i]._id.$oid;
+            }
         }
     }
-    getCompanyCodeById(companyId) {
+    getCompanyNameByCode(code) {
         for (var i = 0; i < this.state.companys.length; i++) {
-            if (this.state.companys[i]._id.$oid == companyId) return this.state.companys[i].DepartmentCode;
+            if (this.state.companys[i].DepartmentCode == code) {
+                return this.state.companys[i].DepartmentName;
+            }
         }
     }
     componentDidMount() {
@@ -29,16 +34,22 @@ class CompanyDropDownList extends React.Component {
                 for (var i = 0; i < data.result.length; i++) {
                     var exists = false;
                     for (var j = 0; j < this.props.existsCompany.length; j++) {
-                        if (this.props.existsCompany[j].companyId == data.result[i]._id.$oid) exists = true;
+                        if (this.props.existsCompany[j].companyCode == data.result[i].DepartmentCode) exists = true;
                     }
                     if (!exists) companys.push(data.result[i]);
                 }
                 this.setState({ companys: companys });
                 if (companys.length > 0) {
-                    this.setState({ companyId: companys[0]._id.$oid });
-                    if (this.props.afterCompanyInit) this.props.afterCompanyInit(companys[0]._id.$oid, companys[0].DepartmentCode, companys[0].DepartmentName);
+                    this.setState({
+                        companyId: companys[0]._id.$oid,
+                        companyCode: companys[0].DepartmentCode
+                    });
+                    if (this.props.afterCompanyInit) this.props.afterCompanyInit(
+                        companys[0]._id.$oid,
+                        companys[0].DepartmentCode,
+                        companys[0].DepartmentName);
                 } else {
-                    this.setState({ companyId: "" });
+                    this.setState({ companyId: "", companyCode: "" });
                     if (this.props.afterCompanyInit) this.props.afterCompanyInit("", "", "");
                 }
             }
@@ -46,10 +57,10 @@ class CompanyDropDownList extends React.Component {
     }
     render() {
         return (
-            <select name="company" value={this.props.companyId || this.state.companyId}
-                onChange={this.props.companyChanged}>
+            <select name="company" value={this.props.companyCode || this.state.companyCode}
+                onChange={this.props.companyChanged.bind(this)}>
                 {this.state.companys.map(function (item, i) {
-                    return <option value={item._id.$oid} key={i}>{item.DepartmentName}</option>
+                    return <option value={item.DepartmentCode} key={i}>{item.DepartmentName}</option>
                 }.bind(this))}
             </select>
         )
@@ -261,6 +272,21 @@ class DepartmentDropDownList extends React.Component {
     selectNode(codes, names) {
         this.props.onSelectNodeChanged(codes, names);
     }
+    //反选，input的内容反映到结构中,只需要传codes，会自动调用父组件的onSelectNodeChanged方法来初始化父组件状态
+    unSelectNode(codes) {
+        var departmentCodes = [];
+        var departmentNames = [];
+        for (var i = 0; i < this.state.departments.length; i++) {
+            this.state.departments[i].Select = false;
+            if (codes.indexOf(this.state.departments[i].DepartmentCode) > -1) {
+                this.state.departments[i].Select = true;
+                departmentCodes.push(this.state.departments[i].DepartmentCode);
+                departmentNames.push(this.state.departments[i].DepartmentName);
+            }
+        }
+        this.setState({ departments: this.state.departments });
+        this.selectNode(departmentCodes, departmentNames);
+    }
     //小键盘的方向键向下
     onKeyDown() {
         if (document.getElementsByClassName("ddl_department_con")[0].style.display == "none") return;
@@ -331,13 +357,14 @@ class DepartmentDropDownList extends React.Component {
             }
         }
     }
-    getData(companyId) {
+    getData(companyId, success) {
         if (!companyId) return;
         http.get(urls.department.getDepartmentUrl + "/" + companyId, function (data) {
             if (data.code == 0) {
                 var departments = this.assembleData(data.result);
                 this.setState({ departments: departments });
             }
+            if (success) success();
         }.bind(this));
     }
     assembleData(result) {
@@ -436,7 +463,8 @@ class DepartmentDropDownListWrap extends React.Component {
         this.setState({ department_authority: this.state.department_authority });
         //实际权限组
         var realCodes = this.getRealCodeArray(this.props.codeArray);
-        this.props.onRealNodeChanged(realCodes, this.state.department_authority);
+        if (this.props.onRealNodeChanged)
+            this.props.onRealNodeChanged(realCodes, this.state.department_authority);
     }
     getRealCodeArray(codes) {
         var authorityId = this.state.department_authority;
@@ -462,15 +490,16 @@ class DepartmentDropDownListWrap extends React.Component {
         this.props.onSelectNodeChanged(codeArray, nameArray, this.state.department_authority);
         //实际权限组
         var realCodes = this.getRealCodeArray(codeArray);
-        this.props.onRealNodeChanged(realCodes, this.state.department_authority);
+        if (this.props.onRealNodeChanged)
+            this.props.onRealNodeChanged(realCodes, this.state.department_authority);
     }
     //反选，吧input的内容反映到结构中
-    selectNode(names, codes, b) {
-        this.refs.departmentDdl.selectNode(names, codes);
+    unSelectNode(codes) {
+        this.refs.departmentDdl.unSelectNode(codes);
     }
     //初始化方法,油company初始化完成之后，或者company发生改变之后调用
-    getData(companyId) {
-        this.refs.departmentDdl.getData(companyId);
+    getData(companyId, successs) {
+        this.refs.departmentDdl.getData(companyId, successs);
     }
     //工具方法，根据codes获取names
     getDepartmentNamesByCodes(codeArray) {

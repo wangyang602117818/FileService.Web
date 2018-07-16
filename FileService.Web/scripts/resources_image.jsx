@@ -145,15 +145,15 @@ class AccessAuthority extends React.Component {
             companyName: companyName
         };
         this.refs.departmentDropDownListWrap.getData(companyId);  //调用deparatment初始化方法
-        this.refs.userDropDownListWrap.getData(companyId);
+        this.refs.userDropDownListWrap.getData(companyCode);
     }
     companyChanged(e) {
-        var companyId = e.target.value;
-        var companyName = this.refs.companyDropDownListWrap.getCompanyNameById(companyId);
-        var companyCode = this.refs.companyDropDownListWrap.getCompanyCodeById(companyId);
+        var companyCode = e.target.value;
+        var companyName = this.refs.companyDropDownListWrap.getCompanyNameByCode(companyCode);
+        var companyId = this.refs.companyDropDownListWrap.getCompanyIdByCode(companyCode);
         this.setState({
             company: {
-                companyId: e.target.value,
+                companyId: companyId,
                 companyCode: companyCode,
                 companyName: companyName
             },
@@ -161,8 +161,8 @@ class AccessAuthority extends React.Component {
             nameArray: [],
             userArray: []
         });
-        this.refs.departmentDropDownListWrap.getData(e.target.value);  //调用deparatment初始化方法
-        this.refs.userDropDownListWrap.getData(e.target.value);
+        this.refs.departmentDropDownListWrap.getData(companyId);  //调用deparatment初始化方法
+        this.refs.userDropDownListWrap.getData(companyCode);
     }
     //当用户选取了部门之后触发 参数是选取的数组和当前权限类型
     onSelectNodeChanged(codeArray, nameArray, authority) {
@@ -210,7 +210,7 @@ class AccessAuthority extends React.Component {
                         <td width="77%">
                             <CompanyDropDownList
                                 ref="companyDropDownListWrap"
-                                companyId={this.state.company.companyId}
+                                companyCode={this.state.company.companyCode}
                                 existsCompany={this.props.existsCompany}
                                 afterCompanyInit={this.afterCompanyInit.bind(this)}
                                 companyChanged={this.companyChanged.bind(this)}
@@ -355,7 +355,13 @@ class AddImage extends React.Component {
                                     }.bind(this))
                                 }
                             </td>
-                            <td width="10%" className="link" onClick={this.showConvert.bind(this)}><i className="iconfont icon-add"></i></td>
+                            <td width="10%" className="link"
+                                onClick={this.showConvert.bind(this)}>
+                                {this.state.convertShow ?
+                                    <i className="iconfont icon-delete"></i> :
+                                    <i className="iconfont icon-add"></i>
+                                }
+                            </td>
                         </tr>
                         <tr>
                             <td colSpan="4">
@@ -378,7 +384,12 @@ class AddImage extends React.Component {
                                 }
                             </td>
                             <td width="10%" className="link"
-                                onClick={this.showAccess.bind(this)}><i className="iconfont icon-add"></i></td>
+                                onClick={this.showAccess.bind(this)}>
+                                {this.state.accessShow ?
+                                    <i className="iconfont icon-delete"></i> :
+                                    <i className="iconfont icon-add"></i>
+                                }
+                            </td>
                         </tr>
                         <tr>
                             <td colSpan="4">
