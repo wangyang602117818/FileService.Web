@@ -183,6 +183,7 @@ class Container extends React.Component {
         } else {
             document.getElementsByClassName("ddl_department_con")[0].style.display = "none";
         }
+
         if (document.getElementsByClassName("ddl_user_con").length <= 0) return;
         if (tag == "open_user_ddl") {
             document.getElementsByClassName("ddl_user_con")[0].style.display = "block";
