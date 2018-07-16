@@ -7,12 +7,14 @@
             <table className="table">
                 <thead>
                     <tr>
-                        <td width="25%">{culture.id}</td>
-                        <th width="20%">{culture.username}</th>
-                        <th width="15%">{culture.password}</th>
-                        <th width="10%">{culture.role}</th>
-                        <th width="10%">{culture.modified}</th>
-                        <th width="20%">{culture.createTime}</th>
+                        <td width="19%">{culture.id}</td>
+                        <th width="10%">{culture.username}</th>
+                        <th width="10%">{culture.password}</th>
+                        <td width="10%">{culture.company}</td>
+                        <td width="20%">{culture.department}</td>
+                        <th width="8%">{culture.role}</th>
+                        <th width="8%">{culture.modified}</th>
+                        <th width="15%">{culture.createTime}</th>
                     </tr>
                 </thead>
                 <UserList data={this.props.data} onIdClick={this.props.onIdClick} />
@@ -50,6 +52,7 @@ class UserItem extends React.Component {
     constructor(props) {
         super(props);
     }
+    
     render() {
         return (
             <tr>
@@ -60,9 +63,10 @@ class UserItem extends React.Component {
                     <b id={this.props.user._id.$oid.removeHTML()}
                         dangerouslySetInnerHTML={{ __html: this.props.user._id.$oid }}></b>
                 </td>
-                <td dangerouslySetInnerHTML={{ __html: this.props.user.UserName }}>
-                </td>
+                <td dangerouslySetInnerHTML={{ __html: this.props.user.UserName }}></td>
                 <td>******</td>
+                <td>{this.props.user.Company}</td>
+                <td>{this.props.user.Department}</td>
                 <td dangerouslySetInnerHTML={{ __html: this.props.user.Role }}></td>
                 <td>{this.props.user.Modified.toString()}</td>
                 <td>{parseBsonTime(this.props.user.CreateTime)}</td>
@@ -161,7 +165,7 @@ class User extends React.Component {
     render() {
         return (
             <div className="main">
-                <h1>{culture.user}</h1>
+                <h1>{culture.user + culture.management}</h1>
                 <UserToolBar section={this.props.section}
                     onSectionChange={this.props.onSectionChange} />
                 <TitleArrow title={culture.all + culture.user}
@@ -207,9 +211,10 @@ class UserToolBar extends React.Component {
             <div className="config_toolbar">
                 <div className={this.props.section == "department" ? "config_info select" : "config_info"}
                     onClick={this.props.onSectionChange}
-                    id="department">{culture.department_right}
+                    id="department">{culture.company}
                 </div>
-                <div className={this.props.section == "user" ? "config_info select" : "config_info"} onClick={this.props.onSectionChange}
+                <div className={this.props.section == "user" ? "config_info select" : "config_info"}
+                    onClick={this.props.onSectionChange}
                     id="user">{culture.user}
                 </div>
             </div>

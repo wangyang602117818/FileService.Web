@@ -115,7 +115,6 @@ var culture = {
     application: "Application",
     taskId: "TaskId",
     content: "Content",
-    user: "User",
 
     extension: "Extension",
     action: "Action",
@@ -140,11 +139,14 @@ var culture = {
     delete_department: "Delete Department",
     detail_department: "Department Detail",
     company: "Company",
+    name: "Name",
+    management: "Management",
+    code: "Code",
 
     access_authority: "AccessAuthority",
     authority_type: "AuthorityType",
     only_current: "Current",
     current_and_sub: "Current&Sub",
     current_and_sup: "Current&Sup",
-    end:"End",
+    end: "End",
 }

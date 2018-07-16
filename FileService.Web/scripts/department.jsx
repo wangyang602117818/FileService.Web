@@ -8,8 +8,8 @@
                 <thead>
                     <tr>
                         <th width="25%">{culture.id}</th>
-                        <th width="25%">{culture.department_name}</th>
-                        <th width="25%">{culture.department_code}</th>
+                        <th width="25%">{culture.company + culture.name}</th>
+                        <th width="25%">{culture.company + culture.code}</th>
                         <th width="25%">{culture.createTime}</th>
                     </tr>
                 </thead>
@@ -325,10 +325,10 @@ class Department extends React.Component {
     render() {
         return (
             <div className="main">
-                <h1>{culture.department_right}</h1>
+                <h1>{culture.company + culture.management}</h1>
                 <UserToolBar section={this.props.section}
                     onSectionChange={this.props.onSectionChange} />
-                <TitleArrow title={culture.all + culture.department}
+                <TitleArrow title={culture.all + culture.company}
                     show={this.state.pageShow}
                     count={this.state.data.count}
                     onShowChange={this.onPageShow.bind(this)} />
@@ -345,7 +345,7 @@ class Department extends React.Component {
                     data={this.state.data.result}
                     onIdClick={this.onIdClick.bind(this)} />
                 {this.state.addTopDepartmentShow ?
-                    <TitleArrow title={culture.add_top_department}
+                    <TitleArrow title={culture.add + culture.company}
                         show={this.state.addTopDepartmentToggle}
                         onShowChange={this.onTopDepartmentShow.bind(this)} /> : null}
                 {this.state.addTopDepartmentShow ?
@@ -369,7 +369,7 @@ class Department extends React.Component {
                         itemClick={this.itemClick.bind(this)}
                     /> : null}
                 {this.state.updateDepartmentShow ?
-                    <TitleArrow title={culture.update_department + "(" + this.state.updateDepartment.departmentName + ")"}
+                    <TitleArrow title={culture.update + "(" + this.state.updateDepartment.departmentName + ")"}
                         show={this.state.updateDepartmentToggle}
                         onShowChange={this.onUpdateDepartmentShow.bind(this)} /> : null}
                 {this.state.updateDepartmentShow ?
@@ -391,7 +391,7 @@ class Department extends React.Component {
                         addSubBtnDisabled={this.state.addSubBtnDisabled}
                     /> : null}
                 {this.state.updateDepartmentShow ?
-                    <TitleArrow title={culture.delete_department + "(" + this.state.updateDepartment.departmentName + ")"}
+                    <TitleArrow title={culture.delete + "(" + this.state.updateDepartment.departmentName + ")"}
                         show={this.state.deleteDepartmentToggle}
                         onShowChange={this.onDeleteDepartmentShow.bind(this)} /> : null}
                 {this.state.updateDepartmentShow ?

@@ -325,7 +325,7 @@ class AddTopDepartment extends React.Component {
                 <table className="table" style={{ width: "35%" }}>
                     <tbody>
                         <tr>
-                            <td>{culture.department_name}:</td>
+                            <td>{culture.company + culture.name}:</td>
                             <td>
                                 <input type="text" name="departmentName"
                                     value={this.state.departmentName}
@@ -334,7 +334,7 @@ class AddTopDepartment extends React.Component {
                             </td>
                         </tr>
                         <tr>
-                            <td>{culture.department_code}:</td>
+                            <td>{culture.company + culture.code}:</td>
                             <td><input type="text"
                                 name="departmentCode"
                                 value={this.state.departmentCode}

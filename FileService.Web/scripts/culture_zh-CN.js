@@ -115,7 +115,6 @@ var culture = {
     application: "应用程序",
     taskId: "任务编号",
     content: "内容",
-    user: "用户",
 
     extension: "扩展名",
     action: "行为",
@@ -140,11 +139,14 @@ var culture = {
     delete_department: "删除部门",
     detail_department: "部门详情",
     company: "公司",
+    name: "名称",
+    management: "管理",
+    code: "编码",
 
     access_authority: "访问权限",
     authority_type: "权限类型",
     only_current: "仅当前",
     current_and_sub: "当前及下属",
     current_and_sup: "当前及上级",
-    end: "没有记录了",
+    end: "结尾",
 }
