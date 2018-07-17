@@ -98,8 +98,8 @@
         /*border: 1px dotted blue;*/
     }
 
-    .ddl_line[focus=true] .node{
-        background-color: #efeee9;
+    .ddl_line[focus=true] .node {
+        background-color: #fbf0e5;
     }
 
     .ddl_line .node {
@@ -121,6 +121,10 @@
             background-color: #fff;
             color: #ccc;
             border: 1px solid #aaa;
+        }
+
+        .ddl_line .node[focus=true] {
+            background-color: #fbf0e5;
         }
 
     .ddl_line .btn_wrap {

@@ -2,6 +2,9 @@
     constructor(props) {
         super(props);
     }
+    componentDidMount() {
+
+    }
     render() {
         return (
             <table className="table">
@@ -26,6 +29,7 @@ class UserList extends React.Component {
     constructor(props) {
         super(props);
     }
+
     render() {
         if (this.props.data.length == 0) {
             return (
@@ -52,7 +56,6 @@ class UserItem extends React.Component {
     constructor(props) {
         super(props);
     }
-    
     render() {
         return (
             <tr>
@@ -65,8 +68,8 @@ class UserItem extends React.Component {
                 </td>
                 <td dangerouslySetInnerHTML={{ __html: this.props.user.UserName }}></td>
                 <td>******</td>
-                <td>{this.props.user.Company}</td>
-                <td>{this.props.user.Department}</td>
+                <td>{this.props.user.CompanyDisplay}</td>
+                <td>{this.props.user.DepartmentDisplay ? this.props.user.DepartmentDisplay.toString() : ""}</td>
                 <td dangerouslySetInnerHTML={{ __html: this.props.user.Role }}></td>
                 <td>{this.props.user.Modified.toString()}</td>
                 <td>{parseBsonTime(this.props.user.CreateTime)}</td>
@@ -190,9 +193,9 @@ class User extends React.Component {
                     addUser={this.addUser.bind(this)}
                     ref="add_user" />
                 {this.state.deleteShow ?
-                    <TitleArrow title={culture.delete + culture.user +"(" + this.state.deleteName + ")"}
-                show={this.state.deleteToggle}
-                onShowChange={this.onDeleteShow.bind(this)} /> : null}
+                    <TitleArrow title={culture.delete + culture.user + "(" + this.state.deleteName + ")"}
+                        show={this.state.deleteToggle}
+                        onShowChange={this.onDeleteShow.bind(this)} /> : null}
                 {this.state.deleteShow ?
                     <DeleteUser show={this.state.deleteToggle}
                         deleteUser={this.deleteUser.bind(this)} /> : null}

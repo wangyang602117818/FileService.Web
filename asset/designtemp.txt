@@ -51,9 +51,9 @@ Access:[
 ]
 
 
-
-
 1：文件存到 TempFiles 目录
+2: 插入记录到 FilesWrap 表并返回_id（虚拟id服务端需要查询2次），其中刚插入FileId为空
+3：
 
 
 

@@ -5,6 +5,7 @@
             userName: "",
             companyId: "",
             companyCode: "",
+            companyName: "",
             passWord: "",
             confirm: "",
             departmentShow: false,
@@ -17,14 +18,17 @@
     }
     //父组件调用，用于点击某一个用户之后。回显状态
     changeState(userName, userRole, companyCode, codeArray) {
+        var companyId = this.refs.companyDropDownList.getCompanyIdByCode(companyCode);
+        var companyName = this.refs.companyDropDownList.getCompanyNameByCode(companyCode);
         this.setState({
             userName: userName,
             role: userRole,
             companyCode: companyCode,
+            companyId: companyId,
+            companyName: companyName
         }, function () {
-            var companyId = this.refs.companyDropDownList.getCompanyIdByCode(companyCode);
             this.refs.departmentDropDownListWrap.getData(companyId, function () {
-                this.refs.departmentDropDownListWrap.unSelectNode(codeArray);
+                this.refs.departmentDropDownListWrap.unSelectNode(codeArray);  //反选
             }.bind(this));
         });
     }
@@ -43,9 +47,11 @@
     companyChanged(e) {
         var companyCode = e.target.value;
         var companyId = this.refs.companyDropDownList.getCompanyIdByCode(companyCode);
+        var companyName = this.refs.companyDropDownList.getCompanyNameByCode(companyCode);
         this.setState({
             companyId: companyId,
             companyCode: companyCode,
+            companyName: companyName,
             codeArray: [],
             nameArray: []
         });
@@ -54,11 +60,11 @@
     afterCompanyInit(companyId, companyCode, companyName) {
         this.setState({
             companyId: companyId,
-            companyCode: companyCode
+            companyCode: companyCode,
+            companyName: companyName
         });
         //调用deparatment初始化方法
         this.refs.departmentDropDownListWrap.getData(companyId);
-
         //console.log(this.state.company);
     }
     tagClick(e) {
@@ -76,7 +82,9 @@
                     userName: this.state.userName,
                     passWord: this.state.passWord,
                     company: this.state.companyCode,
+                    companyDisplay: this.state.companyName,
                     department: this.state.codeArray,
+                    departmentDisplay: this.state.nameArray,
                     role: this.state.role
                 }, function (data) {
                     if (data.code == 0) {

@@ -81,9 +81,9 @@ class DropDownLine extends React.Component {
             if (this.props.virtualCollapse) fonttype = "iconfont icon-add1";
             if (layer == i) { //最后一个
                 if (this.props.subCount > 0 && !this.props.virtualCollapse) {
-                    html += '<div class="node_wrap"><div class="node_main"><div class="line_wrap v_wrap"></div><div class="node" select=' + this.props.select + ' node-name=' + this.props.department.DepartmentName + ' node-code=' + this.props.department.DepartmentCode + ' layer-absolute=' + this.props.layerAbsolute + '> ' + this.props.department.DepartmentName + '</div><div class="line_wrap v_wrap"><span class="v_line"></span></div></div ></div>';
+                    html += '<div class="node_wrap"><div class="node_main"><div class="line_wrap v_wrap"></div><div class="node" select=' + this.props.select + ' node-name=' + this.props.department.DepartmentName + ' node-code=' + this.props.department.DepartmentCode + ' layer-absolute=' + this.props.layerAbsolute + ' focus=' + this.props.focus.toString() + '> ' + this.props.department.DepartmentName + '</div><div class="line_wrap v_wrap"><span class="v_line"></span></div></div ></div>';
                 } else {
-                    html += '<div class="node_wrap"><div class="node_main"><div class="line_wrap v_wrap"></div><div class="node" select=' + this.props.select + ' node-name=' + this.props.department.DepartmentName + ' node-code=' + this.props.department.DepartmentCode + ' layer-absolute=' + this.props.layerAbsolute + '>' + this.props.department.DepartmentName + '</div><div class="line_wrap v_wrap"></div></div></div>';
+                    html += '<div class="node_wrap"><div class="node_main"><div class="line_wrap v_wrap"></div><div class="node" select=' + this.props.select + ' node-name=' + this.props.department.DepartmentName + ' node-code=' + this.props.department.DepartmentCode + ' layer-absolute=' + this.props.layerAbsolute + ' focus=' + this.props.focus.toString() + '>' + this.props.department.DepartmentName + '</div><div class="line_wrap v_wrap"></div></div></div>';
                 }
             } else if (layer - 1 == i) { //倒数第二个
                 if (this.props.subCount > 0) {
@@ -274,6 +274,7 @@ class DepartmentDropDownList extends React.Component {
     }
     //反选，input的内容反映到结构中,只需要传codes，会自动调用父组件的onSelectNodeChanged方法来初始化父组件状态
     unSelectNode(codes) {
+        if (!codes) return;
         var departmentCodes = [];
         var departmentNames = [];
         for (var i = 0; i < this.state.departments.length; i++) {
@@ -347,10 +348,10 @@ class DepartmentDropDownList extends React.Component {
         for (var i = 0; i < this.state.departments.length; i++) {
             //if (this.state.users[i].Select == true) continue;
             if (this.state.departments[i].Focus == true) {
-                this.state.departments[i].Focus = false;
-                if (this.state.departments[i + 1]) {
-                    this.state.departments[i + 1].Focus = true;
-                }
+                //this.state.departments[i].Focus = false;
+                //if (this.state.departments[i + 1]) {
+                //    this.state.departments[i + 1].Focus = true;
+                //}
                 var department = this.state.departments[i].DepartmentCode;
                 this.clickNode(department);
                 break;
@@ -726,10 +727,10 @@ class UserDropDownList extends React.Component {
         for (var i = 0; i < this.state.users.length; i++) {
             //if (this.state.users[i].Select == true) continue;
             if (this.state.users[i].Focus == true) {
-                this.state.users[i].Focus = false;
-                if (this.state.users[i + 1]) {
-                    this.state.users[i + 1].Focus = true;
-                }
+                //this.state.users[i].Focus = false;
+                //if (this.state.users[i + 1]) {
+                //    this.state.users[i + 1].Focus = true;
+                //}
                 var user = this.state.users[i].UserName.removeHTML();
                 this.selectNode(user);
                 break;
