@@ -74,7 +74,6 @@ class UserItem extends React.Component {
                 <td>{this.props.user.Modified.toString()}</td>
                 <td>{parseBsonTime(this.props.user.CreateTime)}</td>
             </tr>
-
         )
     }
 }
