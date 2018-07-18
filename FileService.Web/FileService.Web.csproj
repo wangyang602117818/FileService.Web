@@ -178,6 +178,7 @@
     <Compile Include="Controllers\DownLoadController.cs" />
     <Compile Include="Controllers\UploadController.cs" />
     <Compile Include="CultureInfo.cs" />
+    <Compile Include="Filters\AppAuthorizeAttribute.cs" />
     <Compile Include="Filters\CheckParamsForNullAttribute.cs" />
     <Compile Include="Filters\MyAuthorizeAttribute.cs" />
     <Compile Include="Filters\MyHandleErrorAttribute.cs" />

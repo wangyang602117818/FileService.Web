@@ -13,10 +13,12 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
+using FileService.Web.Filters;
 
 namespace FileService.Web.Controllers
 {
     [AllowAnonymous]
+    [AppAuthorize]
     public class UploadController : BaseController
     {
         Application application = new Application();
@@ -30,8 +32,6 @@ namespace FileService.Web.Controllers
         [HttpPost]
         public ActionResult Image(UploadImgModel uploadImgModel)
         {
-            var app = application.FindByAuthCode(Request.Headers["AuthCode"]);
-            if (app == null || app["Action"] == "block") return new ResponseModel<string>(ErrorCode.app_not_exist, "");
             List<ImageItemResponse> response = new List<ImageItemResponse>();
             List<ImageOutPut> output = new List<ImageOutPut>();
             List<AccessModel> accessList = new List<AccessModel>();
@@ -73,7 +73,7 @@ namespace FileService.Web.Controllers
                 //上传
                 Task<ObjectId> oId = mongoFile.UploadAsync(file.FileName, file.InputStream, new BsonDocument()
                     {
-                        {"From", app["ApplicationName"]},
+                        {"From", Request.Headers["AppName"]},
                         {"FileType","image"},
                         {"ContentType",ImageExtention.GetContentType(file.FileName)},
                         {"Thumbnail",thumbnail },
@@ -103,8 +103,6 @@ namespace FileService.Web.Controllers
         [HttpPost]
         public ActionResult Video(UploadVideoModel uploadVideo)
         {
-            var app = application.FindByAuthCode(Request.Headers["AuthCode"]);
-            if (app == null || app["Action"] == "block") return new ResponseModel<string>(ErrorCode.app_not_exist, "");
             List<VideoItemResponse> response = new List<VideoItemResponse>();
             List<VideoOutPut> outputs = new List<VideoOutPut>();
             List<AccessModel> accessList = new List<AccessModel>();
@@ -143,7 +141,7 @@ namespace FileService.Web.Controllers
                 BsonArray access = new BsonArray(accessList.Select(a => a.ToBsonDocument()));
                 Task<ObjectId> oId = mongoFile.UploadAsync(file.FileName, file.InputStream, new BsonDocument()
                     {
-                        {"From", app["ApplicationName"]},
+                        {"From", Request.Headers["AppName"]},
                         {"FileType","video"},
                         {"ContentType",file.ContentType},
                         {"Videos",videos },
@@ -175,8 +173,6 @@ namespace FileService.Web.Controllers
         [HttpPost]
         public ActionResult Attachment(UploadAttachmentModel uploadAttachmentModel)
         {
-            var app = application.FindByAuthCode(Request.Headers["AuthCode"]);
-            if (app == null || app["Action"] == "block") return new ResponseModel<string>(ErrorCode.app_not_exist, "");
             List<AttachmentResponse> response = new List<AttachmentResponse>();
             List<AccessModel> accessList = new List<AccessModel>();
             if (!string.IsNullOrEmpty(uploadAttachmentModel.Access))
@@ -210,7 +206,7 @@ namespace FileService.Web.Controllers
                 BsonArray access = new BsonArray(accessList.Select(a => a.ToBsonDocument()));
                 Task<ObjectId> oId = mongoFile.UploadAsync(file.FileName, file.InputStream, new BsonDocument()
                     {
-                        {"From", app["ApplicationName"]},
+                        {"From", Request.Headers["AppName"]},
                         {"FileType","attachment"},
                         {"ContentType",file.ContentType},
                         {"Files",files },
@@ -257,8 +253,6 @@ namespace FileService.Web.Controllers
         [HttpPost]
         public ActionResult VideoCapture(UploadVideoCPModel uploadVideoCPModel)
         {
-            var app = application.FindByAuthCode(Request.Headers["AuthCode"]);
-            if (app == null || app["Action"] == "block") return new ResponseModel<string>(ErrorCode.app_not_exist, "");
             BsonDocument file = files.FindOne(ObjectId.Parse(uploadVideoCPModel.FileId));
             if (file == null) return new ResponseModel<string>(ErrorCode.record_not_exist, "");
             string[] imageBase64 = uploadVideoCPModel.FileBase64.Split(',');
@@ -282,8 +276,6 @@ namespace FileService.Web.Controllers
         [HttpPost]
         public ActionResult VideoCaptureStream(UploadVideoCPStreamModel uploadVideoCPStreamModel)
         {
-            var app = application.FindByAuthCode(Request.Headers["AuthCode"]);
-            if (app == null || app["Action"] == "block") return new ResponseModel<string>(ErrorCode.app_not_exist, "");
             List<string> response = new List<string>();
             foreach (HttpPostedFileBase file in uploadVideoCPStreamModel.VideoCPs)
             {

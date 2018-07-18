@@ -12,14 +12,19 @@ namespace FileService.Web.Controllers
         public Log log = new Log();
         public void Log(string fileId, string content)
         {
-            log.Insert(Request.Headers["AuthCode"], fileId, content,
+            log.Insert(Request.Headers["AppName"], 
+                fileId, 
+                content,
                 Request.Headers["UserName"] ?? User.Identity.Name,
                 Request.Headers["UserIp"] ?? Request.UserHostAddress,
                 Request.Headers["UserAgent"] ?? Request.UserAgent);
         }
         public void LogInRecord(string content, string userName)
         {
-            log.Insert(Request.Headers["AuthCode"], "-", content, userName,
+            log.Insert(Request.Headers["AppName"], 
+                "-",
+                content, 
+                userName,
                 Request.Headers["UserIp"] ?? Request.UserHostAddress,
                 Request.Headers["UserAgent"] ?? Request.UserAgent);
         }

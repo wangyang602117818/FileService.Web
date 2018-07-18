@@ -13,7 +13,9 @@ namespace FileService.Web.Models
         /// </summary>
         success = 0,
         redirect = 1,
-        authorize_fault = 2,
+        authcode_is_null = 2,
+        authorize_fault = 3,
+
         /// <summary>
         /// 记录不存在
         /// </summary>
