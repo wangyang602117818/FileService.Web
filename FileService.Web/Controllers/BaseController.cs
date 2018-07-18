@@ -14,10 +14,11 @@ namespace FileService.Web.Controllers
         {
             var authCode = Request.Headers["AuthCode"];
             var appName = Request.Headers["AppName"];
-            if (string.IsNullOrEmpty(appName))
+            if (string.IsNullOrEmpty(appName) && !string.IsNullOrEmpty(authCode))
             {
                 appName = new Application().FindByAuthCode(authCode)["ApplicationName"].AsString;
             }
+
             log.Insert(appName,
                 fileId,
                 content,
@@ -29,7 +30,7 @@ namespace FileService.Web.Controllers
         {
             var authCode = Request.Headers["AuthCode"];
             var appName = Request.Headers["AppName"];
-            if (string.IsNullOrEmpty(appName))
+            if (string.IsNullOrEmpty(appName) && !string.IsNullOrEmpty(authCode))
             {
                 appName = new Application().FindByAuthCode(authCode)["ApplicationName"].AsString;
             }
