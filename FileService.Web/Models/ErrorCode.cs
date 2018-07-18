@@ -13,9 +13,7 @@ namespace FileService.Web.Models
         /// </summary>
         success = 0,
         redirect = 1,
-        authcode_is_null = 2,
-        authorize_fault = 3,
-
+        authorize_fault = 2,
         /// <summary>
         /// 记录不存在
         /// </summary>
@@ -32,7 +30,10 @@ namespace FileService.Web.Models
         /// url不存在错误
         /// </summary>
         uri_not_found = 110,
-        app_not_exist = 111,
+
+        authcode_is_null = 111,
+        app_not_exist = 112,
+        app_blocked = 113,
         username_exist = 112,
         login_fault = 140,
         task_not_completed = 150,

@@ -25,9 +25,13 @@ namespace FileService.Web.Filters
             else
             {
                 BsonDocument application = new Application().FindByAuthCode(authCode);
-                if (application == null || application["Action"] == "block")
+                if (application == null)
                 {
                     filterContext.Result = new ResponseModel<string>(ErrorCode.app_not_exist, "");
+                }
+                else if (application["Action"] == "block")
+                {
+                    filterContext.Result = new ResponseModel<string>(ErrorCode.app_blocked, "");
                 }
                 else
                 {

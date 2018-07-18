@@ -12,8 +12,14 @@ namespace FileService.Web.Controllers
         public Log log = new Log();
         public void Log(string fileId, string content)
         {
-            log.Insert(Request.Headers["AppName"], 
-                fileId, 
+            var authCode = Request.Headers["AuthCode"];
+            var appName = Request.Headers["AppName"];
+            if (string.IsNullOrEmpty(appName))
+            {
+                appName = new Application().FindByAuthCode(authCode)["ApplicationName"].AsString;
+            }
+            log.Insert(appName,
+                fileId,
                 content,
                 Request.Headers["UserName"] ?? User.Identity.Name,
                 Request.Headers["UserIp"] ?? Request.UserHostAddress,
@@ -21,9 +27,15 @@ namespace FileService.Web.Controllers
         }
         public void LogInRecord(string content, string userName)
         {
-            log.Insert(Request.Headers["AppName"], 
+            var authCode = Request.Headers["AuthCode"];
+            var appName = Request.Headers["AppName"];
+            if (string.IsNullOrEmpty(appName))
+            {
+                appName = new Application().FindByAuthCode(authCode)["ApplicationName"].AsString;
+            }
+            log.Insert(appName,
                 "-",
-                content, 
+                content,
                 userName,
                 Request.Headers["UserIp"] ?? Request.UserHostAddress,
                 Request.Headers["UserAgent"] ?? Request.UserAgent);
