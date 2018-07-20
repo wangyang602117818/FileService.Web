@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace FileService.Data
 {
-    public class Log : MongoBase
+    public class FilesWrap : MongoBase
     {
-        public Log() : base("Log") { }
+        public FilesWrap() : base("FilesWrap") { }
     }
 }

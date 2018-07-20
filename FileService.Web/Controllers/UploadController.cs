@@ -21,6 +21,7 @@ namespace FileService.Web.Controllers
     [AppAuthorize]
     public class UploadController : BaseController
     {
+        string tempFileDirectory = AppDomain.CurrentDomain.BaseDirectory + AppSettings.tempFileDir + DateTime.Now.ToString("YYYYMMDD") + "\\";
         Application application = new Application();
         MongoFile mongoFile = new MongoFile();
         Files files = new Files();
@@ -304,6 +305,27 @@ namespace FileService.Web.Controllers
             return new ResponseModel<List<string>>(ErrorCode.success, response, response.Count);
         }
 
+        [HttpPost]
+        public ActionResult Image1(UploadImgModel uploadImgModel)
+        {
+            List<ImageItemResponse> response = new List<ImageItemResponse>();
+            List<ImageOutPut> output = new List<ImageOutPut>();
+            List<AccessModel> accessList = new List<AccessModel>();
 
+            if (!string.IsNullOrEmpty(uploadImgModel.OutPut))
+            {
+                output = JsonConvert.DeserializeObject<List<ImageOutPut>>(uploadImgModel.OutPut);
+            }
+            if (!string.IsNullOrEmpty(uploadImgModel.Access))
+            {
+                accessList = JsonConvert.DeserializeObject<List<AccessModel>>(uploadImgModel.Access);
+            }
+            foreach (HttpPostedFileBase file in uploadImgModel.Images)
+            {
+
+            }
+
+            return null;
+        }
     }
 }
