@@ -567,7 +567,7 @@ namespace FileService.Web.Controllers
         [AllowAnonymous]
         public ActionResult Test()
         {
-            return View();
+            return View();  
         }
     }
 }
