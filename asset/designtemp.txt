@@ -53,7 +53,7 @@ Access:[
 上传程序
 1：文件存到 TempFiles 目录（\TempFiles\YYYYMMDD\xxx.png）
 2: 插入记录到 FilesWrap 表并返回_id(fileId，虚拟id服务端需要查询2次)到前端,其中刚插入FileId为空
-3：往Task表插入记录,根据现有的字段追加 TempFolder 字段和 ProcessCount=0,方便处理程序取文件
+3：往Task表插入记录,根据现有的字段追加 Access TempFolder 字段和 ProcessCount=0,方便处理程序取文件
 4：往queue表插入记录，方便服务读取
 
 服务程序
@@ -62,7 +62,7 @@ Access:[
 3：更新 FilesWrap 里面的 FileId 和其他转换过后的文档id
 4：更新Task表(ProcessCount)和queue表，并删除源文件
 
-重新做的任务，判断 Task 表的 ProcessCount>=1(则从mongo下载文件到App_Data\),
+重新做的任务，判断 Task 表的 ProcessCount>=1(则从mongo下载文件到 App_Data\),
 
 
 
