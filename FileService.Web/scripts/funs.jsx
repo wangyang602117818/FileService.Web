@@ -137,7 +137,7 @@ var urls = {
         getThumbnailMetadataUrl: appDomain + "admin/getthumbnailmetadata",
         getSubFileMetadataUrl: appDomain + "admin/getsubfilemetadata",
         getM3u8MetadataUrl: appDomain + "admin/getm3u8metadata",
-        uploadImageUrl: appDomain + "upload/image",
+        uploadImageUrl: appDomain + "upload/image1",
         uploadVideoUrl: appDomain + "upload/video",
         uploadAttachmentUrl: appDomain + "upload/attachment",
     },

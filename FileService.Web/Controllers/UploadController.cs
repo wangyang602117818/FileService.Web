@@ -21,10 +21,11 @@ namespace FileService.Web.Controllers
     [AppAuthorize]
     public class UploadController : BaseController
     {
-        string tempFileDirectory = AppDomain.CurrentDomain.BaseDirectory + AppSettings.tempFileDir + DateTime.Now.ToString("YYYYMMDD") + "\\";
+        string tempFileDirectory = AppDomain.CurrentDomain.BaseDirectory + AppSettings.tempFileDir + DateTime.Now.ToString("yyyyMMdd") + "\\";
         Application application = new Application();
         MongoFile mongoFile = new MongoFile();
         Files files = new Files();
+        FilesWrap filesWrap = new FilesWrap();
         Converter converter = new Converter();
         Business.Task task = new Business.Task();
         VideoCapture videoCapture = new VideoCapture();
@@ -320,12 +321,62 @@ namespace FileService.Web.Controllers
             {
                 accessList = JsonConvert.DeserializeObject<List<AccessModel>>(uploadImgModel.Access);
             }
+            if (!Directory.Exists(tempFileDirectory))
+                Directory.CreateDirectory(tempFileDirectory);
             foreach (HttpPostedFileBase file in uploadImgModel.Images)
             {
+                //过滤不正确的格式
+                if (!config.CheckFileExtensionImage(Path.GetExtension(file.FileName).ToLower()))
+                {
+                    response.Add(new ImageItemResponse()
+                    {
+                        FileId = ObjectId.Empty.ToString(),
+                        FileName = file.FileName,
+                        Thumbnail = new List<ThumbnailItem>()
+                    });
+                    continue;
+                }
+                //要存到表中的数据
+                BsonArray thumbnail = new BsonArray();
+                foreach (ImageOutPut thumb in output)
+                {
+                    thumb.Id = ObjectId.GenerateNewId();
+                    thumbnail.Add(new BsonDocument()
+                        {
+                            {"_id",thumb.Id },
+                            {"Format",thumb.Format },
+                            {"Flag", thumb.Flag}
+                        });
+                }
+                BsonArray access = new BsonArray(accessList.Select(a => a.ToBsonDocument()));
+                //上传到TempFiles
+                file.SaveAs(tempFileDirectory + file.FileName);
 
+                ObjectId fileId = ObjectId.GenerateNewId();
+
+                filesWrap.Insert(fileId, ObjectId.Empty, file.FileName, file.InputStream.Length, Request.Headers["AppName"], "image", ImageExtention.GetContentType(file.FileName), thumbnail, access, Request.Headers["UserName"] ?? User.Identity.Name);
+
+                string handlerId = converter.GetHandlerId();
+                foreach (ImageOutPut o in output)
+                {
+                    converter.AddCount(handlerId, 1);
+                    ObjectId taskId = ObjectId.GenerateNewId();
+                    task.Insert(taskId, fileId,
+                        @"\\" + Environment.MachineName + "\\TempFiles\\" + DateTime.Now.ToString("yyyyMMdd") + "\\", file.FileName,
+                        "image", o.ToBsonDocument(), access, handlerId, 0, TaskStateEnum.wait, 0);
+                    //添加队列
+                    queue.Insert(handlerId, "image", "Task", taskId, false, new BsonDocument());
+                }
+                //日志
+                Log(fileId.ToString(), "UploadImage");
+                response.Add(new ImageItemResponse()
+                {
+                    FileId = fileId.ToString(),
+                    FileName = file.FileName,
+                    Thumbnail = thumbnail.Select(sel => new ThumbnailItem() { FileId = sel["_id"].ToString(), Flag = sel["Flag"].ToString() })
+                });
             }
-
-            return null;
+            return new ResponseModel<IEnumerable<ImageItemResponse>>(ErrorCode.success, response);
         }
     }
 }

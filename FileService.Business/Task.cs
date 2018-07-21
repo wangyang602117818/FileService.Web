@@ -31,6 +31,28 @@ namespace FileService.Business
             };
             mongoData.InsertOneAsync(task);
         }
+        public void Insert(ObjectId id, ObjectId fileId, string tempFolder, string fileName, string type, BsonDocument output, BsonArray access, string handlerId, int processCount, TaskStateEnum state, int priority)
+        {
+            BsonDocument task = new BsonDocument()
+            {
+                {"_id",id },
+                {"FileId",fileId },
+                {"TempFolder",tempFolder },
+                {"FileName",fileName },
+                {"Type",type },
+                {"Output",output },
+                {"Access",access },
+                {"HandlerId",handlerId },
+                {"ProcessCount",processCount },
+                {"State",state },
+                {"StateDesc",state.ToString() },
+                {"Percent",0 },
+                {"Priority",priority },
+                {"CreateTime",DateTime.Now },
+                {"CompletedTime",BsonNull.Value }
+            };
+            mongoData.InsertOneAsync(task);
+        }
         public bool UpdateState(ObjectId id, TaskStateEnum state, int percent)
         {
             return mongoData.UpdateState(id, state, percent);
