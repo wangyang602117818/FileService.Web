@@ -357,15 +357,16 @@ namespace FileService.Web.Controllers
                 filesWrap.Insert(fileId, ObjectId.Empty, file.FileName, file.InputStream.Length, Request.Headers["AppName"], "image", ImageExtention.GetContentType(file.FileName), thumbnail, access, Request.Headers["UserName"] ?? User.Identity.Name);
 
                 string handlerId = converter.GetHandlerId();
-                foreach (ImageOutPut o in output)
+                if (output.Count == 0)
                 {
-                    converter.AddCount(handlerId, 1);
-                    ObjectId taskId = ObjectId.GenerateNewId();
-                    task.Insert(taskId, fileId,
-                        @"\\" + Environment.MachineName + "\\TempFiles\\" + DateTime.Now.ToString("yyyyMMdd") + "\\", file.FileName,
-                        "image", o.ToBsonDocument(), access, handlerId, 0, TaskStateEnum.wait, 0);
-                    //添加队列
-                    queue.Insert(handlerId, "image", "Task", taskId, false, new BsonDocument());
+                    InserTask(handlerId, fileId, file.FileName, new BsonDocument(), access);
+                }
+                else
+                {
+                    foreach (ImageOutPut o in output)
+                    {
+                        InserTask(handlerId, fileId, file.FileName, o.ToBsonDocument(), access);
+                    }
                 }
                 //日志
                 Log(fileId.ToString(), "UploadImage");
@@ -377,6 +378,17 @@ namespace FileService.Web.Controllers
                 });
             }
             return new ResponseModel<IEnumerable<ImageItemResponse>>(ErrorCode.success, response);
+        }
+
+        private void InserTask(string handlerId, ObjectId fileId, string fileName, BsonDocument outPut, BsonArray access)
+        {
+            converter.AddCount(handlerId, 1);
+            ObjectId taskId = ObjectId.GenerateNewId();
+            task.Insert(taskId, fileId,
+                @"\\" + Environment.MachineName + "\\TempFiles\\" + DateTime.Now.ToString("yyyyMMdd") + "\\", fileName,
+                "image", outPut, access, handlerId, 0, TaskStateEnum.wait, 0);
+            //添加队列
+            queue.Insert(handlerId, "image", "Task", taskId, false, new BsonDocument());
         }
     }
 }
