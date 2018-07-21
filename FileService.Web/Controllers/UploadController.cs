@@ -354,18 +354,18 @@ namespace FileService.Web.Controllers
 
                 ObjectId fileId = ObjectId.GenerateNewId();
 
-                filesWrap.Insert(fileId, ObjectId.Empty, file.FileName, file.InputStream.Length, Request.Headers["AppName"], "image", ImageExtention.GetContentType(file.FileName), thumbnail, access, Request.Headers["UserName"] ?? User.Identity.Name);
+                filesWrap.InsertImage(fileId, ObjectId.Empty, file.FileName, file.InputStream.Length, Request.Headers["AppName"], ImageExtention.GetContentType(file.FileName), thumbnail, access, Request.Headers["UserName"] ?? User.Identity.Name);
 
                 string handlerId = converter.GetHandlerId();
                 if (output.Count == 0)
                 {
-                    InserTask(handlerId, fileId, file.FileName, new BsonDocument(), access);
+                    InserTask(handlerId, fileId, file.FileName, "image", new BsonDocument(), access);
                 }
                 else
                 {
                     foreach (ImageOutPut o in output)
                     {
-                        InserTask(handlerId, fileId, file.FileName, o.ToBsonDocument(), access);
+                        InserTask(handlerId, fileId, file.FileName, "image", o.ToBsonDocument(), access);
                     }
                 }
                 //日志
@@ -379,16 +379,164 @@ namespace FileService.Web.Controllers
             }
             return new ResponseModel<IEnumerable<ImageItemResponse>>(ErrorCode.success, response);
         }
+        [HttpPost]
+        public ActionResult Video1(UploadVideoModel uploadVideo)
+        {
+            List<VideoItemResponse> response = new List<VideoItemResponse>();
+            List<VideoOutPut> outputs = new List<VideoOutPut>();
+            List<AccessModel> accessList = new List<AccessModel>();
+            if (!string.IsNullOrEmpty(uploadVideo.OutPut))
+            {
+                outputs = JsonConvert.DeserializeObject<List<VideoOutPut>>(uploadVideo.OutPut);
+            }
+            if (!string.IsNullOrEmpty(uploadVideo.Access))
+            {
+                accessList = JsonConvert.DeserializeObject<List<AccessModel>>(uploadVideo.Access);
+            }
+            if (!Directory.Exists(tempFileDirectory))
+                Directory.CreateDirectory(tempFileDirectory);
+            foreach (HttpPostedFileBase file in uploadVideo.Videos)
+            {
+                //过滤不正确的格式
+                if (!config.CheckFileExtensionVideo(Path.GetExtension(file.FileName).ToLower()))
+                {
+                    response.Add(new VideoItemResponse()
+                    {
+                        FileId = ObjectId.Empty.ToString(),
+                        FileName = file.FileName,
+                        Videos = new List<VideoItem>()
+                    });
+                    continue;
+                }
+                //要存到表中的数据
+                BsonArray videos = new BsonArray();
+                foreach (VideoOutPut output in outputs)
+                {
+                    output.Id = ObjectId.GenerateNewId();
+                    videos.Add(new BsonDocument()
+                    {
+                        {"_id",output.Id },
+                        {"Format",output.Format },
+                        {"Flag",output.Flag }
+                    });
+                }
+                BsonArray access = new BsonArray(accessList.Select(a => a.ToBsonDocument()));
+                //上传到TempFiles
+                file.SaveAs(tempFileDirectory + file.FileName);
 
-        private void InserTask(string handlerId, ObjectId fileId, string fileName, BsonDocument outPut, BsonArray access)
+                ObjectId fileId = ObjectId.GenerateNewId();
+
+                filesWrap.InsertVideo(fileId, ObjectId.Empty, file.FileName, file.InputStream.Length, Request.Headers["AppName"], file.ContentType, videos, new BsonArray(), access, Request.Headers["UserName"] ?? User.Identity.Name);
+
+                string handlerId = converter.GetHandlerId();
+                if (outputs.Count == 0)
+                {
+                    InserTask(handlerId, fileId, file.FileName, "video", new BsonDocument(), access);
+                }
+                else
+                {
+                    foreach (VideoOutPut o in outputs)
+                    {
+                        InserTask(handlerId, fileId, file.FileName, "video", o.ToBsonDocument(), access);
+                    }
+                }
+                //日志
+                Log(fileId.ToString(), "UploadVideo");
+
+                response.Add(new VideoItemResponse()
+                {
+                    FileId = fileId.ToString(),
+                    FileName = file.FileName,
+                    Videos = videos.Select(sel => new VideoItem() { FileId = sel["_id"].ToString(), Flag = sel["Flag"].AsString })
+                });
+            }
+            return new ResponseModel<IEnumerable<VideoItemResponse>>(ErrorCode.success, response);
+        }
+        [HttpPost]
+        public ActionResult Attachment1(UploadAttachmentModel uploadAttachmentModel)
+        {
+            List<AttachmentResponse> response = new List<AttachmentResponse>();
+            List<AccessModel> accessList = new List<AccessModel>();
+            if (!string.IsNullOrEmpty(uploadAttachmentModel.Access))
+            {
+                accessList = JsonConvert.DeserializeObject<List<AccessModel>>(uploadAttachmentModel.Access);
+            }
+            if (!Directory.Exists(tempFileDirectory))
+                Directory.CreateDirectory(tempFileDirectory);
+            foreach (HttpPostedFileBase file in uploadAttachmentModel.Attachments)
+            {
+                string fileExt = Path.GetExtension(file.FileName).ToLower();
+                //过滤不正确的格式
+                if (!config.CheckFileExtension(fileExt))
+                {
+                    response.Add(new AttachmentResponse()
+                    {
+                        FileId = ObjectId.Empty.ToString(),
+                        FileName = file.FileName
+                    });
+                    continue;
+                }
+                BsonArray files = new BsonArray();
+                //office
+                if (OfficeFormatList.offices.Contains(fileExt))
+                {
+                    files.Add(new BsonDocument() {
+                        {"_id",ObjectId.Empty },
+                        {"Format",AttachmentOutput.pdf },
+                        {"Flag","preview" }
+                    });
+                }
+                //上传
+                BsonArray access = new BsonArray(accessList.Select(a => a.ToBsonDocument()));
+                //上传到TempFiles
+                file.SaveAs(tempFileDirectory + file.FileName);
+
+                ObjectId fileId = ObjectId.GenerateNewId();
+
+                filesWrap.InsertAttachment(fileId, ObjectId.Empty, file.FileName, file.InputStream.Length, Request.Headers["AppName"], file.ContentType, files, access, Request.Headers["UserName"] ?? User.Identity.Name);
+
+                string handlerId = converter.GetHandlerId();
+                //office转换任务
+                if (OfficeFormatList.offices.Contains(fileExt))
+                {
+                    InserTask(handlerId, fileId, file.FileName, "attachment", new BsonDocument() {
+                        {"_id",ObjectId.Empty },
+                        {"Format",AttachmentOutput.pdf },
+                        {"Flag","preview" } },
+                        access
+                    );
+                }
+                //zip转换任务
+                else if (fileExt == ".zip" || fileExt == ".rar")
+                {
+                    InserTask(handlerId, fileId, file.FileName, "attachment", new BsonDocument() {
+                        {"_id",ObjectId.Empty },
+                        {"Flag","zip" }
+                    }, access);
+                }
+                else
+                {
+                    InserTask(handlerId, fileId, file.FileName, "attachment", new BsonDocument(), access);
+                }
+                //日志
+                Log(fileId.ToString(), "UploadAttachment");
+                response.Add(new AttachmentResponse()
+                {
+                    FileId = fileId.ToString(),
+                    FileName = file.FileName
+                });
+            }
+            return new ResponseModel<IEnumerable<AttachmentResponse>>(ErrorCode.success, response);
+        }
+        private void InserTask(string handlerId, ObjectId fileId, string fileName, string type, BsonDocument outPut, BsonArray access)
         {
             converter.AddCount(handlerId, 1);
             ObjectId taskId = ObjectId.GenerateNewId();
             task.Insert(taskId, fileId,
                 @"\\" + Environment.MachineName + "\\TempFiles\\" + DateTime.Now.ToString("yyyyMMdd") + "\\", fileName,
-                "image", outPut, access, handlerId, 0, TaskStateEnum.wait, 0);
+                type, outPut, access, handlerId, 0, TaskStateEnum.wait, 0);
             //添加队列
-            queue.Insert(handlerId, "image", "Task", taskId, false, new BsonDocument());
+            queue.Insert(handlerId, type, "Task", taskId, false, new BsonDocument());
         }
     }
 }

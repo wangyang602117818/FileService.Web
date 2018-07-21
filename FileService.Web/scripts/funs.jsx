@@ -138,8 +138,8 @@ var urls = {
         getSubFileMetadataUrl: appDomain + "admin/getsubfilemetadata",
         getM3u8MetadataUrl: appDomain + "admin/getm3u8metadata",
         uploadImageUrl: appDomain + "upload/image1",
-        uploadVideoUrl: appDomain + "upload/video",
-        uploadAttachmentUrl: appDomain + "upload/attachment",
+        uploadVideoUrl: appDomain + "upload/video1",
+        uploadAttachmentUrl: appDomain + "upload/attachment1",
     },
     config: {
         getUrl: appDomain + "admin/getconfigs",
