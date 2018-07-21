@@ -24,5 +24,6 @@ Thumbs.db
 *.sbr
 obj/
 .vs/
+App_Data/
 !ffmpeg.exe
 !nuget.exe
