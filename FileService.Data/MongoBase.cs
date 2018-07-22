@@ -68,7 +68,6 @@ namespace FileService.Data
         protected virtual FilterDefinition<BsonDocument> GetPageFilters(BsonDocument eqs, IEnumerable<string> fields, string filter)
         {
             FilterDefinition<BsonDocument> filterBuilder = null;
-
             if (!string.IsNullOrEmpty(filter))
             {
                 List<FilterDefinition<BsonDocument>> list = new List<FilterDefinition<BsonDocument>>();

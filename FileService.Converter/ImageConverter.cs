@@ -15,22 +15,96 @@ namespace FileService.Converter
     public class ImageConverter : IConverter
     {
         MongoFile mongoFile = new MongoFile();
+        Files files = new Files();
+        FilesWrap filesWrap = new FilesWrap();
         Thumbnail thumbnail = new Thumbnail();
-        public void Convert(FileItem fileItem)
+
+        public void Convert(FileItem taskItem)
         {
-            BsonDocument outputDocument = fileItem.Message["Output"].AsBsonDocument;
-            string fileName = fileItem.Message["FileName"].AsString;
+            BsonDocument outputDocument = taskItem.Message["Output"].AsBsonDocument;
+            string fileName = taskItem.Message["FileName"].AsString;
+            ObjectId filesWrapId = taskItem.Message["FileId"].AsObjectId;
+
             ImageOutPut output = BsonSerializer.Deserialize<ImageOutPut>(outputDocument);
             string outputExt = "";
             ImageFormat format = GetFormat(output.Format, fileName, out outputExt);
-            using (GridFSDownloadStream gridFSDownloadStream = mongoFile.DownLoad(fileItem.Message["FileId"].AsObjectId))
+
+            int processCount = taskItem.Message["ProcessCount"].AsInt32;
+            Stream fileStream = null;
+            //第一次转换，文件肯定在共享文件夹
+            if (processCount == 0)
             {
-                using (Stream stream = GenerateThumbnail(fileName, gridFSDownloadStream, output.Model, format, output.X, output.Y, output.Width, output.Height))
+                string sharedFolder = taskItem.Message["TempFolder"].AsString;
+                bool result = AppSettings.connectState(sharedFolder.TrimEnd('\\'), AppSettings.sharedUserName, AppSettings.sharedUserPwd);
+                //用户名和密码可用
+                if (result)
                 {
-                    byte[] bytes = new byte[stream.Length];
-                    stream.Read(bytes, 0, bytes.Length);
-                    thumbnail.Replace(output.Id, fileItem.Message["FileId"].AsObjectId, stream.Length, Path.GetFileNameWithoutExtension(fileName) + outputExt, output.Flag, bytes);
+                    fileStream = new FileStream(sharedFolder + fileName, FileMode.Open, FileAccess.Read);
+                    if (fileStream != null)
+                    {
+                        string md5 = fileStream.GetMD5();
+                        BsonDocument file = files.GetFileByMd5(md5);
+                        ObjectId id = ObjectId.Empty;
+                        if (file == null)
+                        {
+                            id = mongoFile.Upload(fileName, fileStream, null);
+                        }
+                        else
+                        {
+                            id = file["_id"].AsObjectId;
+                        }
+                        filesWrap.UpdateFileId(filesWrapId, id);
+                    }
                 }
+                else
+                {
+                    Log4Net.ErrorLog("shared folder username or password wrong");
+                }
+            }
+            else
+            {
+                BsonDocument filesWrap = new FilesWrap().FindOne(filesWrapId);
+                ObjectId fileId = filesWrap["FileId"].AsObjectId;
+                fileStream = mongoFile.DownLoad(fileId);
+            }
+            if (fileStream != null)
+            {
+                if (output.Id != ObjectId.Empty)
+                {
+                    using (Stream stream = GenerateThumbnail(fileName, fileStream, output.Model, format, output.X, output.Y, output.Width, output.Height))
+                    {
+                        byte[] bytes = new byte[stream.Length];
+                        stream.Read(bytes, 0, bytes.Length);
+                        thumbnail.Replace(output.Id, taskItem.Message["FileId"].AsObjectId, stream.Length, Path.GetFileNameWithoutExtension(fileName) + outputExt, output.Flag, bytes);
+                    }
+                }
+            }
+            //using (GridFSDownloadStream gridFSDownloadStream = mongoFile.DownLoad(taskItem.Message["FileId"].AsObjectId))
+            //{
+            //    using (Stream stream = GenerateThumbnail(fileName, gridFSDownloadStream, output.Model, format, output.X, output.Y, output.Width, output.Height))
+            //    {
+            //        byte[] bytes = new byte[stream.Length];
+            //        stream.Read(bytes, 0, bytes.Length);
+            //        thumbnail.Replace(output.Id, taskItem.Message["FileId"].AsObjectId, stream.Length, Path.GetFileNameWithoutExtension(fileName) + outputExt, output.Flag, bytes);
+            //    }
+            //}
+        }
+        public void ConvertFileFromSharedFolder(string sharedFolder, string fileName, ImageOutPut output, string outputExt, ImageFormat outputImageFormat)
+        {
+            bool result = AppSettings.connectState(sharedFolder.TrimEnd('\\'), AppSettings.sharedUserName, AppSettings.sharedUserPwd);
+            if (result)
+            {
+                using (FileStream fileStream = new FileStream(sharedFolder + fileName, FileMode.Open, FileAccess.Read))
+                {
+                    if (output.Id == ObjectId.Empty)
+                    {
+
+                    }
+                }
+            }
+            else
+            {
+                Log4Net.ErrorLog("shared folder username or password wrong");
             }
         }
         public Stream GenerateThumbnail(string fileName, Stream stream, ImageModelEnum model, ImageFormat outputFormat, int x, int y, int width, int height)

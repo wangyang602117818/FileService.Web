@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace FileService.Data
 {
-    public class FilesBase: MongoBase
+    public class FilesBase : MongoBase
     {
         public FilesBase(string collectionName) : base(collectionName) { }
         public IEnumerable<BsonDocument> GetCountByRecentMonth(DateTime dateTime)
@@ -76,6 +76,11 @@ namespace FileService.Data
         {
             var filter = FilterBuilder.Eq("_id", id);
             return MongoCollection.UpdateOne(filter, Builders<BsonDocument>.Update.Set("metadata.Files", array)).IsAcknowledged;
+        }
+        public BsonDocument GetFileByMD5(string md5)
+        {
+            var filter = FilterBuilder.Eq("md5", md5);
+            return MongoCollection.Find(filter).FirstOrDefault();
         }
         //protected override FilterDefinition<BsonDocument> GetPageFilters(IEnumerable<string> fields, string filter)
         //{

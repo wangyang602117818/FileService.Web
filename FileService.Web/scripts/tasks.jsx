@@ -89,7 +89,7 @@ class TaskItem extends React.Component {
                     <span dangerouslySetInnerHTML={{ __html: this.props.task.FileName.getFileName(10) }}></span>
                 </td>
                 <td dangerouslySetInnerHTML={{ __html: this.props.task.HandlerId }}></td>
-                <td title={this.props.task.Output.Flag} >
+                <td title={this.props.task.Output._id ? this.props.task.Output.Flag : ""} >
                     <span className={"state " + this.props.task.StateDesc.removeHTML()}></span>
                     {'\u00A0'}
                     <span dangerouslySetInnerHTML={{ __html: this.props.task.StateDesc }}></span>
@@ -99,7 +99,7 @@ class TaskItem extends React.Component {
                 <td>{parseBsonTime(this.props.task.CompletedTime)}</td>
                 <td>
                     <i className="iconfont icon-view" onClick={this.preView.bind(this)}
-                        id={"id=" + this.props.task.FileId.$oid + "&filetype=" + this.props.task.Type.removeHTML() + "&filename=" + this.props.task.FileName.removeHTML() + "#" + this.props.task.Output._id.$oid}></i>
+                        id={"id=" + this.props.task.FileId.$oid + "&filetype=" + this.props.task.Type.removeHTML() + "&filename=" + this.props.task.FileName.removeHTML() + "#" + (this.props.task.Output._id ? this.props.task.Output._id.$oid : "")}></i>
                 </td>
                 <td>
                     {this.props.task.State == 2 || this.props.task.State == 4 || this.props.task.State == -1 ?
@@ -107,7 +107,7 @@ class TaskItem extends React.Component {
                             id={"id=" + this.props.task._id.$oid + "&type=" + this.props.task.Type}></i> :
                         null}
                 </td>
-            </tr>
+            </tr >
         )
     }
 }

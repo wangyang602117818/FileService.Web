@@ -21,6 +21,7 @@ namespace FileService.Web.Controllers
         Config config = new Config();
         Application application = new Application();
         Files files = new Files();
+        FilesWrap filesWrap = new FilesWrap();
         MongoFile mongoFile = new MongoFile();
         FilesConvert filesConvert = new FilesConvert();
         MongoFileConvert mongoFileConvert = new MongoFileConvert();
@@ -128,8 +129,8 @@ namespace FileService.Web.Controllers
         public ActionResult GetFiles(int pageIndex = 1, int pageSize = 10, string filter = "")
         {
             long count = 0;
-            Dictionary<string, string> sorts = new Dictionary<string, string> { { "uploadDate", "desc" } };
-            IEnumerable<BsonDocument> result = files.GetPageList(pageIndex, pageSize, null, sorts, filter, new List<string>() { "_id", "filename", "metadata.From", "metadata.FileType" }, new List<string>() { }, out count);
+            Dictionary<string, string> sorts = new Dictionary<string, string> { { "CreateTime", "desc" } };
+            IEnumerable<BsonDocument> result = filesWrap.GetPageList(pageIndex, pageSize, null, sorts, filter, new List<string>() { "_id", "filename", "From", "FileType" }, new List<string>() { }, out count);
             return new ResponseModel<IEnumerable<BsonDocument>>(ErrorCode.success, result, count);
         }
         public ActionResult GetConvertFiles(int pageIndex = 1, int pageSize = 10, string filter = "")
@@ -146,16 +147,16 @@ namespace FileService.Web.Controllers
         }
         public ActionResult GetM3u8Metadata(string id)
         {
-            int cp = files.FindOne(ObjectId.Parse(id))["metadata"]["VideoCpIds"].AsBsonArray.Count;
+            int cp = filesWrap.FindOne(ObjectId.Parse(id))["VideoCpIds"].AsBsonArray.Count;
             IEnumerable<BsonDocument> m3u8s = m3u8.FindBySourceId(ObjectId.Parse(id)).Select(sel => sel.Add("Cp", cp));
             return new ResponseModel<IEnumerable<BsonDocument>>(ErrorCode.success, m3u8s);
         }
         public ActionResult GetSubFileMetadata(string id)
         {
-            BsonDocument file = files.FindOne(ObjectId.Parse(id));
+            BsonDocument file = filesWrap.FindOne(ObjectId.Parse(id));
             List<BsonDocument> result = new List<BsonDocument>();
             if (file == null) return new ResponseModel<List<BsonDocument>>(ErrorCode.success, result);
-            if (!file["metadata"].AsBsonDocument.Contains("Files"))
+            if (!file.Contains("Files"))
             {
                 return new ResponseModel<IEnumerable<BsonDocument>>(ErrorCode.success, result);
             }

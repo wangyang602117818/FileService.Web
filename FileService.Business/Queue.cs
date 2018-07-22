@@ -59,16 +59,16 @@ namespace FileService.Business
                     ObjectId queueId = doc["_id"].AsObjectId;
                     string collectionName = doc["collectionName"].AsString;
                     ObjectId collectionId = doc["collectionId"].AsObjectId;
-                    BsonDocument message = new MongoBase(collectionName).FindOne(collectionId);
-                    if (message == null) continue;
-                    if (message["Type"].AsString == "video" || message["Type"].AsString == "attachment")
-                    {
-                        if (!File.Exists(MongoFile.AppDataDir + message["FileName"])) mongoFile.SaveTo(message["FileId"].AsObjectId);
-                    }
+                    BsonDocument taskItem = new MongoBase(collectionName).FindOne(collectionId);
+                    if (taskItem == null) continue;
+                    //if (taskItem["Type"].AsString == "video" || taskItem["Type"].AsString == "attachment")
+                    //{
+                    //    if (!File.Exists(MongoFile.AppDataDir + taskItem["FileName"])) mongoFile.SaveTo(taskItem["FileId"].AsObjectId);
+                    //}
                     itemlist.Add(new FileItem()
                     {
                         QueueId = queueId,
-                        Message = message,
+                        Message = taskItem,
                     });
                 }
             }

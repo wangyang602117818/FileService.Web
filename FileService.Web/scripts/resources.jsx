@@ -70,29 +70,29 @@ class ResourceItem extends React.Component {
         return (
             <tr>
                 <td className="link"
-                    data-type={this.props.resource.metadata.FileType.removeHTML()}
-                    data-filename={this.props.resource.filename.removeHTML()}
+                    data-type={this.props.resource.FileType.removeHTML()}
+                    data-filename={this.props.resource.FileName.removeHTML()}
                     data-fileid={this.props.resource._id.$oid.removeHTML()}
                     onClick={this.props.onIdClick}>
                     <b
-                        data-type={this.props.resource.metadata.FileType.removeHTML()}
-                        data-filename={this.props.resource.filename.removeHTML()}
+                        data-type={this.props.resource.FileType.removeHTML()}
+                        data-filename={this.props.resource.FileName.removeHTML()}
                         data-fileid={this.props.resource._id.$oid.removeHTML()}
                         dangerouslySetInnerHTML={{ __html: this.props.resource._id.$oid }}>
                     </b>
                 </td>
-                <td title={this.props.resource.filename.removeHTML()}>
-                    <i className={"iconfont " + getIconNameByFileName(this.props.resource.filename.removeHTML())}></i>&nbsp;
-                    <span dangerouslySetInnerHTML={{ __html: this.props.resource.filename.getFileName(15) }}>
+                <td title={this.props.resource.FileName.removeHTML()}>
+                    <i className={"iconfont " + getIconNameByFileName(this.props.resource.FileName.removeHTML())}></i>&nbsp;
+                    <span dangerouslySetInnerHTML={{ __html: this.props.resource.FileName.getFileName(15) }}>
                     </span>
                 </td>
-                <td>{convertFileSize(this.props.resource.length)}</td>
-                <td>{parseBsonTime(this.props.resource.uploadDate)}</td>
-                <td dangerouslySetInnerHTML={{ __html: this.props.resource.metadata.From || culture.unknow }}></td>
-                <td dangerouslySetInnerHTML={{ __html: this.props.resource.metadata.FileType }}></td>
+                <td>{convertFileSize(this.props.resource.Length)}</td>
+                <td>{parseBsonTime(this.props.resource.CreateTime)}</td>
+                <td dangerouslySetInnerHTML={{ __html: this.props.resource.From || culture.unknow }}></td>
+                <td dangerouslySetInnerHTML={{ __html: this.props.resource.FileType }}></td>
                 <td>
                     <i className="iconfont icon-view"
-                        onClick={this.preView.bind(this)} id={"id=" + this.props.resource._id.$oid + "&filetype=" + this.props.resource.metadata.FileType + "&filename=" + this.props.resource.filename.removeHTML()}>
+                        onClick={this.preView.bind(this)} id={"id=" + this.props.resource._id.$oid + "&filetype=" + this.props.resource.FileType + "&filename=" + this.props.resource.FileName.removeHTML()}>
                     </i>
                 </td>
                 <td>

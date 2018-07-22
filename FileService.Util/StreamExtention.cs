@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -13,6 +14,23 @@ namespace FileService.Util
 {
     public static class StreamExtention
     {
+        /// <summary>
+        /// 获取文件的MD5码
+        /// </summary>
+        /// <param name="fileName">传入的文件名（含路径及后缀名）</param>
+        /// <returns></returns>
+        public static string GetMD5(this Stream fileStream)
+        {
+            MD5 md5 = new MD5CryptoServiceProvider();
+            byte[] retVal = md5.ComputeHash(fileStream);
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < retVal.Length; i++)
+            {
+                sb.Append(retVal[i].ToString("x2"));
+            }
+            fileStream.Position = 0;
+            return sb.ToString();
+        }
         public static BsonArray GetDeCompressionZipFiles(this Stream stream)
         {
             using (ZipArchive rarArchive = ZipArchive.Open(stream))
@@ -70,7 +88,7 @@ namespace FileService.Util
         {
             using (RarArchive rarArchive = RarArchive.Open(stream))
             {
-                using(IReader reader = rarArchive.ExtractAllEntries())
+                using (IReader reader = rarArchive.ExtractAllEntries())
                 {
                     while (reader.MoveToNextEntry())
                     {

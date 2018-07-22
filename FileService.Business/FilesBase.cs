@@ -50,5 +50,9 @@ namespace FileService.Business
         {
             return mongoData.ReplaceSubFiles(id, array);
         }
+        public BsonDocument GetFileByMd5(string md5)
+        {
+            return mongoData.GetFileByMD5(md5);
+        }
     }
 }

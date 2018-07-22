@@ -65,5 +65,9 @@ namespace FileService.Business
                 };
             mongoData.Insert(filesWrap);
         }
+        public bool UpdateFileId(ObjectId id,ObjectId fileId)
+        {
+            return mongoData.UpdateFileId(id, fileId);
+        }
     }
 }
