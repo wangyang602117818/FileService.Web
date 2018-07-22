@@ -35,30 +35,21 @@ namespace FileService.Converter
             if (processCount == 0)
             {
                 string sharedFolder = taskItem.Message["TempFolder"].AsString;
-                bool result = AppSettings.connectState(sharedFolder.TrimEnd('\\'), AppSettings.sharedUserName, AppSettings.sharedUserPwd);
-                //用户名和密码可用
-                if (result)
+                fileStream = new FileStream(sharedFolder + fileName, FileMode.Open, FileAccess.Read);
+                if (fileStream != null)
                 {
-                    fileStream = new FileStream(sharedFolder + fileName, FileMode.Open, FileAccess.Read);
-                    if (fileStream != null)
+                    string md5 = fileStream.GetMD5();
+                    BsonDocument file = files.GetFileByMd5(md5);
+                    ObjectId id = ObjectId.Empty;
+                    if (file == null)
                     {
-                        string md5 = fileStream.GetMD5();
-                        BsonDocument file = files.GetFileByMd5(md5);
-                        ObjectId id = ObjectId.Empty;
-                        if (file == null)
-                        {
-                            id = mongoFile.Upload(fileName, fileStream, null);
-                        }
-                        else
-                        {
-                            id = file["_id"].AsObjectId;
-                        }
-                        filesWrap.UpdateFileId(filesWrapId, id);
+                        id = mongoFile.Upload(fileName, fileStream, null);
                     }
-                }
-                else
-                {
-                    Log4Net.ErrorLog("shared folder username or password wrong");
+                    else
+                    {
+                        id = file["_id"].AsObjectId;
+                    }
+                    filesWrap.UpdateFileId(filesWrapId, id);
                 }
             }
             else
@@ -79,33 +70,8 @@ namespace FileService.Converter
                     }
                 }
             }
-            //using (GridFSDownloadStream gridFSDownloadStream = mongoFile.DownLoad(taskItem.Message["FileId"].AsObjectId))
-            //{
-            //    using (Stream stream = GenerateThumbnail(fileName, gridFSDownloadStream, output.Model, format, output.X, output.Y, output.Width, output.Height))
-            //    {
-            //        byte[] bytes = new byte[stream.Length];
-            //        stream.Read(bytes, 0, bytes.Length);
-            //        thumbnail.Replace(output.Id, taskItem.Message["FileId"].AsObjectId, stream.Length, Path.GetFileNameWithoutExtension(fileName) + outputExt, output.Flag, bytes);
-            //    }
-            //}
-        }
-        public void ConvertFileFromSharedFolder(string sharedFolder, string fileName, ImageOutPut output, string outputExt, ImageFormat outputImageFormat)
-        {
-            bool result = AppSettings.connectState(sharedFolder.TrimEnd('\\'), AppSettings.sharedUserName, AppSettings.sharedUserPwd);
-            if (result)
-            {
-                using (FileStream fileStream = new FileStream(sharedFolder + fileName, FileMode.Open, FileAccess.Read))
-                {
-                    if (output.Id == ObjectId.Empty)
-                    {
-
-                    }
-                }
-            }
-            else
-            {
-                Log4Net.ErrorLog("shared folder username or password wrong");
-            }
+            fileStream.Close();
+            fileStream.Dispose();
         }
         public Stream GenerateThumbnail(string fileName, Stream stream, ImageModelEnum model, ImageFormat outputFormat, int x, int y, int width, int height)
         {

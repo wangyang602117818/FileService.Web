@@ -16,6 +16,7 @@ namespace FileService.Util
         public static int taskCount = Convert.ToInt32(ConfigurationManager.AppSettings["taskCount"]);
         public static string libreOffice = ConfigurationManager.AppSettings["libreOffice"];
         public static string tempFileDir = ConfigurationManager.AppSettings["tempFileDir"];
+        public static string sharedFolder = ConfigurationManager.AppSettings["sharedFolder"];
         public static string sharedUserName= ConfigurationManager.AppSettings["sharedUserName"];
         public static string sharedUserPwd = ConfigurationManager.AppSettings["sharedUserPwd"];
         public static bool connectState(string path, string userName, string passWord)

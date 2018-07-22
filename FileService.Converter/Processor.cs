@@ -22,9 +22,19 @@ namespace FileService.Converter
     {
         Business.Task task = new Business.Task();
         Business.Converter converter = new Business.Converter();
-        public void StartMonitor(string handlerId)
+        public bool StartMonitor(string handlerId)
         {
-            new Queue().MonitorMessage(handlerId);
+            bool result = AppSettings.connectState(AppSettings.sharedFolder.TrimEnd('\\'), AppSettings.sharedUserName, AppSettings.sharedUserPwd);
+            //用户名和密码可用
+            if (result)
+            {
+                new Queue().MonitorMessage(handlerId);
+            }
+            else
+            {
+                Log4Net.ErrorLog("shared folder username or password wrong");
+            }
+            return result;
         }
         /// <summary>
         ///  获取一个任务，并且开启一个线程，
