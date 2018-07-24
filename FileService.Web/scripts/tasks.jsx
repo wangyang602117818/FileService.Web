@@ -10,11 +10,12 @@
                         <th width="15%">{culture.fileId}</th>
                         <th width="24%">{culture.fileName}</th>
                         <th width="6%">{culture.handler}</th>
-                        <th width="9%">{culture.state}</th>
-                        <th width="6%">{culture.percent}</th>
+                        <th width="8%">{culture.state}</th>
+                        <th width="5%">{culture.percent}</th>
                         <td width="6%">{culture.process_count}</td>
-                        <th width="13%">{culture.createTime}</th>
-                        <th width="13%">{culture.completedTime}</th>
+                        <th width="12%">{culture.createTime}</th>
+                        <th width="12%">{culture.completedTime}</th>
+                        <th width="4%">{culture.type}</th>
                         <th width="4%">{culture.view}</th>
                         <th width="4%">{culture.reDo}</th>
                     </tr>
@@ -75,16 +76,25 @@ class TaskItem extends React.Component {
     render() {
         return (
             <tr>
-                <td className="link"
-                    onClick={this.props.onIdClick}
-                    id={this.props.task._id.$oid.removeHTML()}
-                    data-name={this.props.task.FileName.removeHTML()}>
-                    <b
+                {this.props.task.Output._id ?
+                    <td className="link"
+                        onClick={this.props.onIdClick}
                         id={this.props.task._id.$oid.removeHTML()}
-                        data-name={this.props.task.FileName.removeHTML()}
-                        dangerouslySetInnerHTML={{ __html: this.props.task.FileId.$oid }}
-                    ></b>
-                </td>
+                        data-name={this.props.task.FileName.removeHTML()}>
+                        <b
+                            id={this.props.task._id.$oid.removeHTML()}
+                            data-name={this.props.task.FileName.removeHTML()}
+                            dangerouslySetInnerHTML={{ __html: this.props.task.FileId.$oid }}
+                        ></b>
+                    </td> :
+                    <td>
+                        <b
+                            id={this.props.task._id.$oid.removeHTML()}
+                            data-name={this.props.task.FileName.removeHTML()}
+                            dangerouslySetInnerHTML={{ __html: this.props.task.FileId.$oid }}
+                        ></b>
+                    </td>
+                }
                 <td title={this.props.task.FileName.removeHTML()}>
                     <i className={"iconfont " + getIconNameByFileName(this.props.task.FileName.removeHTML())}></i>&nbsp;
                     <span dangerouslySetInnerHTML={{ __html: this.props.task.FileName.getFileName(10) }}></span>
@@ -99,6 +109,7 @@ class TaskItem extends React.Component {
                 <td>{this.props.task.ProcessCount}</td>
                 <td>{parseBsonTime(this.props.task.CreateTime)}</td>
                 <td>{parseBsonTime(this.props.task.CompletedTime)}</td>
+                <td>{this.props.task.Output._id ? "C" : "S"}</td>
                 <td>
                     <i className="iconfont icon-view" onClick={this.preView.bind(this)}
                         id={"id=" + this.props.task.FileId.$oid + "&filetype=" + this.props.task.Type.removeHTML() + "&filename=" + this.props.task.FileName.removeHTML() + "#" + (this.props.task.Output._id ? this.props.task.Output._id.$oid : "")}></i>
