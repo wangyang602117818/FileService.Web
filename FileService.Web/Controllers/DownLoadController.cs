@@ -23,17 +23,19 @@ namespace FileService.Web.Controllers
         Ts ts = new Ts();
         Thumbnail thumbnail = new Thumbnail();
         VideoCapture videoCapture = new VideoCapture();
+        FilesWrap filesWrap = new FilesWrap();
         public ActionResult Get(string id)
         {
-            GridFSDownloadStream stream = mongoFile.DownLoad(ObjectId.Parse(id));
-            return File(stream, stream.FileInfo.Metadata["ContentType"].AsString, stream.FileInfo.Filename);
+            BsonDocument fileWrap = filesWrap.FindOne(ObjectId.Parse(id));
+            GridFSDownloadStream stream = mongoFile.DownLoad(fileWrap["FileId"].AsObjectId);
+            return File(stream, fileWrap["ContentType"].AsString, fileWrap["FileName"].AsString);
         }
         public ActionResult GetConvert(string id)
         {
             GridFSDownloadStream stream = mongoFileConvert.DownLoad(ObjectId.Parse(id));
             return File(stream, stream.FileInfo.Metadata["ContentType"].AsString, stream.FileInfo.Filename);
         }
-        public ActionResult GetZipInnerFile(string id,string fileName)
+        public ActionResult GetZipInnerFile(string id, string fileName)
         {
             GridFSDownloadStream stream = mongoFile.DownLoadSeekable(ObjectId.Parse(id));
             Stream file = stream.GetFileInZip(fileName);

@@ -14,6 +14,7 @@ namespace FileService.Converter
     public class OfficeConverter : IConverter
     {
         Files files = new Files();
+        FilesWrap filesWrap = new FilesWrap();
         FilesConvert filesConvert = new FilesConvert();
         Business.Task task = new Business.Task();
         MongoFile mongoFile = new MongoFile();
@@ -29,7 +30,7 @@ namespace FileService.Converter
             //转换office方法
             ObjectId outputId = ConvertOffice(sourceFullPath, destinationFullPath, fileItem.Message["FileId"].AsObjectId);
             //更新 fs.files表
-            files.UpdateSubFileId(fileItem.Message["FileId"].AsObjectId, oldFileId, outputId);
+            filesWrap.UpdateSubFileId(fileItem.Message["FileId"].AsObjectId, oldFileId, outputId);
             //更新 task 表
             task.UpdateOutPutId(fileItem.Message["_id"].AsObjectId, outputId);
             if (File.Exists(destinationFullPath)) File.Delete(destinationFullPath);

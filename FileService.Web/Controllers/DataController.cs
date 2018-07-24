@@ -13,33 +13,33 @@ namespace FileService.Web.Controllers
     [AllowAnonymous]
     public class DataController : BaseController
     {
-        Files files = new Files();
+        FilesWrap filesWrap = new FilesWrap();
         FilesConvert filesConvert = new FilesConvert();
         VideoCapture videoCapture = new VideoCapture();
         Task task = new Task();
         Converter converter = new Converter();
         public ActionResult GetVideoCaptureIds(string id)
         {
-            BsonDocument document = files.FindOne(ObjectId.Parse(id));
-            return new ResponseModel<IEnumerable<string>>(ErrorCode.success, document["metadata"]["VideoCpIds"].AsBsonArray.Select(s => s.ToString()));
+            BsonDocument document = filesWrap.FindOne(ObjectId.Parse(id));
+            return new ResponseModel<IEnumerable<string>>(ErrorCode.success, document["VideoCpIds"].AsBsonArray.Select(s => s.ToString()));
         }
         public ActionResult GetVideoList(string id)
         {
-            BsonDocument document = files.FindOne(ObjectId.Parse(id));
+            BsonDocument document = filesWrap.FindOne(ObjectId.Parse(id));
             if (document == null) document = filesConvert.FindOne(ObjectId.Parse(id));
             List<dynamic> videoList = new List<dynamic>();
             videoList.Add(new { _id = id, tag = "origin", current = false });
-            if (document["metadata"].AsBsonDocument.Contains("Videos"))
+            if (document.AsBsonDocument.Contains("Videos"))
             {
-                foreach (BsonDocument doc in document["metadata"]["Videos"].AsBsonArray)
+                foreach (BsonDocument doc in document["Videos"].AsBsonArray)
                 {
                     videoList.Add(new { _id = doc["_id"].ToString(), tag = doc["Flag"].ToString(), current = false });
                 }
             }
             List<string> videoCps = new List<string>();
-            if (document["metadata"].AsBsonDocument.Contains("VideoCpIds"))
+            if (document.AsBsonDocument.Contains("VideoCpIds"))
             {
-                foreach (BsonValue value in document["metadata"]["VideoCpIds"].AsBsonArray)
+                foreach (BsonValue value in document["VideoCpIds"].AsBsonArray)
                 {
                     videoCps.Add(value.ToString());
                 }
@@ -48,13 +48,13 @@ namespace FileService.Web.Controllers
         }
         public ActionResult GetImageList(string id)
         {
-            BsonDocument document = files.FindOne(ObjectId.Parse(id));
+            BsonDocument document = filesWrap.FindOne(ObjectId.Parse(id));
             if (document == null) document = filesConvert.FindOne(ObjectId.Parse(id));
             List<dynamic> list = new List<dynamic>();
             list.Add(new { _id = id, tag = "origin", current = false });
-            if (document["metadata"].AsBsonDocument.Contains("Thumbnail"))
+            if (document.AsBsonDocument.Contains("Thumbnail"))
             {
-                foreach (BsonDocument doc in document["metadata"]["Thumbnail"].AsBsonArray)
+                foreach (BsonDocument doc in document["Thumbnail"].AsBsonArray)
                 {
                     list.Add(new { _id = doc["_id"].ToString(), tag = doc["Flag"].ToString(), current = false });
                 }
@@ -66,7 +66,7 @@ namespace FileService.Web.Controllers
             BsonDocument document = videoCapture.FindOne(ObjectId.Parse(id));
             if (videoCapture.DeleteOne(ObjectId.Parse(id)) && document != null)
             {
-                files.DeleteVideoCapture(document["SourceId"].AsObjectId, ObjectId.Parse(id));
+                filesWrap.DeleteVideoCapture(document["SourceId"].AsObjectId, ObjectId.Parse(id));
                 Log(id, "DeleteVideoCapture");
                 return new ResponseModel<string>(ErrorCode.success, "");
             }

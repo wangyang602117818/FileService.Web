@@ -270,7 +270,7 @@ namespace FileService.Web.Controllers
                 {"CreateTime",DateTime.Now }
             };
             videoCapture.Insert(document);
-            files.AddVideoCapture(ObjectId.Parse(uploadVideoCPModel.FileId), id);
+            filesWrap.AddVideoCapture(ObjectId.Parse(uploadVideoCPModel.FileId), id);
             //日志
             Log(uploadVideoCPModel.FileId, "UploadVideoCapture");
             return new ResponseModel<string>(ErrorCode.success, id.ToString());
@@ -298,7 +298,7 @@ namespace FileService.Web.Controllers
                     {"CreateTime",DateTime.Now }
                 };
                 videoCapture.InsertOneAsync(document);
-                files.AddVideoCapture(ObjectId.Parse(uploadVideoCPStreamModel.FileId), id);
+                filesWrap.AddVideoCapture(ObjectId.Parse(uploadVideoCPStreamModel.FileId), id);
                 //日志
                 Log(id.ToString(), "UploadVideoCaptureStream");
                 response.Add(id.ToString());

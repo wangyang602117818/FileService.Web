@@ -9,11 +9,12 @@
                     <tr>
                         <th width="15%">{culture.fileId}</th>
                         <th width="24%">{culture.fileName}</th>
-                        <th width="8%">{culture.handler}</th>
+                        <th width="6%">{culture.handler}</th>
                         <th width="9%">{culture.state}</th>
                         <th width="6%">{culture.percent}</th>
-                        <th width="15%">{culture.createTime}</th>
-                        <th width="15%">{culture.completedTime}</th>
+                        <td width="6%">{culture.process_count}</td>
+                        <th width="13%">{culture.createTime}</th>
+                        <th width="13%">{culture.completedTime}</th>
                         <th width="4%">{culture.view}</th>
                         <th width="4%">{culture.reDo}</th>
                     </tr>
@@ -95,6 +96,7 @@ class TaskItem extends React.Component {
                     <span dangerouslySetInnerHTML={{ __html: this.props.task.StateDesc }}></span>
                 </td>
                 <td>{this.props.task.Percent}%</td>
+                <td>{this.props.task.ProcessCount}</td>
                 <td>{parseBsonTime(this.props.task.CreateTime)}</td>
                 <td>{parseBsonTime(this.props.task.CompletedTime)}</td>
                 <td>

@@ -153,20 +153,20 @@ namespace FileService.Web.Controllers
         }
         public ActionResult GetSubFileMetadata(string id)
         {
-            BsonDocument file = filesWrap.FindOne(ObjectId.Parse(id));
+            BsonDocument fileWrap = filesWrap.FindOne(ObjectId.Parse(id));
             List<BsonDocument> result = new List<BsonDocument>();
-            if (file == null) return new ResponseModel<List<BsonDocument>>(ErrorCode.success, result);
-            if (!file.Contains("Files"))
+            if (fileWrap == null) return new ResponseModel<List<BsonDocument>>(ErrorCode.success, result);
+            if (!fileWrap.Contains("Files"))
             {
                 return new ResponseModel<IEnumerable<BsonDocument>>(ErrorCode.success, result);
             }
-            string fileExt = Path.GetExtension(file["filename"].AsString).ToLower();
+            string fileExt = Path.GetExtension(fileWrap["FileName"].AsString).ToLower();
             if (fileExt == ".zip" || fileExt == ".rar")
             {
-                BsonArray bsonArray = file["metadata"]["Files"].AsBsonArray;
+                BsonArray bsonArray = fileWrap["Files"].AsBsonArray;
                 return new ResponseModel<BsonArray>(ErrorCode.success, bsonArray);
             }
-            foreach (BsonDocument doc in file["metadata"]["Files"].AsBsonArray)
+            foreach (BsonDocument doc in fileWrap["Files"].AsBsonArray)
             {
                 if (doc.Contains("_id") && doc["_id"].AsObjectId != ObjectId.Empty)
                 {
@@ -204,7 +204,7 @@ namespace FileService.Web.Controllers
             BsonDocument result = new BsonDocument();
             DateTime dateTime = DateTime.Now;
             var startDateTime = new DateTime(dateTime.Year, dateTime.Month, dateTime.Day, 0, 0, 0).AddMonths(-month);
-            IEnumerable<BsonDocument> fileResult = files.GetCountByRecentMonth(startDateTime);
+            IEnumerable<BsonDocument> fileResult = filesWrap.GetCountByRecentMonth(startDateTime);
             result.Add("files", new BsonArray(fileResult));
             IEnumerable<BsonDocument> taskResult = task.GetCountByRecentMonth(startDateTime);
             result.Add("tasks", new BsonArray(taskResult));
@@ -215,12 +215,12 @@ namespace FileService.Web.Controllers
             BsonDocument result = new BsonDocument();
             result.Add("Handlers", converter.Count());
             result.Add("Tasks", task.Count());
-            result.Add("Resources", new BsonArray(files.GetFilesByType()));
+            result.Add("Resources", new BsonArray(filesWrap.GetFilesByType()));
             return new ResponseModel<BsonDocument>(ErrorCode.success, result);
         }
         public ActionResult GetFilesByAppName()
         {
-            IEnumerable<BsonDocument> result = files.GetFilesByAppName();
+            IEnumerable<BsonDocument> result = filesWrap.GetFilesByAppName();
             return new ResponseModel<IEnumerable<BsonDocument>>(ErrorCode.success, result);
         }
         public ActionResult GetHexCode(int id)
@@ -352,7 +352,7 @@ namespace FileService.Web.Controllers
                 {"Output.Y",updateImageTask.Y },
             };
             Log(updateImageTask.FileId, "UpdateImageTask");
-            files.UpdateFlagImage(ObjectId.Parse(updateImageTask.FileId), ObjectId.Parse(updateImageTask.ThumbnailId), updateImageTask.Flag);
+            filesWrap.UpdateFlagImage(ObjectId.Parse(updateImageTask.FileId), ObjectId.Parse(updateImageTask.ThumbnailId), updateImageTask.Flag);
             thumbnail.Update(ObjectId.Parse(updateImageTask.ThumbnailId), new BsonDocument("Flag", updateImageTask.Flag));
             if (task.Update(ObjectId.Parse(updateImageTask.Id), document))
                 return new ResponseModel<BsonDocument>(ErrorCode.success, document);
@@ -372,7 +372,7 @@ namespace FileService.Web.Controllers
                 {"Output.Quality",updateVideoTask.Quality},
             };
             Log(updateVideoTask.FileId, "UpdateVideoTask");
-            files.UpdateFlagVideo(ObjectId.Parse(updateVideoTask.FileId), ObjectId.Parse(updateVideoTask.M3u8Id), updateVideoTask.Flag);
+            filesWrap.UpdateFlagVideo(ObjectId.Parse(updateVideoTask.FileId), ObjectId.Parse(updateVideoTask.M3u8Id), updateVideoTask.Flag);
             m3u8.Update(ObjectId.Parse(updateVideoTask.M3u8Id), new BsonDocument("Flag", updateVideoTask.Flag));
             if (task.Update(ObjectId.Parse(updateVideoTask.Id), document))
                 return new ResponseModel<BsonDocument>(ErrorCode.success, document);
@@ -391,7 +391,7 @@ namespace FileService.Web.Controllers
                 {"Output.Flag",updateAttachmentTask.Flag }
             };
             Log(updateAttachmentTask.FileId, "UpdateAttachmentTask");
-            files.UpdateFlagAttachment(ObjectId.Parse(updateAttachmentTask.FileId), ObjectId.Parse(updateAttachmentTask.SubFileId), updateAttachmentTask.Flag);
+            filesWrap.UpdateFlagAttachment(ObjectId.Parse(updateAttachmentTask.FileId), ObjectId.Parse(updateAttachmentTask.SubFileId), updateAttachmentTask.Flag);
             if (task.Update(ObjectId.Parse(updateAttachmentTask.Id), document))
                 return new ResponseModel<BsonDocument>(ErrorCode.success, document);
             return new ResponseModel<string>(ErrorCode.server_exception, "");

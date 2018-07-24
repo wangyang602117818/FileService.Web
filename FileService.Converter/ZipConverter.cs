@@ -17,6 +17,7 @@ namespace FileService.Converter
     public class ZipConverter : IConverter
     {
         Files files = new Files();
+        FilesWrap filesWrap = new FilesWrap();
         FilesConvert filesConvert = new FilesConvert();
         Business.Task task = new Business.Task();
         MongoFile mongoFile = new MongoFile();
@@ -38,7 +39,7 @@ namespace FileService.Converter
             string fullSourceFileName = MongoFileBase.AppDataDir + fileName;
             BsonArray subFiles = ConvertZip(fileId, fullSourceFileName);
             //更新 fs.files表
-            files.ReplaceSubFiles(fileId, subFiles);
+            filesWrap.ReplaceSubFiles(fileId, subFiles);
             if (File.Exists(fullSourceFileName)) File.Delete(fullSourceFileName);
         }
         public BsonArray ConvertZip(ObjectId sourceFileId, string fullSourceFileName)

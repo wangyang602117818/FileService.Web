@@ -32,7 +32,7 @@ namespace FileService.Util
                 proc.StartInfo.RedirectStandardError = true;
                 proc.StartInfo.CreateNoWindow = true;
                 proc.Start();
-                string dosLine = "net use " + path + " " + passWord + " /user:" + userName;
+                string dosLine = "net use " + path + " " + passWord + " /user:\"" + userName+"\"";
                 proc.StandardInput.WriteLine(dosLine);
                 proc.StandardInput.WriteLine("exit");
                 while (!proc.HasExited)

@@ -149,4 +149,6 @@ var culture = {
     current_and_sub: "当前及下属",
     current_and_sup: "当前及上级",
     end: "结尾",
+
+    process_count:"处理次数"
 }
