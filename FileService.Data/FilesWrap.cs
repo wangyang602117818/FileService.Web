@@ -11,9 +11,13 @@ namespace FileService.Data
     public class FilesWrap : MongoBase
     {
         public FilesWrap() : base("FilesWrap") { }
+        public long CountByFileId(ObjectId fileId)
+        {
+            return MongoCollection.Count(FilterBuilder.Eq("FileId", fileId));
+        }
         public bool UpdateFileId(ObjectId id, ObjectId fileId)
         {
-            return MongoCollection.UpdateOne(FilterBuilder.Eq("_id", id),Builders<BsonDocument>.Update.Set("FileId", fileId)).IsAcknowledged;
+            return MongoCollection.UpdateOne(FilterBuilder.Eq("_id", id), Builders<BsonDocument>.Update.Set("FileId", fileId)).IsAcknowledged;
         }
         public IEnumerable<BsonDocument> GetCountByRecentMonth(DateTime dateTime)
         {

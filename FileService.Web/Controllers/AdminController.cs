@@ -20,7 +20,7 @@ namespace FileService.Web.Controllers
     {
         Config config = new Config();
         Application application = new Application();
-        Files files = new Files();
+        //Files files = new Files();
         FilesWrap filesWrap = new FilesWrap();
         MongoFile mongoFile = new MongoFile();
         FilesConvert filesConvert = new FilesConvert();
@@ -183,8 +183,8 @@ namespace FileService.Web.Controllers
             if (OfficeFormatList.offices.Contains(Path.GetExtension(fileName)))
             {
                 ViewBag.Convert = "true";
-                BsonDocument metadata = files.FindOne(ObjectId.Parse(id))["metadata"].AsBsonDocument;
-                ViewBag.id = metadata.Contains("Files") ? metadata["Files"].AsBsonArray[0]["_id"].ToString() : ObjectId.Empty.ToString();
+                BsonDocument bson = filesWrap.FindOne(ObjectId.Parse(id));
+                ViewBag.id = bson.Contains("Files") ? bson["Files"].AsBsonArray[0]["_id"].ToString() : ObjectId.Empty.ToString();
             }
             ViewBag.FileType = fileType;
             ViewBag.FileName = fileName;
@@ -535,30 +535,37 @@ namespace FileService.Web.Controllers
         [Authorize(Roles = "admin")]
         public ActionResult Delete(string id)
         {
-            BsonDocument doc = files.FindOne(ObjectId.Parse(id));
-            if (doc["metadata"]["FileType"] == "image")
+            BsonDocument fileWrap = filesWrap.FindOne(ObjectId.Parse(id));
+            //删除 thumbnail
+            if (fileWrap["FileType"] == "image")
             {
                 List<ObjectId> thumbnailIds = new List<ObjectId>();
-                foreach (BsonDocument d in doc["metadata"]["Thumbnail"].AsBsonArray) thumbnailIds.Add(d["_id"].AsObjectId);
+                foreach (BsonDocument d in fileWrap["Thumbnail"].AsBsonArray) thumbnailIds.Add(d["_id"].AsObjectId);
                 thumbnail.DeleteMany(thumbnailIds);
             }
-            if (doc["metadata"]["FileType"] == "video")
+            //删除 video 相关
+            if (fileWrap["FileType"] == "video")
             {
                 List<ObjectId> m3u8Ids = new List<ObjectId>();
-                foreach (BsonDocument d in doc["metadata"]["Videos"].AsBsonArray) m3u8Ids.Add(d["_id"].AsObjectId);
+                foreach (BsonDocument d in fileWrap["Videos"].AsBsonArray) m3u8Ids.Add(d["_id"].AsObjectId);
                 m3u8.DeleteMany(m3u8Ids);
                 ts.DeleteBySourceId(m3u8Ids);
                 videoCapture.DeleteBySourceId(ObjectId.Parse(id));
             }
-            if (doc["metadata"]["FileType"] == "attachment")
+            //删除 attachment 相关
+            if (fileWrap["FileType"] == "attachment")
             {
-                foreach (BsonDocument bson in doc["metadata"]["Files"].AsBsonArray)
+                foreach (BsonDocument bson in fileWrap["Files"].AsBsonArray)
                 {
                     if (!bson.Contains("_id")) continue;
                     if (filesConvert.FindOne(bson["_id"].AsObjectId) != null) mongoFileConvert.Delete(bson["_id"].AsObjectId);
                 }
             }
-            mongoFile.Delete(ObjectId.Parse(id));
+            if (filesWrap.CountByFileId(fileWrap["FileId"].AsObjectId) == 1)
+            {
+                mongoFile.Delete(fileWrap["FileId"].AsObjectId);
+            }
+            filesWrap.DeleteOne(ObjectId.Parse(id));
             task.Delete(ObjectId.Parse(id));
             Log(id, "DeleteFile");
             return new ResponseModel<string>(ErrorCode.success, "");

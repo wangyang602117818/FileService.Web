@@ -1,5 +1,6 @@
 ﻿using FileService.Business;
 using FileService.Model;
+using FileService.Util;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization;
 using System;
@@ -16,28 +17,78 @@ namespace FileService.Converter
     public class VideoConverter : IConverter
     {
         public static string ExePath = AppDomain.CurrentDomain.BaseDirectory + "ffmpeg.exe";
+        MongoFile mongoFile = new MongoFile();
+        Files files = new Files();
+        FilesWrap filesWrap = new FilesWrap();
         Ts ts = new Ts();
         M3u8 m3u8 = new M3u8();
         Business.Task task = new Business.Task();
-        public void Convert(FileItem fileItem)
+        static object o = new object();
+        public void Convert(FileItem taskItem)
         {
-            BsonDocument outputDocument = fileItem.Message["Output"].AsBsonDocument;
-            string fileName = fileItem.Message["FileName"].AsString;
+            BsonDocument outputDocument = taskItem.Message["Output"].AsBsonDocument;
+            string fileName = taskItem.Message["FileName"].AsString;
+            ObjectId filesWrapId = taskItem.Message["FileId"].AsObjectId;
+
             VideoOutPut output = BsonSerializer.Deserialize<VideoOutPut>(outputDocument);
-            switch (output.Format)
+
+            int processCount = taskItem.Message["ProcessCount"].AsInt32;
+            string fullPath = taskItem.Message["TempFolder"].AsString + fileName;
+            //第一次转换，文件肯定在共享文件夹
+            if (processCount == 0)
             {
-                case VideoOutPutFormat.M3u8:
-                    ConvertHls(fileItem.Message["_id"].AsObjectId, fileItem.Message["FileId"].ToString(), fileItem.Message["FileName"].AsString, output);
-                    break;
+                if (File.Exists(fullPath))
+                {
+                    FileStream fileStream = new FileStream(fullPath, FileMode.Open, FileAccess.Read);
+                    string md5 = fileStream.GetMD5();
+                    BsonDocument file = files.GetFileByMd5(md5);
+                    ObjectId id = ObjectId.Empty;
+                    if (file == null)
+                    {
+                        id = mongoFile.Upload(fileName, fileStream, null);
+                    }
+                    else
+                    {
+                        id = file["_id"].AsObjectId;
+                    }
+                    filesWrap.UpdateFileId(filesWrapId, id);
+                    fileStream.Close();
+                    fileStream.Dispose();
+                }
+            }
+            else
+            {
+                lock (o)
+                {
+                    if (!File.Exists(fullPath))
+                    {
+                        string newPath = MongoFileBase.AppDataDir + fileName;
+                        if (!File.Exists(newPath))
+                        {
+                            BsonDocument filesWrap = new FilesWrap().FindOne(filesWrapId);
+                            mongoFile.SaveTo(filesWrap["FileId"].AsObjectId);
+                        }
+                        fullPath = newPath;
+                    }
+                }
+            }
+            if (output.Id != ObjectId.Empty)
+            {
+                switch (output.Format)
+                {
+                    case VideoOutPutFormat.M3u8:
+                        ConvertHls(taskItem.Message["_id"].AsObjectId, taskItem.Message["FileId"].ToString(), fullPath, output);
+                        break;
+                }
             }
         }
-        public void ConvertHls(ObjectId id, string fileId, string fileName, VideoOutPut output)
+        public void ConvertHls(ObjectId id, string fileId, string fullPath, VideoOutPut output)
         {
             string sengmentFileName = fileId.Substring(0, 18) + "%06d.ts";
             string outputPath = MongoFile.AppDataDir + output.Id.ToString() + "\\";
             if (!Directory.Exists(outputPath)) Directory.CreateDirectory(outputPath);
             int crf = 23 + (int)output.Quality * 6;
-            string cmd = "\"" + ExePath + "\"" + " -i " + "\"" + MongoFile.AppDataDir + fileName + "\"" + " -crf " + crf + " -f hls -hls_list_size 0 -hls_segment_filename " + "\"" + outputPath + sengmentFileName + "\" \"" + outputPath + Path.GetFileNameWithoutExtension(fileName) + ".m3u8" + "\"";
+            string cmd = "\"" + ExePath + "\"" + " -i " + "\"" + fullPath + "\"" + " -crf " + crf + " -f hls -hls_list_size 0 -hls_segment_filename " + "\"" + outputPath + sengmentFileName + "\" \"" + outputPath + Path.GetFileNameWithoutExtension(fullPath) + ".m3u8" + "\"";
             Process process = new Process()
             {
                 StartInfo = new ProcessStartInfo(cmd)
@@ -64,7 +115,7 @@ namespace FileService.Converter
                 }
             }
             process.WaitForExit();
-            HlsToMongo(outputPath, output.Id.ToString(), fileId, Path.GetFileNameWithoutExtension(fileName) + ".m3u8", totalDuration, output.Flag);
+            HlsToMongo(outputPath, output.Id.ToString(), fileId, Path.GetFileNameWithoutExtension(fullPath) + ".m3u8", totalDuration, output.Flag);
         }
         public void HlsToMongo(string path, string m3u8FileId, string sourceFileId, string fileNameM3u8, int duration, string flag)
         {

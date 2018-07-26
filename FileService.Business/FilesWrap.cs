@@ -10,6 +10,10 @@ namespace FileService.Business
     public class FilesWrap : ModelBase<Data.FilesWrap>
     {
         public FilesWrap() : base(new Data.FilesWrap()) { }
+        public long CountByFileId(ObjectId fileId)
+        {
+            return mongoData.CountByFileId(fileId);
+        }
         public void InsertImage(ObjectId id, ObjectId fileId, string fileName, long length, string from, string contentType, BsonArray thumbnail, BsonArray access, string owner)
         {
             BsonDocument filesWrap = new BsonDocument()

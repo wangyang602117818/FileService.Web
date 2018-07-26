@@ -31,25 +31,28 @@ namespace FileService.Converter
 
             int processCount = taskItem.Message["ProcessCount"].AsInt32;
             Stream fileStream = null;
+            string fullPath = taskItem.Message["TempFolder"].AsString + fileName;
             //第一次转换，文件肯定在共享文件夹
             if (processCount == 0)
             {
-                string sharedFolder = taskItem.Message["TempFolder"].AsString;
-                fileStream = new FileStream(sharedFolder + fileName, FileMode.Open, FileAccess.Read);
-                if (fileStream != null)
+                if (File.Exists(fullPath))
                 {
-                    string md5 = fileStream.GetMD5();
-                    BsonDocument file = files.GetFileByMd5(md5);
-                    ObjectId id = ObjectId.Empty;
-                    if (file == null)
+                    fileStream = new FileStream(fullPath, FileMode.Open, FileAccess.Read);
+                    if (fileStream != null)
                     {
-                        id = mongoFile.Upload(fileName, fileStream, null);
+                        string md5 = fileStream.GetMD5();
+                        BsonDocument file = files.GetFileByMd5(md5);
+                        ObjectId id = ObjectId.Empty;
+                        if (file == null)
+                        {
+                            id = mongoFile.Upload(fileName, fileStream, null);
+                        }
+                        else
+                        {
+                            id = file["_id"].AsObjectId;
+                        }
+                        filesWrap.UpdateFileId(filesWrapId, id);
                     }
-                    else
-                    {
-                        id = file["_id"].AsObjectId;
-                    }
-                    filesWrap.UpdateFileId(filesWrapId, id);
                 }
             }
             else

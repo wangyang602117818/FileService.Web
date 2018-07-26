@@ -27,8 +27,19 @@ namespace FileService.Web.Controllers
         public ActionResult Get(string id)
         {
             BsonDocument fileWrap = filesWrap.FindOne(ObjectId.Parse(id));
-            GridFSDownloadStream stream = mongoFile.DownLoad(fileWrap["FileId"].AsObjectId);
-            return File(stream, fileWrap["ContentType"].AsString, fileWrap["FileName"].AsString);
+            ObjectId fileId = fileWrap["FileId"].AsObjectId;
+            string fileName = fileWrap["FileName"].AsString;
+            if (fileId == ObjectId.Empty)
+            {
+                string tempFilePath = AppDomain.CurrentDomain.BaseDirectory + AppSettings.tempFileDir + fileWrap["CreateTime"].ToUniversalTime().ToString("yyyyMMdd") + "\\" + fileName;
+                FileStream fileStream = new FileStream(tempFilePath, FileMode.Open, FileAccess.Read);
+                return File(fileStream, fileWrap["ContentType"].AsString, fileName);
+            }
+            else
+            {
+                GridFSDownloadStream stream = mongoFile.DownLoad(fileWrap["FileId"].AsObjectId);
+                return File(stream, fileWrap["ContentType"].AsString, fileName);
+            }
         }
         public ActionResult GetConvert(string id)
         {

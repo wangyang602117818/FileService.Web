@@ -493,7 +493,15 @@ namespace FileService.Web.Controllers
 
                 ObjectId fileId = ObjectId.GenerateNewId();
 
-                filesWrap.InsertAttachment(fileId, ObjectId.Empty, file.FileName, file.InputStream.Length, Request.Headers["AppName"], file.ContentType, files, access, Request.Headers["UserName"] ?? User.Identity.Name);
+                filesWrap.InsertAttachment(fileId, 
+                    ObjectId.Empty, 
+                    file.FileName, 
+                    file.InputStream.Length, 
+                    Request.Headers["AppName"], 
+                    file.ContentType, 
+                    files, 
+                    access, 
+                    Request.Headers["UserName"] ?? User.Identity.Name);
 
                 string handlerId = converter.GetHandlerId();
                 //office转换任务
