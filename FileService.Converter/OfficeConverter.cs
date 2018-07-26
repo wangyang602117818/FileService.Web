@@ -11,7 +11,7 @@ using System.Diagnostics;
 
 namespace FileService.Converter
 {
-    public class OfficeConverter : IConverter
+    public class OfficeConverter : Converter
     {
         Files files = new Files();
         FilesWrap filesWrap = new FilesWrap();
@@ -20,21 +20,49 @@ namespace FileService.Converter
         MongoFile mongoFile = new MongoFile();
         MongoFileConvert mongoFileConvert = new MongoFileConvert();
         static object o = new object();
-        public void Convert(FileItem fileItem)
+        public override void Convert(FileItem taskItem)
         {
-            ObjectId oldFileId = fileItem.Message["Output"]["_id"].AsObjectId;
-            if (oldFileId != ObjectId.Empty && filesConvert.FindOne(oldFileId) != null) mongoFileConvert.Delete(oldFileId);
-            string fileName = fileItem.Message["FileName"].AsString;
-            string sourceFullPath = MongoFileBase.AppDataDir + fileName;
+            ObjectId fileWrapId = taskItem.Message["FileId"].AsObjectId;
+            BsonDocument fileWrap = filesWrap.FindOne(fileWrapId);
+            string fileName = taskItem.Message["FileName"].AsString;
+            int processCount = taskItem.Message["ProcessCount"].AsInt32;
+            string fullPath = taskItem.Message["TempFolder"].AsString + fileName;
+            if (processCount == 0)
+            {
+                if (File.Exists(fullPath))
+                {
+                    SaveFileFromSharedFolder(fileWrapId, fullPath);
+                }
+            }
+            else
+            {
+                if (!File.Exists(fullPath))
+                {
+                    string newPath = MongoFileBase.AppDataDir + fileName;
+                    if (!File.Exists(newPath))
+                    {
+                        BsonDocument filesWrap = new FilesWrap().FindOne(fileWrapId);
+                        mongoFile.SaveTo(filesWrap["FileId"].AsObjectId);
+                    }
+                    fullPath = newPath;
+                }
+            }
+            ObjectId oldFileId = ObjectId.Empty;
+            if (fileWrap != null)
+            {
+                oldFileId = taskItem.Message["Output"]["_id"].AsObjectId;
+                if (oldFileId != ObjectId.Empty && filesConvert.FindOne(oldFileId) != null) mongoFileConvert.Delete(oldFileId);
+            }
+            
             string destinationFullPath = MongoFileBase.AppDataDir + Path.GetFileNameWithoutExtension(fileName) + ".pdf";
             //转换office方法
-            ObjectId outputId = ConvertOffice(sourceFullPath, destinationFullPath, fileItem.Message["FileId"].AsObjectId);
+            ObjectId outputId = ConvertOffice(fullPath, destinationFullPath, fileWrapId);
             //更新 fs.files表
-            filesWrap.UpdateSubFileId(fileItem.Message["FileId"].AsObjectId, oldFileId, outputId);
+            filesWrap.UpdateSubFileId(fileWrapId, oldFileId, outputId);
             //更新 task 表
-            task.UpdateOutPutId(fileItem.Message["_id"].AsObjectId, outputId);
+            task.UpdateOutPutId(taskItem.Message["_id"].AsObjectId, outputId);
             if (File.Exists(destinationFullPath)) File.Delete(destinationFullPath);
-            if (File.Exists(sourceFullPath)) File.Delete(sourceFullPath);
+            if (File.Exists(fullPath)) File.Delete(fullPath);
         }
         public ObjectId ConvertOffice(string sourcePath, string destinationPath, ObjectId sourceFileId)
         {

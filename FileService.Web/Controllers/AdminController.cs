@@ -561,7 +561,7 @@ namespace FileService.Web.Controllers
                     if (filesConvert.FindOne(bson["_id"].AsObjectId) != null) mongoFileConvert.Delete(bson["_id"].AsObjectId);
                 }
             }
-            if (filesWrap.CountByFileId(fileWrap["FileId"].AsObjectId) == 1)
+            if (filesWrap.CountByFileId(fileWrap["FileId"].AsObjectId) == 1 && fileWrap["FileId"].AsObjectId != ObjectId.Empty)
             {
                 mongoFile.Delete(fileWrap["FileId"].AsObjectId);
             }
@@ -574,7 +574,7 @@ namespace FileService.Web.Controllers
         [AllowAnonymous]
         public ActionResult Test()
         {
-            return View();  
+            return View();
         }
     }
 }

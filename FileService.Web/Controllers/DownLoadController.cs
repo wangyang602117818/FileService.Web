@@ -48,13 +48,17 @@ namespace FileService.Web.Controllers
         }
         public ActionResult GetZipInnerFile(string id, string fileName)
         {
-            GridFSDownloadStream stream = mongoFile.DownLoadSeekable(ObjectId.Parse(id));
+            BsonDocument fileWrap = filesWrap.FindOne(ObjectId.Parse(id));
+            ObjectId fileId = fileWrap["FileId"].AsObjectId;
+            GridFSDownloadStream stream = mongoFile.DownLoadSeekable(fileId);
             Stream file = stream.GetFileInZip(fileName);
             return File(file, "application/octet-stream", fileName);
         }
         public ActionResult GetRarInnerFile(string id, string fileName)
         {
-            GridFSDownloadStream stream = mongoFile.DownLoadSeekable(ObjectId.Parse(id));
+            BsonDocument fileWrap = filesWrap.FindOne(ObjectId.Parse(id));
+            ObjectId fileId = fileWrap["FileId"].AsObjectId;
+            GridFSDownloadStream stream = mongoFile.DownLoadSeekable(fileId);
             Stream file = stream.GetFileInRar(fileName);
             return File(file, "application/octet-stream", fileName);
         }

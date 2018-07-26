@@ -12,14 +12,14 @@ using System.IO;
 
 namespace FileService.Converter
 {
-    public class ImageConverter : IConverter
+    public class ImageConverter : Converter
     {
         MongoFile mongoFile = new MongoFile();
         Files files = new Files();
         FilesWrap filesWrap = new FilesWrap();
         Thumbnail thumbnail = new Thumbnail();
 
-        public void Convert(FileItem taskItem)
+        public override void Convert(FileItem taskItem)
         {
             BsonDocument outputDocument = taskItem.Message["Output"].AsBsonDocument;
             string fileName = taskItem.Message["FileName"].AsString;
@@ -38,21 +38,7 @@ namespace FileService.Converter
                 if (File.Exists(fullPath))
                 {
                     fileStream = new FileStream(fullPath, FileMode.Open, FileAccess.Read);
-                    if (fileStream != null)
-                    {
-                        string md5 = fileStream.GetMD5();
-                        BsonDocument file = files.GetFileByMd5(md5);
-                        ObjectId id = ObjectId.Empty;
-                        if (file == null)
-                        {
-                            id = mongoFile.Upload(fileName, fileStream, null);
-                        }
-                        else
-                        {
-                            id = file["_id"].AsObjectId;
-                        }
-                        filesWrap.UpdateFileId(filesWrapId, id);
-                    }
+                    SaveFileFromSharedFolder(filesWrapId, fileName, fileStream);
                 }
             }
             else

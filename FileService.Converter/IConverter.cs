@@ -1,6 +1,9 @@
 ﻿using FileService.Business;
+using FileService.Util;
+using MongoDB.Bson;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -10,5 +13,48 @@ namespace FileService.Converter
     interface IConverter
     {
         void Convert(FileItem fileItem);
+    }
+    public class Converter : IConverter
+    {
+        Files files = new Files();
+        FilesWrap filesWrap = new FilesWrap();
+        MongoFile mongoFile = new MongoFile();
+        public virtual void Convert(FileItem fileItem)
+        {
+
+        }
+        public void SaveFileFromSharedFolder(ObjectId filesWrapId, string fullPath)
+        {
+            FileStream fileStream = new FileStream(fullPath, FileMode.Open, FileAccess.Read);
+            string md5 = fileStream.GetMD5();
+            BsonDocument file = files.GetFileByMd5(md5);
+            ObjectId id = ObjectId.Empty;
+            if (file == null)
+            {
+                id = mongoFile.Upload(Path.GetFileName(fullPath), fileStream, null);
+            }
+            else
+            {
+                id = file["_id"].AsObjectId;
+            }
+            filesWrap.UpdateFileId(filesWrapId, id);
+            fileStream.Close();
+            fileStream.Dispose();
+        }
+        public void SaveFileFromSharedFolder(ObjectId filesWrapId, string fileName, Stream fileStream)
+        {
+            string md5 = fileStream.GetMD5();
+            BsonDocument file = files.GetFileByMd5(md5);
+            ObjectId id = ObjectId.Empty;
+            if (file == null)
+            {
+                id = mongoFile.Upload(fileName, fileStream, null);
+            }
+            else
+            {
+                id = file["_id"].AsObjectId;
+            }
+            filesWrap.UpdateFileId(filesWrapId, id);
+        }
     }
 }

@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace FileService.Converter
 {
-    public class RarConverter: IConverter
+    public class RarConverter: Converter
     {
         Files files = new Files();
         FilesWrap filesWrap = new FilesWrap();
@@ -20,25 +20,47 @@ namespace FileService.Converter
         Business.Task task = new Business.Task();
         MongoFile mongoFile = new MongoFile();
         MongoFileConvert mongoFileConvert = new MongoFileConvert();
-        public void Convert(FileItem fileItem)
+        public override void Convert(FileItem taskItem)
         {
-            ObjectId fileId = fileItem.Message["FileId"].AsObjectId;
-            BsonDocument file = files.FindOne(fileId);
-            if (file != null)
+            ObjectId fileWrapId = taskItem.Message["FileId"].AsObjectId;
+            BsonDocument fileWrap = filesWrap.FindOne(fileWrapId);
+            string fileName = taskItem.Message["FileName"].AsString;
+
+            int processCount = taskItem.Message["ProcessCount"].AsInt32;
+            string fullPath = taskItem.Message["TempFolder"].AsString + fileName;
+            if (processCount == 0)
             {
-                BsonArray array = file["metadata"]["Files"].AsBsonArray;
+                if (File.Exists(fullPath))
+                {
+                    SaveFileFromSharedFolder(fileWrapId, fullPath);
+                }
+            }
+            else
+            {
+                if (!File.Exists(fullPath))
+                {
+                    string newPath = MongoFileBase.AppDataDir + fileName;
+                    if (!File.Exists(newPath))
+                    {
+                        BsonDocument filesWrap = new FilesWrap().FindOne(fileWrapId);
+                        mongoFile.SaveTo(filesWrap["FileId"].AsObjectId);
+                    }
+                    fullPath = newPath;
+                }
+            }
+            if (fileWrap != null)
+            {
+                BsonArray array = fileWrap["Files"].AsBsonArray;
                 foreach (BsonDocument bson in array)
                 {
                     ObjectId _id = bson["_id"].AsObjectId;
                     if (filesConvert.FindOne(_id) != null) mongoFileConvert.Delete(_id);
                 }
             }
-            string fileName = fileItem.Message["FileName"].AsString;
-            string fullSourceFileName = MongoFileBase.AppDataDir + fileName;
-            BsonArray subFiles = ConvertRar(fileId, fullSourceFileName);
+            BsonArray subFiles = ConvertRar(fileWrapId, fullPath);
             //更新 fs.files表
-            filesWrap.ReplaceSubFiles(fileId, subFiles);
-            if (File.Exists(fullSourceFileName)) File.Delete(fullSourceFileName);
+            filesWrap.ReplaceSubFiles(fileWrapId, subFiles);
+            if (File.Exists(fullPath)) File.Delete(fullPath);
         }
         public BsonArray ConvertRar(ObjectId sourceFileId, string fullSourceFileName)
         {

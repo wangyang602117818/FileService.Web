@@ -89,9 +89,13 @@ namespace FileService.Converter
                         {
                             new RarConverter().Convert(item);
                         }
-                        else
+                        else if (OfficeFormatList.offices.Contains(fileExt))
                         {
                             new OfficeConverter().Convert(item);
+                        }
+                        else
+                        {
+                            new DefaultConverter().Convert(item);
                         }
                         break;
                 }
