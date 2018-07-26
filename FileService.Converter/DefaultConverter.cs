@@ -24,7 +24,9 @@ namespace FileService.Converter
                 if (File.Exists(fullPath))
                 {
                     SaveFileFromSharedFolder(fileWrapId, fullPath);
+                    File.Delete(fullPath);
                 }
+
             }
         }
     }
