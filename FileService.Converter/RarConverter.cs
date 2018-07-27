@@ -62,7 +62,7 @@ namespace FileService.Converter
             filesWrap.ReplaceSubFiles(fileWrapId, subFiles);
             if (File.Exists(fullPath)) File.Delete(fullPath);
         }
-        public BsonArray ConvertRar(ObjectId sourceFileId, string fullSourceFileName)
+        public BsonArray ConvertRar(ObjectId fileWrapId, string fullSourceFileName)
         {
             BsonArray result = new BsonArray();
             using (RarArchive rarArchive = RarArchive.Open(fullSourceFileName))
@@ -77,8 +77,7 @@ namespace FileService.Converter
                         string fileExt = Path.GetExtension(reader.Entry.Key).ToLower();
                         if (OfficeFormatList.offices.Contains(fileExt))
                         {
-
-                            string destPath = MongoFileBase.AppDataDir + Path.GetFileNameWithoutExtension(fullSourceFileName) + "\\";
+                            string destPath = MongoFileBase.AppDataDir + fileWrapId.ToString() + "\\";
                             if (!Directory.Exists(destPath)) Directory.CreateDirectory(destPath);
                             string sourcePath = destPath + Path.GetFileName(reader.Entry.Key);
                             //office文件存到磁盘
@@ -88,7 +87,7 @@ namespace FileService.Converter
                             }
                             //转换之后的文件id
                             string destinationPath = destPath + Path.GetFileNameWithoutExtension(reader.Entry.Key) + ".pdf";
-                            ObjectId newFileId = new OfficeConverter().ConvertOffice(sourcePath, destinationPath, sourceFileId);
+                            ObjectId newFileId = new OfficeConverter().ConvertOffice(sourcePath, destinationPath, fileWrapId);
                             if (File.Exists(sourcePath)) File.Delete(sourcePath);
                             if (Directory.Exists(destPath)) Directory.Delete(destPath, true);
                             //id列表
@@ -104,7 +103,7 @@ namespace FileService.Converter
                             ObjectId newFileId = mongoFileConvert.Upload(Path.GetFileName(reader.Entry.Key), reader.OpenEntryStream(), new BsonDocument()
                             {
                                 {"From","fs.files" },
-                                {"SourceId",sourceFileId },
+                                {"SourceId",fileWrapId },
                                 {"FileType","attachment" },
                                 {"ContentType","application/octet-stream" },
                             });
