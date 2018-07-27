@@ -24,7 +24,6 @@ namespace FileService.Web.Controllers
         string tempFileDirectory = AppDomain.CurrentDomain.BaseDirectory + AppSettings.tempFileDir + DateTime.Now.ToString("yyyyMMdd") + "\\";
         Application application = new Application();
         MongoFile mongoFile = new MongoFile();
-        Files files = new Files();
         FilesWrap filesWrap = new FilesWrap();
         Converter converter = new Converter();
         Business.Task task = new Business.Task();
@@ -264,8 +263,8 @@ namespace FileService.Web.Controllers
         [HttpPost]
         public ActionResult VideoCapture(UploadVideoCPModel uploadVideoCPModel)
         {
-            BsonDocument file = files.FindOne(ObjectId.Parse(uploadVideoCPModel.FileId));
-            if (file == null) return new ResponseModel<string>(ErrorCode.record_not_exist, "");
+            BsonDocument fileWrap = filesWrap.FindOne(ObjectId.Parse(uploadVideoCPModel.FileId));
+            if (fileWrap == null) return new ResponseModel<string>(ErrorCode.record_not_exist, "");
             string[] imageBase64 = uploadVideoCPModel.FileBase64.Split(',');
             byte[] image = Convert.FromBase64String(Base64SecureURL.Decode(imageBase64.Length >= 2 ? imageBase64[1] : imageBase64[0]));
             ObjectId id = ObjectId.GenerateNewId();
@@ -274,7 +273,7 @@ namespace FileService.Web.Controllers
                 {"_id",id },
                 {"SourceId",ObjectId.Parse(uploadVideoCPModel.FileId) },
                 {"Length",image.Length },
-                {"FileName",Path.GetFileNameWithoutExtension(file["filename"].AsString)+".png" },
+                {"FileName",Path.GetFileNameWithoutExtension(fileWrap["FileName"].AsString)+".png" },
                 {"File",image },
                 {"CreateTime",DateTime.Now }
             };

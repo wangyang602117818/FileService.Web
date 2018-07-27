@@ -105,6 +105,36 @@ class ResourceItem extends React.Component {
         )
     }
 }
+class UpdateAccess extends React.Component {
+    constructor(props) {
+        super(props);
+
+    }
+    render() {
+        return (
+            <div className="update_access_con">
+                <div className="update_access_disp">
+                    {culture.access_authority}:
+
+                </div>
+                <table>
+                    <tbody>
+                        <tr>
+                            <td colSpan="2">公司</td>
+                        </tr>
+                        <tr>
+                            <td>{culture.department}:</td>
+                            <td>
+                                
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+            </div>
+        )
+    }
+}
 class Resources extends React.Component {
     constructor(props) {
         super(props);
@@ -352,6 +382,7 @@ class Resources extends React.Component {
                         show={this.state.accessToggle}
                         onShowChange={this.onChangeAccessShow.bind(this)} /> : null
                 }
+                <UpdateAccess />
             </div>
         );
     }
