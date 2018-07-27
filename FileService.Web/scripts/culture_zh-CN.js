@@ -144,6 +144,7 @@ var culture = {
     code: "编码",
 
     access_authority: "访问权限",
+    change_access: "修改权限",
     authority_type: "权限类型",
     only_current: "仅当前",
     current_and_sub: "当前及下属",

@@ -133,12 +133,13 @@ var urls = {
     },
     resources: {
         getUrl: appDomain + "admin/getfiles",
+        getAccessUrl: appDomain + "data/getfileaccess",
         getThumbnailMetadataUrl: appDomain + "admin/getthumbnailmetadata",
         getSubFileMetadataUrl: appDomain + "admin/getsubfilemetadata",
         getM3u8MetadataUrl: appDomain + "admin/getm3u8metadata",
-        uploadImageUrl: appDomain + "upload/image1",
-        uploadVideoUrl: appDomain + "upload/video1",
-        uploadAttachmentUrl: appDomain + "upload/attachment1",
+        uploadImageUrl: appDomain + "upload/image",
+        uploadVideoUrl: appDomain + "upload/video",
+        uploadAttachmentUrl: appDomain + "upload/attachment",
     },
     config: {
         getUrl: appDomain + "admin/getconfigs",

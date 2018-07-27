@@ -144,6 +144,7 @@ var culture = {
     code: "Code",
 
     access_authority: "AccessAuthority",
+    change_access: "ChangeAccess",
     authority_type: "AuthorityType",
     only_current: "Current",
     current_and_sub: "Current&Sub",

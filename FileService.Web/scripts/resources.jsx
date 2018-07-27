@@ -119,8 +119,11 @@ class Resources extends React.Component {
             subFileArray: [],
             fileId: "",
             fileName: "",
+            innerFileName: "",
             subComponent: null,
             ////////////
+            accessToggle: true,
+            access: [],
             pageIndex: 1,
             pageSize: localStorage.handler_pageSize || 10,
             pageCount: 1,
@@ -163,6 +166,13 @@ class Resources extends React.Component {
             this.setState({ subFileToggle: false });
         } else {
             this.setState({ subFileToggle: true });
+        }
+    }
+    onChangeAccessShow() {
+        if (this.state.accessToggle) {
+            this.setState({ accessToggle: false });
+        } else {
+            this.setState({ accessToggle: true });
         }
     }
     deleteItem(e) {
@@ -214,6 +224,7 @@ class Resources extends React.Component {
     onIdClick(e) {
         var fileId = "",
             fileType = "",
+            innerFileName = "",
             fileName = "",
             subComponent = null;
         if (e.target.nodeName.toLowerCase() == "span") {
@@ -225,6 +236,7 @@ class Resources extends React.Component {
             fileName = e.target.getAttribute("data-filename");
             fileType = e.target.getAttribute("data-type");
         }
+        innerFileName = fileName;
         this.state.subFileArray = [];
         switch (fileType) {
             case "image":
@@ -248,12 +260,21 @@ class Resources extends React.Component {
                 fileName = culture.fileList + "(" + fileName + ")";
                 break;
         }
+        this.getFileAccess(fileId);
         this.setState({
             fileName: fileName,
+            innerFileName: innerFileName,
             fileId: fileId,
             subFileShow: true,
             subComponent: subComponent
         });
+    }
+    getFileAccess(fileId) {
+        if (fileId.length != 24) return;
+        http.get(urls.resources.getAccessUrl + "/" + fileId, function (data) {
+            if (data.code == 0) this.state.access = data.result;
+            this.setState({ access: this.state.access });
+        }.bind(this));
     }
     getThumbnail(fileId) {
         if (fileId.length != 24) return;
@@ -325,6 +346,11 @@ class Resources extends React.Component {
                         fileId={this.state.fileId}
                         fileName={this.state.fileName}
                     /> : null
+                }
+                {this.state.subFileShow ?
+                    <TitleArrow title={culture.change_access + "(" + this.state.innerFileName + ")"}
+                        show={this.state.accessToggle}
+                        onShowChange={this.onChangeAccessShow.bind(this)} /> : null
                 }
             </div>
         );

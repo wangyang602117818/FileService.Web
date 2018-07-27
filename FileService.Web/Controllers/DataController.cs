@@ -18,6 +18,11 @@ namespace FileService.Web.Controllers
         VideoCapture videoCapture = new VideoCapture();
         Task task = new Task();
         Converter converter = new Converter();
+        public ActionResult GetFileAccess(string id)
+        {
+            BsonDocument document = filesWrap.FindOne(ObjectId.Parse(id));
+            return new ResponseModel<BsonArray>(ErrorCode.success, document["Access"].AsBsonArray);
+        }
         public ActionResult GetVideoCaptureIds(string id)
         {
             BsonDocument document = filesWrap.FindOne(ObjectId.Parse(id));
