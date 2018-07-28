@@ -151,5 +151,5 @@ var culture = {
     current_and_sup: "Current&Sup",
     end: "End",
 
-    process_count: "ProcessCount"
+    process_count: "ProCount"
 }

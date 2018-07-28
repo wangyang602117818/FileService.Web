@@ -8,13 +8,13 @@
                 <thead>
                     <tr>
                         <th width="15%">{culture.fileId}</th>
-                        <th width="24%">{culture.fileName}</th>
+                        <th width="20%">{culture.fileName}</th>
                         <th width="6%">{culture.handler}</th>
-                        <th width="8%">{culture.state}</th>
-                        <th width="5%">{culture.percent}</th>
+                        <th width="9%">{culture.state}</th>
+                        <th width="4%">{culture.percent}</th>
                         <td width="6%">{culture.process_count}</td>
-                        <th width="12%">{culture.createTime}</th>
-                        <th width="12%">{culture.completedTime}</th>
+                        <th width="14%">{culture.createTime}</th>
+                        <th width="14%">{culture.completedTime}</th>
                         <th width="4%">{culture.type}</th>
                         <th width="4%">{culture.view}</th>
                         <th width="4%">{culture.reDo}</th>

@@ -117,19 +117,21 @@ class UpdateAccess extends React.Component {
                     {culture.access_authority}:
 
                 </div>
-                <table>
+                <table className="table_general">
                     <tbody>
                         <tr>
-                            <td colSpan="2">公司</td>
+                            <td colSpan="2" className="tdCenter" width="100%">{culture.company}</td>
                         </tr>
                         <tr>
                             <td>{culture.department}:</td>
                             <td>
-                                
+                               
                             </td>
                         </tr>
                     </tbody>
                 </table>
+              
+             
                 
             </div>
         )
