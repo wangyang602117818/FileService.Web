@@ -18,7 +18,7 @@ namespace FileService.Converter
         Files files = new Files();
         FilesWrap filesWrap = new FilesWrap();
         Thumbnail thumbnail = new Thumbnail();
-
+        static object o = new object();
         public override void Convert(FileItem taskItem)
         {
             BsonDocument outputDocument = taskItem.Message["Output"].AsBsonDocument;
@@ -35,10 +35,13 @@ namespace FileService.Converter
             //第一次转换，文件肯定在共享文件夹
             if (processCount == 0)
             {
-                if (File.Exists(fullPath))
+                lock (o)
                 {
-                    fileStream = new FileStream(fullPath, FileMode.Open, FileAccess.Read);
-                    SaveFileFromSharedFolder(filesWrapId, fileName, fileStream);
+                    if (File.Exists(fullPath))
+                    {
+                        fileStream = new FileStream(fullPath, FileMode.Open, FileAccess.Read);
+                        SaveFileFromSharedFolder(filesWrapId, fileName, fileStream);
+                    }
                 }
             }
             else

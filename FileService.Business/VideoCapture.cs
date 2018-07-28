@@ -14,5 +14,9 @@ namespace FileService.Business
         {
             return mongoData.DeleteBySourceId(sourceId);
         }
+        public long CountBySourceId(ObjectId sourceId)
+        {
+            return mongoData.CountBySourceId(sourceId);
+        }
     }
 }

@@ -14,5 +14,9 @@ namespace FileService.Data
         {
             return MongoCollection.DeleteMany(FilterBuilder.Eq("SourceId", sourceId)).IsAcknowledged;
         }
+        public long CountBySourceId(ObjectId sourceId)
+        {
+            return MongoCollection.Count(FilterBuilder.Eq("SourceId", sourceId));
+        }
     }
 }

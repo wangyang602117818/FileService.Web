@@ -149,6 +149,7 @@
 
 .convert_flag {
     margin-right: 10px;
+    cursor:default;
 }
 
     .convert_flag .flag_txt {

@@ -22,7 +22,6 @@
             this.props.videoOk(this.state);
             this.setState({
                 format: 0,
-                quality: 0,
                 flag: ""
             });
         }

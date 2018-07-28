@@ -20,6 +20,7 @@ namespace FileService.Converter
         MongoFile mongoFile = new MongoFile();
         Files files = new Files();
         FilesWrap filesWrap = new FilesWrap();
+        VideoCapture videoCapture = new VideoCapture();
         Ts ts = new Ts();
         M3u8 m3u8 = new M3u8();
         Business.Task task = new Business.Task();
@@ -37,15 +38,20 @@ namespace FileService.Converter
             //第一次转换，文件肯定在共享文件夹
             if (processCount == 0)
             {
-                if (File.Exists(fullPath))
+                //确保文件只存一份
+                lock (o)
                 {
-                    SaveFileFromSharedFolder(filesWrapId, fullPath);
-                    //第一次转换，先截一张图
-                    ConvertVideoCp(taskItem.Message["_id"].AsObjectId, taskItem.Message["FileId"].ToString(), fullPath);
+                    if (File.Exists(fullPath))
+                    {
+                        SaveFileFromSharedFolder(filesWrapId, fullPath);
+                        //第一次转换，先截一张图
+                        ConvertVideoCp(taskItem.Message["_id"].AsObjectId, taskItem.Message["FileId"].ToString(), fullPath);
+                    }
                 }
             }
             else
             {
+                //确保只下载一份
                 lock (o)
                 {
                     if (!File.Exists(fullPath))
@@ -72,36 +78,39 @@ namespace FileService.Converter
         }
         public void ConvertVideoCp(ObjectId id, string fileWrapId, string fullPath)
         {
-            string cpPath = MongoFileBase.AppDataDir + Path.GetFileNameWithoutExtension(fullPath) + ".jpg";
-            string cmd = "\"" + ExePath + "\" -ss 00:00:01 -i \"" + fullPath + "\" -vframes 1 \"" + cpPath + "\"";
-            Process process = new Process()
+            if (videoCapture.CountBySourceId(ObjectId.Parse(fileWrapId)) <= 0)
             {
-                StartInfo = new ProcessStartInfo(cmd)
+                string cpPath = MongoFileBase.AppDataDir + Path.GetFileNameWithoutExtension(fullPath) + ".jpg";
+                string cmd = "\"" + ExePath + "\" -ss 00:00:01 -i \"" + fullPath + "\" -vframes 1 \"" + cpPath + "\"";
+                Process process = new Process()
                 {
-                    UseShellExecute = false,
-                    CreateNoWindow = true,
-                    RedirectStandardError = true
-                }
-            };
-            process.Start();
-            process.WaitForExit();
-            if (File.Exists(cpPath))
-            {
-                FileStream imageStream = new FileStream(cpPath, FileMode.Open, FileAccess.Read);
-                ObjectId cpId = ObjectId.GenerateNewId();
-                BsonDocument document = new BsonDocument()
-                {
-                    {"_id",cpId },
-                    {"SourceId",ObjectId.Parse(fileWrapId) },
-                    {"Length",imageStream.Length },
-                    {"FileName",Path.GetFileName(cpPath) },
-                    {"File",imageStream.ToBytes() },
-                    {"CreateTime",DateTime.Now }
+                    StartInfo = new ProcessStartInfo(cmd)
+                    {
+                        UseShellExecute = false,
+                        CreateNoWindow = true,
+                        RedirectStandardError = true
+                    }
                 };
-                new VideoCapture().Insert(document);
-                filesWrap.AddVideoCapture(ObjectId.Parse(fileWrapId), cpId);
-                imageStream.Close();
-                imageStream.Dispose();
+                process.Start();
+                process.WaitForExit();
+                if (File.Exists(cpPath))
+                {
+                    FileStream imageStream = new FileStream(cpPath, FileMode.Open, FileAccess.Read);
+                    ObjectId cpId = ObjectId.GenerateNewId();
+                    BsonDocument document = new BsonDocument()
+                    {
+                        {"_id",cpId },
+                        {"SourceId",ObjectId.Parse(fileWrapId) },
+                        {"Length",imageStream.Length },
+                        {"FileName",Path.GetFileName(cpPath) },
+                        {"File",imageStream.ToBytes() },
+                        {"CreateTime",DateTime.Now }
+                    };
+                    videoCapture.Insert(document);
+                    filesWrap.AddVideoCapture(ObjectId.Parse(fileWrapId), cpId);
+                    imageStream.Close();
+                    imageStream.Dispose();
+                }
                 File.Delete(cpPath);
             }
         }

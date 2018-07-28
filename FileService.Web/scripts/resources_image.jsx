@@ -292,7 +292,12 @@ class AddImage extends React.Component {
         }, function () {
             if (this.refs.accessAuthority)
                 this.refs.accessAuthority.getCompanyData();
-        }.bind(this));
+            }.bind(this));
+        e.stopPropagation();
+    }
+    clickAccess(e) {
+        var id = e.target.parentElement.id;
+        console.log(id);
     }
     fileChanged(e) {
         this.input = e.target;
@@ -374,7 +379,12 @@ class AddImage extends React.Component {
                                 {
                                     this.state.accesses.map(function (item, i) {
                                         return (
-                                            <span className="convert_flag" title={JSON.stringify(item)} key={i} id={i} data-code={item.companyId}>
+                                            <span className="convert_flag"
+                                                title={JSON.stringify(item)}
+                                                key={i}
+                                                id={i}
+                                                data-code={item.companyId}
+                                                onClick={this.clickAccess.bind(this)}>
                                                 <span className="flag_txt">{item.companyName}</span>
                                                 <span className="flag_txt flag_del"
                                                     onClick={this.delAccess.bind(this)}>×</span>
@@ -401,7 +411,9 @@ class AddImage extends React.Component {
                             </td>
                         </tr>
                         <tr>
-                            <td colSpan="3"><input type="button" name="btnImg" className="button"
+                            <td colSpan="3"><input type="button"
+                                name="btnImg"
+                                className="button"
                                 value={this.state.buttonValue}
                                 disabled={this.state.buttonDisabled}
                                 onClick={this.upload.bind(this)} /> <font color="red">{this.state.errorMsg}</font></td>
