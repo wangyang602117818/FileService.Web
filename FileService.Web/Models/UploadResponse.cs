@@ -9,6 +9,7 @@ namespace FileService.Web.Models
     {
         public string FileId { get; set; }
         public string FileName { get; set; }
+        public long FileSize { get; set; }
         public IEnumerable<ThumbnailItem> Thumbnail { get; set; }
     }
     public class ThumbnailItem
@@ -20,6 +21,7 @@ namespace FileService.Web.Models
     {
         public string FileId { get; set; }
         public string FileName { get; set; }
+        public long FileSize { get; set; }
         public IEnumerable<VideoItem> Videos { get; set; }
     }
     public class VideoItem
@@ -31,5 +33,6 @@ namespace FileService.Web.Models
     {
         public string FileId { get; set; }
         public string FileName { get; set; }
+        public long FileSize { get; set; }
     }
 }

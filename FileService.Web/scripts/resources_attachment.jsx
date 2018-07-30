@@ -6,7 +6,8 @@
             accessShow: false,
             buttonValue: culture.upload,
             buttonDisabled: false,
-            accesses: []
+            accesses: [],
+            existsCompany: []
         }
     }
     showAccess(e) {
@@ -15,11 +16,15 @@
     delAccess(e) {
         var id = e.target.parentElement.id;
         this.state.accesses.splice(id, 1);
+        this.state.existsCompany.splice(id, 1);
         this.setState({
-            accesses: this.state.accesses
+            accesses: this.state.accesses,
+            existsCompany: this.state.existsCompany
         }, function () {
-            if (this.refs.accessAuthority)
-                this.refs.accessAuthority.getCompanyData();
+                if (this.refs.accessAuthority) {
+                    this.refs.accessAuthority.emptyDefault();
+                    this.refs.accessAuthority.getCompanyData();
+                }
         }.bind(this));
     }
     fileChanged(e) {
@@ -30,7 +35,8 @@
     }
     accessOk(companyId, companyCode, companyName, authority,codeArray, nameArray, realCodes, userArray, success) {
         this.state.accesses.push({ companyId, companyCode, companyName, authority, codeArray, nameArray, realCodes, userArray });
-        this.setState({ accesses: this.state.accesses }, success);
+        this.state.existsCompany.push(companyCode);
+        this.setState({ accesses: this.state.accesses, existsCompany: this.state.existsCompany}, success);
     }
     upload() {
         var that = this;
@@ -40,7 +46,9 @@
             for (var i = 0; i < this.state.accesses.length; i++) {
                 access.push({
                     company: this.state.accesses[i].companyCode,
+                    companyDisplay: this.state.accesses[i].companyName,
                     departmentCodes: this.state.accesses[i].codeArray,
+                    departmentDisplay: this.state.accesses[i].nameArray,
                     authority: this.state.accesses[i].authority,
                     accessCodes: this.state.accesses[i].realCodes,
                     accessUsers: this.state.accesses[i].userArray
@@ -99,7 +107,7 @@
                             <td colSpan="4">
                                 {this.state.accessShow ? <AccessAuthority
                                     //用于判断下拉框不显示该条数据
-                                    existsCompany={this.state.accesses}
+                                    existsCompany={this.state.existsCompany}
                                     ref="accessAuthority"
                                     accessOk={this.accessOk.bind(this)} /> : null}
                             </td>

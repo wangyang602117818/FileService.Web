@@ -34,7 +34,7 @@ class CompanyDropDownList extends React.Component {
                 for (var i = 0; i < data.result.length; i++) {
                     var exists = false;
                     for (var j = 0; j < this.props.existsCompany.length; j++) {
-                        if (this.props.existsCompany[j].companyCode == data.result[i].DepartmentCode) exists = true;
+                        if (this.props.existsCompany[j] == data.result[i].DepartmentCode) exists = true;
                     }
                     if (!exists) companys.push(data.result[i]);
                 }

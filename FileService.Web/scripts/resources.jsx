@@ -112,28 +112,90 @@ class UpdateAccess extends React.Component {
     }
     render() {
         return (
-            <div className="update_access_con">
-                <div className="update_access_disp">
-                    {culture.access_authority}:
-
-                </div>
-                <table className="table_general">
-                    <tbody>
-                        <tr>
-                            <td colSpan="2" className="tdCenter" width="100%">{culture.company}</td>
-                        </tr>
-                        <tr>
-                            <td>{culture.department}:</td>
-                            <td>
-                               
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-              
-             
-                
+            <div className={this.props.show ? "update_access_con show" : "update_access_con hidden"}>
+                {this.props.departments.map(function (item, i) {
+                    var codeArray = [];
+                    var nameArray = [];
+                    var authority = "0";
+                    var userArray = [];
+                    for (var k = 0; k < this.props.access.length; k++) {
+                        if (this.props.access[k].Company == item.DepartmentCode) {
+                            codeArray = this.props.access[k].DepartmentCodes;
+                            nameArray = this.props.access[k].DepartmentDisplay;
+                            authority = this.props.access[k].Authority;
+                            userArray = this.props.access[k].AccessUsers;
+                        }
+                    }
+                    return <UpdateAccessItem key={i}
+                        companyId={item._id.$oid}
+                        companyCode={item.DepartmentCode}
+                        department={item}
+                        codeArray={codeArray}
+                        nameArray={nameArray}
+                        userArray={userArray}
+                        authority={authority} />
+                }.bind(this))}
             </div>
+        )
+    }
+}
+class UpdateAccessItem extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {}
+    }
+    componentDidMount() {
+        this.refs.departmentDropDownListWrap.getData(this.props.companyId, function () {
+            this.refs.departmentDropDownListWrap.unSelectNode(this.props.codeArray);  //反选
+        }.bind(this));
+        this.refs.userDropDownListWrap.getData(this.props.companyCode);
+    }
+    onSelectNodeChanged() {
+
+    }
+    onRealNodeChanged() {
+
+    }
+    onSelectUserChange() {
+
+    }
+    render() {
+        return (
+            <table className="table_general">
+                <tbody>
+                    <tr>
+                        <td colSpan="2" style={{ textAlign: "center" }}>{this.props.department.DepartmentName}</td>
+                    </tr>
+                    <tr>
+                        <td width="10%">{culture.department}:</td>
+                        <td width="90%">
+                            <DepartmentDropDownListWrap
+                                ref="departmentDropDownListWrap"
+                                department_bar={true}
+                                codeArray={this.props.codeArray}
+                                nameArray={this.props.nameArray}
+                                onSelectNodeChanged={this.onSelectNodeChanged.bind(this)}
+                                onRealNodeChanged={this.onRealNodeChanged.bind(this)}
+                            />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td >{culture.user}:</td>
+                        <td >
+                            <UserDropDownListWrap
+                                ref="userDropDownListWrap"
+                                userArray={this.props.userArray}
+                                onSelectUserChange={this.onSelectUserChange.bind(this)}
+                            />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colSpan="2">
+                            <input type="button" value={culture.save} className="button" />
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
         )
     }
 }
@@ -156,6 +218,7 @@ class Resources extends React.Component {
             ////////////
             accessToggle: true,
             access: [],
+            departments: [],
             pageIndex: 1,
             pageSize: localStorage.handler_pageSize || 10,
             pageCount: 1,
@@ -293,6 +356,7 @@ class Resources extends React.Component {
                 break;
         }
         this.getFileAccess(fileId);
+        this.getAllCompany();
         this.setState({
             fileName: fileName,
             innerFileName: innerFileName,
@@ -306,6 +370,12 @@ class Resources extends React.Component {
         http.get(urls.resources.getAccessUrl + "/" + fileId, function (data) {
             if (data.code == 0) this.state.access = data.result;
             this.setState({ access: this.state.access });
+        }.bind(this));
+    }
+    getAllCompany() {
+        http.get(urls.department.getAllDepartment, function (data) {
+            if (data.code == 0) this.state.departments = data.result;
+            this.setState({ departments: this.state.departments });
         }.bind(this));
     }
     getThumbnail(fileId) {
@@ -384,7 +454,13 @@ class Resources extends React.Component {
                         show={this.state.accessToggle}
                         onShowChange={this.onChangeAccessShow.bind(this)} /> : null
                 }
-                <UpdateAccess />
+                {this.state.subFileShow ?
+                    <UpdateAccess show={this.state.accessToggle}
+                        departments={this.state.departments}
+                        access={this.state.access}
+                    /> : null
+                }
+
             </div>
         );
     }

@@ -98,6 +98,7 @@ namespace FileService.Web.Controllers
                 {
                     FileId = fileId.ToString(),
                     FileName = file.FileName,
+                    FileSize = file.InputStream.Length,
                     Thumbnail = thumbnail.Select(sel => new ThumbnailItem() { FileId = sel["_id"].ToString(), Flag = sel["Flag"].ToString() })
                 });
             }
@@ -171,6 +172,7 @@ namespace FileService.Web.Controllers
                 {
                     FileId = fileId.ToString(),
                     FileName = file.FileName,
+                    FileSize = file.InputStream.Length,
                     Videos = videos.Select(sel => new VideoItem() { FileId = sel["_id"].ToString(), Flag = sel["Flag"].AsString })
                 });
             }
@@ -255,7 +257,8 @@ namespace FileService.Web.Controllers
                 response.Add(new AttachmentResponse()
                 {
                     FileId = fileId.ToString(),
-                    FileName = file.FileName
+                    FileName = file.FileName,
+                    FileSize = file.InputStream.Length,
                 });
             }
             return new ResponseModel<IEnumerable<AttachmentResponse>>(ErrorCode.success, response);
@@ -313,7 +316,7 @@ namespace FileService.Web.Controllers
             }
             return new ResponseModel<List<string>>(ErrorCode.success, response, response.Count);
         }
-        
+
         private void InserTask(string handlerId, ObjectId fileId, string fileName, string type, BsonDocument outPut, BsonArray access)
         {
             converter.AddCount(handlerId, 1);
