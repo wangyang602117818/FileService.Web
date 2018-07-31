@@ -309,9 +309,10 @@
     }
 
 .department_bar .current {
-    background-color: #eb8c00;
-    border-color: #f60;
-    color: #fff
+    
+    border: 1px solid #f1c399;
+    background-color: #f8e1cc;
+    
 }
 
     .department_bar .current:hover {

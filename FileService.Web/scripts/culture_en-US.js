@@ -89,6 +89,7 @@ var culture = {
     size: "Size",
     uploadDate: "UploadDate",
     from: "From",
+    owner:"Owner",
     fileType: "FileType",
     dol: "Dol",
     del: "Del",

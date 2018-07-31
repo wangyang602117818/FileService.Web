@@ -127,11 +127,11 @@ class AccessAuthority extends React.Component {
                 companyCode: "",
                 companyName: ""
             },
-            authority: 0,
-            codeArray: [],
-            nameArray: [],
+            authority: this.props.authority || "0",
+            codeArray: this.props.codeArray || [],
+            nameArray: this.props.nameArray || [],
             realCodes: [],
-            userArray: []
+            userArray: this.props.userArray || []
         }
     }
     //由外部调用，主动拉取company数据
@@ -144,6 +144,15 @@ class AccessAuthority extends React.Component {
                 companyId: "",
                 companyCode: "",
                 companyName: ""
+            }
+        });
+    }
+    defaultCompany(companyId, companyCode, companyName) {
+        this.setState({
+            company: {
+                companyId: companyId,
+                companyCode: companyCode,
+                companyName: companyName
             }
         });
     }
@@ -219,6 +228,7 @@ class AccessAuthority extends React.Component {
                         <td width="77%">
                             <CompanyDropDownList
                                 ref="companyDropDownListWrap"
+                                accessUpdate={this.props.accessUpdate}
                                 companyCode={this.state.company.companyCode}
                                 existsCompany={this.props.existsCompany}
                                 afterCompanyInit={this.afterCompanyInit.bind(this)}
@@ -231,6 +241,7 @@ class AccessAuthority extends React.Component {
                         <td>
                             <DepartmentDropDownListWrap
                                 ref="departmentDropDownListWrap"
+                                authority={this.state.authority}
                                 department_bar={true}
                                 codeArray={this.state.codeArray}
                                 nameArray={this.state.nameArray}
@@ -268,7 +279,8 @@ class AddImage extends React.Component {
             buttonDisabled: false,
             thumbnails: [],
             accesses: [],
-            existsCompany: []
+            existsCompany: [],
+            
         }
     }
     showConvert(e) {
@@ -305,18 +317,46 @@ class AddImage extends React.Component {
         this.state.accesses.splice(id, 1);
         this.state.existsCompany.splice(id, 1);
         this.setState({
+            accessUpdate: false,
             accesses: this.state.accesses,
             existsCompany: this.state.existsCompany
         }, function () {
-                if (this.refs.accessAuthority) {
-                    this.refs.accessAuthority.emptyDefault();
-                    this.refs.accessAuthority.getCompanyData();
-                }
+            if (this.refs.accessAuthority) {
+                this.refs.accessAuthority.emptyDefault();
+                this.refs.accessAuthority.getCompanyData();
+            }
         }.bind(this));
         e.stopPropagation();
     }
     clickAccess(e) {
-        var id = e.target.parentElement.id;
+        var id = e.target.parentElement.getAttribute("data-id");
+        var code = e.target.parentElement.getAttribute("data-code");
+        var name = e.target.parentElement.getAttribute("data-name");
+        var json = JSON.parse(e.target.parentElement.getAttribute("title"));
+
+        var nameArray = json.nameArray;
+        var codeArray = json.codeArray;
+        var userArray = json.userArray;
+        //for (var i = 0; i < this.state.existsCompany.length; i++) {
+        //    if (this.state.existsCompany[i] == code) {
+        //        this.state.existsCompany.splice(i, 1);
+        //        break;
+        //    }
+        //}
+        //this.setState({
+        //    accessUpdate: true,
+        //    existsCompany: this.state.existsCompany,
+        //    updateCompanyCode: code,
+        //    updateDepartmentCodes: codeArray,
+        //    updateDepartmentNames: nameArray,
+        //    updateUsers: userArray
+        //}, function () {
+        //    if (this.refs.accessAuthority) {
+        //        this.refs.accessAuthority.defaultCompany(id, code, name);
+        //        this.refs.accessAuthority.getCompanyData();
+
+        //    }
+        //}.bind(this));
     }
     fileChanged(e) {
         this.input = e.target;
@@ -404,8 +444,11 @@ class AddImage extends React.Component {
                                                 title={JSON.stringify(item)}
                                                 key={i}
                                                 id={i}
-                                                data-code={item.companyId}>
-                                                <span className="flag_txt">{item.companyName}</span>
+                                                data-id={item.companyId}
+                                                data-code={item.companyCode}
+                                                data-name={item.companyName}
+                                            >
+                                                <span className="flag_txt" onClick={this.clickAccess.bind(this)}>{item.companyName}</span>
                                                 <span className="flag_txt flag_del"
                                                     onClick={this.delAccess.bind(this)}>×</span>
                                             </span>

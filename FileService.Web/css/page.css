@@ -155,14 +155,14 @@
     .convert_flag .flag_txt {
         display: inline-block;
         padding: 3px 5px;
-        border: 1px solid #f1c399;
-        background-color: #f8e1cc;
-        border-radius: 3px;
+        background-color: #eb8c00;
+        border-color: #f60;
+        color:#fff;
     }
 
     .convert_flag .flag_del {
         margin-left: -1px;
-        color: #888;
+        /*color: #888;*/
         cursor: pointer;
     }
 

@@ -58,7 +58,7 @@ class CompanyDropDownList extends React.Component {
     render() {
         return (
             <select name="company" value={this.props.companyCode || this.state.companyCode}
-                onChange={this.props.companyChanged.bind(this)}>
+                onChange={this.props.companyChanged.bind(this)} disabled={this.props.accessUpdate ? true : false}>
                 {this.state.companys.map(function (item, i) {
                     return <option value={item.DepartmentCode} key={i}>{item.DepartmentName}</option>
                 }.bind(this))}
@@ -455,7 +455,7 @@ class DepartmentDropDownListWrap extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            department_authority: "0"
+            department_authority: this.props.authority
         }
     }
     departmentAuthorityChange(e) {
@@ -584,9 +584,9 @@ class UserDropDownList extends React.Component {
         this.state = {
             users: [],
             pageEnd: false,
-            selectedUsers: []
+            selectedUsers: this.props.selectedUsers || []
         }
-        this.companyId = "";
+        this.companyCode = "";
         this.pageIndex = 1;
         this.pageSize = 15;
         this.filter = "";
@@ -596,18 +596,18 @@ class UserDropDownList extends React.Component {
         this.setState({ users: [], pageEnd: false });
     }
     //由外部调用
-    getData(companyId) {
-        if (this.companyId == "") {
-            this.companyId = companyId;
+    getData(companyCode) {
+        if (this.companyCode == "") {
+            this.companyCode = companyCode;
         } else {
-            if (this.companyId !== companyId) {
-                this.companyId = companyId;
+            if (this.companyCode !== companyCode) {
+                this.companyCode = companyCode;
                 this.pageIndex = 1;
                 this.filter = "";
                 this.setState({ users: [], pageEnd: false, selectedUsers: [] })
             }
         }
-        var url = urls.user.getCompanyUsersUrl + "?company=" + companyId + "&pageIndex=" + this.pageIndex + "&pageSize=" + this.pageSize + "&filter=" + this.filter;
+        var url = urls.user.getCompanyUsersUrl + "?company=" + companyCode + "&pageIndex=" + this.pageIndex + "&pageSize=" + this.pageSize + "&filter=" + this.filter;
         this.getDataInternal(url);
     }
     getDataInternal(url) {
@@ -663,7 +663,7 @@ class UserDropDownList extends React.Component {
 
         if (scrollBottom <= 0 && !this.state.pageEnd) {
             this.pageIndex = this.pageIndex + 1;
-            this.getData(this.companyId);
+            this.getData(this.companyCode);
         }
     }
     //小键盘的方向键向下
@@ -767,15 +767,15 @@ class UserDropDownListWrap extends React.Component {
             inputValue: "",
 
         }
-        this.companyId = null;
+        this.companyCode = null;
         this.timeInterval = null;
     }
     groupInputFocus(e) {
         this.refs.user_input.focus();
     }
-    getData(companyId) {
-        this.refs.userDdl.getData(companyId);
-        this.companyId = companyId;
+    getData(companyCode) {
+        this.refs.userDdl.getData(companyCode);
+        this.companyCode = companyCode;
     }
     onSelectUserChange(users) {
         this.props.onSelectUserChange(users);
@@ -797,7 +797,7 @@ class UserDropDownListWrap extends React.Component {
             this.refs.userDdl.pageIndex = 1;
             this.refs.userDdl.filter = value;
             this.refs.userDdl.onInput();
-            this.refs.userDdl.getData(this.companyId, value);
+            this.refs.userDdl.getData(this.companyCode, value);
         }.bind(this), 200);
     }
     onKbPress(e) {
@@ -840,6 +840,7 @@ class UserDropDownListWrap extends React.Component {
                 </div>
                 <UserDropDownList ref="userDdl"
                     userShow={this.props.userShow}
+                    selectedUsers={this.props.selectedUsers || []}
                     onSelectUserChange={this.onSelectUserChange.bind(this)} />
             </React.Fragment>
         )

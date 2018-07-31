@@ -89,6 +89,7 @@ var culture = {
     size: "大小",
     uploadDate: "上传时间",
     from: "来源",
+    owner: "所有者",
     fileType: "文件类型",
     dol: "下载",
     del: "删除",

@@ -78,6 +78,17 @@ var http = {
         xhr.setRequestHeader("AuthCode", authCode);
         xhr.send();
     },
+    getSync: function (url, success, error) {
+        var xhr = new XMLHttpRequest();
+        xhr.onload = function (event) {
+            var target = event.srcElement || event.target;
+            success(JSON.parse(target.responseText));
+        };
+        if (error) xhr.onerror = error;
+        xhr.open('get', url, false);
+        xhr.setRequestHeader("AuthCode", authCode);
+        xhr.send();
+    },
     getFile: function (url, success, error) {
         var xhr = new XMLHttpRequest();
         xhr.onload = function (event) {

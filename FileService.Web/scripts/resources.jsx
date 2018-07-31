@@ -8,11 +8,12 @@
                 <thead>
                     <tr>
                         <th width="18%">{culture.fileId}</th>
-                        <th width="30%">{culture.fileName}</th>
+                        <th width="28%">{culture.fileName}</th>
                         <th width="8%">{culture.size}</th>
-                        <th width="14%">{culture.uploadDate}</th>
+                        <th width="12%">{culture.uploadDate}</th>
                         <th width="10%">{culture.from}</th>
-                        <th width="8%">{culture.fileType}</th>
+                        <th width="6%">{culture.owner}</th>
+                        <th width="6%">{culture.fileType}</th>
                         <th width="4%">{culture.view}</th>
                         <th width="4%">{culture.dol}</th>
                         <th width="4%">{culture.del}</th>
@@ -89,6 +90,7 @@ class ResourceItem extends React.Component {
                 <td>{convertFileSize(this.props.resource.Length)}</td>
                 <td>{parseBsonTime(this.props.resource.CreateTime)}</td>
                 <td dangerouslySetInnerHTML={{ __html: this.props.resource.From || culture.unknow }}></td>
+                <td>{this.props.resource.Owner}</td>
                 <td dangerouslySetInnerHTML={{ __html: this.props.resource.FileType }}></td>
                 <td>
                     <i className="iconfont icon-view"
@@ -113,6 +115,7 @@ class UpdateAccess extends React.Component {
     render() {
         return (
             <div className={this.props.show ? "update_access_con show" : "update_access_con hidden"}>
+
                 {this.props.departments.map(function (item, i) {
                     var codeArray = [];
                     var nameArray = [];
@@ -135,6 +138,8 @@ class UpdateAccess extends React.Component {
                         userArray={userArray}
                         authority={authority} />
                 }.bind(this))}
+                <br/>
+                <input type="button" value={culture.save} className="button" />
             </div>
         )
     }
@@ -149,6 +154,7 @@ class UpdateAccessItem extends React.Component {
             this.refs.departmentDropDownListWrap.unSelectNode(this.props.codeArray);  //反选
         }.bind(this));
         this.refs.userDropDownListWrap.getData(this.props.companyCode);
+
     }
     onSelectNodeChanged() {
 
@@ -164,13 +170,14 @@ class UpdateAccessItem extends React.Component {
             <table className="table_general">
                 <tbody>
                     <tr>
-                        <td colSpan="2" style={{ textAlign: "center" }}>{this.props.department.DepartmentName}</td>
+                        <td colSpan="2">{this.props.department.DepartmentName}</td>
                     </tr>
                     <tr>
                         <td width="10%">{culture.department}:</td>
                         <td width="90%">
                             <DepartmentDropDownListWrap
                                 ref="departmentDropDownListWrap"
+                                authority={this.props.authority}
                                 department_bar={true}
                                 codeArray={this.props.codeArray}
                                 nameArray={this.props.nameArray}
@@ -185,13 +192,9 @@ class UpdateAccessItem extends React.Component {
                             <UserDropDownListWrap
                                 ref="userDropDownListWrap"
                                 userArray={this.props.userArray}
+                                selectedUsers={this.props.userArray}
                                 onSelectUserChange={this.onSelectUserChange.bind(this)}
                             />
-                        </td>
-                    </tr>
-                    <tr>
-                        <td colSpan="2">
-                            <input type="button" value={culture.save} className="button" />
                         </td>
                     </tr>
                 </tbody>
@@ -355,28 +358,32 @@ class Resources extends React.Component {
                 fileName = culture.fileList + "(" + fileName + ")";
                 break;
         }
-        this.getFileAccess(fileId);
-        this.getAllCompany();
+        var access = this.getFileAccess(fileId);
+        var departments = this.getAllCompany();
         this.setState({
             fileName: fileName,
             innerFileName: innerFileName,
             fileId: fileId,
             subFileShow: true,
-            subComponent: subComponent
+            subComponent: subComponent,
+            access: access,
+            departments: departments
         });
     }
     getFileAccess(fileId) {
         if (fileId.length != 24) return;
-        http.get(urls.resources.getAccessUrl + "/" + fileId, function (data) {
-            if (data.code == 0) this.state.access = data.result;
-            this.setState({ access: this.state.access });
+        var access = [];
+        http.getSync(urls.resources.getAccessUrl + "/" + fileId, function (data) {
+            if (data.code == 0) access = data.result;
         }.bind(this));
+        return access;
     }
     getAllCompany() {
-        http.get(urls.department.getAllDepartment, function (data) {
-            if (data.code == 0) this.state.departments = data.result;
-            this.setState({ departments: this.state.departments });
+        var departments = [];
+        http.getSync(urls.department.getAllDepartment, function (data) {
+            if (data.code == 0) departments = data.result;
         }.bind(this));
+        return departments;
     }
     getThumbnail(fileId) {
         if (fileId.length != 24) return;
