@@ -189,6 +189,7 @@
     <Compile Include="Models\Department.cs" />
     <Compile Include="Models\ErrorCode.cs" />
     <Compile Include="Models\ResponseModel.cs" />
+    <Compile Include="Models\UpdateAccess.cs" />
     <Compile Include="Models\UpdateApplication.cs" />
     <Compile Include="Models\UpdateConfig.cs" />
     <Compile Include="Models\UpdateTask.cs" />

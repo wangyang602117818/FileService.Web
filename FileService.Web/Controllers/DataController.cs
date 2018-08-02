@@ -23,6 +23,27 @@ namespace FileService.Web.Controllers
             BsonDocument document = filesWrap.FindOne(ObjectId.Parse(id));
             return new ResponseModel<BsonArray>(ErrorCode.success, document["Access"].AsBsonArray);
         }
+        [HttpPost]
+        public ActionResult UpdateFileAccess(UpdateAccess updateAccess)
+        {
+            for (var i = 0; i < updateAccess.Access.Count; i++)
+            {
+                if (updateAccess.Access[i].DepartmentCodes == null) updateAccess.Access[i].DepartmentCodes = new string[] { };
+                if (updateAccess.Access[i].DepartmentDisplay == null) updateAccess.Access[i].DepartmentDisplay = new string[] { };
+                if (updateAccess.Access[i].AccessCodes == null) updateAccess.Access[i].AccessCodes = new string[] { };
+                if (updateAccess.Access[i].AccessUsers == null) updateAccess.Access[i].AccessUsers = new string[] { };
+            }
+            BsonArray access = new BsonArray(updateAccess.Access.Select(s => s.ToBsonDocument()));
+            Log(updateAccess.FileId.ToString(), "UpdateFileAccess");
+            if (filesWrap.UpdateAccess(ObjectId.Parse(updateAccess.FileId), access) && task.UpdateAccess(ObjectId.Parse(updateAccess.FileId), access))
+            {
+                return new ResponseModel<string>(ErrorCode.success, "");
+            }
+            else
+            {
+                return new ResponseModel<string>(ErrorCode.server_exception, "");
+            }
+        }
         public ActionResult GetVideoCaptureIds(string id)
         {
             BsonDocument document = filesWrap.FindOne(ObjectId.Parse(id));

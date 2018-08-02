@@ -17,8 +17,8 @@ namespace FileService.Web.Models
         public string Company { get; set; }
         [Required]
         public string CompanyDisplay { get; set; }
-        public string[] Department { get; set; }
-        public string[] DepartmentDisplay { get; set; }
+        public List<string> Department { get; set; }
+        public List<string> DepartmentDisplay { get; set; }
         public string Role { get; set; }
         [BsonIgnoreIfNull]
         public DateTime? CreateTime { get; set; }

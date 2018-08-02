@@ -157,7 +157,7 @@
         padding: 3px 5px;
         background-color: #eb8c00;
         border-color: #f60;
-        color:#fff;
+        color: #fff;
     }
 
     .convert_flag .flag_del {
@@ -239,6 +239,14 @@
     /*padding: 10px;*/
 }
 
+    .update_access_con .update_access_item {
+        display:flex;
+        align-items:center;
+        height:30px;
+        
+        border:1px solid #e4e4e4;
+    }
+
     .update_access_con table {
         margin-top: 5px;
         /*margin-left: 5px;*/
@@ -246,7 +254,6 @@
         width: 100%;
     }
 
-        .update_access_con td {
-            text-align:left;
-        }
-
+    .update_access_con td {
+        text-align: left;
+    }

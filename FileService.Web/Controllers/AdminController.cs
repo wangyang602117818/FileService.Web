@@ -429,6 +429,8 @@ namespace FileService.Web.Controllers
         {
             BsonDocument bsonUser = user.GetUser(addUser.UserName);
             if (bsonUser == null) { addUser.CreateTime = DateTime.Now; } else { addUser.Modified = true; }
+            if (addUser.Department == null) addUser.Department = new List<string>();
+            if (addUser.DepartmentDisplay == null) addUser.DepartmentDisplay = new List<string>();
             if (string.IsNullOrEmpty(addUser.Role)) addUser.Role = "none";
             addUser.PassWord = addUser.PassWord.ToMD5();
             BsonDocument document = addUser.ToBsonDocument();
@@ -518,9 +520,9 @@ namespace FileService.Web.Controllers
             return new ResponseModel<IEnumerable<BsonDocument>>(ErrorCode.success, department.GetAllDepartment(), department.Count());
         }
         [Authorize(Roles = "admin")]
-        public ActionResult GetDepartment(string id)
+        public ActionResult GetDepartment(string code)
         {
-            return new ResponseModel<BsonDocument>(ErrorCode.success, department.FindOne(ObjectId.Parse(id)));
+            return new ResponseModel<BsonDocument>(ErrorCode.success, department.GetByCode(code));
         }
         [Authorize(Roles = "admin")]
         public ActionResult DeleteDepartment(string id)

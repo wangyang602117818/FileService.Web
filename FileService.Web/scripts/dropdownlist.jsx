@@ -1,66 +1,87 @@
 ﻿////////////////////////////////////////////////////
 //////////////////CompanyDropDownList/////////////////////
 ///////////////////////////////////////////////////
+//class CompanyDropDownList extends React.Component {
+//    constructor(props) {
+//        super(props);
+//        this.state = {
+//            companyId: "",
+//            companyCode: "",
+//            companys: [],
+//        }
+//    }
+//    getCompanyIdByCode(code) {
+//        for (var i = 0; i < this.state.companys.length; i++) {
+//            if (this.state.companys[i].DepartmentCode == code) {
+//                return this.state.companys[i]._id.$oid;
+//            }
+//        }
+//    }
+//    getCompanyNameByCode(code) {
+//        for (var i = 0; i < this.state.companys.length; i++) {
+//            if (this.state.companys[i].DepartmentCode == code) {
+//                return this.state.companys[i].DepartmentName;
+//            }
+//        }
+//    }
+//    componentDidMount() {
+//        this.getData();
+//    }
+//    getData() {
+//        http.get(urls.department.getAllDepartment, function (data) {
+//            if (data.code == 0) {
+//                var companys = [];
+//                for (var i = 0; i < data.result.length; i++) {
+//                    var exists = false;
+//                    for (var j = 0; j < this.props.existsCompany.length; j++) {
+//                        if (this.props.existsCompany[j] == data.result[i].DepartmentCode) exists = true;
+//                    }
+//                    if (!exists) companys.push(data.result[i]);
+//                }
+//                this.setState({ companys: companys });
+//                if (companys.length > 0) {
+//                    this.setState({
+//                        companyId: companys[0]._id.$oid,
+//                        companyCode: companys[0].DepartmentCode
+//                    });
+//                    if (this.props.afterCompanyInit) this.props.afterCompanyInit(
+//                        companys[0]._id.$oid,
+//                        companys[0].DepartmentCode,
+//                        companys[0].DepartmentName);
+//                } else {
+//                    this.setState({ companyId: "", companyCode: "" });
+//                    if (this.props.afterCompanyInit) this.props.afterCompanyInit("", "", "");
+//                }
+//            }
+//        }.bind(this))
+//    }
+//    render() {
+//        return (
+//            <select name="company" value={this.props.companyCode || this.state.companyCode}
+//                onChange={this.props.companyChanged.bind(this)} disabled={this.props.accessUpdate ? true : false}>
+//                {this.state.companys.map(function (item, i) {
+//                    return <option value={item.DepartmentCode} key={i}>{item.DepartmentName}</option>
+//                }.bind(this))}
+//            </select>
+//        )
+//    }
+//}
+///////////////////Company组件//////////////////////
+//传入参数 data=[{code:"",name:""}]
+//         default="code"
+//用法 <CompanyDropDownList1 data=[] default="" onChange={} />
+///////////////////////////////////////////////////
 class CompanyDropDownList extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {
-            companyId: "",
-            companyCode: "",
-            companys: [],
-        }
-    }
-    getCompanyIdByCode(code) {
-        for (var i = 0; i < this.state.companys.length; i++) {
-            if (this.state.companys[i].DepartmentCode == code) {
-                return this.state.companys[i]._id.$oid;
-            }
-        }
-    }
-    getCompanyNameByCode(code) {
-        for (var i = 0; i < this.state.companys.length; i++) {
-            if (this.state.companys[i].DepartmentCode == code) {
-                return this.state.companys[i].DepartmentName;
-            }
-        }
-    }
-    componentDidMount() {
-        this.getData();
-    }
-    getData() {
-        http.get(urls.department.getAllDepartment, function (data) {
-            if (data.code == 0) {
-                var companys = [];
-                for (var i = 0; i < data.result.length; i++) {
-                    var exists = false;
-                    for (var j = 0; j < this.props.existsCompany.length; j++) {
-                        if (this.props.existsCompany[j] == data.result[i].DepartmentCode) exists = true;
-                    }
-                    if (!exists) companys.push(data.result[i]);
-                }
-                this.setState({ companys: companys });
-                if (companys.length > 0) {
-                    this.setState({
-                        companyId: companys[0]._id.$oid,
-                        companyCode: companys[0].DepartmentCode
-                    });
-                    if (this.props.afterCompanyInit) this.props.afterCompanyInit(
-                        companys[0]._id.$oid,
-                        companys[0].DepartmentCode,
-                        companys[0].DepartmentName);
-                } else {
-                    this.setState({ companyId: "", companyCode: "" });
-                    if (this.props.afterCompanyInit) this.props.afterCompanyInit("", "", "");
-                }
-            }
-        }.bind(this))
     }
     render() {
         return (
-            <select name="company" value={this.props.companyCode || this.state.companyCode}
-                onChange={this.props.companyChanged.bind(this)} disabled={this.props.accessUpdate ? true : false}>
-                {this.state.companys.map(function (item, i) {
-                    return <option value={item.DepartmentCode} key={i}>{item.DepartmentName}</option>
+            <select name="companyDDl"
+                value={this.props.default}
+                onChange={this.props.onChange.bind(this)}>
+                {this.props.data.map(function (item, i) {
+                    return <option value={item.code} key={i}>{item.name}</option>
                 }.bind(this))}
             </select>
         )
@@ -135,58 +156,500 @@ class DropDownLine extends React.Component {
         )
     }
 }
-class DepartmentDropDownList extends React.Component {
+//class DepartmentDropDownList extends React.Component {
+//    constructor(props) {
+//        super(props);
+//        this.state = {
+//            departments: [],
+//            selectedDepartments: []
+//        }
+//    }
+//    //工具，供外部使用
+//    getDepartmentNamesByCodes(codes) {
+//        var names = [];
+//        for (var i = 0; i < codes.length; i++) {
+//            var code = codes[i];
+//            for (var j = 0; j < this.state.departments.length; j++) {
+//                if (code == this.state.departments[j].DepartmentCode) {
+//                    names.push(this.state.departments[j].DepartmentName);
+//                }
+//            }
+//        }
+//        return names;
+//    }
+//    getAbsoluteLayer(code) {
+//        for (var i = 0; i < this.state.departments.length; i++) {
+//            if (code == this.state.departments[i].DepartmentCode)
+//                return {
+//                    LayerAbsolute: this.state.departments[i].LayerAbsolute,
+//                    Layer: this.state.departments[i].Layer
+//                };
+//        }
+//    }
+//    getSubDepartmentSingle(absoluteLayer) {
+//        var codes = [];
+//        var regex = new RegExp("^" + absoluteLayer + ".+");
+//        for (var i = 0; i < this.state.departments.length; i++) {
+//            if (regex.test(this.state.departments[i].LayerAbsolute)) {
+//                codes.push(this.state.departments[i].DepartmentCode);
+//            }
+//        }
+//        return codes;
+//    }
+//    getSupDepartmentSingle(absoluteLayer, layer) {//*
+//        var codes = [];
+//        //var newLayer = absoluteLayer.substring(0, absoluteLayer.lastIndexOf("-"));
+//        for (var i = 0; i < this.state.departments.length; i++) {
+//            var regex = new RegExp("^" + this.state.departments[i].LayerAbsolute + ".+");
+//            if (regex.test(absoluteLayer) && this.state.departments[i].Layer < layer) {
+//                codes.push(this.state.departments[i].DepartmentCode);
+//            }
+//        }
+//        return codes;
+//    }
+//    getSubDepartments(codes) {
+//        var newCodes = [];
+//        for (var i = 0; i < codes.length; i++) {
+//            if (newCodes.indexOf(codes[i]) == -1) newCodes.push(codes[i]);
+//            var absoluteLayer = this.getAbsoluteLayer(codes[i]).LayerAbsolute;
+//            var obj_code = this.getSubDepartmentSingle(absoluteLayer);
+//            for (var k = 0; k < obj_code.length; k++) {
+//                if (newCodes.indexOf(obj_code[k]) == -1) newCodes.push(obj_code[k]);
+//            }
+//        }
+//        return newCodes;
+//    }
+//    //工具，供外部使用,获取不重复的上级级部门列表 *
+//    getSupDepartments(codes) {
+//        var newCodes = [];
+//        for (var i = 0; i < codes.length; i++) {
+//            if (newCodes.indexOf(codes[i]) == -1) newCodes.push(codes[i]);
+//            var obj = this.getAbsoluteLayer(codes[i]);
+//            var absoluteLayer = obj.LayerAbsolute;
+//            var layer = obj.Layer;
+//            var obj_code = this.getSupDepartmentSingle(absoluteLayer, layer);
+//            for (var k = 0; k < obj_code.length; k++) {
+//                if (newCodes.indexOf(obj_code[k]) == -1) newCodes.push(obj_code[k]);
+//            }
+//        }
+//        return newCodes;
+//    }
+//    ddlClick(e) {
+//        var name = e.target.getAttribute("node-name");
+//        var code = e.target.getAttribute("node-code");
+//        var layer = e.target.getAttribute("layer");
+//        var absoluteLayer = e.target.getAttribute("layer-absolute");
+//        if (e.target.nodeName.toLowerCase() == "i") {
+//            var regex = new RegExp("^" + absoluteLayer + ".+");
+//            var virtualCollapse = null;
+//            var collapseLayer = null;  //内部折叠层
+//            for (var i = 0; i < this.state.departments.length; i++) {
+//                if (this.state.departments[i].LayerAbsolute == absoluteLayer) {  //当前点击的行
+//                    this.state.departments[i].VirtualCollapse = !this.state.departments[i].VirtualCollapse;
+//                    virtualCollapse = this.state.departments[i].VirtualCollapse;
+//                }
+//                //当前点击行的子节点
+//                if (regex.test(this.state.departments[i].LayerAbsolute)) {
+//                    //保证折叠内部的折叠不会随父节点一起打开
+//                    if (collapseLayer && new RegExp("^" + collapseLayer + ".+").test(this.state.departments[i].LayerAbsolute)) {
+//                        continue;
+//                    }
+//                    if (virtualCollapse == true) {  //折叠
+//                        this.state.departments[i].Collapse = true;
+//                    } else {  //展开
+//                        //遇到当前的dept是折叠的
+//                        if (this.state.departments[i].VirtualCollapse == true) {
+//                            collapseLayer = this.state.departments[i].LayerAbsolute;
+//                        } else {
+//                            collapseLayer = null;
+//                        }
+//                        this.state.departments[i].Collapse = false;
+//                    }
+//                }
+//            }
+//            this.setState({ departments: this.state.departments });
+//        }
+//        if (e.target.nodeName.toLowerCase() == "div" && e.target.className == "node") {
+//            this.clickNode(code);
+//        }
+//        e.stopPropagation();
+//    }
+//    clickNode(code) {
+//        var departmentCodes = [];
+//        var departmentNames = [];
+//        for (var i = 0; i < this.state.departments.length; i++) {
+//            if (this.state.departments[i].DepartmentCode == code) {
+//                this.state.departments[i].Select = !this.state.departments[i].Select;
+//            }
+//            if (this.state.departments[i].Select) {
+//                departmentCodes.push(this.state.departments[i].DepartmentCode);
+//                departmentNames.push(this.state.departments[i].DepartmentName);
+//            }
+//        }
+//        this.setState({ departments: this.state.departments });
+//        this.selectNode(departmentCodes, departmentNames);
+//    }
+//    selectNode(codes, names) {
+//        this.props.onSelectNodeChanged(codes, names);
+//    }
+//    //反选，input的内容反映到结构中,只需要传codes，会自动调用父组件的onSelectNodeChanged方法来初始化父组件状态
+//    unSelectNode(codes) {
+//        if (!codes) return;
+//        var departmentCodes = [];
+//        var departmentNames = [];
+//        for (var i = 0; i < this.state.departments.length; i++) {
+//            this.state.departments[i].Select = false;
+//            if (codes.indexOf(this.state.departments[i].DepartmentCode) > -1) {
+//                this.state.departments[i].Select = true;
+//                departmentCodes.push(this.state.departments[i].DepartmentCode);
+//                departmentNames.push(this.state.departments[i].DepartmentName);
+//            }
+//        }
+//        this.setState({ departments: this.state.departments });
+//        this.selectNode(departmentCodes, departmentNames);
+//    }
+//    //小键盘的方向键向下
+//    onKeyDown() {
+//        if (document.getElementsByClassName("ddl_department_con")[0].style.display == "none") return;
+//        var hasFocus = false;
+//        for (var i = 0; i < this.state.departments.length; i++) {
+//            if (this.state.departments[i].Focus) hasFocus = true;
+//        }
+//        if (hasFocus) {
+//            for (var i = 0; i < this.state.departments.length; i++) {
+//                if (this.state.departments[i].Focus == true) {
+//                    if (this.state.departments[i + 1]) {
+//                        this.state.departments[i].Focus = false;
+//                        this.state.departments[i + 1].Focus = true;
+//                    }
+//                    break;
+//                }
+//            }
+//        } else {
+//            this.state.departments[0].Focus = true;
+//        }
+//        this.setState({ departments: this.state.departments }, this.keyMoveAfter);
+//    }
+//    //小键盘的方向键向上
+//    onKeyUp() {
+//        if (document.getElementsByClassName("ddl_department_con")[0].style.display == "none") return;
+//        for (var i = 0; i < this.state.departments.length; i++) {
+//            if (this.state.departments[i].Focus == true) {
+//                this.state.departments[i].Focus = false;
+//                if (this.state.departments[i - 1]) {
+//                    this.state.departments[i - 1].Focus = true;
+//                } else {
+//                    this.state.departments[0].Focus = true;
+//                }
+//                break;
+//            }
+//        }
+//        this.setState({ departments: this.state.departments }, this.keyMoveAfter);
+//    }
+//    keyMoveAfter(e) {
+//        var ddl_department_con = document.getElementsByClassName("ddl_department_con")[0];
+//        var con_height = ddl_department_con.offsetHeight;
+//        var ddl_lines = ddl_department_con.getElementsByClassName("ddl_line");
+//        for (var i = 0; i < ddl_lines.length; i++) {
+//            if (ddl_lines[i].getAttribute("focus") == "true") {
+//                var virtualheight = ddl_lines[i].offsetTop - ddl_department_con.scrollTop + ddl_lines[i].clientHeight + 4;
+//                if (virtualheight >= ddl_department_con.clientHeight) {  //到底了
+//                    ddl_department_con.scrollTop = ddl_department_con.scrollTop + ddl_lines[i].clientHeight + 2;
+//                }
+//                var virtualmargintop = ddl_lines[i].offsetTop - ddl_department_con.scrollTop - 2;
+//                if (virtualmargintop <= 0) { //到顶了
+//                    ddl_department_con.scrollTop = ddl_department_con.scrollTop - ddl_lines[i].clientHeight - 2;
+//                }
+//            }
+//        }
+//    }
+//    onKeyEnter(e) {
+//        if (document.getElementsByClassName("ddl_department_con")[0].style.display == "none") return;
+//        for (var i = 0; i < this.state.departments.length; i++) {
+//            //if (this.state.users[i].Select == true) continue;
+//            if (this.state.departments[i].Focus == true) {
+//                //this.state.departments[i].Focus = false;
+//                //if (this.state.departments[i + 1]) {
+//                //    this.state.departments[i + 1].Focus = true;
+//                //}
+//                var department = this.state.departments[i].DepartmentCode;
+//                this.clickNode(department);
+//                break;
+//            }
+//        }
+//    }
+//    getData(companyId, success) {
+//        if (!companyId) return;
+//        http.get(urls.department.getDepartmentUrl + "/" + companyId, function (data) {
+//            if (data.code == 0) {
+//                var departments = this.assembleData(data.result);
+//                this.setState({ departments: departments });
+//            }
+//            if (success) success();
+//        }.bind(this));
+//    }
+//    assembleData(result) {
+//        var virtualData = [];
+//        var topLayerCount = result.Department.length;
+//        virtualData.push({
+//            DepartmentName: result.DepartmentName,
+//            DepartmentCode: result.DepartmentCode,
+//            Select: false,
+//            Collapse: false,
+//            VirtualCollapse: false,
+//            Focus: false,
+//            TopLayerCount: topLayerCount,
+//            SubCount: result.Department.length,
+//            Layer: 0,
+//            TotalLayer: 1,
+//            LayerAbsolute: "1-",
+//            IsEnd: false,
+//            DownLineHide: false,
+//            index: 0
+//        });
+//        this.assembleDataInternal(virtualData, result.Department, 1, "1", false, topLayerCount);
+//        return virtualData;
+//    }
+//    assembleDataInternal(virtualData, departments, layer, layerAbsolute, downLineHide, topLayerCount) {
+//        for (var i = 0; i < departments.length; i++) {
+//            //是否当前层的最后一个节点
+//            var isEnd = departments.length == i + 1;
+//            //当前层的子元素个数
+//            var subCount = departments[i].Department.length;
+//            var downLineHideInner = isEnd && subCount > 0;
+//            var downLineH = downLineHide || downLineHideInner;
+
+//            virtualData.push({
+//                DepartmentName: departments[i].DepartmentName,
+//                DepartmentCode: departments[i].DepartmentCode,
+//                Select: false,
+//                Collapse: false,
+//                VirtualCollapse: false,
+//                Focus: false,
+//                TopLayerCount: topLayerCount,
+//                SubCount: subCount,
+//                Layer: layer,
+//                TotalLayer: departments.length,
+//                LayerAbsolute: layerAbsolute + "-" + i,
+//                IsEnd: isEnd,
+//                DownLineHide: downLineH,
+//                Index: i
+//            });
+//            this.assembleDataInternal(virtualData,
+//                departments[i].Department,
+//                layer + 1,
+//                layerAbsolute + "-" + i,
+//                downLineH,
+//                topLayerCount);
+//        }
+//    }
+//    render() {
+//        return (
+//            <div className="ddl ddl_department_con"
+//                style={{ display: "none" }}
+//                onClick={this.ddlClick.bind(this)}
+//            >
+//                {this.state.departments.map(function (item, i) {
+//                    return (<DropDownLine
+//                        key={i}
+//                        department={item}
+//                        subCount={item.SubCount}
+//                        topLayerCount={item.TopLayerCount}
+//                        isEnd={item.IsEnd}
+//                        downLineHide={item.DownLineHide}
+//                        totalLayer={item.TotalLayer}
+//                        index={item.Index}
+//                        layer={item.Layer}
+//                        collapse={item.Collapse}
+//                        virtualCollapse={item.VirtualCollapse}
+//                        select={item.Select}
+//                        focus={item.Focus}
+//                        layerAbsolute={item.LayerAbsolute}
+//                    />)
+//                })}
+//            </div>
+//        )
+//    }
+//}
+//class DepartmentDropDownListWrap extends React.Component {
+//    constructor(props) {
+//        super(props);
+//        this.state = {
+//            department_authority: this.props.authority
+//        }
+//    }
+//    departmentAuthorityChange(e) {
+//        var id = e.target.getAttribute("index");
+//        this.state.department_authority = id;
+//        this.setState({ department_authority: this.state.department_authority });
+//        //实际权限组
+//        var realCodes = this.getRealCodeArray(this.props.codeArray);
+//        if (this.props.onRealNodeChanged)
+//            this.props.onRealNodeChanged(realCodes, this.state.department_authority);
+//    }
+//    getRealCodeArray(codes) {
+//        var authorityId = this.state.department_authority;
+//        switch (authorityId) {
+//            case "0":
+//                return codes;
+//            case "1":
+//                return this.getSubDepartments(codes);
+//            case "2":
+//                return this.getSupDepartments(codes);
+//        }
+//    }
+//    groupInputFocus(e) {
+//        this.refs.group_input.focus();
+//    }
+//    delNode(e) {
+//        var code = e.target.getAttribute("code");
+//        this.refs.departmentDdl.clickNode(code);
+//        e.stopPropagation();
+//        return false;
+//    }
+//    onSelectNodeChanged(codeArray, nameArray) {
+//        this.props.onSelectNodeChanged(codeArray, nameArray, this.state.department_authority);
+//        //实际权限组
+//        var realCodes = this.getRealCodeArray(codeArray);
+//        if (this.props.onRealNodeChanged)
+//            this.props.onRealNodeChanged(realCodes, this.state.department_authority);
+//    }
+//    //反选，吧input的内容反映到结构中
+//    unSelectNode(codes) {
+//        this.refs.departmentDdl.unSelectNode(codes);
+//    }
+//    //初始化方法,油company初始化完成之后，或者company发生改变之后调用
+//    getData(companyId, successs) {
+//        this.refs.departmentDdl.getData(companyId, successs);
+//    }
+//    //工具方法，根据codes获取names
+//    getDepartmentNamesByCodes(codeArray) {
+//        return this.refs.departmentDdl.getDepartmentNamesByCodes(codeArray);
+//    }
+//    //工具方法，获取下级部门的codes列表
+//    getSubDepartments(codeArray) {
+//        return this.refs.departmentDdl.getSubDepartments(codeArray);
+//    }
+//    //工具方法，获取上级级部门的codes列表
+//    getSupDepartments(codeArray) {
+//        return this.refs.departmentDdl.getSupDepartments(codeArray);
+//    }
+//    onKbPress(e) {
+//        if (e.keyCode == 40) {//down
+//            this.refs.departmentDdl.onKeyDown();
+//        }
+//        if (e.keyCode == 38) {  //up
+//            this.refs.departmentDdl.onKeyUp();
+//        }
+//        if (e.keyCode == 13) {//enter
+//            this.refs.group_input.click();
+//            this.refs.departmentDdl.onKeyEnter(e);
+//        }
+//    }
+//    render() {
+//        return (
+//            <React.Fragment>
+//                <div className="ddl_input_con"
+//                    tag="open_department_ddl"
+//                    onClick={this.groupInputFocus.bind(this)}>
+//                    {this.props.codeArray.map(function (item, i) {
+//                        return (
+//                            <div className="ddl_item"
+//                                key={i}
+//                                name={this.props.nameArray[i]}
+//                                code={item}
+//                                tag="open_department_ddl">
+//                                <span className="ddl_text" tag="open_department_ddl">{this.props.nameArray[i]}</span>
+//                                <i className="iconfont icon-del"
+//                                    id={i}
+//                                    code={item}
+//                                    onClick={this.delNode.bind(this)}></i>
+//                            </div>)
+//                    }.bind(this))}
+//                    <input type="text"
+//                        name="group_input"
+//                        id="group_input"
+//                        ref="group_input"
+//                        tag="open_department_ddl"
+//                        onKeyDown={this.onKbPress.bind(this)}
+//                        className="ddl_input" />
+//                </div>
+//                {this.props.department_bar ?
+//                    <div className="department_bar">&nbsp;
+//                    {culture.authority_type}:
+//                    <span className={this.state.department_authority == "0" ? "department_bar_item current" : "department_bar_item"} index="0"
+//                            onClick={this.departmentAuthorityChange.bind(this)}>{culture.only_current}</span>
+//                        <span className={this.state.department_authority == "1" ? "department_bar_item current" : "department_bar_item"} index="1"
+//                            onClick={this.departmentAuthorityChange.bind(this)}>{culture.current_and_sub}</span>
+//                        <span className={this.state.department_authority == "2" ? "department_bar_item current" : "department_bar_item"} index="2"
+//                            onClick={this.departmentAuthorityChange.bind(this)}>{culture.current_and_sup}</span>
+//                    </div> : null}
+//                <DepartmentDropDownList
+//                    ref="departmentDdl"
+//                    departmentShow={this.props.departmentShow}
+//                    getDepartmentNamesByCodes={this.getDepartmentNamesByCodes.bind(this)}
+//                    onSelectNodeChanged={this.onSelectNodeChanged.bind(this)}
+
+//                />
+//            </React.Fragment>
+//        )
+//    }
+//}
+//////////参数
+//  departments([]),default ([]), department_bar(bool) ，department_authority(string) ，deleteItem(func)
+//  onSelectNodeChanged(fun),departmentAuthorityChange
+///////////////////////////////////
+class DepartmentDropDownListWrap extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {
-            departments: [],
-            selectedDepartments: []
+    }
+    groupInputFocus(e) {
+        this.refs.group_input.focus();
+    }
+    getDepartmentNameByCode(code) {
+        for (var i = 0; i < this.props.data.length; i++) {
+            if (this.props.data[i].DepartmentCode == code) return this.props.data[i].DepartmentName;
         }
     }
-    //工具，供外部使用
-    getDepartmentNamesByCodes(codes) {
-        var names = [];
-        for (var i = 0; i < codes.length; i++) {
-            var code = codes[i];
-            for (var j = 0; j < this.state.departments.length; j++) {
-                if (code == this.state.departments[j].DepartmentCode) {
-                    names.push(this.state.departments[j].DepartmentName);
-                }
-            }
+    getRealCodeArray(codes, authority) {
+        switch (authority) {
+            case "0":
+                return codes;
+            case "1":
+                return this.getSubDepartments(codes);
+            case "2":
+                return this.getSupDepartments(codes);
         }
-        return names;
     }
     getAbsoluteLayer(code) {
-        for (var i = 0; i < this.state.departments.length; i++) {
-            if (code == this.state.departments[i].DepartmentCode)
+        for (var i = 0; i < this.props.data.length; i++) {
+            if (code == this.props.data[i].DepartmentCode)
                 return {
-                    LayerAbsolute: this.state.departments[i].LayerAbsolute,
-                    Layer: this.state.departments[i].Layer
+                    LayerAbsolute: this.props.data[i].LayerAbsolute,
+                    Layer: this.props.data[i].Layer
                 };
         }
     }
     getSubDepartmentSingle(absoluteLayer) {
         var codes = [];
         var regex = new RegExp("^" + absoluteLayer + ".+");
-        for (var i = 0; i < this.state.departments.length; i++) {
-            if (regex.test(this.state.departments[i].LayerAbsolute)) {
-                codes.push(this.state.departments[i].DepartmentCode);
+        for (var i = 0; i < this.props.data.length; i++) {
+            if (regex.test(this.props.data[i].LayerAbsolute)) {
+                codes.push(this.props.data[i].DepartmentCode);
             }
         }
         return codes;
     }
     getSupDepartmentSingle(absoluteLayer, layer) {//*
         var codes = [];
-        //var newLayer = absoluteLayer.substring(0, absoluteLayer.lastIndexOf("-"));
-        for (var i = 0; i < this.state.departments.length; i++) {
-            var regex = new RegExp("^" + this.state.departments[i].LayerAbsolute + ".+");
-            if (regex.test(absoluteLayer) && this.state.departments[i].Layer < layer) {
-                codes.push(this.state.departments[i].DepartmentCode);
+        for (var i = 0; i < this.props.data.length; i++) {
+            var regex = new RegExp("^" + this.props.data[i].LayerAbsolute + ".+");
+            if (regex.test(absoluteLayer) && this.props.data[i].Layer < layer) {
+                codes.push(this.props.data[i].DepartmentCode);
             }
         }
         return codes;
     }
-    //工具，供外部使用,获取不重复的下级部门列表
     getSubDepartments(codes) {
         var newCodes = [];
         for (var i = 0; i < codes.length; i++) {
@@ -214,117 +677,58 @@ class DepartmentDropDownList extends React.Component {
         }
         return newCodes;
     }
-    ddlClick(e) {
-        var name = e.target.getAttribute("node-name");
-        var code = e.target.getAttribute("node-code");
-        var layer = e.target.getAttribute("layer");
-        var absoluteLayer = e.target.getAttribute("layer-absolute");
-        if (e.target.nodeName.toLowerCase() == "i") {
-            var regex = new RegExp("^" + absoluteLayer + ".+");
-            var virtualCollapse = null;
-            var collapseLayer = null;  //内部折叠层
-            for (var i = 0; i < this.state.departments.length; i++) {
-                if (this.state.departments[i].LayerAbsolute == absoluteLayer) {  //当前点击的行
-                    this.state.departments[i].VirtualCollapse = !this.state.departments[i].VirtualCollapse;
-                    virtualCollapse = this.state.departments[i].VirtualCollapse;
-                }
-                //当前点击行的子节点
-                if (regex.test(this.state.departments[i].LayerAbsolute)) {
-                    //保证折叠内部的折叠不会随父节点一起打开
-                    if (collapseLayer && new RegExp("^" + collapseLayer + ".+").test(this.state.departments[i].LayerAbsolute)) {
-                        continue;
-                    }
-                    if (virtualCollapse == true) {  //折叠
-                        this.state.departments[i].Collapse = true;
-                    } else {  //展开
-                        //遇到当前的dept是折叠的
-                        if (this.state.departments[i].VirtualCollapse == true) {
-                            collapseLayer = this.state.departments[i].LayerAbsolute;
-                        } else {
-                            collapseLayer = null;
-                        }
-                        this.state.departments[i].Collapse = false;
-                    }
-                }
-            }
-            this.setState({ departments: this.state.departments });
+    onKbPress(e) {
+        if (e.keyCode == 40) {//down
+            this.onKeyDown();
         }
-        if (e.target.nodeName.toLowerCase() == "div" && e.target.className == "node") {
-            this.clickNode(code);
+        if (e.keyCode == 38) {  //up
+            this.onKeyUp();
         }
-        e.stopPropagation();
-    }
-    clickNode(code) {
-        var departmentCodes = [];
-        var departmentNames = [];
-        for (var i = 0; i < this.state.departments.length; i++) {
-            if (this.state.departments[i].DepartmentCode == code) {
-                this.state.departments[i].Select = !this.state.departments[i].Select;
-            }
-            if (this.state.departments[i].Select) {
-                departmentCodes.push(this.state.departments[i].DepartmentCode);
-                departmentNames.push(this.state.departments[i].DepartmentName);
-            }
+        if (e.keyCode == 13) {//enter
+            this.groupInputFocus();
+            this.onKeyEnter(e);
         }
-        this.setState({ departments: this.state.departments });
-        this.selectNode(departmentCodes, departmentNames);
-    }
-    selectNode(codes, names) {
-        this.props.onSelectNodeChanged(codes, names);
-    }
-    //反选，input的内容反映到结构中,只需要传codes，会自动调用父组件的onSelectNodeChanged方法来初始化父组件状态
-    unSelectNode(codes) {
-        if (!codes) return;
-        var departmentCodes = [];
-        var departmentNames = [];
-        for (var i = 0; i < this.state.departments.length; i++) {
-            this.state.departments[i].Select = false;
-            if (codes.indexOf(this.state.departments[i].DepartmentCode) > -1) {
-                this.state.departments[i].Select = true;
-                departmentCodes.push(this.state.departments[i].DepartmentCode);
-                departmentNames.push(this.state.departments[i].DepartmentName);
-            }
-        }
-        this.setState({ departments: this.state.departments });
-        this.selectNode(departmentCodes, departmentNames);
     }
     //小键盘的方向键向下
     onKeyDown() {
         if (document.getElementsByClassName("ddl_department_con")[0].style.display == "none") return;
         var hasFocus = false;
-        for (var i = 0; i < this.state.departments.length; i++) {
-            if (this.state.departments[i].Focus) hasFocus = true;
+        for (var i = 0; i < this.props.data.length; i++) {
+            if (this.props.data[i].Focus) hasFocus = true;
         }
         if (hasFocus) {
-            for (var i = 0; i < this.state.departments.length; i++) {
-                if (this.state.departments[i].Focus == true) {
-                    if (this.state.departments[i + 1]) {
-                        this.state.departments[i].Focus = false;
-                        this.state.departments[i + 1].Focus = true;
+            for (var i = 0; i < this.props.data.length; i++) {
+                if (this.props.data[i].Focus == true) {
+                    if (this.props.data[i + 1]) {
+                        this.props.data[i].Focus = false;
+                        this.props.data[i + 1].Focus = true;
                     }
                     break;
                 }
             }
         } else {
-            this.state.departments[0].Focus = true;
+            this.props.data[0].Focus = true;
         }
-        this.setState({ departments: this.state.departments }, this.keyMoveAfter);
+        this.props.dataChanged(this.props.data);
+        this.keyMoveAfter();
+        //this.setState({ departments: this.props.data }, this.keyMoveAfter);
     }
     //小键盘的方向键向上
     onKeyUp() {
         if (document.getElementsByClassName("ddl_department_con")[0].style.display == "none") return;
-        for (var i = 0; i < this.state.departments.length; i++) {
-            if (this.state.departments[i].Focus == true) {
-                this.state.departments[i].Focus = false;
-                if (this.state.departments[i - 1]) {
-                    this.state.departments[i - 1].Focus = true;
+        for (var i = 0; i < this.props.data.length; i++) {
+            if (this.props.data[i].Focus == true) {
+                this.props.data[i].Focus = false;
+                if (this.props.data[i - 1]) {
+                    this.props.data[i - 1].Focus = true;
                 } else {
-                    this.state.departments[0].Focus = true;
+                    this.props.data[0].Focus = true;
                 }
                 break;
             }
         }
-        this.setState({ departments: this.state.departments }, this.keyMoveAfter);
+        this.props.dataChanged(this.props.data);
+        this.keyMoveAfter();
     }
     keyMoveAfter(e) {
         var ddl_department_con = document.getElementsByClassName("ddl_department_con")[0];
@@ -345,91 +749,149 @@ class DepartmentDropDownList extends React.Component {
     }
     onKeyEnter(e) {
         if (document.getElementsByClassName("ddl_department_con")[0].style.display == "none") return;
-        for (var i = 0; i < this.state.departments.length; i++) {
-            //if (this.state.users[i].Select == true) continue;
-            if (this.state.departments[i].Focus == true) {
-                //this.state.departments[i].Focus = false;
-                //if (this.state.departments[i + 1]) {
-                //    this.state.departments[i + 1].Focus = true;
-                //}
-                var department = this.state.departments[i].DepartmentCode;
+        for (var i = 0; i < this.props.data.length; i++) {
+            if (this.props.data[i].Focus == true) {
+                var department = this.props.data[i].DepartmentCode;
                 this.clickNode(department);
                 break;
             }
         }
     }
-    getData(companyId, success) {
-        if (!companyId) return;
-        http.get(urls.department.getDepartmentUrl + "/" + companyId, function (data) {
-            if (data.code == 0) {
-                var departments = this.assembleData(data.result);
-                this.setState({ departments: departments });
-            }
-            if (success) success();
-        }.bind(this));
-    }
-    assembleData(result) {
-        var virtualData = [];
-        var topLayerCount = result.Department.length;
-        virtualData.push({
-            DepartmentName: result.DepartmentName,
-            DepartmentCode: result.DepartmentCode,
-            Select: false,
-            Collapse: false,
-            VirtualCollapse: false,
-            Focus: false,
-            TopLayerCount: topLayerCount,
-            SubCount: result.Department.length,
-            Layer: 0,
-            TotalLayer: 1,
-            LayerAbsolute: "1-",
-            IsEnd: false,
-            DownLineHide: false,
-            index: 0
-        });
-        this.assembleDataInternal(virtualData, result.Department, 1, "1", false, topLayerCount);
-        return virtualData;
-    }
-    assembleDataInternal(virtualData, departments, layer, layerAbsolute, downLineHide, topLayerCount) {
-        for (var i = 0; i < departments.length; i++) {
-            //是否当前层的最后一个节点
-            var isEnd = departments.length == i + 1;
-            //当前层的子元素个数
-            var subCount = departments[i].Department.length;
-            var downLineHideInner = isEnd && subCount > 0;
-            var downLineH = downLineHide || downLineHideInner;
-
-            virtualData.push({
-                DepartmentName: departments[i].DepartmentName,
-                DepartmentCode: departments[i].DepartmentCode,
-                Select: false,
-                Collapse: false,
-                VirtualCollapse: false,
-                Focus: false,
-                TopLayerCount: topLayerCount,
-                SubCount: subCount,
-                Layer: layer,
-                TotalLayer: departments.length,
-                LayerAbsolute: layerAbsolute + "-" + i,
-                IsEnd: isEnd,
-                DownLineHide: downLineH,
-                Index: i
-            });
-            this.assembleDataInternal(virtualData,
-                departments[i].Department,
-                layer + 1,
-                layerAbsolute + "-" + i,
-                downLineH,
-                topLayerCount);
+    departmentAuthorityChange(e) {
+        var id = e.target.getAttribute("index");
+        //实际权限组
+        var realCodes = this.getRealCodeArray(this.props.default,id);
+        if (this.props.onRealNodeChanged) {
+            this.props.onRealNodeChanged(realCodes);
         }
+        this.props.departmentAuthorityChange(id);
+    }
+    deleteItem(e) {
+        var code = e.target.getAttribute("code");
+        this.clickNode(code);
+        e.stopPropagation();
+        return false;
+    }
+    ddlClick(e) {
+        var name = e.target.getAttribute("node-name");
+        var code = e.target.getAttribute("node-code");
+        var layer = e.target.getAttribute("layer");
+        var absoluteLayer = e.target.getAttribute("layer-absolute");
+        if (e.target.nodeName.toLowerCase() == "i") {
+            var regex = new RegExp("^" + absoluteLayer + ".+");
+            var virtualCollapse = null;
+            var collapseLayer = null;  //内部折叠层
+            for (var i = 0; i < this.props.data.length; i++) {
+                if (this.props.data[i].LayerAbsolute == absoluteLayer) {  //当前点击的行
+                    this.props.data[i].VirtualCollapse = !this.props.data[i].VirtualCollapse;
+                    virtualCollapse = this.props.data[i].VirtualCollapse;
+                }
+                //当前点击行的子节点
+                if (regex.test(this.props.data[i].LayerAbsolute)) {
+                    //保证折叠内部的折叠不会随父节点一起打开
+                    if (collapseLayer && new RegExp("^" + collapseLayer + ".+").test(this.props.data[i].LayerAbsolute)) {
+                        continue;
+                    }
+                    if (virtualCollapse == true) {  //折叠
+                        this.props.data[i].Collapse = true;
+                    } else {  //展开
+                        //遇到当前的dept是折叠的
+                        if (this.props.data[i].VirtualCollapse == true) {
+                            collapseLayer = this.props.data[i].LayerAbsolute;
+                        } else {
+                            collapseLayer = null;
+                        }
+                        this.props.data[i].Collapse = false;
+                    }
+                }
+            }
+            this.props.dataChanged(this.props.data);
+        }
+        if (e.target.nodeName.toLowerCase() == "div" && e.target.className == "node") {
+            this.clickNode(code);
+        }
+        e.stopPropagation();
+    }
+    clickNode(code) {
+        var departmentCodes = [];
+        var departmentNames = [];
+        for (var i = 0; i < this.props.data.length; i++) {
+            if (this.props.data[i].DepartmentCode == code) {
+                this.props.data[i].Select = !this.props.data[i].Select;
+            }
+            if (this.props.data[i].Select) {
+                departmentCodes.push(this.props.data[i].DepartmentCode);
+                departmentNames.push(this.props.data[i].DepartmentName);
+            }
+        }
+        this.props.dataChanged(this.props.data);
+        this.selectNode(departmentCodes, departmentNames);
+    }
+    selectNode(codes, names) {
+        this.props.onSelectNodeChanged(codes, names);
+        var realCodes = this.getRealCodeArray(codes, this.props.department_authority);
+        if (this.props.onRealNodeChanged) {
+            this.props.onRealNodeChanged(realCodes);
+        }
+    }
+    render() {
+        return (
+            <React.Fragment>
+                <div className="ddl_input_con"
+                    tag="open_department_ddl"
+                    onClick={this.groupInputFocus.bind(this)}>
+                    {this.props.default.map(function (item, i) {
+                        var name = this.getDepartmentNameByCode(item);
+                        return (
+                            <div className="ddl_item"
+                                key={i}
+                                name={name}
+                                code={item}
+                                tag="open_department_ddl">
+                                <span className="ddl_text" tag="open_department_ddl">{name}</span>
+                                <i className="iconfont icon-del"
+                                    id={i}
+                                    code={item}
+                                    onClick={this.deleteItem.bind(this)}></i>
+                            </div>)
+                    }.bind(this))}
+                    <input type="text"
+                        name="group_input"
+                        id="group_input"
+                        ref="group_input"
+                        tag="open_department_ddl"
+                        onKeyDown={this.onKbPress.bind(this)}
+                        className="ddl_input" />
+                </div>
+                {this.props.department_bar ?
+                    <div className="department_bar">&nbsp;
+                    {culture.authority_type}:
+                    <span className={this.props.department_authority == "0" ? "department_bar_item current" : "department_bar_item"} index="0"
+                            onClick={this.departmentAuthorityChange.bind(this)}>{culture.only_current}</span>
+                        <span className={this.props.department_authority == "1" ? "department_bar_item current" : "department_bar_item"} index="1"
+                            onClick={this.departmentAuthorityChange.bind(this)}>{culture.current_and_sub}</span>
+                        <span className={this.props.department_authority == "2" ? "department_bar_item current" : "department_bar_item"} index="2"
+                            onClick={this.departmentAuthorityChange.bind(this)}>{culture.current_and_sup}</span>
+                    </div> : null}
+                <DepartmentDropDownList
+                    ref="departmentDdl"
+                    data={this.props.data}
+                    ddlClick={this.ddlClick.bind(this)}
+                />
+            </React.Fragment>
+        )
+    }
+}
+class DepartmentDropDownList extends React.Component {
+    constructor(props) {
+        super(props);
     }
     render() {
         return (
             <div className="ddl ddl_department_con"
                 style={{ display: "none" }}
-                onClick={this.ddlClick.bind(this)}
-            >
-                {this.state.departments.map(function (item, i) {
+                onClick={this.props.ddlClick.bind(this)}>
+                {this.props.data.map(function (item, i) {
                     return (<DropDownLine
                         key={i}
                         department={item}
@@ -451,130 +913,6 @@ class DepartmentDropDownList extends React.Component {
         )
     }
 }
-class DepartmentDropDownListWrap extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            department_authority: this.props.authority
-        }
-    }
-    departmentAuthorityChange(e) {
-        var id = e.target.getAttribute("index");
-        this.state.department_authority = id;
-        this.setState({ department_authority: this.state.department_authority });
-        //实际权限组
-        var realCodes = this.getRealCodeArray(this.props.codeArray);
-        if (this.props.onRealNodeChanged)
-            this.props.onRealNodeChanged(realCodes, this.state.department_authority);
-    }
-    getRealCodeArray(codes) {
-        var authorityId = this.state.department_authority;
-        switch (authorityId) {
-            case "0":
-                return codes;
-            case "1":
-                return this.getSubDepartments(codes);
-            case "2":
-                return this.getSupDepartments(codes);
-        }
-    }
-    groupInputFocus(e) {
-        this.refs.group_input.focus();
-    }
-    delNode(e) {
-        var code = e.target.getAttribute("code");
-        this.refs.departmentDdl.clickNode(code);
-        e.stopPropagation();
-        return false;
-    }
-    onSelectNodeChanged(codeArray, nameArray) {
-        this.props.onSelectNodeChanged(codeArray, nameArray, this.state.department_authority);
-        //实际权限组
-        var realCodes = this.getRealCodeArray(codeArray);
-        if (this.props.onRealNodeChanged)
-            this.props.onRealNodeChanged(realCodes, this.state.department_authority);
-    }
-    //反选，吧input的内容反映到结构中
-    unSelectNode(codes) {
-        this.refs.departmentDdl.unSelectNode(codes);
-    }
-    //初始化方法,油company初始化完成之后，或者company发生改变之后调用
-    getData(companyId, successs) {
-        this.refs.departmentDdl.getData(companyId, successs);
-    }
-    //工具方法，根据codes获取names
-    getDepartmentNamesByCodes(codeArray) {
-        return this.refs.departmentDdl.getDepartmentNamesByCodes(codeArray);
-    }
-    //工具方法，获取下级部门的codes列表
-    getSubDepartments(codeArray) {
-        return this.refs.departmentDdl.getSubDepartments(codeArray);
-    }
-    //工具方法，获取上级级部门的codes列表
-    getSupDepartments(codeArray) {
-        return this.refs.departmentDdl.getSupDepartments(codeArray);
-    }
-    onKbPress(e) {
-        if (e.keyCode == 40) {//down
-            this.refs.departmentDdl.onKeyDown();
-        }
-        if (e.keyCode == 38) {  //up
-            this.refs.departmentDdl.onKeyUp();
-        }
-        if (e.keyCode == 13) {//enter
-            this.refs.group_input.click();
-            this.refs.departmentDdl.onKeyEnter(e);
-        }
-    }
-    render() {
-        return (
-            <React.Fragment>
-                <div className="ddl_input_con"
-                    tag="open_department_ddl"
-                    onClick={this.groupInputFocus.bind(this)}>
-                    {this.props.codeArray.map(function (item, i) {
-                        return (
-                            <div className="ddl_item"
-                                key={i}
-                                name={this.props.nameArray[i]}
-                                code={item}
-                                tag="open_department_ddl">
-                                <span className="ddl_text" tag="open_department_ddl">{this.props.nameArray[i]}</span>
-                                <i className="iconfont icon-del"
-                                    id={i}
-                                    code={item}
-                                    onClick={this.delNode.bind(this)}></i>
-                            </div>)
-                    }.bind(this))}
-                    <input type="text"
-                        name="group_input"
-                        id="group_input"
-                        ref="group_input"
-                        tag="open_department_ddl"
-                        onKeyDown={this.onKbPress.bind(this)}
-                        className="ddl_input" />
-                </div>
-                {this.props.department_bar ?
-                    <div className="department_bar">&nbsp;
-                    {culture.authority_type}:
-                    <span className={this.state.department_authority == "0" ? "department_bar_item current" : "department_bar_item"} index="0"
-                            onClick={this.departmentAuthorityChange.bind(this)}>{culture.only_current}</span>
-                        <span className={this.state.department_authority == "1" ? "department_bar_item current" : "department_bar_item"} index="1"
-                            onClick={this.departmentAuthorityChange.bind(this)}>{culture.current_and_sub}</span>
-                        <span className={this.state.department_authority == "2" ? "department_bar_item current" : "department_bar_item"} index="2"
-                            onClick={this.departmentAuthorityChange.bind(this)}>{culture.current_and_sup}</span>
-                    </div> : null}
-                <DepartmentDropDownList
-                    ref="departmentDdl"
-                    departmentShow={this.props.departmentShow}
-                    getDepartmentNamesByCodes={this.getDepartmentNamesByCodes.bind(this)}
-                    onSelectNodeChanged={this.onSelectNodeChanged.bind(this)}
-
-                />
-            </React.Fragment>
-        )
-    }
-}
 ////////////////////////////////////////////////////
 //////////////////UserDropDownList/////////////////////
 ///////////////////////////////////////////////////
@@ -584,7 +922,7 @@ class UserDropDownList extends React.Component {
         this.state = {
             users: [],
             pageEnd: false,
-            selectedUsers: this.props.selectedUsers || []
+            //selectedUsers: this.props.selectedUsers || []
         }
         this.companyCode = "";
         this.pageIndex = 1;
@@ -604,7 +942,7 @@ class UserDropDownList extends React.Component {
                 this.companyCode = companyCode;
                 this.pageIndex = 1;
                 this.filter = "";
-                this.setState({ users: [], pageEnd: false, selectedUsers: [] })
+                this.setState({ users: [], pageEnd: false })
             }
         }
         var url = urls.user.getCompanyUsersUrl + "?company=" + companyCode + "&pageIndex=" + this.pageIndex + "&pageSize=" + this.pageSize + "&filter=" + this.filter;
@@ -615,7 +953,7 @@ class UserDropDownList extends React.Component {
             setKeyWord(data, this.filter);
             if (data.code == 0) {
                 data.result.map(function (item, i) {
-                    if (this.state.selectedUsers.indexOf(item.UserName.removeHTML()) > -1) item.Select = true;
+                    if (this.props.userArray.indexOf(item.UserName.removeHTML()) > -1) item.Select = true;
                     this.state.users.push(item);
                 }.bind(this))
                 this.setState({ users: this.state.users });
@@ -636,23 +974,23 @@ class UserDropDownList extends React.Component {
     }
     selectNode(user) {
         var selected = false;
-        for (var i = 0; i < this.state.selectedUsers.length; i++) {
-            if (this.state.selectedUsers[i] == user) {
+        for (var i = 0; i < this.props.userArray.length; i++) {
+            if (this.props.userArray[i] == user) {
                 selected = true;
-                this.state.selectedUsers.splice(i, 1);
+                this.props.userArray.splice(i, 1);
                 break;
             }
         }
         if (!selected) {
-            this.state.selectedUsers.push(user);
+            this.props.userArray.push(user);
         }
         for (var i = 0; i < this.state.users.length; i++) {
             if (this.state.users[i].UserName.removeHTML() == user) {
                 this.state.users[i].Select = !this.state.users[i].Select;
             }
         }
-        this.setState({ users: this.state.users, selectedUsers: this.state.selectedUsers });
-        this.props.onSelectUserChange(this.state.selectedUsers);
+        this.setState({ users: this.state.users });
+        this.props.onSelectUserChange(this.props.userArray);
     }
     onScroll(e) {
         var target = e.target;
@@ -770,6 +1108,9 @@ class UserDropDownListWrap extends React.Component {
         this.companyCode = null;
         this.timeInterval = null;
     }
+    emptyData() {
+        this.refs.userDdl.onInput();
+    }
     groupInputFocus(e) {
         this.refs.user_input.focus();
     }
@@ -840,7 +1181,7 @@ class UserDropDownListWrap extends React.Component {
                 </div>
                 <UserDropDownList ref="userDdl"
                     userShow={this.props.userShow}
-                    selectedUsers={this.props.selectedUsers || []}
+                    userArray={this.props.userArray}
                     onSelectUserChange={this.onSelectUserChange.bind(this)} />
             </React.Fragment>
         )

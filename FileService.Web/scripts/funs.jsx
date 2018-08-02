@@ -145,6 +145,7 @@ var urls = {
     resources: {
         getUrl: appDomain + "admin/getfiles",
         getAccessUrl: appDomain + "data/getfileaccess",
+        updateAccessUrl: appDomain + "data/updateFileAccess",
         getThumbnailMetadataUrl: appDomain + "admin/getthumbnailmetadata",
         getSubFileMetadataUrl: appDomain + "admin/getsubfilemetadata",
         getM3u8MetadataUrl: appDomain + "admin/getm3u8metadata",
@@ -525,59 +526,62 @@ function setKeyWord(result, filter) {
 function matchKeyWord(word) {
     return '<span class="search_word">' + word + '</span>';
 }
-
-//function orgChart() {
-//    var orgChart = document.getElementsByClassName("orgChart")[0];
-//    var topLi = orgChart.children[0].children[0];
-//    var tableHtml = getChildNode(topLi);
-//    var e = document.createElement('div');
-//    e.innerHTML = tableHtml;
-//    orgChart.appendChild(e.firstChild);
-//}
-//function getChildNode(topLi) {
-//    var tableHtml = '<table class="pc" cellSpacing="0" cellPadding="0" border="0"><tbody>';
-//    var dataNode = topLi.children[0],
-//        childNodeLiArray = topLi.children.length == 1 ?
-//            [] :
-//            topLi.children[1].children;
-//    if (childNodeLiArray.length == 0) {
-//        return tableHtml + "<tr><td>" + dataNode.outerHTML + "</td></tr></tbody></table>";
-//    } else {
-//        var topHtml = '<tr><td colSpan="' + childNodeLiArray.length * 2 + '">' + dataNode.outerHTML + "</td></tr>";
-//        var lineHtml = '<tr><td colSpan="' + childNodeLiArray.length * 2 + '"><span class="line_down">&nbsp;</span></td>',
-//            orgLineHtml = "<tr class=\"org_line\">", orgDataHtml = "<tr>";
-//        if (childNodeLiArray.length == 1) {
-//            orgLineHtml += '<td class="trans_right">&nbsp;</td>';
-//            orgLineHtml += '<td class="oleft">&nbsp;</td>';
-//        } else {
-//            for (var i = 0; i < childNodeLiArray.length * 2; i++) {
-//                if (i == 0) { //第一行
-//                    orgLineHtml += '<td class="trans_right">&nbsp;</td>';
-//                } else {
-//                    if (i + 1 == childNodeLiArray.length * 2) {  //最后一行
-//                        orgLineHtml += '<td class="trans_left">&nbsp;</td>';
-//                    } else {
-//                        if (i == childNodeLiArray.length * 2 - 2) {
-//                            orgLineHtml += '<td class="otop oright">&nbsp;</td>';
-//                        } else {
-//                            if (i % 2 == 1) orgLineHtml += '<td class="otop oleft">&nbsp;</td>';
-//                            if (i % 2 == 0) orgLineHtml += '<td class="otop trans_right">&nbsp;</td>';
-//                        }
-//                    }
-//                }
-//            }
-//        }
-//        for (var i = 0; i < childNodeLiArray.length; i++) {
-//            var subHtml = getChildNode(childNodeLiArray[i]);
-//            orgDataHtml += '<td colSpan="2">' + subHtml + '</td>';
-//        }
-//        orgLineHtml += '</tr>';
-//        lineHtml += '</tr>';
-//        orgDataHtml += '</tr>';
-//        return tableHtml + topHtml + lineHtml + orgLineHtml + orgDataHtml + "</tbody></table>";
-//    }
-//}
-
+//装配department数据data结构,{ DepartmentName: "", DepartmentCode: "", Department: [{DepartmentName: "", DepartmentCode: ""}] }
+//把一个嵌套的结构变成一个数据的扁平的结构
+function assembleDepartmentData(data) {
+    var virtualData = [];
+    var topLayerCount = data.Department.length;
+    virtualData.push({
+        DepartmentName: data.DepartmentName,
+        DepartmentCode: data.DepartmentCode,
+        Select: false,
+        Collapse: false,
+        VirtualCollapse: false,
+        Focus: false,
+        TopLayerCount: topLayerCount,
+        SubCount: data.Department.length,
+        Layer: 0,
+        TotalLayer: 1,
+        LayerAbsolute: "1-",
+        IsEnd: false,
+        DownLineHide: false,
+        index: 0
+    });
+    assembleDepartmentDataInternal(virtualData, data.Department, 1, "1", false, topLayerCount);
+    return virtualData;
+}
+function assembleDepartmentDataInternal(virtualData, departments, layer, layerAbsolute, downLineHide, topLayerCount) {
+    for (var i = 0; i < departments.length; i++) {
+        //是否当前层的最后一个节点
+        var isEnd = departments.length == i + 1;
+        //当前层的子元素个数
+        var subCount = departments[i].Department.length;
+        var downLineHideInner = isEnd && subCount > 0;
+        var downLineH = downLineHide || downLineHideInner;
+        virtualData.push({
+            DepartmentName: departments[i].DepartmentName,
+            DepartmentCode: departments[i].DepartmentCode,
+            Select: false,
+            Collapse: false,
+            VirtualCollapse: false,
+            Focus: false,
+            TopLayerCount: topLayerCount,
+            SubCount: subCount,
+            Layer: layer,
+            TotalLayer: departments.length,
+            LayerAbsolute: layerAbsolute + "-" + i,
+            IsEnd: isEnd,
+            DownLineHide: downLineH,
+            Index: i
+        });
+        assembleDepartmentDataInternal(virtualData,
+            departments[i].Department,
+            layer + 1,
+            layerAbsolute + "-" + i,
+            downLineH,
+            topLayerCount);
+    }
+}
 Array.prototype.sortAndUnique = function () {
     this.sort(); //先排序
     var res = [this[0]];

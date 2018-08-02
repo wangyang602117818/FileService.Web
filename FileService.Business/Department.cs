@@ -23,6 +23,10 @@ namespace FileService.Business
         {
             return mongoData.GetAllDepartment();
         }
+        public BsonDocument GetByCode(string code)
+        {
+            return mongoData.GetByCode(code);
+        }
         //public BsonDocument GetByDepartmentCode(string departmentCode)
         //{
         //    return mongoData.GetByDepartmentCode(departmentCode);

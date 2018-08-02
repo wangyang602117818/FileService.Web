@@ -32,7 +32,7 @@ namespace FileService.Business
                 };
             mongoData.Insert(filesWrap);
         }
-        public void InsertVideo(ObjectId id, ObjectId fileId, string fileName, long length, string from,string contentType, BsonArray videos, BsonArray videoCpIds, BsonArray access, string owner)
+        public void InsertVideo(ObjectId id, ObjectId fileId, string fileName, long length, string from, string contentType, BsonArray videos, BsonArray videoCpIds, BsonArray access, string owner)
         {
             BsonDocument filesWrap = new BsonDocument()
                 {
@@ -51,7 +51,7 @@ namespace FileService.Business
                 };
             mongoData.Insert(filesWrap);
         }
-        public void InsertAttachment(ObjectId id, ObjectId fileId, string fileName, long length, string from,string contentType, BsonArray files, BsonArray access, string owner)
+        public void InsertAttachment(ObjectId id, ObjectId fileId, string fileName, long length, string from, string contentType, BsonArray files, BsonArray access, string owner)
         {
             BsonDocument filesWrap = new BsonDocument()
                 {
@@ -69,7 +69,7 @@ namespace FileService.Business
                 };
             mongoData.Insert(filesWrap);
         }
-        public bool UpdateFileId(ObjectId id,ObjectId fileId)
+        public bool UpdateFileId(ObjectId id, ObjectId fileId)
         {
             return mongoData.UpdateFileId(id, fileId);
         }
@@ -113,6 +113,10 @@ namespace FileService.Business
         public bool ReplaceSubFiles(ObjectId id, BsonArray array)
         {
             return mongoData.ReplaceSubFiles(id, array);
+        }
+        public bool UpdateAccess(ObjectId id, BsonArray array)
+        {
+            return mongoData.UpdateAccess(id, array);
         }
     }
 }

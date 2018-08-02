@@ -3,33 +3,64 @@
         super(props);
         this.state = {
             userName: "",
-            companyId: "",
-            companyCode: "",
-            companyName: "",
             passWord: "",
             confirm: "",
-            departmentShow: false,
-            existsCompany: [],
-            codeArray: [],
-            nameArray: [],
+
+            companyCode: "",  //company默认值
+            companyName: "",   //显示值
+            companyData: [],  //company数据
+
+            codeArray: [],       //department默认值
+            realCodeArray: [],   //真实的code列表
+            departments: [],   //department数据
+            department_authority: "0",  //权限类型
+
+            nameArray: [],     //显示值
             role: "",
             message: ""
         };
     }
+    componentDidMount() {
+        http.get(urls.department.getAllDepartment, function (data) {
+            var companyData = [];
+            if (data.code == 0) {
+                for (var i = 0; i < data.result.length; i++) {
+                    companyData.push({ code: data.result[i].DepartmentCode, name: data.result[i].DepartmentName });
+                }
+            }
+            if (companyData.length > 0) {
+                this.setState({
+                    companyCode: companyData[0].code,
+                    companyName: companyData[0].name,
+                    companyData: companyData
+                }, function () {
+                    this.getDepartment(companyData[0].code);
+                });
+            }
+        }.bind(this));
+    }
+    getDepartment(code) {
+        if (!code) return;
+        http.get(urls.department.getDepartmentUrl + "?code=" + code, function (data) {
+            if (data.code == 0) {
+                var departments = assembleDepartmentData(data.result);
+                for (var i = 0; i < departments.length; i++) {
+                    if (this.state.codeArray.indexOf(departments[i].DepartmentCode) > -1) departments[i].Select = true;
+                }
+                this.setState({ departments: departments });
+            }
+        }.bind(this));
+    }
     //父组件调用，用于点击某一个用户之后。回显状态
-    changeState(userName, userRole, companyCode, codeArray) {
-        var companyId = this.refs.companyDropDownList.getCompanyIdByCode(companyCode);
-        var companyName = this.refs.companyDropDownList.getCompanyNameByCode(companyCode);
+    changeState(userName, userRole, companyCode, companyDisplay, codeArray, departmentDisplay) {
         this.setState({
             userName: userName,
             role: userRole,
             companyCode: companyCode,
-            companyId: companyId,
-            companyName: companyName
+            companyName: companyDisplay,
+            codeArray: codeArray
         }, function () {
-            this.refs.departmentDropDownListWrap.getData(companyId, function () {
-                this.refs.departmentDropDownListWrap.unSelectNode(codeArray);  //反选
-            }.bind(this));
+            this.getDepartment(companyCode);
         });
     }
     nameChanged(e) {
@@ -44,28 +75,20 @@
     roleChanged(e) {
         this.setState({ role: e.target.value });
     }
-    companyChanged(e) {
-        var companyCode = e.target.value;
-        var companyId = this.refs.companyDropDownList.getCompanyIdByCode(companyCode);
-        var companyName = this.refs.companyDropDownList.getCompanyNameByCode(companyCode);
+    onCompanyChange(e) {
+        var companyCode = e.target.value, companyName = "";
+        for (var i = 0; i < this.state.companyData.length; i++) {
+            if (this.state.companyData[i].code == companyCode) companyName = this.state.companyData[i].name;
+        }
         this.setState({
-            companyId: companyId,
             companyCode: companyCode,
             companyName: companyName,
             codeArray: [],
-            nameArray: []
+            nameArray:[],
+            realCodeArray: []
+        }, function () {
+            this.getDepartment(companyCode);
         });
-        this.refs.departmentDropDownListWrap.getData(companyId);  //调用deparatment初始化方法
-    }
-    afterCompanyInit(companyId, companyCode, companyName) {
-        this.setState({
-            companyId: companyId,
-            companyCode: companyCode,
-            companyName: companyName
-        });
-        //调用deparatment初始化方法
-        this.refs.departmentDropDownListWrap.getData(companyId);
-        //console.log(this.state.company);
     }
     tagClick(e) {
         if (e.target.innerText == "none") {
@@ -105,17 +128,17 @@
             }
         }
     }
-    onDepartmentShow() {
-        this.setState({ departmentShow: true });
-    }
-    onDepartmentHidden() {
-        this.setState({ departmentShow: false });
-    }
     onSelectNodeChanged(codeArray, nameArray) {
-        this.setState({
-            codeArray: codeArray,
-            nameArray: nameArray
-        });
+        this.setState({ codeArray: codeArray, nameArray: nameArray });
+    }
+    onRealNodeChanged(codeArray) {
+        this.setState({ realCodeArray: codeArray });
+    }
+    dataChanged(departments) {
+        this.setState({ departments: departments });
+    }
+    departmentAuthorityChange(id) {
+        this.setState({ department_authority: id });
     }
     render() {
         return (
@@ -144,24 +167,24 @@
                             <td>{culture.company}:</td>
                             <td>
                                 <CompanyDropDownList
-                                    companyCode={this.state.companyCode}
-                                    ref="companyDropDownList"
-                                    existsCompany={this.state.existsCompany}
-                                    afterCompanyInit={this.afterCompanyInit.bind(this)}
-                                    companyChanged={this.companyChanged.bind(this)}
+                                    data={this.state.companyData}
+                                    default={this.state.companyCode}
+                                    onChange={this.onCompanyChange.bind(this)}
                                 />
                             </td>
                         </tr>
                         <tr>
                             <td>{culture.department}:</td>
                             <td>
-                                {/*惰性加载，由comapny加载完成之后手动调用getData方法加载里面的数据*/}
                                 <DepartmentDropDownListWrap
-                                    ref="departmentDropDownListWrap"
+                                    data={this.state.departments}
+                                    default={this.state.codeArray}
+                                    dataChanged={this.dataChanged.bind(this)}
                                     department_bar={false}
-                                    codeArray={this.state.codeArray}
-                                    nameArray={this.state.nameArray}
+                                    department_authority={this.state.department_authority}
                                     onSelectNodeChanged={this.onSelectNodeChanged.bind(this)}
+                                    onRealNodeChanged={this.onRealNodeChanged.bind(this)}
+                                    departmentAuthorityChange={this.departmentAuthorityChange.bind(this)}
                                 />
                             </td>
                         </tr>

@@ -23,5 +23,9 @@ namespace FileService.Data
         {
             return MongoCollection.Find(new BsonDocument()).Project(Builders<BsonDocument>.Projection.Exclude("Department")).ToEnumerable();
         }
+        public BsonDocument GetByCode(string code)
+        {
+            return MongoCollection.Find(FilterBuilder.Eq("DepartmentCode",code)).FirstOrDefault();
+        }
     }
 }

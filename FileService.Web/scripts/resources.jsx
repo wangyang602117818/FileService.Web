@@ -110,95 +110,179 @@ class ResourceItem extends React.Component {
 class UpdateAccess extends React.Component {
     constructor(props) {
         super(props);
+        this.state = {
+            companyCode: "",    //company默认值
+            companyName: "",    //显示值
+            companyData: [],   //company数据
 
+            departments: [],    //department数据
+            codeArray: [],      //department默认值
+            nameArray: [],      //显示值
+            realCodes: [],     //真实的code列表
+            department_authority: "0",
+
+            userArray: []
+        }
+    }
+    getCompany() {
+        http.get(urls.department.getAllDepartment, function (data) {
+            var companyData = [];
+            if (data.code == 0) {
+                for (var i = 0; i < data.result.length; i++) {
+                    companyData.push({ code: data.result[i].DepartmentCode, name: data.result[i].DepartmentName });
+                }
+            }
+            if (companyData.length > 0) {
+                this.setState({
+                    companyCode: companyData[0].code,
+                    companyName: companyData[0].name,
+                    companyData: companyData
+                }, function () {
+                    this.getDepartment(companyData[0].code);
+                    this.refs.userDropDownListWrap.getData(companyData[0].code);
+                });
+            } else {
+                this.setState({ companyCode: "", companyName: "", companyData: [], departments: [] });
+                this.refs.userDropDownListWrap.emptyData();
+            }
+        }.bind(this));
+    }
+    getDepartment(code) {
+        if (!code) return;
+        http.get(urls.department.getDepartmentUrl + "?code=" + code, function (data) {
+            if (data.code == 0) {
+                var departments = assembleDepartmentData(data.result);
+                for (var i = 0; i < departments.length; i++) {
+                    if (this.state.codeArray.indexOf(departments[i].DepartmentCode) > -1) departments[i].Select = true;
+                }
+                this.setState({ departments: departments });
+            }
+        }.bind(this));
+    }
+    clickAccess(e) {
+        this.refs.userDropDownListWrap.emptyData();
+        var title = JSON.parse(e.target.parentElement.getAttribute("title"));
+        this.setState({
+            companyCode: title.Company,
+            companyName: title.CompanyDisplay,
+            codeArray: title.DepartmentCodes,
+            nameArray: title.DepartmentDisplay,
+            department_authority: title.Authority,
+            realCodes: title.AccessCodes,
+            userArray: title.AccessUsers
+        }, function () {
+            this.getDepartment(title.Company);
+            this.refs.userDropDownListWrap.getData(title.Company);
+        });
+    }
+    onCompanyChange(e) {
+        var companyCode = e.target.value, companyName = "";
+        for (var i = 0; i < this.state.companyData.length; i++) {
+            if (this.state.companyData[i].code == companyCode) companyName = this.state.companyData[i].name;
+        }
+        this.setState({
+            companyCode: companyCode,
+            companyName: companyName,
+            codeArray: [],
+            nameArray: [],
+            realCodeArray: [],
+            userArray: []
+        }, function () {
+            this.getDepartment(companyCode);
+            this.refs.userDropDownListWrap.getData(companyCode);
+        });
+    }
+    dataChanged(departments) {
+        this.setState({ departments: departments });
+    }
+    onSelectNodeChanged(codeArray, nameArray) {
+        this.setState({ codeArray: codeArray, nameArray: nameArray, });
+    }
+    onRealNodeChanged(codeArray) {
+        this.setState({ realCodes: codeArray });
+    }
+    departmentAuthorityChange(id) {
+        this.setState({ department_authority: id });
+    }
+    onSelectUserChange(users) {
+        this.setState({ userArray: users });
+    }
+    onSaveAccess(e) {
+        if (this.state.companyCode) {
+            this.props.onSaveAccess(
+                this.state.companyCode,
+                this.state.companyName,
+                this.state.codeArray,
+                this.state.nameArray,
+                this.state.department_authority,
+                this.state.realCodes,
+                this.state.userArray);
+        }
     }
     render() {
         return (
             <div className={this.props.show ? "update_access_con show" : "update_access_con hidden"}>
-
-                {this.props.departments.map(function (item, i) {
-                    var codeArray = [];
-                    var nameArray = [];
-                    var authority = "0";
-                    var userArray = [];
-                    for (var k = 0; k < this.props.access.length; k++) {
-                        if (this.props.access[k].Company == item.DepartmentCode) {
-                            codeArray = this.props.access[k].DepartmentCodes;
-                            nameArray = this.props.access[k].DepartmentDisplay;
-                            authority = this.props.access[k].Authority;
-                            userArray = this.props.access[k].AccessUsers;
-                        }
+                <div className="update_access_item">
+                    <div style={{ width: "10%" }}>{culture.access_authority}: </div>
+                    {
+                        this.props.access.map(function (item, i) {
+                            return (
+                                <span className="convert_flag"
+                                    title={JSON.stringify(item)}
+                                    key={i}
+                                    id={i}
+                                    data-code={item.Company}
+                                    data-name={item.CompanyDisplay}
+                                >
+                                    <span className="flag_txt" onClick={this.clickAccess.bind(this)}>{item.CompanyDisplay}</span>
+                                    <span className="flag_txt flag_del" onClick={this.props.delAccess.bind(this)}>×</span>
+                                </span>
+                            );
+                        }.bind(this))
                     }
-                    return <UpdateAccessItem key={i}
-                        companyId={item._id.$oid}
-                        companyCode={item.DepartmentCode}
-                        department={item}
-                        codeArray={codeArray}
-                        nameArray={nameArray}
-                        userArray={userArray}
-                        authority={authority} />
-                }.bind(this))}
-                <br/>
-                <input type="button" value={culture.save} className="button" />
+                </div>
+                <table className="table_general">
+                    <tbody>
+                        <tr>
+                            <td width="10%">{culture.company}:</td>
+                            <td width="90%">
+                                <CompanyDropDownList
+                                    data={this.state.companyData}
+                                    default={this.state.companyCode}
+                                    onChange={this.onCompanyChange.bind(this)}
+                                />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>{culture.department}:</td>
+                            <td>
+                                <DepartmentDropDownListWrap
+                                    data={this.state.departments}
+                                    default={this.state.codeArray}
+                                    dataChanged={this.dataChanged.bind(this)}
+                                    department_bar={true}
+                                    department_authority={this.state.department_authority}
+                                    onSelectNodeChanged={this.onSelectNodeChanged.bind(this)}
+                                    onRealNodeChanged={this.onRealNodeChanged.bind(this)}
+                                    departmentAuthorityChange={this.departmentAuthorityChange.bind(this)}
+                                />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>{culture.user}:</td>
+                            <td>
+                                <UserDropDownListWrap
+                                    ref="userDropDownListWrap"
+                                    userArray={this.state.userArray}
+                                    onSelectUserChange={this.onSelectUserChange.bind(this)}
+                                />
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <br />
+                <input type="button" value={culture.save} onClick={this.onSaveAccess.bind(this)} className="button" />
             </div>
-        )
-    }
-}
-class UpdateAccessItem extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {}
-    }
-    componentDidMount() {
-        this.refs.departmentDropDownListWrap.getData(this.props.companyId, function () {
-            this.refs.departmentDropDownListWrap.unSelectNode(this.props.codeArray);  //反选
-        }.bind(this));
-        this.refs.userDropDownListWrap.getData(this.props.companyCode);
-
-    }
-    onSelectNodeChanged() {
-
-    }
-    onRealNodeChanged() {
-
-    }
-    onSelectUserChange() {
-
-    }
-    render() {
-        return (
-            <table className="table_general">
-                <tbody>
-                    <tr>
-                        <td colSpan="2">{this.props.department.DepartmentName}</td>
-                    </tr>
-                    <tr>
-                        <td width="10%">{culture.department}:</td>
-                        <td width="90%">
-                            <DepartmentDropDownListWrap
-                                ref="departmentDropDownListWrap"
-                                authority={this.props.authority}
-                                department_bar={true}
-                                codeArray={this.props.codeArray}
-                                nameArray={this.props.nameArray}
-                                onSelectNodeChanged={this.onSelectNodeChanged.bind(this)}
-                                onRealNodeChanged={this.onRealNodeChanged.bind(this)}
-                            />
-                        </td>
-                    </tr>
-                    <tr>
-                        <td >{culture.user}:</td>
-                        <td >
-                            <UserDropDownListWrap
-                                ref="userDropDownListWrap"
-                                userArray={this.props.userArray}
-                                selectedUsers={this.props.userArray}
-                                onSelectUserChange={this.onSelectUserChange.bind(this)}
-                            />
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
         )
     }
 }
@@ -368,6 +452,8 @@ class Resources extends React.Component {
             subComponent: subComponent,
             access: access,
             departments: departments
+        }, function () {
+            this.refs.updateAccess.getCompany();
         });
     }
     getFileAccess(fileId) {
@@ -407,6 +493,48 @@ class Resources extends React.Component {
             }
             this.setState({ subFileArray: this.state.subFileArray });
         }.bind(this));
+    }
+    onSaveAccess(companyCode, companyName, codeArray, nameArray, authority, realCodes, userArray, success) {
+        var update = false;
+        for (var i = 0; i < this.state.access.length; i++) {
+            if (this.state.access[i].Company == companyCode) {
+                update = true;
+                //替换
+                this.state.access.splice(i, 1, {
+                    Company: companyCode,
+                    CompanyDisplay: companyName,
+                    DepartmentCodes: codeArray,
+                    DepartmentDisplay: nameArray,
+                    Authority: authority,
+                    AccessCodes: realCodes,
+                    AccessUsers: userArray
+                });
+            }
+        }
+        if (!update) {
+            this.state.access.push({
+                Company: companyCode,
+                CompanyDisplay: companyName,
+                DepartmentCodes: codeArray,
+                DepartmentDisplay: nameArray,
+                Authority: authority,
+                AccessCodes: realCodes,
+                AccessUsers: userArray
+            })
+        }
+        http.postJson(urls.resources.updateAccessUrl, { fileId: this.state.fileId, access: this.state.access }, function (data) {
+            if (data.code == 0) {
+                this.setState({ access: this.state.access });
+            }
+        }.bind(this))
+    }
+    delAccess(e) {
+        var id = e.target.parentElement.id;
+        var name = e.target.parentElement.getAttribute("data-name");
+        var code = e.target.parentElement.getAttribute("data-code");
+        this.state.access.splice(id, 1);
+        this.setState({ access: this.state.access });
+        e.stopPropagation();
     }
     render() {
         return (
@@ -463,8 +591,11 @@ class Resources extends React.Component {
                 }
                 {this.state.subFileShow ?
                     <UpdateAccess show={this.state.accessToggle}
+                        ref="updateAccess"
                         departments={this.state.departments}
                         access={this.state.access}
+                        delAccess={this.delAccess.bind(this)}
+                        onSaveAccess={this.onSaveAccess.bind(this)}
                     /> : null
                 }
 

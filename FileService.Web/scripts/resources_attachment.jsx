@@ -7,7 +7,6 @@
             buttonValue: culture.upload,
             buttonDisabled: false,
             accesses: [],
-            existsCompany: []
         }
     }
     showAccess(e) {
@@ -15,17 +14,15 @@
     }
     delAccess(e) {
         var id = e.target.parentElement.id;
+        var name = e.target.parentElement.getAttribute("data-name");
+        var code = e.target.parentElement.getAttribute("data-code");
         this.state.accesses.splice(id, 1);
-        this.state.existsCompany.splice(id, 1);
         this.setState({
             accesses: this.state.accesses,
-            existsCompany: this.state.existsCompany
         }, function () {
-                if (this.refs.accessAuthority) {
-                    this.refs.accessAuthority.emptyDefault();
-                    this.refs.accessAuthority.getCompanyData();
-                }
+            this.refs.accessAuthority.addCompanyData(code, name);
         }.bind(this));
+        e.stopPropagation();
     }
     fileChanged(e) {
         this.input = e.target;
@@ -33,10 +30,9 @@
             errorMsg: ""
         })
     }
-    accessOk(companyId, companyCode, companyName, authority,codeArray, nameArray, realCodes, userArray, success) {
-        this.state.accesses.push({ companyId, companyCode, companyName, authority, codeArray, nameArray, realCodes, userArray });
-        this.state.existsCompany.push(companyCode);
-        this.setState({ accesses: this.state.accesses, existsCompany: this.state.existsCompany}, success);
+    accessOk(companyCode, companyName, authority, codeArray, nameArray, realCodes, userArray, success) {
+        this.state.accesses.push({ companyCode, companyName, authority, codeArray, nameArray, realCodes, userArray });
+        this.setState({ accesses: this.state.accesses }, success);
     }
     upload() {
         var that = this;
@@ -87,7 +83,11 @@
                                 {
                                     this.state.accesses.map(function (item, i) {
                                         return (
-                                            <span className="convert_flag" title={JSON.stringify(item)} key={i} id={i} data-code={item.companyId}>
+                                            <span className="convert_flag" title={JSON.stringify(item)}
+                                                key={i}
+                                                id={i}
+                                                data-code={item.companyCode}
+                                                data-name={item.companyName}>
                                                 <span className="flag_txt">{item.companyName}</span>
                                                 <span className="flag_txt flag_del"
                                                     onClick={this.delAccess.bind(this)}>×</span>
@@ -106,8 +106,6 @@
                         <tr>
                             <td colSpan="4">
                                 {this.state.accessShow ? <AccessAuthority
-                                    //用于判断下拉框不显示该条数据
-                                    existsCompany={this.state.existsCompany}
                                     ref="accessAuthority"
                                     accessOk={this.accessOk.bind(this)} /> : null}
                             </td>

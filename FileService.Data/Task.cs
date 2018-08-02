@@ -51,5 +51,10 @@ namespace FileService.Data
                  })
                  .Sort(new BsonDocument("_id", 1)).ToEnumerable();
         }
+        public bool UpdateAccess(ObjectId id, BsonArray array)
+        {
+            var filter = FilterBuilder.Eq("FileId", id);
+            return MongoCollection.UpdateOne(filter, Builders<BsonDocument>.Update.Set("Access", array)).IsAcknowledged;
+        }
     }
 }
