@@ -152,5 +152,6 @@ var culture = {
     current_and_sup: "当前及上级",
     end: "结尾",
 
-    process_count:"处理次数"
+    process_count: "处理次数",
+    save_success:"保存成功"
 }

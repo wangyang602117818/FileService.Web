@@ -152,5 +152,6 @@ var culture = {
     current_and_sup: "Current&Sup",
     end: "End",
 
-    process_count: "ProCount"
+    process_count: "ProCount",
+    save_success: "Save Success"
 }

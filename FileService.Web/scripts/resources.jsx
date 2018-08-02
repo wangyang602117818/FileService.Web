@@ -121,7 +121,10 @@ class UpdateAccess extends React.Component {
             realCodes: [],     //真实的code列表
             department_authority: "0",
 
-            userArray: []
+            userArray: [],
+
+            btn_msg: culture.save,
+            btn_disabled: false,
         }
     }
     getCompany() {
@@ -145,6 +148,7 @@ class UpdateAccess extends React.Component {
                 this.setState({ companyCode: "", companyName: "", companyData: [], departments: [] });
                 this.refs.userDropDownListWrap.emptyData();
             }
+            this.setState({ codeArray: [], nameArray: [], realCodes: [], department_authority: "0", userArray: [] });
         }.bind(this));
     }
     getDepartment(code) {
@@ -169,7 +173,9 @@ class UpdateAccess extends React.Component {
             nameArray: title.DepartmentDisplay,
             department_authority: title.Authority,
             realCodes: title.AccessCodes,
-            userArray: title.AccessUsers
+            userArray: title.AccessUsers,
+            btn_msg: culture.save,
+            btn_disabled: false
         }, function () {
             this.getDepartment(title.Company);
             this.refs.userDropDownListWrap.getData(title.Company);
@@ -216,7 +222,9 @@ class UpdateAccess extends React.Component {
                 this.state.nameArray,
                 this.state.department_authority,
                 this.state.realCodes,
-                this.state.userArray);
+                this.state.userArray, function (data) {
+                    if (data.code == 0) this.setState({ btn_msg: culture.save_success, btn_disabled: true });
+                }.bind(this));
         }
     }
     render() {
@@ -281,7 +289,7 @@ class UpdateAccess extends React.Component {
                     </tbody>
                 </table>
                 <br />
-                <input type="button" value={culture.save} onClick={this.onSaveAccess.bind(this)} className="button" />
+                <input type="button" value={this.state.btn_msg} disabled={this.state.btn_disabled} onClick={this.onSaveAccess.bind(this)} className="button" />
             </div>
         )
     }
@@ -526,6 +534,7 @@ class Resources extends React.Component {
             if (data.code == 0) {
                 this.setState({ access: this.state.access });
             }
+            if (success) success(data);
         }.bind(this))
     }
     delAccess(e) {

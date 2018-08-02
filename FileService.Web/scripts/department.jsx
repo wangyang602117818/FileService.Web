@@ -59,9 +59,11 @@ class DepartmentItem extends React.Component {
             <tr>
                 <td className="link"
                     onClick={this.props.onIdClick}
+                    code={this.props.department.DepartmentCode.removeHTML()}
                     id={this.props.department._id.$oid.removeHTML()}>
                     <b id={this.props.department._id.$oid.removeHTML()}
-                        dangerouslySetInnerHTML={{ __html: this.props.department._id.$oid }}>
+                       code={this.props.department.DepartmentCode.removeHTML()}
+                       dangerouslySetInnerHTML={{ __html: this.props.department._id.$oid }}>
                     </b>
                 </td>
                 <td dangerouslySetInnerHTML={{ __html: this.props.department.DepartmentName }}></td>
@@ -81,7 +83,7 @@ class Department extends React.Component {
             addDepartmentShow: localStorage.department_add ? eval(localStorage.department_add) : true,
             departmentDetailShow: false,
             departmentDetailToggle: true,
-            id: null,
+            code: null,
             department: null,
 
             updateDepartmentShow: false,
@@ -140,17 +142,17 @@ class Department extends React.Component {
         }
     }
     onIdClick(e) {
-        var id = e.target.id || e.target.parentElement.id;
-        this.getDepartmentDetail(id);
+        var code = e.target.getAttribute("code") || e.target.parentElement.getAttribute("code");
+        this.getDepartmentDetail(code);
     }
-    getDepartmentDetail(id) {
+    getDepartmentDetail(code) {
         var _this = this;
         _this.setState({
-            id: id,
+            code: code,
             departmentDetailShow: false,  //暂时卸载
             updateDepartmentShow: false   //暂时卸载
         }, function () {
-            http.get(urls.department.getDepartmentUrl + "/" + id, function (data) {
+            http.get(urls.department.getDepartmentUrl + "?code=" + code, function (data) {
                 if (data.code == 0) {
                     _this.setState({
                         addTopDepartmentShow: false,
