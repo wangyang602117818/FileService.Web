@@ -9,8 +9,8 @@
                     <tr>
                         <th width="18%">{culture.fileId}</th>
                         <th width="28%">{culture.fileName}</th>
-                        <th width="8%">{culture.size}</th>
-                        <th width="13%">{culture.uploadDate}</th>
+                        <th width="7%">{culture.size}</th>
+                        <th width="14%">{culture.uploadDate}</th>
                         <th width="10%">{culture.from}</th>
                         <th width="6%">{culture.owner}</th>
                         <th width="5%">{culture.type}</th>
