@@ -1,4 +1,6 @@
-﻿class TitleTxt extends React.Component {
+﻿var userName = document.getElementById("userName").value;
+var role = document.getElementById("role").value;
+class TitleTxt extends React.Component {
     constructor(props) {
         super(props);
     }

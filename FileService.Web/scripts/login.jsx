@@ -21,7 +21,10 @@ class LoginName extends React.Component {
                     {culture.username}:
                </div>
                 <div className="value">
-                    <input type="text" name="username" value={this.props.value} onChange={this.props.nameChanged} onKeyPress={this.props.onKeypressName} /> <font color="red">*</font>
+                    <input type="text" name="username"
+                        value={this.props.value}
+                        onChange={this.props.nameChanged}
+                        onKeyPress={this.props.onKeypressName} /> <font color="red">*</font>
                 </div>
             </div>
         );
@@ -38,7 +41,10 @@ class LoginValue extends React.Component {
                     {culture.password}:
                 </div>
                 <div className="value">
-                    <input type="password" name="pwd" value={this.props.value} onChange={this.props.passWordChangd} onKeyPress={this.props.onKeypressPassWord} /> <font color="red">*</font>
+                    <input type="password" name="pwd"
+                        value={this.props.value}
+                        onChange={this.props.passWordChangd}
+                        onKeyPress={this.props.onKeypressPassWord} /> <font color="red">*</font>
                 </div>
             </div>
         );
@@ -55,7 +61,11 @@ class LoginButton extends React.Component {
     render() {
         return (
             <div className="login_row">
-                <input type="button" ref="loginBtn" value={culture.login} ref="button" className="loginBtn" onClick={this.props.onClick} />
+                <input type="button" ref="loginBtn"
+                    value={culture.login}
+                    ref="button"
+                    className="loginBtn"
+                    onClick={this.props.onClick} />
             </div>
         );
     }

@@ -35,6 +35,7 @@ namespace FileService.Web
                 .Include("~/scripts/handlers.jsx")
                 .Include("~/scripts/tasks_update.jsx")
                 .Include("~/scripts/tasks.jsx")
+                .Include("~/scripts/dropdownlist.jsx")
                 .Include("~/scripts/resources_image.jsx")
                 .Include("~/scripts/resources_video.jsx")
                 .Include("~/scripts/resources_attachment.jsx")
@@ -54,7 +55,6 @@ namespace FileService.Web
             );
             //admin
             bundles.Add(new BabelBundle("~/scripts/admin")
-                .Include("~/scripts/dropdownlist.jsx")
                 .Include("~/scripts/department.jsx")
                 .Include("~/scripts/department_detail.jsx")
                 .Include("~/scripts/user.jsx")

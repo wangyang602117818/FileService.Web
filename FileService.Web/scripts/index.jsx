@@ -18,8 +18,6 @@
         window.location.reload();
     }
     componentDidMount() {
-        var userName = document.getElementById("userName").value;
-        var role = document.getElementById("role").value;
         this.setState({ name: userName, role: role });
     }
     render() {

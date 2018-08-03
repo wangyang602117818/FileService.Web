@@ -209,7 +209,7 @@ class AttachmentUpdate extends React.Component {
         this.state = {
             id: "",
             fileId: "",
-            subFileId:"",
+            subFileId: "",
             handler: "",
             format: 10,
             flag: ""
@@ -224,9 +224,66 @@ class AttachmentUpdate extends React.Component {
     flagChange(e) {
         this.setState({ flag: e.target.value });
     }
+    formatChange(e) {
+        this.setState({ flag: e.target.value });
+    }
     updateAttachment() {
         if (this.state.flag)
             this.props.updateAttachment(this.state);
+    }
+    render() {
+        return (
+            <div className={this.props.show ? "show" : "hidden"}>
+                <table className="table" style={{ width: "50%" }}>
+                    <tbody>
+                        <tr>
+                            <td width="15%">{culture.handler}:</td>
+                            <td width="35%">
+                                <select name="handler" value={this.state.handler} onChange={this.handlerChange.bind(this)}>
+                                    {this.props.handlers.map(function (item, i) {
+                                        return <option value={item} key={i}>{item}</option>
+                                    })}
+                                </select>
+                            </td>
+                            <td width="15%">{culture.outputFormat}:</td>
+                            <td width="35%">
+                                <select name="format" value={this.state.format} onChange={this.formatChange.bind(this)} >
+                                    <option value="10" >pdf</option>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>{culture.flag}:</td>
+                            <td colSpan="3">
+                                <input type="text" name="flag" value={this.state.flag} onChange={this.flagChange.bind(this)} /><font color="red">*</font>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colSpan="4"><input type="button" name="Update" className="button" value={culture.update} onClick={this.updateAttachment.bind(this)} /></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        )
+    }
+}
+class HandlerUpdate extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            id: "",
+            fileId: "",
+            handler: "",
+        }
+    }
+    changeState(obj) {
+        this.setState(obj);
+    }
+    handlerChange(e) {
+        this.setState({ handler: e.target.value });
+    }
+    updateHandler(e) {
+        this.props.updateHandler(this.state);
     }
     render() {
         return (
@@ -244,13 +301,7 @@ class AttachmentUpdate extends React.Component {
                             </td>
                         </tr>
                         <tr>
-                            <td>{culture.flag}:</td>
-                            <td colSpan="3">
-                                <input type="text" name="flag" value={this.state.flag} onChange={this.flagChange.bind(this)} /><font color="red">*</font>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td colSpan="4"><input type="button" name="Update" className="button" value={culture.update} onClick={this.updateAttachment.bind(this)} /></td>
+                            <td colSpan="4"><input type="button" name="Update" className="button" value={culture.update} onClick={this.updateHandler.bind(this)} /></td>
                         </tr>
                     </tbody>
                 </table>
@@ -270,7 +321,9 @@ class TasksUpdate extends React.Component {
         var result = [], that = this;
         http.get(urls.tasks.getAllHandlersUrl, function (data) {
             if (data.code == 0) {
-                for (var i = 0; i < data.result.length; i++) result.push(data.result[i].HandlerId);
+                for (var i = 0; i < data.result.length; i++) {
+                    result.push(data.result[i].HandlerId);
+                } 
                 that.setState({ handlers: result });
             }
         });
@@ -279,51 +332,61 @@ class TasksUpdate extends React.Component {
         var that = this;
         http.get(urls.tasks.getByIdUrl + "/" + id, function (data) {
             if (data.code == 0) {
-                if (data.result.Type == "image") {
-                    that.setState({
-                        component: ImageUpdate
-                    }, function () {
-                        that.refs.updatemodule.changeState({
-                            id: id,
-                            fileId: data.result.FileId.$oid,
-                            thumbnailId: data.result.Output._id.$oid,
-                            handler: data.result.HandlerId,
-                            format: data.result.Output.Format,
-                            flag: data.result.Output.Flag,
-                            model: data.result.Output.Model,
-                            x: data.result.Output.X,
-                            y: data.result.Output.Y,
-                            width: data.result.Output.Width,
-                            height: data.result.Output.Height
+                if (data.result.Output._id) {
+                    if (data.result.Type == "image") {
+                        that.setState({
+                            component: ImageUpdate
+                        }, function () {
+                            that.refs.updatemodule.changeState({
+                                id: id,
+                                fileId: data.result.FileId.$oid,
+                                thumbnailId: data.result.Output._id.$oid,
+                                handler: data.result.HandlerId,
+                                format: data.result.Output.Format,
+                                flag: data.result.Output.Flag,
+                                model: data.result.Output.Model,
+                                x: data.result.Output.X,
+                                y: data.result.Output.Y,
+                                width: data.result.Output.Width,
+                                height: data.result.Output.Height
+                            });
                         });
-                    });
-                }
-                if (data.result.Type == "video") {
-                    that.setState({
-                        component: VideoUpdate
-                    }, function () {
-                        that.refs.updatemodule.changeState({
-                            id: id,
-                            fileId: data.result.FileId.$oid,
-                            m3u8Id: data.result.Output._id.$oid,
-                            handler: data.result.HandlerId,
-                            format: data.result.Output.Format,
-                            flag: data.result.Output.Flag,
-                            quality: data.result.Output.Quality
+                    }
+                    if (data.result.Type == "video") {
+                        that.setState({
+                            component: VideoUpdate
+                        }, function () {
+                            that.refs.updatemodule.changeState({
+                                id: id,
+                                fileId: data.result.FileId.$oid,
+                                m3u8Id: data.result.Output._id.$oid,
+                                handler: data.result.HandlerId,
+                                format: data.result.Output.Format,
+                                flag: data.result.Output.Flag,
+                                quality: data.result.Output.Quality
+                            });
                         });
-                    });
-                }
-                if (data.result.Type == "attachment") {
-                    that.setState({
-                        component: AttachmentUpdate
-                    }, function () {
+                    }
+                    if (data.result.Type == "attachment") {
+                        that.setState({
+                            component: AttachmentUpdate
+                        }, function () {
+                            that.refs.updatemodule.changeState({
+                                id: id,
+                                fileId: data.result.FileId.$oid,
+                                subFileId: data.result.Output._id.$oid,
+                                handler: data.result.HandlerId,
+                                format: data.result.Output.Format,
+                                flag: data.result.Output.Flag
+                            });
+                        });
+                    }
+                } else {
+                    that.setState({ component: HandlerUpdate }, function () {
                         that.refs.updatemodule.changeState({
                             id: id,
                             fileId: data.result.FileId.$oid,
-                            subFileId: data.result.Output._id.$oid,
                             handler: data.result.HandlerId,
-                            format: data.result.Output.Format,
-                            flag: data.result.Output.Flag
                         });
                     });
                 }
@@ -333,6 +396,7 @@ class TasksUpdate extends React.Component {
     render() {
         return this.state.component ? <this.state.component show={this.props.show}
             ref="updatemodule"
+            updateHandler={this.props.updateHandler}
             updateImage={this.props.updateImage}
             updateVideo={this.props.updateVideo}
             updateAttachment={this.props.updateAttachment}

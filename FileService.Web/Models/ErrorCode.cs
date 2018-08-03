@@ -12,35 +12,33 @@ namespace FileService.Web.Models
         /// 成功
         /// </summary>
         success = 0,
+        /// <summary>
+        /// 重定向
+        /// </summary>
         redirect = 1,
-        authorize_fault = 2,
         /// <summary>
-        /// 记录不存在
+        /// 权限不足
         /// </summary>
-        record_not_exist = 100,
+        authorize_fault = 100,
+        authcode_is_null = 101,
+        app_not_exist = 102,
+        app_blocked = 103,
+        error_permission = 104,
+        invalid_params = 105,
+        params_valid_fault = 106,
+        owner_not_match = 107,
         /// <summary>
-        /// 参数不合法错误，主要针对null值
+        /// 不存在
         /// </summary>
-        invalid_params = 101,
-        /// <summary>
-        /// 参数验证失败，主要正对ModelState验证结果
-        /// </summary>
-        params_valid_fault = 102,
-        /// <summary>
-        /// url不存在错误
-        /// </summary>
-        uri_not_found = 110,
+        record_not_exist = 200,
+        uri_not_found = 201,
+        username_exist = 202,
+        login_fault = 203,
+        task_not_completed = 204,
 
-        authcode_is_null = 111,
-        app_not_exist = 112,
-        app_blocked = 113,
-        username_exist = 112,
-        login_fault = 140,
-        task_not_completed = 150,
         /// <summary>
-        /// 权限错误
+        /// 未知错误
         /// </summary>
-        error_permission = 200,
         server_exception = -1000,
         unknow_error = -1001,
     }

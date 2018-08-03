@@ -7,6 +7,15 @@ using System.Web;
 
 namespace FileService.Web.Models
 {
+    public class UpdateHandler
+    {
+        [Required]
+        public string Id { get; set; }
+        [Required]
+        public string FileId { get; set; }
+        [Required]
+        public string Handler { get; set; }
+    }
     public class UpdateImageTask
     {
         [Required]

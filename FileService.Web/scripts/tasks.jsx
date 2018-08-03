@@ -76,25 +76,16 @@ class TaskItem extends React.Component {
     render() {
         return (
             <tr>
-                {this.props.task.Output._id ?
-                    <td className="link"
-                        onClick={this.props.onIdClick}
+                <td className="link"
+                    onClick={this.props.onIdClick}
+                    id={this.props.task._id.$oid.removeHTML()}
+                    data-name={this.props.task.FileName.removeHTML()}>
+                    <b
                         id={this.props.task._id.$oid.removeHTML()}
-                        data-name={this.props.task.FileName.removeHTML()}>
-                        <b
-                            id={this.props.task._id.$oid.removeHTML()}
-                            data-name={this.props.task.FileName.removeHTML()}
-                            dangerouslySetInnerHTML={{ __html: this.props.task.FileId.$oid }}
-                        ></b>
-                    </td> :
-                    <td>
-                        <b
-                            id={this.props.task._id.$oid.removeHTML()}
-                            data-name={this.props.task.FileName.removeHTML()}
-                            dangerouslySetInnerHTML={{ __html: this.props.task.FileId.$oid }}
-                        ></b>
-                    </td>
-                }
+                        data-name={this.props.task.FileName.removeHTML()}
+                        dangerouslySetInnerHTML={{ __html: this.props.task.FileId.$oid }}
+                    ></b>
+                </td>
                 <td title={this.props.task.FileName.removeHTML()}>
                     <i className={"iconfont " + getIconNameByFileName(this.props.task.FileName.removeHTML())}></i>&nbsp;
                     <span dangerouslySetInnerHTML={{ __html: this.props.task.FileName.getFileName(10) }}></span>
@@ -162,21 +153,27 @@ class Tasks extends React.Component {
             that.refs.update_task.getTaskById(id);
         });
     }
+    updateHandler(obj) {
+        var that = this;
+        http.postJson(urls.tasks.updateHandler, obj, function (data) {
+            if (data.code == 0) { that.getData(); that.setState({ taskShow: false }) } else { alert(data.message); }
+        });
+    }
     updateImage(obj) {
         var that = this;
-        http.post(urls.tasks.updateImageUrl, obj, function (data) {
+        http.postJson(urls.tasks.updateImageUrl, obj, function (data) {
             if (data.code == 0) { that.getData(); that.setState({ taskShow: false }) } else { alert(data.message); }
         });
     }
     updateVideo(obj) {
         var that = this;
-        http.post(urls.tasks.updateVideoUrl, obj, function (data) {
+        http.postJson(urls.tasks.updateVideoUrl, obj, function (data) {
             if (data.code == 0) { that.getData(); that.setState({ taskShow: false }) } else { alert(data.message); }
         });
     }
     updateAttachment(obj) {
         var that = this;
-        http.post(urls.tasks.updateAttachmentUrl, obj, function (data) {
+        http.postJson(urls.tasks.updateAttachmentUrl, obj, function (data) {
             if (data.code == 0) { that.getData(); that.setState({ taskShow: false }) } else { alert(data.message); }
         });
     }
@@ -205,6 +202,7 @@ class Tasks extends React.Component {
                         onShowChange={this.onTaskShow.bind(this)} /> : null}
                 {this.state.taskShow ?
                     <TasksUpdate show={this.state.taskToggle} ref="update_task"
+                        updateHandler={this.updateHandler.bind(this)}
                         updateImage={this.updateImage.bind(this)}
                         updateVideo={this.updateVideo.bind(this)}
                         updateAttachment={this.updateAttachment.bind(this)}

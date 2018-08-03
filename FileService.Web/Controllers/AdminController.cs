@@ -322,17 +322,30 @@ namespace FileService.Web.Controllers
                 return new ResponseModel<string>(ErrorCode.task_not_completed, "");
             }
         }
-        [Authorize(Roles = "admin")]
         public ActionResult GetTaskById(string id)
         {
             BsonDocument document = task.FindOne(ObjectId.Parse(id));
             return new ResponseModel<BsonDocument>(ErrorCode.success, document);
         }
-        [Authorize(Roles = "admin")]
         public ActionResult GetAllHandlers()
         {
             IEnumerable<BsonDocument> result = converter.FindAll();
             return new ResponseModel<IEnumerable<BsonDocument>>(ErrorCode.success, result);
+        }
+        public ActionResult UpdateHandler(UpdateHandler updateHandler)
+        {
+            Log(updateHandler.FileId, "UpdateTaskHandler");
+            BsonDocument document = new BsonDocument()
+            {
+                {"HandlerId",updateHandler.Handler },
+                {"State",TaskStateEnum.updated },
+                {"StateDesc",TaskStateEnum.updated.ToString() }
+            };
+            if (task.Update(ObjectId.Parse(updateHandler.Id), document))
+            {
+                return new ResponseModel<BsonDocument>(ErrorCode.success, document);
+            }
+            return new ResponseModel<string>(ErrorCode.server_exception, "");
         }
         [Authorize(Roles = "admin")]
         [HttpPost]
@@ -406,7 +419,6 @@ namespace FileService.Web.Controllers
             }
             return new ResponseModel<string>(ErrorCode.server_exception, "");
         }
-        [Authorize(Roles = "admin")]
         public ActionResult GetCompanyUsers(string company, int pageIndex = 1, int pageSize = 10, string filter = "")
         {
             BsonDocument bson = new BsonDocument("Company", company);
@@ -415,7 +427,6 @@ namespace FileService.Web.Controllers
             IEnumerable<BsonDocument> result = user.GetPageList(pageIndex, pageSize, bson, sorts, filter, new List<string>() { "UserName" }, new List<string>() { "PassWord" }, out count);
             return new ResponseModel<IEnumerable<BsonDocument>>(ErrorCode.success, result, count);
         }
-        [Authorize(Roles = "admin")]
         public ActionResult GetUsers(int pageIndex = 1, int pageSize = 10, string filter = "")
         {
             long count = 0;
@@ -508,7 +519,6 @@ namespace FileService.Web.Controllers
                 return new ResponseModel<string>(ErrorCode.server_exception, "");
             }
         }
-        [Authorize(Roles = "admin")]
         public ActionResult GetDepartments(int pageIndex = 1, int pageSize = 10, string filter = "")
         {
             long count = 0;
@@ -519,7 +529,6 @@ namespace FileService.Web.Controllers
         {
             return new ResponseModel<IEnumerable<BsonDocument>>(ErrorCode.success, department.GetAllDepartment(), department.Count());
         }
-        [Authorize(Roles = "admin")]
         public ActionResult GetDepartment(string code)
         {
             return new ResponseModel<BsonDocument>(ErrorCode.success, department.GetByCode(code));

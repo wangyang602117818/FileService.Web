@@ -74,11 +74,13 @@ class ResourceItem extends React.Component {
                     data-type={this.props.resource.FileType.removeHTML()}
                     data-filename={this.props.resource.FileName.removeHTML()}
                     data-fileid={this.props.resource._id.$oid.removeHTML()}
+                    data-owner={this.props.resource.Owner.removeHTML()}
                     onClick={this.props.onIdClick}>
                     <b
                         data-type={this.props.resource.FileType.removeHTML()}
                         data-filename={this.props.resource.FileName.removeHTML()}
                         data-fileid={this.props.resource._id.$oid.removeHTML()}
+                        data-owner={this.props.resource.Owner.removeHTML()}
                         dangerouslySetInnerHTML={{ __html: this.props.resource._id.$oid }}>
                     </b>
                 </td>
@@ -148,7 +150,7 @@ class UpdateAccess extends React.Component {
                 this.setState({ companyCode: "", companyName: "", companyData: [], departments: [] });
                 this.refs.userDropDownListWrap.emptyData();
             }
-            this.setState({ codeArray: [], nameArray: [], realCodes: [], department_authority: "0", userArray: [] });
+            this.setState({ codeArray: [], nameArray: [], realCodes: [], department_authority: "0", userArray: [], btn_msg: culture.save, btn_disabled: false });
         }.bind(this));
     }
     getDepartment(code) {
@@ -231,7 +233,7 @@ class UpdateAccess extends React.Component {
         return (
             <div className={this.props.show ? "update_access_con show" : "update_access_con hidden"}>
                 <div className="update_access_item">
-                    <div style={{ width: "10%" }}>{culture.access_authority}: </div>
+                    <div style={{ width: "12%" }}>{culture.access_authority}: </div>
                     {
                         this.props.access.map(function (item, i) {
                             return (
@@ -252,8 +254,8 @@ class UpdateAccess extends React.Component {
                 <table className="table_general">
                     <tbody>
                         <tr>
-                            <td width="10%">{culture.company}:</td>
-                            <td width="90%">
+                            <td width="12%">{culture.company}:</td>
+                            <td width="88%">
                                 <CompanyDropDownList
                                     data={this.state.companyData}
                                     default={this.state.companyCode}
@@ -289,7 +291,10 @@ class UpdateAccess extends React.Component {
                     </tbody>
                 </table>
                 <br />
-                <input type="button" value={this.state.btn_msg} disabled={this.state.btn_disabled} onClick={this.onSaveAccess.bind(this)} className="button" />
+                <input type="button" value={this.state.btn_msg}
+                    disabled={this.props.owner == userName ? this.state.btn_disabled : true}
+                    onClick={this.onSaveAccess.bind(this)}
+                    className="button" />
             </div>
         )
     }
@@ -309,6 +314,7 @@ class Resources extends React.Component {
             fileId: "",
             fileName: "",
             innerFileName: "",
+            owner: "",
             subComponent: null,
             ////////////
             accessToggle: true,
@@ -416,15 +422,18 @@ class Resources extends React.Component {
             fileType = "",
             innerFileName = "",
             fileName = "",
+            owner = "",
             subComponent = null;
         if (e.target.nodeName.toLowerCase() == "span") {
             fileId = e.target.parentElement.getAttribute("data-fileid");
             fileName = e.target.parentElement.getAttribute("data-filename");
             fileType = e.target.parentElement.getAttribute("data-type");
+            owner = e.target.parentElement.getAttribute("data-owner");
         } else {
             fileId = e.target.getAttribute("data-fileid");
             fileName = e.target.getAttribute("data-filename");
             fileType = e.target.getAttribute("data-type");
+            owner = e.target.getAttribute("data-owner");
         }
         innerFileName = fileName;
         this.state.subFileArray = [];
@@ -455,6 +464,7 @@ class Resources extends React.Component {
         this.setState({
             fileName: fileName,
             innerFileName: innerFileName,
+            owner: owner,
             fileId: fileId,
             subFileShow: true,
             subComponent: subComponent,
@@ -528,11 +538,13 @@ class Resources extends React.Component {
                 Authority: authority,
                 AccessCodes: realCodes,
                 AccessUsers: userArray
-            })
+            });
         }
         http.postJson(urls.resources.updateAccessUrl, { fileId: this.state.fileId, access: this.state.access }, function (data) {
             if (data.code == 0) {
                 this.setState({ access: this.state.access });
+            } else {
+                alert(data.message);
             }
             if (success) success(data);
         }.bind(this))
@@ -601,6 +613,7 @@ class Resources extends React.Component {
                 {this.state.subFileShow ?
                     <UpdateAccess show={this.state.accessToggle}
                         ref="updateAccess"
+                        owner={this.state.owner}
                         departments={this.state.departments}
                         access={this.state.access}
                         delAccess={this.delAccess.bind(this)}

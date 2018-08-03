@@ -137,6 +137,7 @@ var urls = {
     tasks: {
         getUrl: appDomain + "admin/gettasks",
         getByIdUrl: appDomain + "admin/gettaskbyid",
+        updateHandler: appDomain +"admin/updatehandler",
         updateImageUrl: appDomain + "admin/updateimagetask",
         updateVideoUrl: appDomain + "admin/updatevideotask",
         updateAttachmentUrl: appDomain + "admin/updateattachmenttask",
