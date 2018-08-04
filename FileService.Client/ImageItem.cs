@@ -118,6 +118,10 @@ namespace FileService.Client
         /// </summary>
         public string FileName { get; set; }
         /// <summary>
+        /// 文件字节数(大小)
+        /// </summary>
+        public long FileSize { get; set; }
+        /// <summary>
         /// 缩列图列表
         /// </summary>
         public IEnumerable<Thumbnail> Thumbnail { get; set; }

@@ -19,5 +19,9 @@ namespace FileService.Client
         /// 文件名
         /// </summary>
         public string FileName { get; set; }
+        /// <summary>
+        /// 文件字节数(大小)
+        /// </summary>
+        public long FileSize { get; set; }
     }
 }

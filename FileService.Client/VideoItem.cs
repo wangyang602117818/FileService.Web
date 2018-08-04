@@ -70,6 +70,10 @@ namespace FileService.Client
         /// </summary>
         public string FileName { get; set; }
         /// <summary>
+        /// 文件字节数(大小)
+        /// </summary>
+        public long FileSize { get; set; }
+        /// <summary>
         /// 转换之后的视频列表
         /// </summary>
         public IEnumerable<VideoItem> Videos { get; set; }

@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>WangXYang.FileService.Client</id>
-    <version>1.3.0</version>
+    <version>1.3.1</version>
     <title>FileService.Client</title>
     <authors>Wang Yang</authors>
     <owners>Wang Yang</owners>
@@ -10,7 +10,7 @@
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>该程序集必须配合指定的后台服务程序使用，方便用户管理文件（上传，获取，转换）</description>
     <releaseNotes>
-       修改 AppName 为 AuthCode
+       添加 FileSize 返回值字段
     </releaseNotes>
     <copyright>Copyright 2017-10-09</copyright>
     <tags>FileService.Client FileService.Api FileService</tags>
