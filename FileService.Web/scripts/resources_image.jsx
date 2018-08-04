@@ -217,7 +217,7 @@ class AccessAuthority extends React.Component {
             this.props.accessOk(
                 this.state.companyCode,
                 this.state.companyName,
-                this.state.authority,
+                this.state.department_authority,
                 this.state.codeArray,
                 this.state.nameArray,
                 this.state.realCodes,
