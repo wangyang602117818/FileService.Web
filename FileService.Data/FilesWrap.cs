@@ -22,10 +22,10 @@ namespace FileService.Data
         public IEnumerable<BsonDocument> GetCountByRecentMonth(DateTime dateTime)
         {
             return MongoCollection.Aggregate()
-                 .Match(FilterBuilder.Gte("uploadDate", dateTime))
+                 .Match(FilterBuilder.Gte("CreateTime", dateTime))
                  .Project(new BsonDocument("date", new BsonDocument("$dateToString", new BsonDocument() {
                     {"format", "%Y-%m-%d" },
-                    {"date", "$uploadDate" }}
+                    {"date", "$CreateTime" }}
                  )))
                  .Group<BsonDocument>(new BsonDocument() {
                     {"_id","$date" },
@@ -88,6 +88,11 @@ namespace FileService.Data
         {
             var filter = FilterBuilder.Eq("_id", id);
             return MongoCollection.UpdateOne(filter, Builders<BsonDocument>.Update.Set("Access", array)).IsAcknowledged;
+        }
+        public override FilterDefinition<BsonDocument> GetAccessFilter(string userName)
+        {
+
+            return null;
         }
     }
 }

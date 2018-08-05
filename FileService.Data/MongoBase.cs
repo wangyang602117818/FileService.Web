@@ -65,7 +65,11 @@ namespace FileService.Data
         {
             return MongoCollection.ReplaceOne(new BsonDocument("_id", document["_id"].AsObjectId), document, new UpdateOptions() { IsUpsert = true }).IsAcknowledged;
         }
-        protected virtual FilterDefinition<BsonDocument> GetPageFilters(BsonDocument eqs, IEnumerable<string> fields, string filter)
+        public virtual FilterDefinition<BsonDocument> GetAccessFilter(string userName)
+        {
+            return null;
+        }
+        protected virtual FilterDefinition<BsonDocument> GetPageFilters(BsonDocument eqs, IEnumerable<string> fields, string filter, string userName)
         {
             FilterDefinition<BsonDocument> filterBuilder = null;
             if (!string.IsNullOrEmpty(filter))
@@ -91,13 +95,17 @@ namespace FileService.Data
             {
                 filterBuilder = new BsonDocument();
             }
-            if (eqs != null) filterBuilder = FilterBuilder.And(eqs, filterBuilder);
-            return filterBuilder;
+            List<FilterDefinition<BsonDocument>> result = new List<FilterDefinition<BsonDocument>>();
+            result.Add(filterBuilder);
+            if (eqs != null) result.Add(eqs);
+            var accessFilter = GetAccessFilter(userName);
+            if (accessFilter != null) result.Add(accessFilter);
+            return FilterBuilder.And(result);
         }
 
-        public IEnumerable<BsonDocument> GetPageList(int pageIndex, int pageSize, BsonDocument eqs, Dictionary<string, string> sorts, string filter, IEnumerable<string> fields, IEnumerable<string> excludeFields, out long count)
+        public IEnumerable<BsonDocument> GetPageList(int pageIndex, int pageSize, BsonDocument eqs, Dictionary<string, string> sorts, string filter, IEnumerable<string> fields, IEnumerable<string> excludeFields, out long count, string userName)
         {
-            FilterDefinition<BsonDocument> filterBuilder = GetPageFilters(eqs, fields, filter);
+            FilterDefinition<BsonDocument> filterBuilder = GetPageFilters(eqs, fields, filter, userName);
             count = MongoCollection.Count(filterBuilder);
             var exclude = Builders<BsonDocument>.Projection.Exclude("PassWord");
             foreach (string ex in excludeFields)
@@ -114,7 +122,6 @@ namespace FileService.Data
                     if (item.Value == "desc") find = find.SortByDescending(sort => sort[item.Key]);
                 }
             }
-            //if (!string.IsNullOrEmpty(sortField)) find = find.SortByDescending(sort => sort[sortField]);
             return find
                 .Skip((pageIndex - 1) * pageSize)
                 .Limit(pageSize)

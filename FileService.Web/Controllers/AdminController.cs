@@ -129,8 +129,9 @@ namespace FileService.Web.Controllers
         public ActionResult GetFiles(int pageIndex = 1, int pageSize = 10, string filter = "")
         {
             long count = 0;
+            var userName = Request.Headers["UserName"] ?? User.Identity.Name;
             Dictionary<string, string> sorts = new Dictionary<string, string> { { "CreateTime", "desc" } };
-            IEnumerable<BsonDocument> result = filesWrap.GetPageList(pageIndex, pageSize, null, sorts, filter, new List<string>() { "_id", "filename", "From", "FileType" }, new List<string>() { }, out count);
+            IEnumerable<BsonDocument> result = filesWrap.GetPageList(pageIndex, pageSize, null, sorts, filter, new List<string>() { "_id", "FileName", "From", "FileType" }, new List<string>() { }, out count, userName);
             return new ResponseModel<IEnumerable<BsonDocument>>(ErrorCode.success, result, count);
         }
         public ActionResult GetConvertFiles(int pageIndex = 1, int pageSize = 10, string filter = "")
@@ -439,7 +440,14 @@ namespace FileService.Web.Controllers
         public ActionResult AddUser(AddUser addUser)
         {
             BsonDocument bsonUser = user.GetUser(addUser.UserName);
-            if (bsonUser == null) { addUser.CreateTime = DateTime.Now; } else { addUser.Modified = true; }
+            if (bsonUser == null)
+            {
+                addUser.CreateTime = DateTime.Now;
+            }
+            else
+            {
+                addUser.Modified = true;
+            }
             if (addUser.Department == null) addUser.Department = new List<string>();
             if (addUser.DepartmentDisplay == null) addUser.DepartmentDisplay = new List<string>();
             if (string.IsNullOrEmpty(addUser.Role)) addUser.Role = "none";
