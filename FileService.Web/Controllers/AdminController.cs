@@ -176,7 +176,6 @@ namespace FileService.Web.Controllers
             }
             return new ResponseModel<List<BsonDocument>>(ErrorCode.success, result);
         }
-        [AllowAnonymous]
         public ActionResult Preview(string id, string fileType, string fileName)
         {
             ViewBag.id = id;
@@ -191,7 +190,6 @@ namespace FileService.Web.Controllers
             ViewBag.FileName = fileName;
             return View();
         }
-        [AllowAnonymous]
         public ActionResult PreviewConvert(string id, string fileType, string fileName)
         {
             ViewBag.id = id;
