@@ -173,12 +173,12 @@ class DepartmentDropDownListWrap extends React.Component {
             this.onKeyEnter(e);
         }
         if (e.keyCode == 8) {  //backspace
-
+            this.onKeyDelete(e);
         }
     }
     //小键盘的方向键向下
     onKeyDown() {
-        if (document.getElementsByClassName("ddl_department_con")[0].style.display == "none") return;
+        //if (document.getElementsByClassName("ddl_department_con")[0].style.display == "none") return;
         var hasFocus = false;
         for (var i = 0; i < this.props.data.length; i++) {
             if (this.props.data[i].Focus) hasFocus = true;
@@ -202,7 +202,7 @@ class DepartmentDropDownListWrap extends React.Component {
     }
     //小键盘的方向键向上
     onKeyUp() {
-        if (document.getElementsByClassName("ddl_department_con")[0].style.display == "none") return;
+        //if (document.getElementsByClassName("ddl_department_con")[0].style.display == "none") return;
         for (var i = 0; i < this.props.data.length; i++) {
             if (this.props.data[i].Focus == true) {
                 this.props.data[i].Focus = false;
@@ -235,7 +235,7 @@ class DepartmentDropDownListWrap extends React.Component {
         }
     }
     onKeyEnter(e) {
-        if (document.getElementsByClassName("ddl_department_con")[0].style.display == "none") return;
+        //if (document.getElementsByClassName("ddl_department_con")[0].style.display == "none") return;
         for (var i = 0; i < this.props.data.length; i++) {
             if (this.props.data[i].Focus == true) {
                 var department = this.props.data[i].DepartmentCode;
@@ -244,10 +244,17 @@ class DepartmentDropDownListWrap extends React.Component {
             }
         }
     }
+    onKeyDelete(e) {
+        var code = this.props.default[this.props.default.length - 1];
+        var index = e.target.selectionStart;
+        if (code && index == 0) {
+            this.clickNode(code);
+        }
+    }
     departmentAuthorityChange(e) {
         var id = e.target.getAttribute("index");
         //实际权限组
-        var realCodes = this.getRealCodeArray(this.props.default,id);
+        var realCodes = this.getRealCodeArray(this.props.default, id);
         if (this.props.onRealNodeChanged) {
             this.props.onRealNodeChanged(realCodes);
         }
@@ -373,6 +380,11 @@ class DepartmentDropDownList extends React.Component {
     constructor(props) {
         super(props);
     }
+    componentDidMount() {
+        var ddl_department_con = $(".ddl_department_con");
+        ddl_department_con.width(ddl_department_con.width() + 24);
+        console.log(ddl_department_con.width());
+    }
     render() {
         return (
             <div className="ddl ddl_department_con"
@@ -493,7 +505,7 @@ class UserDropDownList extends React.Component {
     }
     //小键盘的方向键向下
     onKeyDown() {
-        if (document.getElementsByClassName("ddl_user_con")[0].style.display == "none") return;
+        //if (document.getElementsByClassName("ddl_user_con")[0].style.display == "none") return;
         var hasFocus = false;
         for (var i = 0; i < this.state.users.length; i++) {
             if (this.state.users[i].Focus) hasFocus = true;
@@ -515,7 +527,7 @@ class UserDropDownList extends React.Component {
     }
     //小键盘的方向键向上
     onKeyUp() {
-        if (document.getElementsByClassName("ddl_user_con")[0].style.display == "none") return;
+        //if (document.getElementsByClassName("ddl_user_con")[0].style.display == "none") return;
         for (var i = 0; i < this.state.users.length; i++) {
             if (this.state.users[i].Focus == true) {
                 this.state.users[i].Focus = false;
@@ -546,9 +558,8 @@ class UserDropDownList extends React.Component {
             }
         }
     }
-    //
     onKeyEnter(e) {
-        if (document.getElementsByClassName("ddl_user_con")[0].style.display == "none") return;
+        //if (document.getElementsByClassName("ddl_user_con")[0].style.display == "none") return;
         for (var i = 0; i < this.state.users.length; i++) {
             //if (this.state.users[i].Select == true) continue;
             if (this.state.users[i].Focus == true) {
@@ -560,6 +571,13 @@ class UserDropDownList extends React.Component {
                 this.selectNode(user);
                 break;
             }
+        }
+    }
+    onKeyDelete(e) {
+        var code = this.props.userArray[this.props.userArray.length - 1];
+        var index = e.target.selectionStart;
+        if (code && index == 0) {
+            this.selectNode(code);
         }
     }
     render() {
@@ -638,6 +656,9 @@ class UserDropDownListWrap extends React.Component {
         if (e.keyCode == 13) {//enter
             this.refs.user_input.click();
             this.refs.userDdl.onKeyEnter(e);
+        }
+        if (e.keyCode == 8) {
+            this.refs.userDdl.onKeyDelete(e);
         }
     }
     render() {

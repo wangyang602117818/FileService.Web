@@ -1,7 +1,9 @@
 权限类型：
 1)Access:[] 
 	这种全部可见
-2)Access:[
+2)Owner:{}
+	只要 Owner 是我就可见
+3)Access:[
 	{
 		"Company" : "86461d56db85",
 		"AccessCodes":[],
@@ -9,7 +11,7 @@
 	}
 ]
 	属于86461d56db85公司的人都可见,其他公司的不可见
-3)Access:[
+4)Access:[
 	{
 		"Company" : "86461d56db85",
 		"AccessCodes":["1e504e9d23c3"],
@@ -17,7 +19,7 @@
 	}
 ]
 	属于86461d56db85公司 并且 属于 1e504e9d23c3 部门的人可见
-4)Access:[
+5)Access:[
 	{
 		"Company" : "86461d56db85",
 		"AccessCodes":["1e504e9d23c3"],
@@ -25,7 +27,7 @@
 	}
 ]
 	属于86461d56db85公司 并且 属于1e504e9d23c3部门或者用户为gao001的人可见
-5)Access:[
+6)Access:[
 	{
 		"Company" : "86461d56db85",
 		"AccessCodes":[""],
@@ -33,3 +35,6 @@
 	}
 ]
 	属于86461d56db85公司 并且 只有用户为gao001的人可见
+	
+	
+	

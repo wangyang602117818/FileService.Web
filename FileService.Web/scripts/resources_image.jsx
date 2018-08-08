@@ -454,7 +454,6 @@ class AddImage extends React.Component {
                         <tr>
                             <td colSpan="4">
                                 {this.state.accessShow ? <AccessAuthority
-                                    //用于判断下拉框不显示该条数据
                                     ref="accessAuthority"
                                     accessOk={this.accessOk.bind(this)} /> : null}
                             </td>
