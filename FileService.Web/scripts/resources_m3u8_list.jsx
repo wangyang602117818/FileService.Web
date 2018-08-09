@@ -22,6 +22,7 @@
                     </thead>
                     <M3u8FileList data={this.props.data} />
                 </table>
+                <AddSubFile />
             </div>
         );
     }
@@ -62,7 +63,7 @@ class M3u8FileList extends React.Component {
                                 <td>{item.Flag}</td>
                                 <td>
                                     <i className="iconfont icon-view" onClick={this.preView.bind(this)}
-                                        id={"id=" + item.SourceId.$oid + "&filetype=video&filename=" + item.FileName + "#" + item._id.$oid}>
+                                        id={"id=" + item.SourceId.$oid + "&filename=" + item.FileName + "#" + item._id.$oid}>
                                     </i>
                                 </td>
                                 <td>
@@ -75,5 +76,22 @@ class M3u8FileList extends React.Component {
                 </tbody>
             );
         }
+    }
+}
+class AddSubFile extends React.Component {
+    constructor(props) {
+        super(props);
+    }
+    videoOk() {
+
+    }
+    render() {
+        return (
+            <div>
+                <TitleTxt title={culture.add + culture.convert + culture.task} />
+                <br/>
+                <ConvertVideo videoOk={this.videoOk.bind(this)} />
+            </div>
+        );
     }
 }

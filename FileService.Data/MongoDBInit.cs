@@ -44,6 +44,7 @@ namespace FileService.Data
                     new BsonDocument(){{"Extension", ".mp4" },{"Type","video" }, { "Action","allow"},{ "CreateTime", DateTime.Now }},
                     new BsonDocument(){{"Extension", ".avi" },{"Type", "video" }, { "Action","allow"} ,{ "CreateTime", DateTime.Now }},
                     new BsonDocument(){{"Extension", ".wmv" },{"Type", "video" }, { "Action","allow"} ,{ "CreateTime", DateTime.Now }},
+                    new BsonDocument(){{"Extension", ".m3u8" },{"Type", "video" }, { "Action","allow"} ,{ "CreateTime", DateTime.Now }},
                     new BsonDocument(){{"Extension", ".doc" },{"Type", "office" }, { "Action","allow"} ,{ "CreateTime", DateTime.Now }},
                     new BsonDocument(){{"Extension", ".docx" },{"Type", "office" }, { "Action","allow"} ,{ "CreateTime", DateTime.Now }},
                     new BsonDocument(){{"Extension", ".xls" },{"Type", "office" }, { "Action","allow"} ,{ "CreateTime", DateTime.Now }},

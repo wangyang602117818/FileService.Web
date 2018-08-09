@@ -40,7 +40,7 @@
         <script src="~/hlsplayer/hlsplayer.min.js" script-flowplayer="~/hlsplayer/flowplayer.swf" script-flowplayerhls="~/hlsplayer/flowplayerhls.swf" script-auto="false"></script>
         @Scripts.Render("~/scripts/preview_video")
     }
-    else if (ViewBag.fileType == ".pdf" || ViewBag.fileType == "office" && ViewBag.id != ObjectId.Empty.ToString())
+    else if (ViewBag.fileType == "pdf" || ViewBag.fileType == "office" && ViewBag.id != ObjectId.Empty.ToString())
     {
         @Html.Partial("partial_pdfview")
         <link href="~/pdfview/viewer.css" rel="stylesheet" />

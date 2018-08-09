@@ -28,7 +28,7 @@
     }
     render() {
         return (
-            <table style={{ width: "50%", marginTop: "0px", borderCollapse: "collapse" }}>
+            <table className="table_modify" style={{ width: "50%", marginTop: "0px", borderCollapse: "collapse" }}>
                 <tbody>
                     <tr>
                         <td width="30%">{culture.outputFormat}:</td>

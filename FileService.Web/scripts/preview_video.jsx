@@ -70,7 +70,7 @@ class VideoOrigin extends React.Component {
         return (
             <video controls="controls" width="900" height="600">
                 {this.props.fileId ?
-                    <source src={(convert ? urls.downloadConvertUrl : urls.downloadUrl) + "/" + this.props.fileId} />
+                    <source src={(this.state.convert ? urls.downloadConvertUrl : urls.downloadUrl) + "/" + this.props.fileId} />
                     :
                     null
                 }
