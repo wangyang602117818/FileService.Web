@@ -11,12 +11,11 @@
                         <th width="28%">{culture.fileName}</th>
                         <th width="7%">{culture.size}</th>
                         <th width="14%">{culture.uploadDate}</th>
-                        <th width="10%">{culture.from}</th>
+                        <th width="12%">{culture.from}</th>
                         <th width="6%">{culture.owner}</th>
-                        <th width="5%">{culture.type}</th>
-                        <th width="4%">{culture.view}</th>
-                        <th width="4%">{culture.dol}</th>
-                        <th width="4%">{culture.del}</th>
+                        <th width="5%">{culture.view}</th>
+                        <th width="5%">{culture.dol}</th>
+                        <th width="5%">{culture.del}</th>
                     </tr>
                 </thead>
                 <ResourcesList data={this.props.data}
@@ -93,10 +92,9 @@ class ResourceItem extends React.Component {
                 <td>{parseBsonTime(this.props.resource.CreateTime)}</td>
                 <td dangerouslySetInnerHTML={{ __html: this.props.resource.From || culture.unknow }}></td>
                 <td>{this.props.resource.Owner}</td>
-                <td dangerouslySetInnerHTML={{ __html: this.props.resource.FileType }}></td>
                 <td>
                     <i className="iconfont icon-view"
-                        onClick={this.preView.bind(this)} id={"id=" + this.props.resource._id.$oid + "&filetype=" + this.props.resource.FileType + "&filename=" + this.props.resource.FileName.removeHTML()}>
+                        onClick={this.preView.bind(this)} id={"id=" + this.props.resource._id.$oid + "&filename=" + this.props.resource.FileName.removeHTML()}>
                     </i>
                 </td>
                 <td>

@@ -50,7 +50,6 @@
     <Compile Include="DepartmentSelect.cs" />
     <Compile Include="ImageModelEnum.cs" />
     <Compile Include="ImageOutPut.cs" />
-    <Compile Include="OfficeFormatList.cs" />
     <Compile Include="TaskStateEnum.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="VideoOutPut.cs" />

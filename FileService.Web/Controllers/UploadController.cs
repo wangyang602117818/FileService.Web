@@ -14,6 +14,7 @@ using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 using FileService.Web.Filters;
+using System.Text.RegularExpressions;
 
 namespace FileService.Web.Controllers
 {
@@ -22,6 +23,7 @@ namespace FileService.Web.Controllers
     public class UploadController : BaseController
     {
         string tempFileDirectory = AppDomain.CurrentDomain.BaseDirectory + AppSettings.tempFileDir + DateTime.Now.ToString("yyyyMMdd") + "\\";
+        Regex regex = new Regex(@"\\(\w+)\\$");
         Application application = new Application();
         MongoFile mongoFile = new MongoFile();
         FilesWrap filesWrap = new FilesWrap();
@@ -204,7 +206,7 @@ namespace FileService.Web.Controllers
                 }
                 BsonArray files = new BsonArray();
                 //office
-                if (OfficeFormatList.offices.Contains(fileExt))
+                if (config.GetTypeByExtension(fileExt) == "office")
                 {
                     files.Add(new BsonDocument() {
                         {"_id",ObjectId.Empty },
@@ -231,7 +233,7 @@ namespace FileService.Web.Controllers
 
                 string handlerId = converter.GetHandlerId();
                 //office转换任务
-                if (OfficeFormatList.offices.Contains(fileExt))
+                if (config.GetTypeByExtension(fileExt) == "office")
                 {
                     InserTask(handlerId, fileId, file.FileName, "attachment", new BsonDocument() {
                         {"_id",ObjectId.Empty },
@@ -322,7 +324,7 @@ namespace FileService.Web.Controllers
             converter.AddCount(handlerId, 1);
             ObjectId taskId = ObjectId.GenerateNewId();
             task.Insert(taskId, fileId,
-                @"\\" + Environment.MachineName + "\\TempFiles\\" + DateTime.Now.ToString("yyyyMMdd") + "\\", fileName,
+                @"\\" + Environment.MachineName + "\\"+ regex.Match(AppSettings.tempFileDir).Groups[1].Value + "\\" + DateTime.Now.ToString("yyyyMMdd") + "\\", fileName,
                 type, outPut, access, handlerId, 0, TaskStateEnum.wait, 0);
             //添加队列
             queue.Insert(handlerId, type, "Task", taskId, false, new BsonDocument());

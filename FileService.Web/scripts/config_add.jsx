@@ -54,6 +54,9 @@
                                     <option value=""></option>
                                     <option value="image">image</option>
                                     <option value="video">video</option>
+                                    <option value="office">office</option>
+                                    <option value="pdf">pdf</option>
+                                    <option value="text">text</option>
                                     <option value="attachment">attachment</option>
                                 </select><font color="red">*</font>
                             </td>

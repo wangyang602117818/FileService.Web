@@ -103,7 +103,7 @@ class TaskItem extends React.Component {
                 <td>{this.props.task.Output._id ? "C" : "S"}</td>
                 <td>
                     <i className="iconfont icon-view" onClick={this.preView.bind(this)}
-                        id={"id=" + this.props.task.FileId.$oid + "&filetype=" + this.props.task.Type.removeHTML() + "&filename=" + this.props.task.FileName.removeHTML() + "#" + (this.props.task.Output._id ? this.props.task.Output._id.$oid : "")}></i>
+                        id={"id=" + this.props.task.FileId.$oid+ "&filename=" + this.props.task.FileName.removeHTML() + "#" + (this.props.task.Output._id ? this.props.task.Output._id.$oid : "")}></i>
                 </td>
                 <td>
                     {this.props.task.State == 2 || this.props.task.State == 4 || this.props.task.State == -1 ?

@@ -13,6 +13,7 @@ using System.IO;
 using System.Net.Sockets;
 using System.Net;
 using System.ServiceProcess;
+using System.Text.RegularExpressions;
 
 namespace FileService.Converter.Test
 {
@@ -28,6 +29,7 @@ namespace FileService.Converter.Test
             Processor processor = new Processor();
             processor.StartMonitor(handlerId);
             System.Threading.Tasks.Task.Factory.StartNew(processor.StartWork);
+
 
             Console.WriteLine("ok");
             Console.ReadKey();

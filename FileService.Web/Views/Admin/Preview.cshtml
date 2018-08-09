@@ -31,16 +31,16 @@
     @Scripts.Render("~/scripts/preview")
     <input type="hidden" name="fileId" id="fileId" value="@ViewBag.id" />
     <input type="hidden" name="convert" id="convert" value="@ViewBag.Convert" />
-    @if (ViewBag.FileType == "image" || ViewBag.FileType == "attachment" && (new Config().GetTypeByExtension(Path.GetExtension(ViewBag.FileName).ToLower())).ToLower() == "image")
+    @if (ViewBag.fileType == "image")
     {
         @Scripts.Render("~/scripts/preview_image")
     }
-    else if (ViewBag.FileType == "video" || ViewBag.FileType == "attachment" && (new Config().GetTypeByExtension(Path.GetExtension(ViewBag.FileName).ToLower())).ToLower() == "video")
+    else if (ViewBag.fileType == "video")
     {
         <script src="~/hlsplayer/hlsplayer.min.js" script-flowplayer="~/hlsplayer/flowplayer.swf" script-flowplayerhls="~/hlsplayer/flowplayerhls.swf" script-auto="false"></script>
         @Scripts.Render("~/scripts/preview_video")
     }
-    else if (ViewBag.FileType == "attachment" && (Path.GetExtension(ViewBag.FileName).ToLower() == ".pdf" || OfficeFormatList.offices.Contains(Path.GetExtension(ViewBag.FileName).ToLower())) && ViewBag.id != ObjectId.Empty.ToString())
+    else if (ViewBag.fileType == ".pdf" || ViewBag.fileType == "office" && ViewBag.id != ObjectId.Empty.ToString())
     {
         @Html.Partial("partial_pdfview")
         <link href="~/pdfview/viewer.css" rel="stylesheet" />
@@ -49,7 +49,7 @@
         <script src="~/pdfview/pdf.min.js"></script>
         <script src="~/pdfview/viewer.min.js"></script>
     }
-    else if (ViewBag.FileType == "attachment" && new List<string>() { ".txt", ".js", ".htm", ".html",".css" }.Contains(Path.GetExtension(ViewBag.FileName).ToLower()))
+    else if (ViewBag.fileType == "text")
     {
         @Scripts.Render("~/scripts/preview_txt")
     }

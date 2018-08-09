@@ -19,6 +19,7 @@ namespace FileService.Converter
         Files files = new Files();
         FilesWrap filesWrap = new FilesWrap();
         FilesConvert filesConvert = new FilesConvert();
+        Config config = new Config();
         Business.Task task = new Business.Task();
         MongoFile mongoFile = new MongoFile();
         MongoFileConvert mongoFileConvert = new MongoFileConvert();
@@ -77,7 +78,7 @@ namespace FileService.Converter
                         if (reader.Entry.IsDirectory) continue;
                         //压缩文件内部的扩展名
                         string fileExt = Path.GetExtension(reader.Entry.Key).ToLower();
-                        if (OfficeFormatList.offices.Contains(fileExt))
+                        if (config.GetTypeByExtension(fileExt) == "office")
                         {
                             string destPath = MongoFileBase.AppDataDir + fileWrapId.ToString() + "\\";
                             if (!Directory.Exists(destPath)) Directory.CreateDirectory(destPath);

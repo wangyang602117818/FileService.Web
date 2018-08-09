@@ -176,25 +176,27 @@ namespace FileService.Web.Controllers
             }
             return new ResponseModel<List<BsonDocument>>(ErrorCode.success, result);
         }
-        public ActionResult Preview(string id, string fileType, string fileName)
+        public ActionResult Preview(string id, string fileName)
         {
+            string fileType = config.GetTypeByExtension(Path.GetExtension(fileName).ToLower()).ToLower();
             ViewBag.id = id;
             ViewBag.Convert = "false";
-            if (OfficeFormatList.offices.Contains(Path.GetExtension(fileName)))
+            ViewBag.fileType = fileType;
+            if (fileType == "office")
             {
                 ViewBag.Convert = "true";
                 BsonDocument bson = filesWrap.FindOne(ObjectId.Parse(id));
                 ViewBag.id = bson.Contains("Files") ? bson["Files"].AsBsonArray[0]["_id"].ToString() : ObjectId.Empty.ToString();
             }
-            ViewBag.FileType = fileType;
             ViewBag.FileName = fileName;
             return View();
         }
-        public ActionResult PreviewConvert(string id, string fileType, string fileName)
+        public ActionResult PreviewConvert(string id, string fileName)
         {
+            string fileType = config.GetTypeByExtension(Path.GetExtension(fileName).ToLower()).ToLower();
             ViewBag.id = id;
             ViewBag.Convert = "true";
-            ViewBag.FileType = fileType;
+            ViewBag.fileType = fileType;
             ViewBag.FileName = fileName;
             return View("Preview");
         }

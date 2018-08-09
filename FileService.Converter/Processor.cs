@@ -22,6 +22,7 @@ namespace FileService.Converter
     {
         Business.Task task = new Business.Task();
         Business.Converter converter = new Business.Converter();
+        Config config = new Config();
         public bool StartMonitor(string handlerId)
         {
             bool result = AppSettings.connectState(AppSettings.sharedFolder.TrimEnd('\\'), AppSettings.sharedUserName, AppSettings.sharedUserPwd);
@@ -89,7 +90,7 @@ namespace FileService.Converter
                         {
                             new RarConverter().Convert(item);
                         }
-                        else if (OfficeFormatList.offices.Contains(fileExt))
+                        else if (config.GetTypeByExtension(fileExt) == "office")
                         {
                             new OfficeConverter().Convert(item);
                         }
