@@ -1,7 +1,11 @@
 ﻿using FileService.Business;
+using FileService.Model;
+using FileService.Util;
+using MongoDB.Bson;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Web;
 using System.Web.Mvc;
 
@@ -10,6 +14,10 @@ namespace FileService.Web.Controllers
     public class BaseController : Controller
     {
         public Log log = new Log();
+        public Regex regex = new Regex(@"\\(\w+)\\$");
+        public Converter converter = new Converter();
+        public Task task = new Task();
+        public Queue queue = new Queue();
         public void Log(string fileId, string content)
         {
             var authCode = Request.Headers["AuthCode"];
@@ -40,6 +48,16 @@ namespace FileService.Web.Controllers
                 userName,
                 Request.Headers["UserIp"] ?? Request.UserHostAddress,
                 Request.Headers["UserAgent"] ?? Request.UserAgent);
+        }
+        public void InserTask(string handlerId, ObjectId fileId, string fileName, string type, BsonDocument outPut, BsonArray access)
+        {
+            converter.AddCount(handlerId, 1);
+            ObjectId taskId = ObjectId.GenerateNewId();
+            task.Insert(taskId, fileId,
+                @"\\" + Environment.MachineName + "\\" + regex.Match(AppSettings.tempFileDir).Groups[1].Value + "\\" + DateTime.Now.ToString("yyyyMMdd") + "\\", fileName,
+                type, outPut, access, handlerId, 0, TaskStateEnum.wait, 0);
+            //添加队列
+            queue.Insert(handlerId, type, "Task", taskId, false, new BsonDocument());
         }
     }
 }

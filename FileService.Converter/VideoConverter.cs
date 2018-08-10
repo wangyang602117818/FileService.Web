@@ -34,7 +34,8 @@ namespace FileService.Converter
             VideoOutPut output = BsonSerializer.Deserialize<VideoOutPut>(outputDocument);
 
             int processCount = taskItem.Message["ProcessCount"].AsInt32;
-            string fullPath = taskItem.Message["TempFolder"].AsString + fileName;
+            string fullPath = taskItem.Message["TempFolder"].AsString + fileName; //数据库里面存的path
+
             //第一次转换，文件肯定在共享文件夹
             if (processCount == 0)
             {
@@ -46,6 +47,17 @@ namespace FileService.Converter
                         SaveFileFromSharedFolder(filesWrapId, fullPath);
                         //第一次转换，先截一张图
                         ConvertVideoCp(taskItem.Message["_id"].AsObjectId, taskItem.Message["FileId"].ToString(), fullPath);
+                    }
+                    //任务肯定是后加的
+                    else
+                    {
+                        string newPath = MongoFileBase.AppDataDir + fileName;
+                        if (!File.Exists(newPath))
+                        {
+                            BsonDocument filesWrap = new FilesWrap().FindOne(filesWrapId);
+                            mongoFile.SaveTo(filesWrap["FileId"].AsObjectId);
+                        }
+                        fullPath = newPath;
                     }
                 }
             }

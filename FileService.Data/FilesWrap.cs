@@ -79,6 +79,11 @@ namespace FileService.Data
             var filter = FilterBuilder.Eq("_id", id) & FilterBuilder.Eq("Files._id", oldFileId);
             return MongoCollection.UpdateOne(filter, Builders<BsonDocument>.Update.Set("Files.$._id", newFileId)).IsAcknowledged;
         }
+        public bool AddSubVideo(ObjectId id,BsonDocument bson)
+        {
+            var filter = FilterBuilder.Eq("_id", id);
+            return MongoCollection.UpdateOne(filter, Builders<BsonDocument>.Update.AddToSet("Videos", bson)).IsAcknowledged;
+        }
         public bool ReplaceSubFiles(ObjectId id, BsonArray array)
         {
             var filter = FilterBuilder.Eq("_id", id);

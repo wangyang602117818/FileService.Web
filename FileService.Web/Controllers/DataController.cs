@@ -16,8 +16,6 @@ namespace FileService.Web.Controllers
         FilesWrap filesWrap = new FilesWrap();
         FilesConvert filesConvert = new FilesConvert();
         VideoCapture videoCapture = new VideoCapture();
-        Task task = new Task();
-        Converter converter = new Converter();
         public ActionResult GetFileAccess(string id)
         {
             BsonDocument document = filesWrap.FindOne(ObjectId.Parse(id));

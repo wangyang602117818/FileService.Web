@@ -383,7 +383,6 @@ class DepartmentDropDownList extends React.Component {
     componentDidMount() {
         var ddl_department_con = $(".ddl_department_con");
         ddl_department_con.width(ddl_department_con.width() + 24);
-        console.log(ddl_department_con.width());
     }
     render() {
         return (

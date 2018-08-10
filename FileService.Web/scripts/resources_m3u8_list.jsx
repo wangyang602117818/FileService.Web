@@ -22,7 +22,11 @@
                     </thead>
                     <M3u8FileList data={this.props.data} />
                 </table>
-                <AddSubFile />
+                <AddSubFile
+                    fileId={this.props.fileId}
+                    fileName={this.props.innerFileName}
+
+                    />
             </div>
         );
     }
@@ -82,8 +86,13 @@ class AddSubFile extends React.Component {
     constructor(props) {
         super(props);
     }
-    videoOk() {
-
+    videoOk(obj) {
+        obj.fileId = this.props.fileId;
+        http.postJson(urls.tasks.addVideoTaskUrl, obj, function (data) {
+            if (data.code > 0) {
+                alert(data.message);
+            }
+        });
     }
     render() {
         return (

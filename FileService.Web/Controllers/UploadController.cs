@@ -23,14 +23,10 @@ namespace FileService.Web.Controllers
     public class UploadController : BaseController
     {
         string tempFileDirectory = AppDomain.CurrentDomain.BaseDirectory + AppSettings.tempFileDir + DateTime.Now.ToString("yyyyMMdd") + "\\";
-        Regex regex = new Regex(@"\\(\w+)\\$");
         Application application = new Application();
         MongoFile mongoFile = new MongoFile();
         FilesWrap filesWrap = new FilesWrap();
-        Converter converter = new Converter();
-        Business.Task task = new Business.Task();
         VideoCapture videoCapture = new VideoCapture();
-        Queue queue = new Queue();
         Config config = new Config();
         [HttpPost]
         public ActionResult Image(UploadImgModel uploadImgModel)
@@ -319,15 +315,5 @@ namespace FileService.Web.Controllers
             return new ResponseModel<List<string>>(ErrorCode.success, response, response.Count);
         }
 
-        private void InserTask(string handlerId, ObjectId fileId, string fileName, string type, BsonDocument outPut, BsonArray access)
-        {
-            converter.AddCount(handlerId, 1);
-            ObjectId taskId = ObjectId.GenerateNewId();
-            task.Insert(taskId, fileId,
-                @"\\" + Environment.MachineName + "\\"+ regex.Match(AppSettings.tempFileDir).Groups[1].Value + "\\" + DateTime.Now.ToString("yyyyMMdd") + "\\", fileName,
-                type, outPut, access, handlerId, 0, TaskStateEnum.wait, 0);
-            //添加队列
-            queue.Insert(handlerId, type, "Task", taskId, false, new BsonDocument());
-        }
     }
 }

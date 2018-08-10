@@ -42,6 +42,12 @@ namespace FileService.Converter
                         fileStream = new FileStream(fullPath, FileMode.Open, FileAccess.Read);
                         SaveFileFromSharedFolder(filesWrapId, fileName, fileStream);
                     }
+                    else
+                    {
+                        BsonDocument filesWrap = new FilesWrap().FindOne(filesWrapId);
+                        ObjectId fileId = filesWrap["FileId"].AsObjectId;
+                        fileStream = mongoFile.DownLoad(fileId);
+                    }
                 }
             }
             else

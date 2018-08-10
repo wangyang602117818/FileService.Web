@@ -137,11 +137,12 @@ var urls = {
     tasks: {
         getUrl: appDomain + "admin/gettasks",
         getByIdUrl: appDomain + "admin/gettaskbyid",
-        updateHandler: appDomain +"admin/updatehandler",
+        updateHandler: appDomain + "admin/updatehandler",
         updateImageUrl: appDomain + "admin/updateimagetask",
         updateVideoUrl: appDomain + "admin/updatevideotask",
         updateAttachmentUrl: appDomain + "admin/updateattachmenttask",
-        getAllHandlersUrl: appDomain + "admin/getallhandlers"
+        getAllHandlersUrl: appDomain + "admin/getallhandlers",
+        addVideoTaskUrl: appDomain + "admin/addvideotask"
     },
     resources: {
         getUrl: appDomain + "admin/getfiles",

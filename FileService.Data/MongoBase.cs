@@ -58,7 +58,7 @@ namespace FileService.Data
         {
             return MongoCollection.Find(new BsonDocument()).ToEnumerable();
         }
-        public long Count()
+        public virtual long Count()
         {
             return MongoCollection.Count(new BsonDocument());
         }
@@ -70,7 +70,11 @@ namespace FileService.Data
         {
             return null;
         }
-        protected virtual FilterDefinition<BsonDocument> GetPageFilters(BsonDocument eqs, IEnumerable<string> fields, string filter, string userName)
+        public virtual FilterDefinition<BsonDocument> GetAndFilter()
+        {
+            return null;
+        }
+        public FilterDefinition<BsonDocument> GetPageFilters(BsonDocument eqs, IEnumerable<string> fields, string filter, string userName)
         {
             FilterDefinition<BsonDocument> filterBuilder = null;
             if (!string.IsNullOrEmpty(filter))
@@ -101,11 +105,14 @@ namespace FileService.Data
             if (eqs != null) result.Add(eqs);
             var accessFilter = GetAccessFilter(userName);
             if (accessFilter != null) result.Add(accessFilter);
+            var andFilter = GetAndFilter();
+            if (andFilter != null) result.Add(andFilter);
             return FilterBuilder.And(result);
         }
 
         public IEnumerable<BsonDocument> GetPageList(int pageIndex, int pageSize, BsonDocument eqs, Dictionary<string, string> sorts, string filter, IEnumerable<string> fields, IEnumerable<string> excludeFields, out long count, string userName)
         {
+
             FilterDefinition<BsonDocument> filterBuilder = GetPageFilters(eqs, fields, filter, userName);
             count = MongoCollection.Count(filterBuilder);
             var exclude = Builders<BsonDocument>.Projection.Exclude("PassWord");
@@ -113,8 +120,7 @@ namespace FileService.Data
             {
                 exclude = exclude.Exclude(ex);
             }
-            var find = MongoCollection.Find(filterBuilder)
-               .Project(exclude);
+            var find = MongoCollection.Find(filterBuilder).Project(exclude);
             if (sorts != null)
             {
                 foreach (var item in sorts)
@@ -123,8 +129,7 @@ namespace FileService.Data
                     if (item.Value == "desc") find = find.SortByDescending(sort => sort[item.Key]);
                 }
             }
-            return find
-                .Skip((pageIndex - 1) * pageSize)
+            return find.Skip((pageIndex - 1) * pageSize)
                 .Limit(pageSize)
                 .ToEnumerable();
         }

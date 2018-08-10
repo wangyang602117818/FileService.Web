@@ -73,7 +73,6 @@ namespace FileService.Business
         {
             return mongoData.UpdateFileId(id, fileId);
         }
-
         public IEnumerable<BsonDocument> GetCountByRecentMonth(DateTime startDateTime)
         {
             return mongoData.GetCountByRecentMonth(startDateTime);
@@ -109,6 +108,10 @@ namespace FileService.Business
         public bool UpdateSubFileId(ObjectId id, ObjectId oldFileId, ObjectId newFileId)
         {
             return mongoData.UpdateSubFileId(id, oldFileId, newFileId);
+        }
+        public bool AddSubVideo(ObjectId id, BsonDocument bson)
+        {
+            return mongoData.AddSubVideo(id, bson);
         }
         public bool ReplaceSubFiles(ObjectId id, BsonArray array)
         {

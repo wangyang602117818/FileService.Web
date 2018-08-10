@@ -40,7 +40,7 @@ namespace FileService.Data
         public IEnumerable<BsonDocument> GetCountByRecentMonth(DateTime dateTime)
         {
             return MongoCollection.Aggregate()
-                 .Match(FilterBuilder.Gte("CreateTime", dateTime))
+                 .Match(FilterBuilder.Gte("CreateTime", dateTime) & FilterBuilder.Exists("Output._id"))
                  .Project(new BsonDocument("date", new BsonDocument("$dateToString", new BsonDocument() {
                     {"format", "%Y-%m-%d" },
                     {"date", "$CreateTime" }}
@@ -89,6 +89,14 @@ namespace FileService.Data
                 {"AccessUsers",userName},
             }));
             return FilterBuilder.Or(list);
+        }
+        public override FilterDefinition<BsonDocument> GetAndFilter()
+        {
+            return FilterBuilder.Exists("Output._id");
+        }
+        public override long Count()
+        {
+            return MongoCollection.Count(FilterBuilder.Exists("Output._id"));
         }
     }
 }

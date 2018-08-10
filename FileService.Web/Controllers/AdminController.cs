@@ -20,19 +20,15 @@ namespace FileService.Web.Controllers
     {
         Config config = new Config();
         Application application = new Application();
-        //Files files = new Files();
         FilesWrap filesWrap = new FilesWrap();
         MongoFile mongoFile = new MongoFile();
         FilesConvert filesConvert = new FilesConvert();
         MongoFileConvert mongoFileConvert = new MongoFileConvert();
         User user = new User();
         Department department = new Department();
-        Converter converter = new Converter();
-        Task task = new Task();
         Thumbnail thumbnail = new Thumbnail();
         M3u8 m3u8 = new M3u8();
         Ts ts = new Ts();
-        Queue queue = new Queue();
         VideoCapture videoCapture = new VideoCapture();
         public ActionResult Index()
         {
@@ -389,8 +385,34 @@ namespace FileService.Web.Controllers
             filesWrap.UpdateFlagVideo(ObjectId.Parse(updateVideoTask.FileId), ObjectId.Parse(updateVideoTask.M3u8Id), updateVideoTask.Flag);
             m3u8.Update(ObjectId.Parse(updateVideoTask.M3u8Id), new BsonDocument("Flag", updateVideoTask.Flag));
             if (task.Update(ObjectId.Parse(updateVideoTask.Id), document))
+            {
                 return new ResponseModel<BsonDocument>(ErrorCode.success, document);
+            }
             return new ResponseModel<string>(ErrorCode.server_exception, "");
+        }
+        [HttpPost]
+        public ActionResult AddVideoTask(AddVideoTask addVideoTask)
+        {
+            string handlerId = converter.GetHandlerId();
+            ObjectId fileId = ObjectId.Parse(addVideoTask.FileId);
+            BsonDocument fileWrap = filesWrap.FindOne(fileId);
+            ObjectId m3u8Id = ObjectId.GenerateNewId();
+            BsonDocument output = new BsonDocument()
+            {
+                {"_id",m3u8Id },
+                {"Format",addVideoTask.Format },
+                {"Quality",addVideoTask.Quality },
+                {"Flag",addVideoTask.Flag }
+            };
+            BsonDocument subFile = new BsonDocument()
+            {
+                {"_id",m3u8Id },
+                {"Format",addVideoTask.Format },
+                {"Flag",addVideoTask.Flag }
+            };
+            InserTask(handlerId, fileId, fileWrap["FileName"].AsString, "video", output, fileWrap["Access"].AsBsonArray);
+            filesWrap.AddSubVideo(fileId, subFile);
+            return new ResponseModel<bool>(ErrorCode.success, true);
         }
         [Authorize(Roles = "admin")]
         [HttpPost]

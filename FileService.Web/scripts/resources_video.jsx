@@ -142,9 +142,7 @@ class AddVideo extends React.Component {
     }
     videoOk(obj) {
         this.state.videos.push(obj);
-        this.setState({
-            videos: this.state.videos
-        });
+        this.setState({ videos: this.state.videos});
     }
     accessOk(companyCode, companyName, authority, codeArray, nameArray, realCodes, userArray, success) {
         this.state.accesses.push({ companyCode, companyName, authority, codeArray, nameArray, realCodes, userArray });
