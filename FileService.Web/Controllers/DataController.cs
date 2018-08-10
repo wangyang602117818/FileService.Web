@@ -24,13 +24,14 @@ namespace FileService.Web.Controllers
         [HttpPost]
         public ActionResult UpdateFileAccess(UpdateAccess updateAccess)
         {
-            //只有发布人才有权限修改
-            BsonDocument document = filesWrap.FindOne(ObjectId.Parse(updateAccess.FileId));
+            if (updateAccess.Access == null) updateAccess.Access = new List<Model.AccessModel>();
+             //只有发布人才有权限修改
+             BsonDocument document = filesWrap.FindOne(ObjectId.Parse(updateAccess.FileId));
             string documentOwner = document["Owner"].AsString;
             if (!string.IsNullOrEmpty(documentOwner))
             {
                 string userName = Request.Headers["UserName"] ?? User.Identity.Name;
-                if(userName!= documentOwner)
+                if (userName != documentOwner)
                 {
                     return new ResponseModel<string>(ErrorCode.owner_not_match, "");
                 }

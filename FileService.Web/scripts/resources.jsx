@@ -223,7 +223,9 @@ class UpdateAccess extends React.Component {
                 this.state.department_authority,
                 this.state.realCodes,
                 this.state.userArray, function (data) {
-                    if (data.code == 0) this.setState({ btn_msg: culture.save_success, btn_disabled: true });
+                    if (data.code == 0) {
+                        this.setState({ btn_msg: culture.save_success, btn_disabled: true });
+                    }
                 }.bind(this));
         }
     }
@@ -514,7 +516,7 @@ class Resources extends React.Component {
         var update = false;
         for (var i = 0; i < this.state.access.length; i++) {
             if (this.state.access[i].Company == companyCode) {
-                update = true;
+                update = true;  //修改access中的权限
                 //替换
                 this.state.access.splice(i, 1, {
                     Company: companyCode,
@@ -527,6 +529,7 @@ class Resources extends React.Component {
                 });
             }
         }
+        //往access中添加权限
         if (!update) {
             this.state.access.push({
                 Company: companyCode,
