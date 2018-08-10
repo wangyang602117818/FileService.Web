@@ -573,6 +573,7 @@ namespace FileService.Web.Controllers
             }
             return new ResponseModel<string>(ErrorCode.server_exception, "");
         }
+
         [Authorize(Roles = "admin")]
         public ActionResult Delete(string id)
         {
