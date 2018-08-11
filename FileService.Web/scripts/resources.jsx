@@ -294,6 +294,10 @@ class UpdateAccess extends React.Component {
                 <input type="button" value={this.state.btn_msg}
                     disabled={this.props.owner == userName ? this.state.btn_disabled : true}
                     onClick={this.onSaveAccess.bind(this)}
+                    className="button" />{'\u00A0'}{'\u00A0'}
+                <input type="button" value={culture.empty_access}
+                    disabled={this.props.owner == userName ? false : true}
+                    onClick={this.props.emptyAccess.bind(this)}
                     className="button" />
             </div>
         )
@@ -550,6 +554,15 @@ class Resources extends React.Component {
             if (success) success(data);
         }.bind(this))
     }
+    emptyAccess(e) {
+        http.postJson(urls.resources.updateAccessUrl, { fileId: this.state.fileId, access: [] }, function (data) {
+            if (data.code == 0) {
+                this.setState({ access: [] });
+            } else {
+                alert(data.message);
+            }
+        }.bind(this));
+    }
     delAccess(e) {
         var id = e.target.parentElement.id;
         var name = e.target.parentElement.getAttribute("data-name");
@@ -618,6 +631,7 @@ class Resources extends React.Component {
                         departments={this.state.departments}
                         access={this.state.access}
                         delAccess={this.delAccess.bind(this)}
+                        emptyAccess={this.emptyAccess.bind(this)}
                         onSaveAccess={this.onSaveAccess.bind(this)}
                     /> : null
                 }

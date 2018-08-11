@@ -146,6 +146,7 @@ var culture = {
 
     access_authority: "AccessAuthority",
     change_access: "ChangeAccess",
+    empty_access: "EmptyAccess",
     authority_type: "AuthorityType",
     only_current: "Current",
     current_and_sub: "Current&Sub",
@@ -154,4 +155,5 @@ var culture = {
 
     process_count: "ProCount",
     save_success: "Save Success"
+    
 }
