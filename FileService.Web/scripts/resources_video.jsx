@@ -4,7 +4,8 @@
         this.state = {
             format: 0,
             quality: 0,
-            flag: ""
+            flag: "",
+            button_disabled: true
         }
     }
     qualityChange(e) {
@@ -13,16 +14,20 @@
         });
     }
     flagChange(e) {
-        this.setState({
-            flag: e.target.value
-        });
+        this.setState({ flag: e.target.value });
+        if (e.target.value.length > 0) {
+            this.setState({ button_disabled: false });
+        } else {
+            this.setState({ button_disabled: true });
+        }
     }
     Ok(e) {
         if (this.state.flag) {
             this.props.videoOk(this.state);
             this.setState({
                 format: 0,
-                flag: ""
+                flag: "",
+                button_disabled: true
             });
         }
     }
@@ -57,8 +62,12 @@
                     </tr>
                     <tr>
                         <td colSpan="3" style={{ textAlign: "center" }}>
-                            <input type="button" value={culture.ok} className="sub_button" onClick={this.Ok.bind(this)} />
+                            <input type="button" value={culture.ok}
+                                className="sub_button"
+                                onClick={this.Ok.bind(this)}
+                                disabled={this.state.button_disabled} />
                         </td>
+
                     </tr>
                 </tbody>
             </table>

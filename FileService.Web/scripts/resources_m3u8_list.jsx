@@ -84,21 +84,26 @@ class M3u8FileList extends React.Component {
 class AddSubFile extends React.Component {
     constructor(props) {
         super(props);
+        this.state = {
+            
+        }
     }
     videoOk(obj) {
         obj.fileId = this.props.fileId;
         http.postJson(urls.tasks.addVideoTaskUrl, obj, function (data) {
-            if (data.code > 0) {
+            if (data.code == 0) {
+                
+            } else {
                 alert(data.message);
             }
-        });
+        }.bind(this));
     }
     render() {
         return (
             <div>
                 <TitleTxt title={culture.add + culture.convert + culture.task} />
                 <br/>
-                <ConvertVideo videoOk={this.videoOk.bind(this)} btnDisable={true}/>
+                <ConvertVideo videoOk={this.videoOk.bind(this)}/>
             </div>
         );
     }
