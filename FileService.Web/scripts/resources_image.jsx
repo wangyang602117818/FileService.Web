@@ -111,7 +111,9 @@
                             onChange={this.heightChange.bind(this)} />px</td>
                     </tr>
                     <tr>
-                        <td colSpan="4" className="convertBtn" onClick={this.Ok.bind(this)}>{culture.ok}</td>
+                        <td colSpan="4" style={{ textAlign: "center" }}>
+                            <input type="button" value={culture.ok} className="sub_button" onClick={this.Ok.bind(this)} />
+                        </td>
                     </tr>
                 </tbody>
             </table>
@@ -285,7 +287,9 @@ class AccessAuthority extends React.Component {
                         </td>
                     </tr>
                     <tr>
-                        <td colSpan="4" className="convertBtn" onClick={this.Ok.bind(this)}>{culture.ok}</td>
+                        <td colSpan="4" style={{ textAlign: "center" }}>
+                            <input type="button" value={culture.ok} className="sub_button" onClick={this.Ok.bind(this)} />
+                        </td>
                     </tr>
                 </tbody>
             </table>

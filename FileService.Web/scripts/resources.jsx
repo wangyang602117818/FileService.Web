@@ -11,8 +11,8 @@
                         <th width="28%">{culture.fileName}</th>
                         <th width="7%">{culture.size}</th>
                         <th width="14%">{culture.uploadDate}</th>
-                        <th width="12%">{culture.from}</th>
-                        <th width="6%">{culture.owner}</th>
+                        <th width="10%">{culture.from}</th>
+                        <th width="8%">{culture.owner}</th>
                         <th width="5%">{culture.view}</th>
                         <th width="5%">{culture.dol}</th>
                         <th width="5%">{culture.del}</th>

@@ -184,15 +184,16 @@
             color: #888;
         }
 
-.convertBtn {
-    text-align: center;
-    background-color: #d9d9d9;
-    cursor: pointer;
-    border-radius: 3px;
+.sub_button {
+    padding: 4px 12px;
+    border: 0;
+    border-radius: 2px;
+    background: #908E88;
 }
 
-    .convertBtn:hover {
-        background-color: #b2b2b3;
+    .sub_button:hover {
+        background: #484746;
+        cursor: pointer;
     }
 
 .config_toolbar {

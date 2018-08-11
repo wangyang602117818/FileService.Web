@@ -23,7 +23,7 @@ namespace FileService.Converter
         {
 
         }
-        public void SaveFileFromSharedFolder(ObjectId filesWrapId, string fullPath)
+        public bool SaveFileFromSharedFolder(ObjectId filesWrapId, string fullPath)
         {
             FileStream fileStream = new FileStream(fullPath, FileMode.Open, FileAccess.Read);
             string md5 = fileStream.GetMD5();
@@ -37,11 +37,11 @@ namespace FileService.Converter
             {
                 id = file["_id"].AsObjectId;
             }
-            filesWrap.UpdateFileId(filesWrapId, id);
             fileStream.Close();
             fileStream.Dispose();
+            return filesWrap.UpdateFileId(filesWrapId, id);
         }
-        public void SaveFileFromSharedFolder(ObjectId filesWrapId, string fileName, Stream fileStream)
+        public bool SaveFileFromSharedFolder(ObjectId filesWrapId, string fileName, Stream fileStream)
         {
             string md5 = fileStream.GetMD5();
             BsonDocument file = files.GetFileByMd5(md5);
@@ -54,7 +54,7 @@ namespace FileService.Converter
             {
                 id = file["_id"].AsObjectId;
             }
-            filesWrap.UpdateFileId(filesWrapId, id);
+            return filesWrap.UpdateFileId(filesWrapId, id);
         }
     }
 }

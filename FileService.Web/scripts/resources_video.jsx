@@ -56,7 +56,9 @@
                         </td>
                     </tr>
                     <tr>
-                        <td colSpan="3" className="convertBtn" onClick={this.Ok.bind(this)}>{culture.ok}</td>
+                        <td colSpan="3" style={{ textAlign: "center" }}>
+                            <input type="button" value={culture.ok} className="sub_button" onClick={this.Ok.bind(this)} />
+                        </td>
                     </tr>
                 </tbody>
             </table>

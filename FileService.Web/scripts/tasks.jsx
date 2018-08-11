@@ -10,12 +10,11 @@
                         <th width="15%">{culture.fileId}</th>
                         <th width="20%">{culture.fileName}</th>
                         <th width="6%">{culture.handler}</th>
-                        <th width="9%">{culture.state}</th>
-                        <th width="4%">{culture.percent}</th>
+                        <th width="10%">{culture.state}</th>
+                        <th width="5%">{culture.percent}</th>
                         <td width="6%">{culture.process_count}</td>
-                        <th width="14%">{culture.createTime}</th>
-                        <th width="14%">{culture.completedTime}</th>
-                        <th width="4%">{culture.type}</th>
+                        <th width="15%">{culture.createTime}</th>
+                        <th width="15%">{culture.completedTime}</th>
                         <th width="4%">{culture.view}</th>
                         <th width="4%">{culture.reDo}</th>
                     </tr>
@@ -100,7 +99,6 @@ class TaskItem extends React.Component {
                 <td>{this.props.task.ProcessCount}</td>
                 <td>{parseBsonTime(this.props.task.CreateTime)}</td>
                 <td>{parseBsonTime(this.props.task.CompletedTime)}</td>
-                <td>{this.props.task.Output._id ? "C" : "S"}</td>
                 <td>
                     <i className="iconfont icon-view" onClick={this.preView.bind(this)}
                         id={"id=" + this.props.task.FileId.$oid+ "&filename=" + this.props.task.FileName.removeHTML() + "#" + (this.props.task.Output._id ? this.props.task.Output._id.$oid : "")}></i>

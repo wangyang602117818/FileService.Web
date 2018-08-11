@@ -58,7 +58,7 @@ class ThumbnailFileList extends React.Component {
                                 <td>{item.Flag}</td>
                                 <td>
                                     <i className="iconfont icon-view" onClick={this.preView.bind(this)}
-                                        id={"id=" + item.SourceId.$oid + "&filetype=image&filename=" + item.FileName + "#" + item._id.$oid}>
+                                        id={"id=" + item.SourceId.$oid + "&filename=" + item.FileName + "#" + item._id.$oid}>
                                     </i>
                                 </td>
                                 <td>

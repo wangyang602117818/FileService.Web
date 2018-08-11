@@ -25,7 +25,6 @@
                 <AddSubFile
                     fileId={this.props.fileId}
                     fileName={this.props.innerFileName}
-
                     />
             </div>
         );
@@ -99,7 +98,7 @@ class AddSubFile extends React.Component {
             <div>
                 <TitleTxt title={culture.add + culture.convert + culture.task} />
                 <br/>
-                <ConvertVideo videoOk={this.videoOk.bind(this)} />
+                <ConvertVideo videoOk={this.videoOk.bind(this)} btnDisable={true}/>
             </div>
         );
     }
