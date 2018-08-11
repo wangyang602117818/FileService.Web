@@ -16,20 +16,23 @@ namespace FileService.Web.Models
         [Required]
         public string Handler { get; set; }
     }
-    public class UpdateImageTask
+    public class UpdateImageTask:AddImageTask
     {
         [Required]
         public string Id { get; set; }
         [Required]
-        public string FileId { get; set; }
-        [Required]
         public string ThumbnailId { get; set; }
+        [Required]
+        public string Handler { get; set; }
+    }
+    public class AddImageTask
+    {
+        [Required]
+        public string FileId { get; set; }
         [Required]
         public string Flag { get; set; }
         [Required]
         public int Format { get; set; }
-        [Required]
-        public string Handler { get; set; }
         [Required]
         public int Model { get; set; }
         public int Height { get; set; }

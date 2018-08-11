@@ -142,7 +142,8 @@ var urls = {
         updateVideoUrl: appDomain + "admin/updatevideotask",
         updateAttachmentUrl: appDomain + "admin/updateattachmenttask",
         getAllHandlersUrl: appDomain + "admin/getallhandlers",
-        addVideoTaskUrl: appDomain + "admin/addvideotask"
+        addVideoTaskUrl: appDomain + "admin/addvideotask",
+        addThumbnailTaskUrl: appDomain +"admin/addthumbnailtask"
     },
     resources: {
         getUrl: appDomain + "admin/getfiles",

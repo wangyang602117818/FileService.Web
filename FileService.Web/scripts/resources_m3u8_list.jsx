@@ -24,7 +24,6 @@
                 </table>
                 <AddSubFile
                     fileId={this.props.fileId}
-                    fileName={this.props.innerFileName}
                     />
             </div>
         );

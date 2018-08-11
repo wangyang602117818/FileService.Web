@@ -113,6 +113,10 @@ namespace FileService.Business
         {
             return mongoData.AddSubVideo(id, bson);
         }
+        public bool AddSubThumbnail(ObjectId id, BsonDocument bson)
+        {
+            return mongoData.AddSubThumbnail(id, bson);
+        }
         public bool ReplaceSubFiles(ObjectId id, BsonArray array)
         {
             return mongoData.ReplaceSubFiles(id, array);

@@ -8,29 +8,64 @@
             x: 0,
             y: 0,
             width: 0,
-            height: 0
+            height: 0,
+            button_disabled: true
         }
     }
     formatChange(e) {
-        this.setState({ format: e.target.value });
+        this.setState({ format: e.target.value }, function () { this.checkAvailable(); });
     }
     flagChange(e) {
-        this.setState({ flag: e.target.value });
+        this.setState({ flag: e.target.value }, function () { this.checkAvailable(); });
     }
     modelChange(e) {
-        this.setState({ model: e.target.value });
+        this.setState({ model: e.target.value }, function () { this.checkAvailable(); });
     }
     xChange(e) {
-        this.setState({ x: e.target.value });
+        this.setState({ x: e.target.value }, function () { this.checkAvailable(); });
     }
     yChange(e) {
-        this.setState({ y: e.target.value });
+        this.setState({ y: e.target.value }, function () { this.checkAvailable(); });
     }
     widthChange(e) {
-        this.setState({ width: e.target.value });
+        this.setState({ width: e.target.value }, function () { this.checkAvailable(); });
     }
     heightChange(e) {
-        this.setState({ height: e.target.value });
+        this.setState({ height: e.target.value }, function () { this.checkAvailable(); });
+    }
+    checkAvailable() {
+        if (this.state.flag.length > 0) {
+            if (this.state.model == "0") {
+                if (this.state.width > 0 && this.state.height > 0) {
+                    this.setState({ button_disabled: false });
+                } else {
+                    this.setState({ button_disabled: true });
+                }
+            }
+            if (this.state.model == "1") {
+                if (this.state.width > 0 && this.state.height > 0) {
+                    this.setState({ button_disabled: false });
+                } else {
+                    this.setState({ button_disabled: true });
+                }
+            }
+            if (this.state.model == "2") {
+                if (this.state.width > 0) {
+                    this.setState({ button_disabled: false });
+                } else {
+                    this.setState({ button_disabled: true });
+                }
+            }
+            if (this.state.model == "3") {
+                if (this.state.height > 0) {
+                    this.setState({ button_disabled: false });
+                } else {
+                    this.setState({ button_disabled: true });
+                }
+            }
+        } else {
+            this.setState({ button_disabled: true });
+        }
     }
     Ok(e) {
         if (this.state.flag && (this.state.width || this.state.height)) {
@@ -42,13 +77,14 @@
                 x: 0,
                 y: 0,
                 width: 0,
-                height: 0
+                height: 0,
+                button_disabled: true
             });
         }
     }
     render() {
         return (
-            <table style={{ width: "100%", marginTop: "0", borderCollapse: "collapse" }}>
+            <table className="table_modify" style={{ width: "100%", marginTop: "0", borderCollapse: "collapse" }}>
                 <tbody>
                     <tr>
                         <td>{culture.outputFormat}:</td>
@@ -112,7 +148,11 @@
                     </tr>
                     <tr>
                         <td colSpan="4" style={{ textAlign: "center" }}>
-                            <input type="button" value={culture.ok} className="sub_button" onClick={this.Ok.bind(this)} />
+                            <input type="button"
+                                value={culture.ok}
+                                className="sub_button"
+                                onClick={this.Ok.bind(this)}
+                                disabled={this.state.button_disabled} />
                         </td>
                     </tr>
                 </tbody>
@@ -193,7 +233,7 @@ class AccessAuthority extends React.Component {
             codeArray: [],
             nameArray: [],
             realCodeArray: [],
-            userArray:[]
+            userArray: []
         }, function () {
             this.getDepartment(companyCode);
             this.refs.userDropDownListWrap.getData(companyCode);
@@ -201,7 +241,7 @@ class AccessAuthority extends React.Component {
     }
     //当用户选取了部门之后触发 参数是选取的数组和当前权限类型
     onSelectNodeChanged(codeArray, nameArray) {
-        this.setState({codeArray: codeArray,nameArray: nameArray,});
+        this.setState({ codeArray: codeArray, nameArray: nameArray, });
     }
     //当用户选取了部门或者点击了权限类型之后触发，参数是要真是需要验证的code列表和当前权限类型
     onRealNodeChanged(codeArray) {
@@ -317,7 +357,7 @@ class AddImage extends React.Component {
     }
     imageOk(obj) {
         this.state.thumbnails.push(obj);
-        this.setState({thumbnails: this.state.thumbnails});
+        this.setState({ thumbnails: this.state.thumbnails });
     }
     accessOk(companyCode, companyName, authority, codeArray, nameArray, realCodes, userArray, success) {
         this.state.accesses.push({ companyCode, companyName, authority, codeArray, nameArray, realCodes, userArray });
@@ -338,7 +378,7 @@ class AddImage extends React.Component {
         this.setState({
             accesses: this.state.accesses,
         }, function () {
-                this.refs.accessAuthority.addCompanyData(code, name);
+            this.refs.accessAuthority.addCompanyData(code, name);
         }.bind(this));
         e.stopPropagation();
     }

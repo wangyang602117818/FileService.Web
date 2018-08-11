@@ -54,7 +54,7 @@ namespace FileService.Data
         public bool UpdateAccess(ObjectId id, BsonArray array)
         {
             var filter = FilterBuilder.Eq("FileId", id);
-            return MongoCollection.UpdateOne(filter, Builders<BsonDocument>.Update.Set("Access", array)).IsAcknowledged;
+            return MongoCollection.UpdateMany(filter, Builders<BsonDocument>.Update.Set("Access", array)).IsAcknowledged;
         }
         public override FilterDefinition<BsonDocument> GetAccessFilter(string userName)
         {

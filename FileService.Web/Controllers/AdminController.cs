@@ -414,6 +414,34 @@ namespace FileService.Web.Controllers
             filesWrap.AddSubVideo(fileId, subFile);
             return new ResponseModel<bool>(ErrorCode.success, true);
         }
+        [HttpPost]
+        public ActionResult AddThumbnailTask(AddImageTask addImageTask)
+        {
+            string handlerId = converter.GetHandlerId();
+            ObjectId fileId = ObjectId.Parse(addImageTask.FileId);
+            BsonDocument fileWrap = filesWrap.FindOne(fileId);
+            ObjectId thumbnailId = ObjectId.GenerateNewId();
+            BsonDocument output = new BsonDocument()
+            {
+                {"_id",thumbnailId },
+                {"Format",addImageTask.Format },
+                {"Flag",addImageTask.Flag },
+                {"Model",addImageTask.Model },
+                {"X",addImageTask.X },
+                {"Y",addImageTask.Y },
+                {"Width",addImageTask.Width },
+                {"Height",addImageTask.Height },
+            };
+            BsonDocument subFile = new BsonDocument()
+            {
+                {"_id",thumbnailId },
+                {"Format",addImageTask.Format },
+                {"Flag",addImageTask.Flag }
+            };
+            InserTask(handlerId, fileId, fileWrap["FileName"].AsString, "image", output, fileWrap["Access"].AsBsonArray);
+            filesWrap.AddSubThumbnail(fileId, subFile);
+            return new ResponseModel<bool>(ErrorCode.success, true);
+        }
         [Authorize(Roles = "admin")]
         [HttpPost]
         public ActionResult UpdateAttachmentTask(UpdateAttachmentTask updateAttachmentTask)

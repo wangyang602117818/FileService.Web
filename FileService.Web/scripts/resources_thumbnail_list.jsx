@@ -20,6 +20,9 @@
                     </thead>
                     <ThumbnailFileList data={this.props.data} />
                 </table>
+                <AddThumbnail
+                    fileId={this.props.fileId}
+                />
             </div>
         );
     }
@@ -71,5 +74,32 @@ class ThumbnailFileList extends React.Component {
                 </tbody>
             );
         }
+    }
+}
+class AddThumbnail extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+
+        }
+    }
+    imageOk(obj) {
+        obj.fileId = this.props.fileId;
+        http.postJson(urls.tasks.addThumbnailTaskUrl, obj, function (data) {
+            if (data.code == 0) {
+
+            } else {
+                alert(data.message);
+            }
+        }.bind(this));
+    }
+    render() {
+        return (
+            <div>
+                <TitleTxt title={culture.add + culture.convert + culture.task} />
+                <br />
+                <ConvertImage imageOk={this.imageOk.bind(this)} />
+            </div>
+        );
     }
 }
