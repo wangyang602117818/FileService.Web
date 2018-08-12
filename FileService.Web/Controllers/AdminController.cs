@@ -601,7 +601,24 @@ namespace FileService.Web.Controllers
             }
             return new ResponseModel<string>(ErrorCode.server_exception, "");
         }
-
+        public ActionResult DeleteThumbnail(string fileId, string thumbnailId)
+        {
+            ObjectId thumbId = ObjectId.Parse(thumbnailId);
+            thumbnail.DeleteOne(thumbId);
+            task.DeleteByOutputId(thumbId);
+            filesWrap.DeleteThumbnail(ObjectId.Parse(fileId), thumbId);
+            return new ResponseModel<string>(ErrorCode.success, "");
+        }
+        public ActionResult DeleteM3u8(string fileId, string m3u8Id)
+        {
+            ObjectId fId = ObjectId.Parse(fileId);
+            ObjectId mId = ObjectId.Parse(m3u8Id);
+            ts.DeleteBySourceId(mId);
+            m3u8.DeleteOne(mId);
+            task.DeleteByOutputId(mId);
+            filesWrap.DeleteM3u8(fId, mId);
+            return new ResponseModel<string>(ErrorCode.success, "");
+        }
         [Authorize(Roles = "admin")]
         public ActionResult Delete(string id)
         {

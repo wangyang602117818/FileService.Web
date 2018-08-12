@@ -37,6 +37,10 @@ namespace FileService.Data
         {
             return MongoCollection.DeleteMany(FilterBuilder.Eq("FileId", fileId)).IsAcknowledged;
         }
+        public bool DeleteByOutputId(ObjectId id)
+        {
+            return MongoCollection.DeleteOne(FilterBuilder.Eq("Output._id", id)).IsAcknowledged;
+        }
         public IEnumerable<BsonDocument> GetCountByRecentMonth(DateTime dateTime)
         {
             return MongoCollection.Aggregate()

@@ -571,6 +571,20 @@ class Resources extends React.Component {
         this.setState({ access: this.state.access });
         e.stopPropagation();
     }
+    deleteThumbnail(fileId, thumbId) {
+        http.get(urls.resources.deleteThumbnailUrl + "?fileId=" + fileId + "&thumbnailId=" + thumbId, function (data) {
+            if (data.code == 0) {
+                this.getThumbnail(fileId);
+            }
+        }.bind(this));
+    }
+    deleteM3u8(fileId, m3u8Id) {
+        http.get(urls.resources.deleteM3u8Url + "?fileId=" + fileId + "&m3u8Id=" + m3u8Id, function (data) {
+            if (data.code == 0) {
+                this.getM3u8(fileId);
+            }
+        }.bind(this));
+    }
     render() {
         return (
             <div className="main">
@@ -617,6 +631,8 @@ class Resources extends React.Component {
                         data={this.state.subFileArray}
                         fileId={this.state.fileId}
                         fileName={this.state.fileName}
+                        deleteThumbnail={this.deleteThumbnail.bind(this)}
+                        deleteM3u8={this.deleteM3u8.bind(this)}
                     /> : null
                 }
                 {this.state.subFileShow ?

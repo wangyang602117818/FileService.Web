@@ -143,7 +143,7 @@ var urls = {
         updateAttachmentUrl: appDomain + "admin/updateattachmenttask",
         getAllHandlersUrl: appDomain + "admin/getallhandlers",
         addVideoTaskUrl: appDomain + "admin/addvideotask",
-        addThumbnailTaskUrl: appDomain +"admin/addthumbnailtask"
+        addThumbnailTaskUrl: appDomain + "admin/addthumbnailtask"
     },
     resources: {
         getUrl: appDomain + "admin/getfiles",
@@ -155,6 +155,8 @@ var urls = {
         uploadImageUrl: appDomain + "upload/image",
         uploadVideoUrl: appDomain + "upload/video",
         uploadAttachmentUrl: appDomain + "upload/attachment",
+        deleteThumbnailUrl: appDomain + "admin/deletethumbnail",
+        deleteM3u8Url: appDomain + "admin/deletem3u8"
     },
     config: {
         getUrl: appDomain + "admin/getconfigs",

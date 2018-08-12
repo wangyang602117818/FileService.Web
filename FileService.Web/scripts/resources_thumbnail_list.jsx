@@ -18,7 +18,7 @@
                             <th width="5%">{culture.del}</th>
                         </tr>
                     </thead>
-                    <ThumbnailFileList data={this.props.data} />
+                    <ThumbnailFileList fileId={this.props.fileId} data={this.props.data} deleteThumbnail={this.props.deleteThumbnail} />
                 </table>
                 <AddThumbnail
                     fileId={this.props.fileId}
@@ -38,6 +38,13 @@ class ThumbnailFileList extends React.Component {
     download(e) {
         var id = e.target.id;
         window.location.href = urls.thumbnailUrl + "/" + id;
+    }
+    delete(e) {
+        if (window.confirm(" " + culture.delete + " ?")) {
+            var thumbId = e.target.id;
+            var fileId = e.target.getAttribute("file-id");
+            this.props.deleteThumbnail(fileId, thumbId);
+        }
     }
     render() {
         if (this.props.data.length == 0) {
@@ -67,7 +74,12 @@ class ThumbnailFileList extends React.Component {
                                 <td>
                                     <i className="iconfont icon-download" id={item._id.$oid} onClick={this.download.bind(this)}></i>
                                 </td>
-                                <td></td>
+                                <td>
+                                    <i className="iconfont icon-del"
+                                        file-id={this.props.fileId}
+                                        id={item._id.$oid}
+                                        onClick={this.delete.bind(this)}></i>
+                                </td>
                             </tr>
                         )
                     }.bind(this))}

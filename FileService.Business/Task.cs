@@ -73,6 +73,10 @@ namespace FileService.Business
         {
             return mongoData.Error(id);
         }
+        public bool DeleteByOutputId(ObjectId id)
+        {
+            return mongoData.DeleteByOutputId(id);
+        }
         public bool Delete(ObjectId fileId)
         {
             return mongoData.Delete(fileId);

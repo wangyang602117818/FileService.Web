@@ -59,14 +59,24 @@ namespace FileService.Data
         {
             return MongoCollection.UpdateOne(FilterBuilder.Eq("_id", id), Builders<BsonDocument>.Update.Pull("VideoCpIds", captureId)).IsAcknowledged;
         }
+        public bool DeleteThumbnail(ObjectId id, ObjectId thumbnailId)
+        {
+            var filter = FilterBuilder.Eq("_id", id);
+            return MongoCollection.UpdateOne(filter, Builders<BsonDocument>.Update.Pull("Thumbnail", new BsonDocument("_id", thumbnailId))).IsAcknowledged;
+        }
+        public bool DeleteM3u8(ObjectId id, ObjectId thumbnailId)
+        {
+            var filter = FilterBuilder.Eq("_id", id);
+            return MongoCollection.UpdateOne(filter, Builders<BsonDocument>.Update.Pull("Videos", new BsonDocument("_id", thumbnailId))).IsAcknowledged;
+        }
         public bool UpdateFlagImage(ObjectId id, ObjectId thumbnailId, string flag)
         {
             var filter = FilterBuilder.Eq("_id", id) & FilterBuilder.Eq("Thumbnail._id", thumbnailId);
             return MongoCollection.UpdateOne(filter, Builders<BsonDocument>.Update.Set("Thumbnail.$.Flag", flag)).IsAcknowledged;
         }
-        public bool UpdateFlagVideo(ObjectId id, ObjectId thumbnailId, string flag)
+        public bool UpdateFlagVideo(ObjectId id, ObjectId m3u8Id, string flag)
         {
-            var filter = FilterBuilder.Eq("_id", id) & FilterBuilder.Eq("Videos._id", thumbnailId);
+            var filter = FilterBuilder.Eq("_id", id) & FilterBuilder.Eq("Videos._id", m3u8Id);
             return MongoCollection.UpdateOne(filter, Builders<BsonDocument>.Update.Set("Videos.$.Flag", flag)).IsAcknowledged;
         }
         public bool UpdateFlagAttachment(ObjectId id, ObjectId subFileId, string flag)
@@ -79,7 +89,7 @@ namespace FileService.Data
             var filter = FilterBuilder.Eq("_id", id) & FilterBuilder.Eq("Files._id", oldFileId);
             return MongoCollection.UpdateOne(filter, Builders<BsonDocument>.Update.Set("Files.$._id", newFileId)).IsAcknowledged;
         }
-        public bool AddSubVideo(ObjectId id,BsonDocument bson)
+        public bool AddSubVideo(ObjectId id, BsonDocument bson)
         {
             var filter = FilterBuilder.Eq("_id", id);
             return MongoCollection.UpdateOne(filter, Builders<BsonDocument>.Update.AddToSet("Videos", bson)).IsAcknowledged;
