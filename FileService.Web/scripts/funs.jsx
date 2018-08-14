@@ -102,6 +102,7 @@ var http = {
     }
 };
 var appDomain = "/";
+var baseUrl = window.location.protocol + "//" + window.location.host + appDomain;
 var urls = {
     logoUrl: appDomain + "image/logo.png",
     homeUrl: appDomain + "admin/index",
@@ -188,6 +189,11 @@ var urls = {
         getAllDepartment: appDomain + "admin/getalldepartment",
         changeOrder: appDomain + "admin/departmentchangeorder",
         getDepartmentSelect: appDomain + "admin/getdepartmentselect",
+    },
+    shared: {
+        addshared: appDomain + "admin/addshared",
+        getShared: appDomain + "admin/getallshared",
+        deleteShared: appDomain +"admin/deleteshared"
     }
 }
 //随机数
@@ -217,13 +223,7 @@ function getDate(value) {
 }
 function getCurrentDateTime() {
     var date = new Date();
-    return date.getFullYear() + "-" + monthFormat(date.getMonth() + 1, 2) + "-" + monthFormat(date.getDate(), 2) + " " + monthFormat(date.getHours(), 2) + ":" + monthFormat(date.getMinutes(), 2) + ":" + monthFormat(date.getSeconds(), 2);
-}
-function monthFormat(month, len) {
-    if (len == 1) return month;
-    if (len == 2) return month.toString().length == 1 ? "0" + month : month;
-    if (len == 0) return "";
-    return month;
+    return date.getFullYear() + "-" + formatMonth(date.getMonth() + 1) + "-" + formatMonth(date.getDate()) + " " + formatMonth(date.getHours()) + ":" + formatMonth(date.getMinutes()) + ":" + formatMonth(date.getSeconds());
 }
 function parseBsonTime(value) {
     if (!value) {
@@ -234,6 +234,11 @@ function parseBsonTime(value) {
     var date = new Date(0);
     date.setMilliseconds(value);
     return date.getFullYear() + "-" + formatMonth((date.getMonth() + 1)) + "-" + formatMonth(date.getDate()) + " " + formatMonth(date.getHours()) + ":" + formatMonth(date.getMinutes()) + ":" + formatMonth(date.getSeconds());
+}
+function dateAddDay(dateStr, day) {
+    var date = new Date(dateStr);
+    date.setDate(date.getDate() + day);  
+    return date.getFullYear() + "-" + formatMonth(date.getMonth() + 1) + "-" + formatMonth(date.getDate()) + " " + formatMonth(date.getHours()) + ":" + formatMonth(date.getMinutes()) + ":" + formatMonth(date.getSeconds());
 }
 function convertFileSize(value) {
     var size = parseInt(value) / 1024;

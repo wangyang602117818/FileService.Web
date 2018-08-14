@@ -68,6 +68,12 @@ Access:[
 判断md5
 
 
+Shared
+{
+	
+}
+
+
 
 
 

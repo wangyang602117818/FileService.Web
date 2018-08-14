@@ -177,6 +177,7 @@
     <Compile Include="Controllers\BaseController.cs" />
     <Compile Include="Controllers\DataController.cs" />
     <Compile Include="Controllers\DownLoadController.cs" />
+    <Compile Include="Controllers\SharedController.cs" />
     <Compile Include="Controllers\UploadController.cs" />
     <Compile Include="CultureInfo.cs" />
     <Compile Include="Filters\AppAuthorizeAttribute.cs" />
@@ -190,6 +191,7 @@
     <Compile Include="Models\Department.cs" />
     <Compile Include="Models\ErrorCode.cs" />
     <Compile Include="Models\ResponseModel.cs" />
+    <Compile Include="Models\SharedModel.cs" />
     <Compile Include="Models\UpdateAccess.cs" />
     <Compile Include="Models\UpdateApplication.cs" />
     <Compile Include="Models\UpdateConfig.cs" />
@@ -349,6 +351,8 @@
     <Content Include="scripts\react.js" />
     <Content Include="scripts\react.min.js" />
     <Content Include="scripts\resources.jsx" />
+    <Content Include="scripts\resources_shared_file.jsx" />
+    <Content Include="scripts\resources_update_access.jsx" />
     <Content Include="scripts\resources_zip_list.jsx" />
     <Content Include="scripts\resources_attachment.jsx" />
     <Content Include="scripts\resources_image.jsx" />
@@ -373,6 +377,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Views\Shared\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="css\iconfont.eot" />

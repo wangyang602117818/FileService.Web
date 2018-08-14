@@ -24,6 +24,7 @@ var culture = {
     users: "Users",
     update: "Update ",
     save: "Save",
+    create:"Create",
 
     last_update: "Last update",
     every: "every",
@@ -89,7 +90,7 @@ var culture = {
     size: "Size",
     uploadDate: "UploadDate",
     from: "From",
-    owner:"Owner",
+    owner: "Owner",
     fileType: "FileType",
     dol: "Dol",
     del: "Del",
@@ -154,6 +155,14 @@ var culture = {
     end: "End",
 
     process_count: "ProCount",
-    save_success: "Save Success"
-    
+    save_success: "Save Success",
+    shared: "Shared",
+    day: "Day",
+    valid_period: "Valid Period",
+    expired_date: "ExpiredDate",
+    shared_link: "SharedLink",
+    shared_type: "SharedType",
+    public: "Public",
+    encrypt: "Encrypt",
+    never_expire: "Never Expires",
 }

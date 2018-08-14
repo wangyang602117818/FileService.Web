@@ -43,6 +43,8 @@ namespace FileService.Web
                 .Include("~/scripts/resources_m3u8_list.jsx")
                 .Include("~/scripts/resources_subfile_list.jsx")
                 .Include("~/scripts/resources_zip_list.jsx")
+                .Include("~/scripts/resources_update_access.jsx")
+                .Include("~/scripts/resources_shared_file.jsx")
                 .Include("~/scripts/resources.jsx")
                 .Include("~/scripts/logs.jsx")
             );

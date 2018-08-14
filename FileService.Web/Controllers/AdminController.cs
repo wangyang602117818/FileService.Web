@@ -30,6 +30,7 @@ namespace FileService.Web.Controllers
         M3u8 m3u8 = new M3u8();
         Ts ts = new Ts();
         VideoCapture videoCapture = new VideoCapture();
+        Shared shared = new Shared();
         public ActionResult Index()
         {
             ViewBag.Name = User.Identity.Name;
@@ -136,6 +137,33 @@ namespace FileService.Web.Controllers
             Dictionary<string, string> sorts = new Dictionary<string, string> { { "uploadDate", "desc" } };
             IEnumerable<BsonDocument> result = filesConvert.GetPageList(pageIndex, pageSize, null, sorts, filter, new List<string>() { "filename", "metadata.From", "metadata.FileType" }, new List<string>() { }, out count);
             return new ResponseModel<IEnumerable<BsonDocument>>(ErrorCode.success, result, count);
+        }
+        public ActionResult GetAllShared(string fileId)
+        {
+            return new ResponseModel<IEnumerable<BsonDocument>>(ErrorCode.success, shared.GetShared(ObjectId.Parse(fileId)));
+        }
+        public ActionResult AddShared(SharedModel sharedModel)
+        {
+            sharedModel.CreateTime = DateTime.Now;
+            ObjectId fileId = ObjectId.Parse(sharedModel.FileId);
+            BsonDocument shareBson = sharedModel.ToBsonDocument();
+            shareBson.Remove("FileId");
+            shareBson.Add("FileId", fileId);
+            Log(sharedModel.FileId, "AddShared");
+            shared.Insert(shareBson);
+            return new ResponseModel<bool>(ErrorCode.success, true);
+        }
+        public ActionResult DeleteShared(string id)
+        {
+            Log(id, "DeleteShared");
+            if (shared.DeleteOne(ObjectId.Parse(id)))
+            {
+                return new ResponseModel<bool>(ErrorCode.success, true);
+            }
+            else
+            {
+                return new ResponseModel<string>(ErrorCode.server_exception, "");
+            }
         }
         public ActionResult GetThumbnailMetadata(string id)
         {
@@ -410,6 +438,7 @@ namespace FileService.Web.Controllers
                 {"Format",addVideoTask.Format },
                 {"Flag",addVideoTask.Flag }
             };
+            Log(addVideoTask.FileId, "AddVideoTask");
             InserTask(handlerId, fileId, fileWrap["FileName"].AsString, "video", output, fileWrap["Access"].AsBsonArray);
             filesWrap.AddSubVideo(fileId, subFile);
             return new ResponseModel<bool>(ErrorCode.success, true);
@@ -438,6 +467,7 @@ namespace FileService.Web.Controllers
                 {"Format",addImageTask.Format },
                 {"Flag",addImageTask.Flag }
             };
+            Log(addImageTask.FileId, "AddThumbnailTask");
             InserTask(handlerId, fileId, fileWrap["FileName"].AsString, "image", output, fileWrap["Access"].AsBsonArray);
             filesWrap.AddSubThumbnail(fileId, subFile);
             return new ResponseModel<bool>(ErrorCode.success, true);
@@ -607,6 +637,7 @@ namespace FileService.Web.Controllers
             thumbnail.DeleteOne(thumbId);
             task.DeleteByOutputId(thumbId);
             filesWrap.DeleteThumbnail(ObjectId.Parse(fileId), thumbId);
+            Log(fileId, "DeleteThumbnail");
             return new ResponseModel<string>(ErrorCode.success, "");
         }
         public ActionResult DeleteM3u8(string fileId, string m3u8Id)
@@ -617,6 +648,7 @@ namespace FileService.Web.Controllers
             m3u8.DeleteOne(mId);
             task.DeleteByOutputId(mId);
             filesWrap.DeleteM3u8(fId, mId);
+            Log(fileId, "DeleteM3u8");
             return new ResponseModel<string>(ErrorCode.success, "");
         }
         [Authorize(Roles = "admin")]

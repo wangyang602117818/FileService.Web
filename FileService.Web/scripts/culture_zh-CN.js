@@ -24,6 +24,7 @@ var culture = {
     users: "用户管理",
     update: "更新",
     save: "保存",
+    create: "创建",
 
     last_update: "上次更新",
     every: "每",
@@ -154,5 +155,14 @@ var culture = {
     end: "结尾",
 
     process_count: "处理次数",
-    save_success:"保存成功"
+    save_success: "保存成功",
+    shared: "分享",
+    day: "天",
+    valid_period: "有效时间",
+    expired_date: "过期时间",
+    shared_link: "分享链接",
+    shared_type: "分享形式",
+    public: "公开",
+    encrypt: "加密",
+    never_expire: "永久有效",
 }
