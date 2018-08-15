@@ -145,10 +145,11 @@ namespace FileService.Web.Controllers
         public ActionResult AddShared(SharedModel sharedModel)
         {
             sharedModel.CreateTime = DateTime.Now;
+            string id = sharedModel.SharedUrl.Substring(sharedModel.SharedUrl.LastIndexOf('/')+1, 24);
             ObjectId fileId = ObjectId.Parse(sharedModel.FileId);
             BsonDocument shareBson = sharedModel.ToBsonDocument();
-            shareBson.Remove("FileId");
-            shareBson.Add("FileId", fileId);
+            shareBson.Add("_id", ObjectId.Parse(id));
+            shareBson["FileId"] = fileId;
             Log(sharedModel.FileId, "AddShared");
             shared.Insert(shareBson);
             return new ResponseModel<bool>(ErrorCode.success, true);

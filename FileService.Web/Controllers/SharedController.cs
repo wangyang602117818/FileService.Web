@@ -11,6 +11,7 @@ namespace FileService.Web.Controllers
         // GET: Shared
         public ActionResult Index(string id)
         {
+            
             return View();
         }
     }

@@ -391,7 +391,7 @@ class Resources extends React.Component {
         }.bind(this));
     }
     getSharedUrl() {
-        http.get(urls.getHexCodeUrl + "/24", function (data) {
+        http.get(urls.getObjectIdUrl, function (data) {
             if (data.code == 0) {
                 this.setState({ sharedUrl: baseUrl + "shared/" + data.result });
             }
@@ -404,6 +404,7 @@ class Resources extends React.Component {
         http.postJson(urls.shared.addshared, obj, function (data) {
             if (data.code == 0) {
                 this.getSharedList(obj.fileId);
+                this.getSharedUrl();
             }
         }.bind(this));
     }

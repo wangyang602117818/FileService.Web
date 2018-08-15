@@ -21,7 +21,7 @@
                             <td width="5%">{culture.del}</td>
                         </tr>
                     </thead>
-                    <SharedFileList data={this.props.data} delShared={this.props.delShared}/>
+                    <SharedFileList data={this.props.data} delShared={this.props.delShared} />
                 </table>
                 <AddShared sharedUrl={this.props.sharedUrl} shared={this.props.shared} />
 
@@ -49,15 +49,24 @@ class SharedFileList extends React.Component {
             return (
                 <tbody>
                     {this.props.data.map(function (item, i) {
+                        var expiredDate = dateAddDay(parseBsonTime(item.CreateTime), item.ExpiredDay);
+                        var currentDate = getCurrentDateTime();
                         return (
                             <tr key={i}>
                                 <td title={item.FileName}>{item.FileName.getFileName(15)}</td>
                                 <td>{item.SharedUrl}</td>
                                 <td>{item.PassWord || "none"}</td>
                                 <td>{item.ExpiredDay || "∞"}</td>
-                                <td>{item.ExpiredDay == 0 ? "∞" : dateAddDay(parseBsonTime(item.CreateTime), item.ExpiredDay)}</td>
+                                <td>{item.ExpiredDay == 0 ? "∞" : expiredDate}</td>
                                 <td>{parseBsonTime(item.CreateTime)}</td>
-                                <td></td>
+                                <td>
+                                    {
+                                        (currentDate < expiredDate || item.ExpiredDay == 0) ?
+                                            <i className="iconfont icon-dui" style={{ color: "blue", cursor:"default" }}></i>
+                                            :
+                                            <i className="iconfont icon-jian" style={{ color: "red", cursor: "default" }}></i>
+                                    }
+                                </td>
                                 <td>
                                     <i className="iconfont icon-del" id={item._id.$oid} onClick={this.props.delShared.bind(this)}></i>
                                 </td>
