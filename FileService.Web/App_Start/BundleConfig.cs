@@ -13,6 +13,11 @@ namespace FileService.Web
                         "~/scripts/culture_zh-CN.js"));
             bundles.Add(new ScriptBundle("~/scripts/culture_en-US").Include(
                         "~/scripts/culture_en-US.js"));
+
+            bundles.Add(new ScriptBundle("~/scripts/react-only-js")
+                .Include("~/scripts/react.js")
+                .Include("~/scripts/react-dom.js")
+            );
             //js-boundles
             bundles.Add(new ScriptBundle("~/scripts/index-common-js")
                 .Include("~/scripts/jquery-3.3.1.js")
@@ -74,6 +79,10 @@ namespace FileService.Web
             //peview image
             bundles.Add(new BabelBundle("~/scripts/preview_image")
                .Include("~/scripts/preview_image.jsx")
+            );
+            //shared image
+            bundles.Add(new BabelBundle("~/scripts/shared_image")
+               .Include("~/scripts/shared_image.jsx")
             );
             //preivew video
             bundles.Add(new BabelBundle("~/scripts/preview_video")

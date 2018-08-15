@@ -360,6 +360,7 @@
     <Content Include="scripts\resources_subfile_list.jsx" />
     <Content Include="scripts\resources_thumbnail_list.jsx" />
     <Content Include="scripts\resources_video.jsx" />
+    <Content Include="scripts\shared_image.jsx" />
     <Content Include="scripts\tasks.jsx" />
     <Content Include="scripts\tasks_update.jsx" />
     <Content Include="scripts\user.jsx" />
@@ -377,7 +378,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Views\Shared\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="css\iconfont.eot" />
@@ -392,6 +392,7 @@
     <Content Include="Views\Admin\Preview.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <Content Include="Views\Admin\Test.cshtml" />
+    <Content Include="Views\Shared\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\FileService.Business\FileService.Business.csproj">

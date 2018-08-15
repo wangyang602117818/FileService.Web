@@ -1,0 +1,35 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html mozdisallowselectionprint moznomarginboxes>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Index</title>
+    <link rel="icon" href="~/image/data.ico" type="image/x-ico" />
+    @Scripts.Render("~/scripts/react-only-js")
+    @{
+        if (CultureInfo.GetCulture() == "zh-CN")
+        {
+            @Scripts.Render("~/scripts/culture_zh-CN")
+        }
+        else
+        {
+            @Scripts.Render("~/scripts/culture_en-US")
+        }
+    }
+    @Styles.Render("~/css/preview")
+</head>
+<body tabindex="1" class="loadingInProgress" id="body">
+    <div id="shared"></div>
+    <input type="hidden" name="fileId" id="fileId" value="@ViewBag.fileId" />
+    @Scripts.Render("~/scripts/preview")
+    @if (ViewBag.fileType == "image")
+    {
+        @Scripts.Render("~/scripts/shared_image")
+    }
+</body>
+</html>

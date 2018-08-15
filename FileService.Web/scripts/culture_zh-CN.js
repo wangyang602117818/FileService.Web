@@ -165,4 +165,6 @@ var culture = {
     public: "公开",
     encrypt: "加密",
     never_expire: "永久有效",
+
+    please_input_shared_password: "请输入共享密码"
 }

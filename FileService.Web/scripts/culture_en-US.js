@@ -165,4 +165,6 @@ var culture = {
     public: "Public",
     encrypt: "Encrypt",
     never_expire: "Never Expires",
+
+    please_input_shared_password:"Please Input Shared Password"
 }
