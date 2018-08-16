@@ -80,3 +80,27 @@ class PreviewTitle extends React.Component {
         );
     }
 }
+class PreviewBodyText extends React.Component {
+    constructor(props) {
+        super(props);
+    }
+    render() {
+        return (
+            <div className="background" style={{ color: "#fff" }}>
+                {this.props.text}
+            </div>
+        );
+    }
+}
+class SharedExpired extends React.Component {
+    constructor(props) {
+        super(props);
+    }
+    render() {
+        return (
+        <div>
+            <PreviewTitle tabs={[]} />
+            <PreviewBodyText text={culture.link_expired} /></div>
+       )
+    }
+}

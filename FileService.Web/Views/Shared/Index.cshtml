@@ -1,5 +1,4 @@
-﻿
-@{
+﻿@{
     Layout = null;
 }
 
@@ -25,11 +24,18 @@
 </head>
 <body tabindex="1" class="loadingInProgress" id="body">
     <div id="shared"></div>
+    <input type="hidden" name="id" id="id" value="@ViewBag.id" />
     <input type="hidden" name="fileId" id="fileId" value="@ViewBag.fileId" />
+    <input type="hidden" name="hasPassword" id="hasPassword" value="@ViewBag.hasPassword.ToString()" />
+    <input type="hidden" name="expired" id="expired" value="@ViewBag.expired.ToString()" />
+
     @Scripts.Render("~/scripts/preview")
+
     @if (ViewBag.fileType == "image")
     {
         @Scripts.Render("~/scripts/shared_image")
     }
+
+
 </body>
 </html>

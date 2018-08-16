@@ -16,7 +16,6 @@ class Preview extends React.Component {
         this.state = {
             tabs: [],
             fileId: "",
-            text: "Not Supported Preview",
             isOrigin: false
         }
     }
@@ -32,7 +31,7 @@ class Preview extends React.Component {
                 <PreviewTitle
                     tabs={this.state.tabs}
                     onItemClick={this.onItemClick.bind(this)} />
-                <PreviewBody text={this.state.text} isOrigin={this.state.isOrigin} />
+                <PreviewBody text={culture.not_support_preview} isOrigin={this.state.isOrigin} />
             </div>
         );
     }

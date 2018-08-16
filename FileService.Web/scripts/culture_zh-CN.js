@@ -166,5 +166,8 @@ var culture = {
     encrypt: "加密",
     never_expire: "永久有效",
 
-    please_input_shared_password: "请输入共享密码"
+    please_input_shared_password: "请输入共享密码",
+    link_expired: "链接已过期",
+    file_converting: "文件转换中...",
+    not_support_preview: "不支持预览",
 }

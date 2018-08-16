@@ -24,7 +24,7 @@ var culture = {
     users: "Users",
     update: "Update ",
     save: "Save",
-    create:"Create",
+    create: "Create",
 
     last_update: "Last update",
     every: "every",
@@ -166,5 +166,8 @@ var culture = {
     encrypt: "Encrypt",
     never_expire: "Never Expires",
 
-    please_input_shared_password:"Please Input Shared Password"
+    please_input_shared_password: "Please Input Shared Password",
+    link_expired: "Link expired",
+    file_converting: "File Converting...",
+    not_support_preview: "Not Supported Preview",
 }

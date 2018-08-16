@@ -194,7 +194,8 @@ var urls = {
     shared: {
         addshared: appDomain + "admin/addshared",
         getShared: appDomain + "admin/getallshared",
-        deleteShared: appDomain +"admin/deleteshared"
+        deleteShared: appDomain + "admin/deleteshared",
+        checkPassWord: appDomain +"shared/checkpassword",
     }
 }
 //随机数
@@ -207,6 +208,9 @@ function setCookie(cname, cvalue, exdays) {
     d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
     var expires = "expires=" + d.toGMTString();
     document.cookie = cname + "=" + cvalue + "; " + expires;
+}
+function setCookieNonExday(cname, cvalue) {
+    document.cookie = cname + "=" + cvalue;
 }
 function getCookie(cname) {
     var name = cname + "=";

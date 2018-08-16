@@ -35,7 +35,7 @@ namespace FileService.Web.Models
         username_exist = 202,
         login_fault = 203,
         task_not_completed = 204,
-
+        invalid_password = 205,
         /// <summary>
         /// 未知错误
         /// </summary>
