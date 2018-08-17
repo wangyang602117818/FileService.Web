@@ -15,6 +15,7 @@ namespace FileService.Web.Controllers
     {
         Shared shared = new Shared();
         Config config = new Config();
+        FilesWrap filesWrap = new FilesWrap();
         public ActionResult Index(string id)
         {
             BsonDocument bson = shared.FindOne(ObjectId.Parse(id));
@@ -28,6 +29,14 @@ namespace FileService.Web.Controllers
             if (DateTime.Now > createTime.AddDays(expiredDay) && expiredDay > 0) expired = true;
             if (!string.IsNullOrEmpty(password)) hasPassword = true;
 
+            ViewBag.convert = false;
+            if (fileType == "office")
+            {
+                BsonDocument fileWrap = filesWrap.FindOne(ObjectId.Parse(fileId));
+                string subFileId = fileWrap["Files"].AsBsonArray[0]["_id"].ToString();
+                ViewBag.subFileId = subFileId;
+                ViewBag.convert = true;
+            }
             ViewBag.hasPassword = hasPassword;
             ViewBag.expired = expired;
             ViewBag.id = id;

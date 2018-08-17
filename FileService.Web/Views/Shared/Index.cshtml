@@ -1,7 +1,7 @@
 ﻿@{
     Layout = null;
 }
-
+@using MongoDB.Bson;
 <!DOCTYPE html>
 
 <html mozdisallowselectionprint moznomarginboxes>
@@ -9,7 +9,12 @@
     <meta name="viewport" content="width=device-width" />
     <title>Index</title>
     <link rel="icon" href="~/image/data.ico" type="image/x-ico" />
+    <link href="~/pdfview/viewer.css" rel="stylesheet" />
+    <link rel="resource" type="application/l10n" href="~/pdfview/locale/locale.txt">
+
     @Scripts.Render("~/scripts/react-only-js")
+    @Scripts.Render("~/scripts/preview")
+
     @{
         if (CultureInfo.GetCulture() == "zh-CN")
         {
@@ -26,16 +31,17 @@
     <div id="shared"></div>
     <input type="hidden" name="id" id="id" value="@ViewBag.id" />
     <input type="hidden" name="fileId" id="fileId" value="@ViewBag.fileId" />
+    <input type="hidden" name="subFileId" id="subFileId" value="@ViewBag.subFileId" />
+    <input type="hidden" name="fileType" id="fileType" value="@ViewBag.fileType" />
     <input type="hidden" name="hasPassword" id="hasPassword" value="@ViewBag.hasPassword.ToString()" />
     <input type="hidden" name="expired" id="expired" value="@ViewBag.expired.ToString()" />
-
-    @Scripts.Render("~/scripts/preview")
-
-    @if (ViewBag.fileType == "image")
+    @if (ViewBag.fileType == "video")
     {
-        @Scripts.Render("~/scripts/shared_image")
+        <script src="~/scripts/jquery-3.3.1.min.js"></script>
+        <script src="~/hlsplayer/hlsplayer.min.js" script-flowplayer="~/hlsplayer/flowplayer.swf" script-flowplayerhls="~/hlsplayer/flowplayerhls.swf" script-auto="false"></script>
     }
 
+    @Scripts.Render("~/scripts/shared")
 
 </body>
 </html>

@@ -99,6 +99,9 @@ var http = {
         xhr.open('get', url);
         xhr.setRequestHeader("AuthCode", authCode);
         xhr.send();
+    },
+    getTemplate: function (url, success, error) {
+
     }
 };
 var appDomain = "/";

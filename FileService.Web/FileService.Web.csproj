@@ -311,6 +311,7 @@
     <Content Include="pdfview\pdf.min.js" />
     <Content Include="pdfview\pdf.worker.js" />
     <Content Include="pdfview\pdf.worker.min.js" />
+    <Content Include="pdfview\template.html" />
     <Content Include="pdfview\viewer.css" />
     <Content Include="pdfview\viewer.js" />
     <Content Include="pdfview\viewer.min.js" />
@@ -360,7 +361,7 @@
     <Content Include="scripts\resources_subfile_list.jsx" />
     <Content Include="scripts\resources_thumbnail_list.jsx" />
     <Content Include="scripts\resources_video.jsx" />
-    <Content Include="scripts\shared_image.jsx" />
+    <Content Include="scripts\shared.jsx" />
     <Content Include="scripts\tasks.jsx" />
     <Content Include="scripts\tasks_update.jsx" />
     <Content Include="scripts\user.jsx" />
@@ -388,7 +389,6 @@
     </None>
     <Content Include="Views\Admin\Index.cshtml" />
     <Content Include="Views\Admin\Login.cshtml" />
-    <Content Include="Views\Admin\partial_pdfview.cshtml" />
     <Content Include="Views\Admin\Preview.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <Content Include="Views\Admin\Test.cshtml" />

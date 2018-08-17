@@ -81,8 +81,8 @@ namespace FileService.Web
                .Include("~/scripts/preview_image.jsx")
             );
             //shared image
-            bundles.Add(new BabelBundle("~/scripts/shared_image")
-               .Include("~/scripts/shared_image.jsx")
+            bundles.Add(new BabelBundle("~/scripts/shared")
+               .Include("~/scripts/shared.jsx")
             );
             //preivew video
             bundles.Add(new BabelBundle("~/scripts/preview_video")

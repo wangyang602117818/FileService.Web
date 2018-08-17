@@ -125,6 +125,7 @@ var culture = {
     role: "Role",
     password_not_match: "PassWord not matched",
     confirm: "confirm",
+    invalid_password: "Invalid Password",
     auth_code: "AuthCode",
 
     department: "Department",

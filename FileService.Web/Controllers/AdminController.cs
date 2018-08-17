@@ -145,7 +145,7 @@ namespace FileService.Web.Controllers
         public ActionResult AddShared(SharedModel sharedModel)
         {
             sharedModel.CreateTime = DateTime.Now;
-            string id = sharedModel.SharedUrl.Substring(sharedModel.SharedUrl.LastIndexOf('/')+1, 24);
+            string id = sharedModel.SharedUrl.Substring(sharedModel.SharedUrl.LastIndexOf('/') + 1, 24);
             ObjectId fileId = ObjectId.Parse(sharedModel.FileId);
             BsonDocument shareBson = sharedModel.ToBsonDocument();
             shareBson.Add("_id", ObjectId.Parse(id));
@@ -214,6 +214,7 @@ namespace FileService.Web.Controllers
                 ViewBag.id = bson.Contains("Files") ? bson["Files"].AsBsonArray[0]["_id"].ToString() : ObjectId.Empty.ToString();
             }
             ViewBag.FileName = fileName;
+            ViewBag.template = System.IO.File.ReadAllText(AppDomain.CurrentDomain.BaseDirectory + "/pdfview/template.html");
             return View();
         }
         public ActionResult PreviewConvert(string id, string fileName)
@@ -223,6 +224,7 @@ namespace FileService.Web.Controllers
             ViewBag.Convert = "true";
             ViewBag.fileType = fileType;
             ViewBag.FileName = fileName;
+            ViewBag.template = System.IO.File.ReadAllText(AppDomain.CurrentDomain.BaseDirectory + "pdfview/template.html");
             return View("Preview");
         }
         public ActionResult GetCountRecentMonth(int month)
