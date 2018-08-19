@@ -36,6 +36,21 @@ namespace FileService.Web.Controllers
         public ActionResult F(string id)
         {
             BsonDocument bson = shared.FindOne(ObjectId.Parse(id));
+            DateTime createTime = bson["CreateTime"].ToUniversalTime();
+            int expiredDay = bson["ExpiredDay"].ToInt32();
+            HttpCookie password_cookie = Request.Cookies["shared_password_" + id];
+            //验证//////////////////////
+            string password = bson["PassWord"].IsBsonNull ? "" : bson["PassWord"].ToString();
+            bool expired = false, hasPassword = false;
+
+            if (DateTime.Now > createTime.AddDays(expiredDay) && expiredDay > 0) expired = true;
+            if (!string.IsNullOrEmpty(password)) hasPassword = true;
+
+            if (expired || (hasPassword && password_cookie == null) || (password_cookie != null && password_cookie.Value != password))
+            {
+                return RedirectToAction("init", "shared", new { id });
+            }
+            //验证/////////////////////
 
             string fileId = bson["FileId"].ToString();
             string fileName = bson["FileName"].ToString();
@@ -93,7 +108,7 @@ namespace FileService.Web.Controllers
             else
             {
                 BsonDocument bson = shared.FindOne(ObjectId.Parse(id));
-                if(bson["PassWord"].ToString()== password)
+                if (bson["PassWord"].ToString() == password)
                 {
                     return new ResponseModel<bool>(ErrorCode.success, true);
                 }
