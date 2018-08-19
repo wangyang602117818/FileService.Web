@@ -171,4 +171,5 @@ var culture = {
     link_expired: "链接已过期",
     file_converting: "文件转换中...",
     not_support_preview: "不支持预览",
+    date:"时间"
 }

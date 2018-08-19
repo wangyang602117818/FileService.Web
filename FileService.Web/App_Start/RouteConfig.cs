@@ -16,7 +16,7 @@ namespace FileService.Web
             routes.MapRoute(
                 name: "Shared",
                 url: "Shared/{id}",
-                defaults: new { controller = "Shared", action = "Index", id = UrlParameter.Optional }
+                defaults: new { controller = "Shared", action = "Init", id = UrlParameter.Optional }
             );
 
             routes.MapRoute(

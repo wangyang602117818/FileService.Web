@@ -205,7 +205,7 @@ namespace FileService.Web.Controllers
         {
             string fileType = config.GetTypeByExtension(Path.GetExtension(fileName).ToLower()).ToLower();
             ViewBag.id = id;
-            ViewBag.Convert = "false";
+            ViewBag.convert = "false";
             ViewBag.fileType = fileType;
             if (fileType == "office")
             {
@@ -221,7 +221,7 @@ namespace FileService.Web.Controllers
         {
             string fileType = config.GetTypeByExtension(Path.GetExtension(fileName).ToLower()).ToLower();
             ViewBag.id = id;
-            ViewBag.Convert = "true";
+            ViewBag.convert = "true";
             ViewBag.fileType = fileType;
             ViewBag.FileName = fileName;
             ViewBag.template = System.IO.File.ReadAllText(AppDomain.CurrentDomain.BaseDirectory + "pdfview/template.html");

@@ -14,7 +14,7 @@
                             <th width="24%">{culture.fileName}</th>
                             <th width="26%">{culture.shared_link}</th>
                             <th width="6%">{culture.password}</th>
-                            <th width="8%">{culture.valid_period + "(" + culture.day + ")"}</th>
+                            <th width="8%">{culture.date + "(" + culture.day + ")"}</th>
                             <th width="13%">{culture.expired_date}</th>
                             <th width="13%">{culture.createTime}</th>
                             <th width="5%">{culture.state}</th>

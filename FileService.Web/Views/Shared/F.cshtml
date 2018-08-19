@@ -1,4 +1,5 @@
-﻿@{
+﻿
+@{
     Layout = null;
 }
 @using MongoDB.Bson;
@@ -8,39 +9,46 @@
 <head>
     <meta name="viewport" content="width=device-width" />
     <link rel="icon" href="~/image/data.ico" type="image/x-ico" />
-    <link href="~/pdfview/viewer.css" rel="stylesheet" />
-    <link rel="resource" type="application/l10n" href="~/pdfview/locale/locale.txt">
-
     @Scripts.Render("~/scripts/react-only-js")
     @Scripts.Render("~/scripts/preview")
-
     @{
         if (CultureInfo.GetCulture() == "zh-CN")
         {
+            <title>文件管理系统</title>
             @Scripts.Render("~/scripts/culture_zh-CN")
         }
         else
         {
+            <title>File Management</title>
             @Scripts.Render("~/scripts/culture_en-US")
         }
     }
     @Styles.Render("~/css/preview")
 </head>
-<body tabindex="1" class="loadingInProgress" id="body">
+<body tabindex="1" class="loadingInProgress">
     <div id="shared"></div>
     <input type="hidden" name="id" id="id" value="@ViewBag.id" />
     <input type="hidden" name="fileId" id="fileId" value="@ViewBag.fileId" />
-    <input type="hidden" name="subFileId" id="subFileId" value="@ViewBag.subFileId" />
     <input type="hidden" name="fileType" id="fileType" value="@ViewBag.fileType" />
-    <input type="hidden" name="hasPassword" id="hasPassword" value="@ViewBag.hasPassword.ToString()" />
-    <input type="hidden" name="expired" id="expired" value="@ViewBag.expired.ToString()" />
+    <input type="hidden" name="convert" id="convert" value="@ViewBag.convert" />
     @if (ViewBag.fileType == "video")
     {
         <script src="~/scripts/jquery-3.3.1.min.js"></script>
         <script src="~/hlsplayer/hlsplayer.min.js" script-flowplayer="~/hlsplayer/flowplayer.swf" script-flowplayerhls="~/hlsplayer/flowplayerhls.swf" script-auto="false"></script>
     }
-
-    @Scripts.Render("~/scripts/shared")
+    @if (ViewBag.fileType == "pdf" || ViewBag.fileType == "office" && ViewBag.fileId != ObjectId.Empty.ToString())
+    {
+        @Html.Raw(@ViewBag.template)
+        <link href="~/pdfview/viewer.css" rel="stylesheet" />
+        <link rel="resource" type="application/l10n" href="~/pdfview/locale/locale.txt">
+        @Scripts.Render("~/scripts/preview_pdf")
+        <script src="~/pdfview/pdf.min.js"></script>
+        <script src="~/pdfview/viewer.min.js"></script>
+    }
+    else
+    {
+        @Scripts.Render("~/scripts/shared")
+    }
 
 </body>
 </html>

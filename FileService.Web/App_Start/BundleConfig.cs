@@ -80,6 +80,9 @@ namespace FileService.Web
             bundles.Add(new BabelBundle("~/scripts/preview_image")
                .Include("~/scripts/preview_image.jsx")
             );
+            //shared init
+            bundles.Add(new BabelBundle("~/scripts/shared_init")
+                .Include("~/scripts/shared_init.jsx"));
             //shared image
             bundles.Add(new BabelBundle("~/scripts/shared")
                .Include("~/scripts/shared.jsx")

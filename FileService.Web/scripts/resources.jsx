@@ -68,7 +68,7 @@ class ResourceItem extends React.Component {
     }
     render() {
         return (
-            <tr>
+            <tr className={this.props.resource.FileId.$oid == "000000000000000000000000" ? "doing" : "done"}>
                 <td className="link"
                     data-type={this.props.resource.FileType.removeHTML()}
                     data-filename={this.props.resource.FileName.removeHTML()}

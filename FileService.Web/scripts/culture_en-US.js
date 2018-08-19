@@ -171,4 +171,5 @@ var culture = {
     link_expired: "Link expired",
     file_converting: "File Converting...",
     not_support_preview: "Not Supported Preview",
+    date: "Date"
 }

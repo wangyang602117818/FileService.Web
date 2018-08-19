@@ -127,7 +127,7 @@ var urls = {
     redoUrl: appDomain + "admin/redo",
     emptyUrl: appDomain + "admin/empty",
     getHexCodeUrl: appDomain + "admin/gethexcode",
-    getObjectIdUrl: appDomain +"data/getobjectid",
+    getObjectIdUrl: appDomain + "data/getobjectid",
     overview: {
         recentUrl: appDomain + "admin/getcountrecentmonth",
         totalUrl: appDomain + "admin/gettotalcount",
@@ -198,7 +198,8 @@ var urls = {
         addshared: appDomain + "admin/addshared",
         getShared: appDomain + "admin/getallshared",
         deleteShared: appDomain + "admin/deleteshared",
-        checkPassWord: appDomain +"shared/checkpassword",
+        checkPassWord: appDomain + "shared/checkpassword",
+        sharedFile: appDomain + "shared/f"
     }
 }
 //随机数
@@ -245,7 +246,7 @@ function parseBsonTime(value) {
 }
 function dateAddDay(dateStr, day) {
     var date = new Date(dateStr);
-    date.setDate(date.getDate() + day);  
+    date.setDate(date.getDate() + day);
     return date.getFullYear() + "-" + formatMonth(date.getMonth() + 1) + "-" + formatMonth(date.getDate()) + " " + formatMonth(date.getHours()) + ":" + formatMonth(date.getMinutes()) + ":" + formatMonth(date.getSeconds());
 }
 function convertFileSize(value) {

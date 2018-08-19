@@ -41,7 +41,7 @@ h1 {
 
     .button:disabled {
         background: #ccc;
-        cursor:default;
+        cursor: default;
     }
 
 .link {
@@ -101,6 +101,10 @@ h1 {
         text-align: left;
         font-size: 12px;
         color: #484848;
+    }
+
+    .table .doing td, .table .dong th {
+        color:#999999;
     }
 
     .table .tdCenter {

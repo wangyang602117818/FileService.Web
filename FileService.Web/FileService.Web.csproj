@@ -362,6 +362,7 @@
     <Content Include="scripts\resources_thumbnail_list.jsx" />
     <Content Include="scripts\resources_video.jsx" />
     <Content Include="scripts\shared.jsx" />
+    <Content Include="scripts\shared_init.jsx" />
     <Content Include="scripts\tasks.jsx" />
     <Content Include="scripts\tasks_update.jsx" />
     <Content Include="scripts\user.jsx" />
@@ -393,6 +394,8 @@
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <Content Include="Views\Admin\Test.cshtml" />
     <Content Include="Views\Shared\Index.cshtml" />
+    <Content Include="Views\Shared\Init.cshtml" />
+    <Content Include="Views\Shared\F.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\FileService.Business\FileService.Business.csproj">

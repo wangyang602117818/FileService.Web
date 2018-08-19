@@ -30,7 +30,7 @@
 
     @Scripts.Render("~/scripts/preview")
     <input type="hidden" name="fileId" id="fileId" value="@ViewBag.id" />
-    <input type="hidden" name="convert" id="convert" value="@ViewBag.Convert" />
+    <input type="hidden" name="convert" id="convert" value="@ViewBag.convert" />
     @if (ViewBag.fileType == "image")
     {
         @Scripts.Render("~/scripts/preview_image")
