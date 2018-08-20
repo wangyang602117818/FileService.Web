@@ -28,6 +28,7 @@ namespace FileService.Web.Controllers
         FilesWrap filesWrap = new FilesWrap();
         VideoCapture videoCapture = new VideoCapture();
         Config config = new Config();
+
         [HttpPost]
         public ActionResult Image(UploadImgModel uploadImgModel)
         {
@@ -42,6 +43,7 @@ namespace FileService.Web.Controllers
             if (!string.IsNullOrEmpty(uploadImgModel.Access))
             {
                 accessList = JsonConvert.DeserializeObject<List<AccessModel>>(uploadImgModel.Access);
+                if (Request.Headers["FromApi"] == "true") ConvertAccess(accessList);
             }
             if (!Directory.Exists(tempFileDirectory))
                 Directory.CreateDirectory(tempFileDirectory);
@@ -115,6 +117,7 @@ namespace FileService.Web.Controllers
             if (!string.IsNullOrEmpty(uploadVideo.Access))
             {
                 accessList = JsonConvert.DeserializeObject<List<AccessModel>>(uploadVideo.Access);
+                if (Request.Headers["FromApi"] == "true") ConvertAccess(accessList);
             }
             if (!Directory.Exists(tempFileDirectory))
                 Directory.CreateDirectory(tempFileDirectory);
@@ -184,6 +187,7 @@ namespace FileService.Web.Controllers
             if (!string.IsNullOrEmpty(uploadAttachmentModel.Access))
             {
                 accessList = JsonConvert.DeserializeObject<List<AccessModel>>(uploadAttachmentModel.Access);
+                if (Request.Headers["FromApi"] == "true") ConvertAccess(accessList);
             }
             if (!Directory.Exists(tempFileDirectory))
                 Directory.CreateDirectory(tempFileDirectory);

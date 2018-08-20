@@ -11,7 +11,7 @@ namespace FileService.Client
 {
     internal class HttpRequestHelper
     {
-        internal Task<string> PostFileImage(string url, IEnumerable<FileItem> images, IEnumerable<ImageConvert> converts, Dictionary<string, string> headers)
+        internal Task<string> PostFileImage(string url, IEnumerable<FileItem> images, IEnumerable<ImageConvert> converts, IEnumerable<UserAccess> userAccesses, Dictionary<string, string> headers)
         {
             Dictionary<string, string> paras = new Dictionary<string, string>();
             string output = null;
@@ -19,10 +19,16 @@ namespace FileService.Client
             {
                 output = JsonConvert.SerializeObject(converts);
                 paras.Add("output", output);
+            }
+            string access = null;
+            if (userAccesses != null)
+            {
+                access = JsonConvert.SerializeObject(userAccesses);
+                paras.Add("access", access);
             }
             return PostFile(url, "images", images, paras, headers);
         }
-        internal Task<string> PostFileVideo(string url, IEnumerable<FileItem> videos, IEnumerable<VideoConvert> converts, Dictionary<string, string> headers)
+        internal Task<string> PostFileVideo(string url, IEnumerable<FileItem> videos, IEnumerable<VideoConvert> converts, IEnumerable<UserAccess> userAccesses, Dictionary<string, string> headers)
         {
             Dictionary<string, string> paras = new Dictionary<string, string>();
             string output = null;
@@ -31,11 +37,23 @@ namespace FileService.Client
                 output = JsonConvert.SerializeObject(converts);
                 paras.Add("output", output);
             }
+            string access = null;
+            if (userAccesses != null)
+            {
+                access = JsonConvert.SerializeObject(userAccesses);
+                paras.Add("access", access);
+            }
             return PostFile(url, "videos", videos, paras, headers);
         }
-        internal Task<string> PostFileAttachment(string url, IEnumerable<FileItem> attachments, Dictionary<string, string> headers)
+        internal Task<string> PostFileAttachment(string url, IEnumerable<FileItem> attachments, IEnumerable<UserAccess> userAccesses, Dictionary<string, string> headers)
         {
             Dictionary<string, string> paras = new Dictionary<string, string>();
+            string access = null;
+            if (userAccesses != null)
+            {
+                access = JsonConvert.SerializeObject(userAccesses);
+                paras.Add("access", access);
+            }
             return PostFile(url, "attachments", attachments, paras, headers);
         }
         internal Task<string> PostFileVideoCapture(string fileId, string url, IEnumerable<FileItem> videoCaptures, Dictionary<string, string> headers)

@@ -18,6 +18,7 @@ namespace FileService.Web.Controllers
         public Converter converter = new Converter();
         public Task task = new Task();
         public Queue queue = new Queue();
+        Department department = new Department();
         public void Log(string fileId, string content)
         {
             var authCode = Request.Headers["AuthCode"];
@@ -58,6 +59,19 @@ namespace FileService.Web.Controllers
                 type, outPut, access, handlerId, 0, TaskStateEnum.wait, 0);
             //添加队列
             queue.Insert(handlerId, type, "Task", taskId, false, new BsonDocument());
+        }
+        public void ConvertAccess(List<AccessModel> accessList)
+        {
+            foreach (AccessModel accessModel in accessList)
+            {
+                string companyName = "";
+                List<string> departmentDisplay = new List<string>() { };
+                accessModel.Authority = "0";
+                accessModel.AccessCodes = accessModel.DepartmentCodes;
+                department.GetNamesByCodes(accessModel.Company, accessModel.DepartmentCodes, out companyName, out departmentDisplay);
+                accessModel.CompanyDisplay = companyName;
+                accessModel.DepartmentDisplay = departmentDisplay.ToArray();
+            }
         }
     }
 }

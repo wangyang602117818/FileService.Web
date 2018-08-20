@@ -136,5 +136,16 @@ namespace FileService.Web.Controllers
         {
             return new ResponseModel<string>(ErrorCode.success, ObjectId.GenerateNewId().ToString());
         }
+        //public ActionResult M(string code)
+        //{
+        //    return new ResponseModel<Dictionary<string,string>>(ErrorCode.success, new Department().M(code));
+        //}
+        //public ActionResult M1()
+        //{
+        //    string companyName = "";
+        //    List<string> departmentNames = new List<string>() { };
+        //    new Department().GetNamesByCodes("d81baffbfd1c", new string[] { "c949eb5dcbcf", "49c0f3cec0a9" }, out companyName, out departmentNames);
+        //    return new ResponseModel<object>(ErrorCode.success, new { companyName , departmentNames });
+        //}
     }
 }

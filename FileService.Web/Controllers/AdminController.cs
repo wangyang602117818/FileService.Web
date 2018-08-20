@@ -374,7 +374,7 @@ namespace FileService.Web.Controllers
         }
         public ActionResult UpdateHandler(UpdateHandler updateHandler)
         {
-            Log(updateHandler.FileId, "UpdateTaskHandler");
+            Log(updateHandler.FileId, "UpdateHandler");
             BsonDocument document = new BsonDocument()
             {
                 {"HandlerId",updateHandler.Handler },

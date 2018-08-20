@@ -125,6 +125,7 @@ namespace FileService.Data
             list.Add(FilterBuilder.Size("Access", 0));
             //Owner是我就可见
             list.Add(FilterBuilder.Eq("Owner", userName));
+            list.Add(FilterBuilder.Eq("Owner",""));
             //属于companyCode公司的人可见
             list.Add(FilterBuilder.ElemMatch<BsonDocument>("Access", new BsonDocument() {
                 { "Company",companyCode },

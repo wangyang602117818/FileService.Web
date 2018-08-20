@@ -27,6 +27,34 @@ namespace FileService.Business
         {
             return mongoData.GetByCode(code);
         }
+        public void GetNamesByCodes(string companyCode, string[] departmentCodes, out string companyName, out List<string> departmentNames)
+        {
+            BsonDocument bson = mongoData.GetByCode(companyCode);
+            companyName = "";
+            departmentNames = new List<string> { };
+            if (bson != null)
+            {
+                companyName = bson["DepartmentName"].ToString();
+                Dictionary<string, string> dict = new Dictionary<string, string>();
+                GetDictionary(bson["Department"].AsBsonArray, dict);
+                foreach (var deptCode in departmentCodes)
+                {
+                    if (dict.ContainsKey(deptCode))
+                        departmentNames.Add(dict[deptCode]);
+                }
+            }
+        }
+        private void GetDictionary(BsonArray department, Dictionary<string, string> dict)
+        {
+            foreach (BsonDocument dept in department)
+            {
+                dict.Add(dept["DepartmentCode"].ToString(), dept["DepartmentName"].ToString());
+                if (dept["Department"].AsBsonArray.Count > 0)
+                {
+                    GetDictionary(dept["Department"].AsBsonArray, dict);
+                }
+            }
+        }
         //public BsonDocument GetByDepartmentCode(string departmentCode)
         //{
         //    return mongoData.GetByDepartmentCode(departmentCode);
