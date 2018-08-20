@@ -197,7 +197,8 @@ var urls = {
     shared: {
         addshared: appDomain + "admin/addshared",
         getShared: appDomain + "admin/getallshared",
-        deleteShared: appDomain + "admin/deleteshared",
+        disabledShared: appDomain + "admin/disabledshared",
+        enableShared: appDomain +"admin/enableshared",
         checkPassWord: appDomain + "shared/checkpassword",
         sharedFile: appDomain + "shared/f"
     }
@@ -211,10 +212,10 @@ function setCookie(cname, cvalue, exdays) {
     var d = new Date();
     d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
     var expires = "expires=" + d.toGMTString();
-    document.cookie = cname + "=" + cvalue + "; " + expires;
+    document.cookie = cname + "=" + cvalue + "; " + expires + ";path=/";
 }
 function setCookieNonExday(cname, cvalue) {
-    document.cookie = cname + "=" + cvalue;
+    document.cookie = cname + "=" + cvalue + ";path=/";
 }
 function getCookie(cname) {
     var name = cname + "=";

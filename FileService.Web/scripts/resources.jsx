@@ -408,15 +408,23 @@ class Resources extends React.Component {
             }
         }.bind(this));
     }
-    delShared(e) {
-        if (window.confirm(" " + culture.delete + " ?")) {
+    disableShared(e) {
+        if (window.confirm(" " + culture.disabled + culture.shared_link + " ?")) {
             var id = e.target.id;
-            http.get(urls.shared.deleteShared + "/" + id, function (data) {
+            http.get(urls.shared.disabledShared + "/" + id, function (data) {
                 if (data.code == 0) {
                     this.getSharedList(this.state.fileId);
                 }
             }.bind(this))
         }
+    }
+    enableShared(e) {
+        var id = e.target.id;
+        http.get(urls.shared.enableShared + "/" + id, function (data) {
+            if (data.code == 0) {
+                this.getSharedList(this.state.fileId);
+            }
+        }.bind(this))
     }
     render() {
         return (
@@ -498,7 +506,8 @@ class Resources extends React.Component {
                             fileId={this.state.fileId}
                             sharedUrl={this.state.sharedUrl}
                             shared={this.shared.bind(this)}
-                            delShared={this.delShared.bind(this)}
+                            disableShared={this.disableShared.bind(this)}
+                            enableShared={this.enableShared.bind(this)}
                         /> : null
                 }
             </div>

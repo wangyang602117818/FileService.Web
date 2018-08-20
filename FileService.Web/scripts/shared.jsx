@@ -1,21 +1,4 @@
-﻿
-class SharedImageBody extends React.Component {
-    constructor(props) {
-        super(props);
-    }
-    render() {
-        if (this.props.fileId) {
-            return (
-                <div className="background">
-                    <img src={urls.downloadUrl + "/" + this.props.fileId} />
-                </div>
-            );
-        } else {
-            return null;
-        }
-    }
-}
-class SharedImage extends React.Component {
+﻿class SharedImage extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -23,7 +6,6 @@ class SharedImage extends React.Component {
         }
     }
     componentDidMount() {
-        document.getElementsByTagName("body")[0].style = "";
         var fileId = document.getElementById("fileId").value;
         this.setState({ fileId: fileId });
     }
@@ -31,33 +13,13 @@ class SharedImage extends React.Component {
         return (
             <div>
                 <PreviewTitle tabs={[]} />
-                <SharedImageBody fileId={this.state.fileId} />
+                {this.state.fileId ?
+                    <div className="background">
+                        <img src={urls.downloadUrl + "/" + this.state.fileId} />
+                    </div> : null
+                }
             </div>
         );
-    }
-}
-class SharedVideoBody extends React.Component {
-    constructor(props) {
-        super(props);
-    }
-    render() {
-        if (this.props.m3u8Id) {
-            return (
-                <div className="background">
-                    <video controls="controls" width="900" height="600" className="hlsplayer">
-                        <source src={urls.m3u8Url + "/" + this.props.m3u8Id} />
-                    </video>
-                </div>
-            );
-        } else {
-            return (
-                <div className="background">
-                    <video controls="controls" width="900" height="600">
-                        <source src={urls.downloadUrl + "/" + this.props.fileId} />
-                    </video>
-                </div>
-            )
-        }
     }
 }
 class SharedVideo extends React.Component {
@@ -69,7 +31,6 @@ class SharedVideo extends React.Component {
         }
     }
     componentDidMount() {
-        document.getElementsByTagName("body")[0].style = "";
         var fileId = document.getElementById("fileId").value;
         var m3u8Id = this.getM3u8Id(fileId);
         this.setState({ fileId: fileId, m3u8Id: m3u8Id }, function () { hlsplayer(); });
@@ -87,7 +48,66 @@ class SharedVideo extends React.Component {
         return (
             <div>
                 <PreviewTitle tabs={[]} />
-                <SharedVideoBody fileId={this.state.fileId} m3u8Id={this.state.m3u8Id} />
+                {this.state.m3u8Id ?
+                    <div className="background">
+                        <video controls="controls" width="900" height="600" className="hlsplayer">
+                            <source src={urls.m3u8Url + "/" + this.state.m3u8Id} />
+                        </video>
+                    </div> :
+                    <div className="background">
+                        <video controls="controls" width="900" height="600">
+                            <source src={urls.downloadUrl + "/" + this.state.fileId} />
+                        </video>
+                    </div>
+                }
+            </div>
+        );
+    }
+}
+class SharedText extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            text: "",
+        }
+    }
+    componentDidMount() {
+        var fileId = document.getElementById("fileId").value;
+        http.getFile(urls.downloadUrl + "/" + fileId, function (data) {
+            this.setState({ text: data });
+        }.bind(this));
+    }
+    render() {
+        return (
+            <div>
+                <PreviewTitle tabs={[]} />
+                <div className="background">
+                    <div className="background_text">{this.state.text}</div>
+                </div>
+            </div>
+        );
+    }
+}
+class SharedDefault extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            fileId:"",
+            fileName: ""
+        }
+    }
+    componentDidMount() {
+        var fileId = document.getElementById("fileId").value;
+        var fileName = document.getElementById("fileName").value;
+        this.setState({ fileId: fileId, fileName: fileName })
+    }
+    render() {
+        return (
+            <div>
+                <PreviewTitle tabs={[]} />
+                <div className="background">
+                    <a href={urls.downloadUrl + "/" + this.state.fileId} style={{ color:"#fff" }}>{this.state.fileName}</a>
+                </div>
             </div>
         );
     }
@@ -100,6 +120,9 @@ class SharedComponent extends React.Component {
             component: null
         };
     }
+    componentDidMount() {
+        document.getElementsByTagName("body")[0].style = "";
+    }
     componentWillMount() {
         var id = document.getElementById("id").value;
         var fileType = document.getElementById("fileType").value;
@@ -110,13 +133,18 @@ class SharedComponent extends React.Component {
             case "video":
                 this.setState({ component: SharedVideo });
                 break;
-            
+            case "text":
+                this.setState({ component: SharedText });
+                break;
+            default:
+                this.setState({ component: SharedDefault });
+                break;
         }
     }
 
     render() {
         return (
-            <this.state.component sharedid={this.state.id}/>
+            <this.state.component sharedid={this.state.id} />
         );
     }
 }

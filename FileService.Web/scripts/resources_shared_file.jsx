@@ -18,10 +18,10 @@
                             <th width="13%">{culture.expired_date}</th>
                             <th width="13%">{culture.createTime}</th>
                             <th width="5%">{culture.state}</th>
-                            <td width="5%">{culture.del}</td>
+                            <td width="5%">{culture.disabled}</td>
                         </tr>
                     </thead>
-                    <SharedFileList data={this.props.data} delShared={this.props.delShared} />
+                    <SharedFileList data={this.props.data} disableShared={this.props.disableShared} enableShared={this.props.enableShared} />
                 </table>
                 <AddShared sharedUrl={this.props.sharedUrl} shared={this.props.shared} />
 
@@ -61,14 +61,22 @@ class SharedFileList extends React.Component {
                                 <td>{parseBsonTime(item.CreateTime)}</td>
                                 <td>
                                     {
-                                        (currentDate < expiredDate || item.ExpiredDay == 0) ?
-                                            <i className="iconfont icon-dui" style={{ color: "blue", cursor:"default" }}></i>
+                                        (!item.Disabled && (currentDate < expiredDate || item.ExpiredDay==0)) ?
+                                            <span className="state use_state" title={culture.used} />
                                             :
-                                            <i className="iconfont icon-jian" style={{ color: "red", cursor: "default" }}></i>
+                                            <span className="state disabled_state" title={culture.disabled} />
                                     }
                                 </td>
                                 <td>
-                                    <i className="iconfont icon-del" id={item._id.$oid} onClick={this.props.delShared.bind(this)}></i>
+                                    {
+                                        !item.Disabled ?
+                                            <i className="iconfont icon-disable"
+                                                id={item._id.$oid}
+                                                onClick={this.props.disableShared.bind(this)}></i> : 
+                                            <i className="iconfont icon-dui"
+                                                id={item._id.$oid}
+                                                onClick={this.props.enableShared.bind(this)}></i>
+                                    }
                                 </td>
                             </tr>
                         )

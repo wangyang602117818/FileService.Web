@@ -7,12 +7,17 @@ using System.Threading.Tasks;
 
 namespace FileService.Business
 {
-    public class Shared: ModelBase<Data.Shared>
+    public class Shared : ModelBase<Data.Shared>
     {
         public Shared() : base(new Data.Shared()) { }
         public IEnumerable<BsonDocument> GetShared(ObjectId fileId)
         {
             return mongoData.GetShared(fileId);
+        }
+
+        public bool DisabledShared(ObjectId id, bool disable)
+        {
+            return mongoData.DisabledShared(id, disable);
         }
     }
 }

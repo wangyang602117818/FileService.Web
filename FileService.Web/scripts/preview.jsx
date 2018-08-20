@@ -92,15 +92,4 @@ class PreviewBodyText extends React.Component {
         );
     }
 }
-class SharedExpired extends React.Component {
-    constructor(props) {
-        super(props);
-    }
-    render() {
-        return (
-        <div>
-            <PreviewTitle tabs={[]} />
-            <PreviewBodyText text={culture.link_expired} /></div>
-       )
-    }
-}
+

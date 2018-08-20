@@ -169,7 +169,10 @@ var culture = {
 
     please_input_shared_password: "请输入共享密码",
     link_expired: "链接已过期",
+    link_disabled: "链接已被禁用",
     file_converting: "文件转换中...",
     not_support_preview: "不支持预览",
-    date:"时间"
+    date: "时间",
+    used: "可用",
+    disabled: "禁用"
 }

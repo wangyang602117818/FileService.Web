@@ -17,6 +17,7 @@ namespace FileService.Web.Models
         public string SharedUrl { get; set; }
         public string PassWord { get; set; }
         public int ExpiredDay { get; set; }
+        public bool Disabled { get; set; }
         public DateTime? CreateTime { get; set; }
     }
 }

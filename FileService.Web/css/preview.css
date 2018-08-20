@@ -124,8 +124,9 @@ video {
 .password_input_wrap {
     position: absolute;
     height: 150px;
-    width: 24%;
-    left: 38%;
+    width: 20%;
+    min-width:300px;
+    left: 40%;
     margin-top: 80px;
     background: #fff;
     overflow: hidden

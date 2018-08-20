@@ -5,7 +5,7 @@
     render() {
         return (
             <div className="background">
-                <div class="background_text">{this.props.text}</div>
+                <div className="background_text">{this.props.text}</div>
             </div>
         );
     }

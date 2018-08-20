@@ -169,7 +169,10 @@ var culture = {
 
     please_input_shared_password: "Please Input Shared Password",
     link_expired: "Link expired",
+    link_disabled:"Link Disabled",
     file_converting: "File Converting...",
     not_support_preview: "Not Supported Preview",
-    date: "Date"
+    date: "Date",
+    used: "Used",
+    disabled: "Disabled"
 }

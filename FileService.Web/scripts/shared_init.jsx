@@ -26,7 +26,7 @@
                     id="password"
                     size="10"
                     value={this.state.password}
-                    onChange={e => this.setState({ password: e.target.value })} />
+                    onChange={e => this.setState({ password: e.target.value })} />{'\u00A0'}
                     <font color="red">{this.state.text}</font>
                 </div>
                 <div className="password_input_btn">
@@ -39,6 +39,30 @@
         );
     }
 }
+class SharedExpired extends React.Component {
+    constructor(props) {
+        super(props);
+    }
+    render() {
+        return (
+            <div>
+                <PreviewTitle tabs={[]} />
+                <PreviewBodyText text={culture.link_expired} /></div>
+        )
+    }
+}
+class SharedDisabled extends React.Component {
+    constructor(props) {
+        super(props);
+    }
+    render() {
+        return (
+            <div>
+                <PreviewTitle tabs={[]} />
+                <PreviewBodyText text={culture.link_disabled} /></div>
+        )
+    }
+}
 class SharedInit extends React.Component {
     constructor(props) {
         super(props);
@@ -46,20 +70,25 @@ class SharedInit extends React.Component {
             component: PassWordInput
         };
     }
-    componentDidMount() {
+    componentWillMount() {
         var id = document.getElementById("id").value;
         var expired = document.getElementById("expired").value.toLowerCase();
         var hasPassword = document.getElementById("hasPassword").value.toLowerCase();
+        var disabled = document.getElementById("disabled").value.toLowerCase();
 
         var cookie_password = getCookie("shared_password_" + id);
         this.setState({ id: id });
-        if (expired == "true") {
-            this.setState({ component: SharedExpired });
+        if (disabled == "true") {
+            this.setState({ component: SharedDisabled });
         } else {
-            if (hasPassword == "true" && cookie_password.length == 0) {
-                this.setState({ component: PassWordInput });
+            if (expired == "true") {
+                this.setState({ component: SharedExpired });
             } else {
-                window.location.href = urls.shared.sharedFile + "/" + id;
+                if (hasPassword == "true" && cookie_password.length == 0) {
+                    this.setState({ component: PassWordInput });
+                } else {
+                    window.location.href = urls.shared.sharedFile + "/" + id;
+                }
             }
         }
     }

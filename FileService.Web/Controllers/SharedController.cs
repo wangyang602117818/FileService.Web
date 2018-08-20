@@ -26,6 +26,7 @@ namespace FileService.Web.Controllers
             if (DateTime.Now > createTime.AddDays(expiredDay) && expiredDay > 0) expired = true;
             if (!string.IsNullOrEmpty(password)) hasPassword = true;
 
+            ViewBag.disabled = bson["Disabled"].AsBoolean;
             ViewBag.hasPassword = hasPassword;
             ViewBag.expired = expired;
             ViewBag.id = id;
@@ -42,11 +43,12 @@ namespace FileService.Web.Controllers
             //验证//////////////////////
             string password = bson["PassWord"].IsBsonNull ? "" : bson["PassWord"].ToString();
             bool expired = false, hasPassword = false;
+            bool disabled = bson["Disabled"].AsBoolean;
 
             if (DateTime.Now > createTime.AddDays(expiredDay) && expiredDay > 0) expired = true;
             if (!string.IsNullOrEmpty(password)) hasPassword = true;
 
-            if (expired || (hasPassword && password_cookie == null) || (password_cookie != null && password_cookie.Value != password))
+            if (disabled || expired || (hasPassword && password_cookie == null) || (password_cookie != null && password_cookie.Value != password))
             {
                 return RedirectToAction("init", "shared", new { id });
             }
@@ -57,6 +59,7 @@ namespace FileService.Web.Controllers
             string fileType = config.GetTypeByExtension(Path.GetExtension(fileName).ToLower()).ToLower();
             ViewBag.id = id;
             ViewBag.fileId = fileId;
+            ViewBag.fileName = fileName;
             ViewBag.convert = "false";
             ViewBag.fileType = fileType;
             if (fileType == "office")
@@ -66,37 +69,6 @@ namespace FileService.Web.Controllers
                 ViewBag.fileId = fileWrap.Contains("Files") ? fileWrap["Files"].AsBsonArray[0]["_id"].ToString() : ObjectId.Empty.ToString();
             }
             ViewBag.template = System.IO.File.ReadAllText(AppDomain.CurrentDomain.BaseDirectory + "/pdfview/template.html");
-            return View();
-        }
-        public ActionResult Index(string id)
-        {
-            BsonDocument bson = shared.FindOne(ObjectId.Parse(id));
-            string fileId = bson["FileId"].ToString();
-            string fileName = bson["FileName"].ToString();
-            string fileType = config.GetTypeByExtension(Path.GetExtension(fileName).ToLower()).ToLower();
-            string password = bson["PassWord"].IsBsonNull ? "" : bson["PassWord"].ToString();
-            int expiredDay = bson["ExpiredDay"].ToInt32();
-            DateTime createTime = bson["CreateTime"].ToUniversalTime();
-            bool expired = false, hasPassword = false;
-            if (DateTime.Now > createTime.AddDays(expiredDay) && expiredDay > 0) expired = true;
-            if (!string.IsNullOrEmpty(password)) hasPassword = true;
-
-            ViewBag.convert = false;
-            if (fileType == "office")
-            {
-                BsonDocument fileWrap = filesWrap.FindOne(ObjectId.Parse(fileId));
-                string subFileId = fileWrap["Files"].AsBsonArray[0]["_id"].ToString();
-                ViewBag.subFileId = subFileId;
-                ViewBag.convert = true;
-            }
-            ViewBag.hasPassword = hasPassword;
-            ViewBag.expired = expired;
-            ViewBag.id = id;
-            ViewBag.fileId = fileId;
-            ViewBag.fileName = fileName;
-            ViewBag.fileType = fileType;
-            ViewBag.password = password;
-
             return View();
         }
         public ActionResult CheckPassWord(string id, string password)

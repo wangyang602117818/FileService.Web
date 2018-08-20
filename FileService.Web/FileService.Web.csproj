@@ -393,9 +393,8 @@
     <Content Include="Views\Admin\Preview.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <Content Include="Views\Admin\Test.cshtml" />
-    <Content Include="Views\Shared\Index.cshtml" />
-    <Content Include="Views\Shared\Init.cshtml" />
     <Content Include="Views\Shared\F.cshtml" />
+    <Content Include="Views\Shared\Init.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\FileService.Business\FileService.Business.csproj">

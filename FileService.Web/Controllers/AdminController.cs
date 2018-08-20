@@ -154,10 +154,22 @@ namespace FileService.Web.Controllers
             shared.Insert(shareBson);
             return new ResponseModel<bool>(ErrorCode.success, true);
         }
-        public ActionResult DeleteShared(string id)
+        public ActionResult DisabledShared(string id)
         {
-            Log(id, "DeleteShared");
-            if (shared.DeleteOne(ObjectId.Parse(id)))
+            Log(id, "DisabledShared");
+            if (shared.DisabledShared(ObjectId.Parse(id), true))
+            {
+                return new ResponseModel<bool>(ErrorCode.success, true);
+            }
+            else
+            {
+                return new ResponseModel<string>(ErrorCode.server_exception, "");
+            }
+        }
+        public ActionResult EnableShared(string id)
+        {
+            Log(id, "EnableShared");
+            if (shared.DisabledShared(ObjectId.Parse(id), false))
             {
                 return new ResponseModel<bool>(ErrorCode.success, true);
             }
