@@ -66,7 +66,7 @@ namespace FileService.Data
         {
             return MongoCollection.ReplaceOne(new BsonDocument("_id", document["_id"].AsObjectId), document, new UpdateOptions() { IsUpsert = true }).IsAcknowledged;
         }
-        protected virtual FilterDefinition<BsonDocument> GetAccessFilterBase(string userName)
+        public FilterDefinition<BsonDocument> GetAccessFilterBase(string userName)
         {
             if (string.IsNullOrEmpty(userName)) return null;
             string companyCode = "";
