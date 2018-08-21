@@ -111,38 +111,7 @@ namespace FileService.Data
         }
         public override FilterDefinition<BsonDocument> GetAccessFilter(string userName)
         {
-            if (string.IsNullOrEmpty(userName)) return null;
-            string companyCode = "";
-            IEnumerable<string> departments = new string[] { };
-            if (userName != "local")
-            {
-                BsonDocument user = new User().GetUser(userName);
-                companyCode = user["Company"].AsString;
-                departments = user["Department"].AsBsonArray.Select(s => s.ToString());
-            }
-            List<FilterDefinition<BsonDocument>> list = new List<FilterDefinition<BsonDocument>>();
-            //这种全部可见
-            list.Add(FilterBuilder.Size("Access", 0));
-            //Owner是我就可见
-            list.Add(FilterBuilder.Eq("Owner", userName));
-            list.Add(FilterBuilder.Eq("Owner",""));
-            //属于companyCode公司的人可见
-            list.Add(FilterBuilder.ElemMatch<BsonDocument>("Access", new BsonDocument() {
-                { "Company",companyCode },
-                { "AccessCodes",new BsonArray()},
-                { "AccessUsers",new BsonArray()},
-            }));
-            //属于companyCode公司 并且 部门相匹配的
-            list.Add(FilterBuilder.ElemMatch<BsonDocument>("Access", new BsonDocument() {
-                {"Company",companyCode },
-                {"AccessCodes",new BsonDocument("$in",new BsonArray(departments))},
-            }));
-            //属于companyCode公司 并且 用户相匹配的
-            list.Add(FilterBuilder.ElemMatch<BsonDocument>("Access", new BsonDocument() {
-                {"Company",companyCode },
-                {"AccessUsers",userName},
-            }));
-            return FilterBuilder.Or(list);
+            return base.GetAccessFilterBase(userName);
         }
     }
 }

@@ -12,7 +12,7 @@ namespace FileService.Business
     public partial class Task : ModelBase<Data.Task>
     {
         public Task() : base(new Data.Task()) { }
-        public void Insert(ObjectId id, ObjectId fileId, string tempFolder, string fileName, string type,string from, BsonDocument output, BsonArray access, string handlerId, int processCount, TaskStateEnum state, int priority)
+        public void Insert(ObjectId id, ObjectId fileId, string tempFolder, string fileName, string type,string from, BsonDocument output, BsonArray access,string owner, string handlerId, int processCount, TaskStateEnum state, int priority)
         {
             BsonDocument task = new BsonDocument()
             {
@@ -24,6 +24,7 @@ namespace FileService.Business
                 {"From",from },
                 {"Output",output },
                 {"Access",access },
+                {"Owner",owner },
                 {"HandlerId",handlerId },
                 {"ProcessCount",processCount },
                 {"State",state },

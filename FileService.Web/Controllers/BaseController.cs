@@ -50,13 +50,13 @@ namespace FileService.Web.Controllers
                 Request.Headers["UserIp"] ?? Request.UserHostAddress,
                 Request.Headers["UserAgent"] ?? Request.UserAgent);
         }
-        public void InserTask(string handlerId, ObjectId fileId, string fileName, string type, string from, BsonDocument outPut, BsonArray access)
+        public void InserTask(string handlerId, ObjectId fileId, string fileName, string type, string from, BsonDocument outPut, BsonArray access,string owner)
         {
             converter.AddCount(handlerId, 1);
             ObjectId taskId = ObjectId.GenerateNewId();
             task.Insert(taskId, fileId,
                 @"\\" + Environment.MachineName + "\\" + regex.Match(AppSettings.tempFileDir).Groups[1].Value + "\\" + DateTime.Now.ToString("yyyyMMdd") + "\\", fileName,
-                type, from, outPut, access, handlerId, 0, TaskStateEnum.wait, 0);
+                type, from, outPut, access, owner, handlerId, 0, TaskStateEnum.wait, 0);
             //添加队列
             queue.Insert(handlerId, type, "Task", taskId, false, new BsonDocument());
         }

@@ -119,8 +119,9 @@ namespace FileService.Web.Controllers
         public ActionResult GetTasks(int pageIndex = 1, int pageSize = 10, string filter = "")
         {
             long count = 0;
+            var userName = Request.Headers["UserName"] ?? User.Identity.Name;
             Dictionary<string, string> sorts = new Dictionary<string, string> { { "CreateTime", "desc" } };
-            IEnumerable<BsonDocument> result = task.GetPageList(pageIndex, pageSize, null, sorts, filter, new List<string>() { "FileId", "FileName", "StateDesc", "HandlerId", "StateDesc", "Type" }, new List<string>() { }, out count);
+            IEnumerable<BsonDocument> result = task.GetPageList(pageIndex, pageSize, null, sorts, filter, new List<string>() { "FileId", "FileName", "StateDesc", "HandlerId", "StateDesc", "Type" }, new List<string>() { }, out count, userName);
             return new ResponseModel<IEnumerable<BsonDocument>>(ErrorCode.success, result, count);
         }
         public ActionResult GetFiles(int pageIndex = 1, int pageSize = 10, string filter = "")
@@ -454,7 +455,7 @@ namespace FileService.Web.Controllers
                 {"Flag",addVideoTask.Flag }
             };
             Log(addVideoTask.FileId, "AddVideoTask");
-            InserTask(handlerId, fileId, fileWrap["FileName"].AsString, "video", Request.Headers["AppName"], output, fileWrap["Access"].AsBsonArray);
+            InserTask(handlerId, fileId, fileWrap["FileName"].AsString, "video", Request.Headers["AppName"], output, fileWrap["Access"].AsBsonArray, Request.Headers["UserName"] ?? User.Identity.Name);
             filesWrap.AddSubVideo(fileId, subFile);
             return new ResponseModel<bool>(ErrorCode.success, true);
         }
@@ -483,7 +484,7 @@ namespace FileService.Web.Controllers
                 {"Flag",addImageTask.Flag }
             };
             Log(addImageTask.FileId, "AddThumbnailTask");
-            InserTask(handlerId, fileId, fileWrap["FileName"].AsString, "image", Request.Headers["AppName"], output, fileWrap["Access"].AsBsonArray);
+            InserTask(handlerId, fileId, fileWrap["FileName"].AsString, "image", Request.Headers["AppName"], output, fileWrap["Access"].AsBsonArray, Request.Headers["UserName"] ?? User.Identity.Name);
             filesWrap.AddSubThumbnail(fileId, subFile);
             return new ResponseModel<bool>(ErrorCode.success, true);
         }
