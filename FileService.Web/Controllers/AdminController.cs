@@ -454,7 +454,7 @@ namespace FileService.Web.Controllers
                 {"Flag",addVideoTask.Flag }
             };
             Log(addVideoTask.FileId, "AddVideoTask");
-            InserTask(handlerId, fileId, fileWrap["FileName"].AsString, "video", output, fileWrap["Access"].AsBsonArray);
+            InserTask(handlerId, fileId, fileWrap["FileName"].AsString, "video", Request.Headers["AppName"], output, fileWrap["Access"].AsBsonArray);
             filesWrap.AddSubVideo(fileId, subFile);
             return new ResponseModel<bool>(ErrorCode.success, true);
         }
@@ -483,7 +483,7 @@ namespace FileService.Web.Controllers
                 {"Flag",addImageTask.Flag }
             };
             Log(addImageTask.FileId, "AddThumbnailTask");
-            InserTask(handlerId, fileId, fileWrap["FileName"].AsString, "image", output, fileWrap["Access"].AsBsonArray);
+            InserTask(handlerId, fileId, fileWrap["FileName"].AsString, "image", Request.Headers["AppName"], output, fileWrap["Access"].AsBsonArray);
             filesWrap.AddSubThumbnail(fileId, subFile);
             return new ResponseModel<bool>(ErrorCode.success, true);
         }

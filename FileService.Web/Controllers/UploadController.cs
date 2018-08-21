@@ -83,13 +83,13 @@ namespace FileService.Web.Controllers
                 string handlerId = converter.GetHandlerId();
                 if (output.Count == 0)
                 {
-                    InserTask(handlerId, fileId, file.FileName, "image", new BsonDocument(), access);
+                    InserTask(handlerId, fileId, file.FileName, "image", Request.Headers["AppName"], new BsonDocument(), access);
                 }
                 else
                 {
                     foreach (ImageOutPut o in output)
                     {
-                        InserTask(handlerId, fileId, file.FileName, "image", o.ToBsonDocument(), access);
+                        InserTask(handlerId, fileId, file.FileName, "image", Request.Headers["AppName"], o.ToBsonDocument(), access);
                     }
                 }
                 //日志
@@ -157,13 +157,13 @@ namespace FileService.Web.Controllers
                 string handlerId = converter.GetHandlerId();
                 if (outputs.Count == 0)
                 {
-                    InserTask(handlerId, fileId, file.FileName, "video", new BsonDocument(), access);
+                    InserTask(handlerId, fileId, file.FileName, "video", Request.Headers["AppName"], new BsonDocument(), access);
                 }
                 else
                 {
                     foreach (VideoOutPut o in outputs)
                     {
-                        InserTask(handlerId, fileId, file.FileName, "video", o.ToBsonDocument(), access);
+                        InserTask(handlerId, fileId, file.FileName, "video", Request.Headers["AppName"], o.ToBsonDocument(), access);
                     }
                 }
                 //日志
@@ -235,7 +235,7 @@ namespace FileService.Web.Controllers
                 //office转换任务
                 if (config.GetTypeByExtension(fileExt) == "office")
                 {
-                    InserTask(handlerId, fileId, file.FileName, "attachment", new BsonDocument() {
+                    InserTask(handlerId, fileId, file.FileName, "attachment", Request.Headers["AppName"], new BsonDocument() {
                         {"_id",ObjectId.Empty },
                         {"Format",AttachmentOutput.pdf },
                         {"Flag","preview" } },
@@ -245,14 +245,14 @@ namespace FileService.Web.Controllers
                 //zip转换任务
                 else if (fileExt == ".zip" || fileExt == ".rar")
                 {
-                    InserTask(handlerId, fileId, file.FileName, "attachment", new BsonDocument() {
+                    InserTask(handlerId, fileId, file.FileName, "attachment", Request.Headers["AppName"], new BsonDocument() {
                         {"_id",ObjectId.Empty },
                         {"Flag","zip" }
                     }, access);
                 }
                 else
                 {
-                    InserTask(handlerId, fileId, file.FileName, "attachment", new BsonDocument(), access);
+                    InserTask(handlerId, fileId, file.FileName, "attachment", Request.Headers["AppName"], new BsonDocument(), access);
                 }
                 //日志
                 Log(fileId.ToString(), "UploadAttachment");

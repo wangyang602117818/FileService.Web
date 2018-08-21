@@ -12,26 +12,7 @@ namespace FileService.Business
     public partial class Task : ModelBase<Data.Task>
     {
         public Task() : base(new Data.Task()) { }
-        public void Insert(ObjectId id, ObjectId fileId, string fileName, string type, BsonDocument output, string handlerId, TaskStateEnum state, int priority)
-        {
-            BsonDocument task = new BsonDocument()
-            {
-                {"_id",id },
-                {"FileId",fileId },
-                {"FileName",fileName },
-                {"Type",type },
-                {"Output",output },
-                {"HandlerId",handlerId },
-                {"State",state },
-                {"StateDesc",state.ToString() },
-                {"Percent",0 },
-                {"Priority",priority },
-                {"CreateTime",DateTime.Now },
-                {"CompletedTime",BsonNull.Value }
-            };
-            mongoData.InsertOneAsync(task);
-        }
-        public void Insert(ObjectId id, ObjectId fileId, string tempFolder, string fileName, string type, BsonDocument output, BsonArray access, string handlerId, int processCount, TaskStateEnum state, int priority)
+        public void Insert(ObjectId id, ObjectId fileId, string tempFolder, string fileName, string type,string from, BsonDocument output, BsonArray access, string handlerId, int processCount, TaskStateEnum state, int priority)
         {
             BsonDocument task = new BsonDocument()
             {
@@ -40,6 +21,7 @@ namespace FileService.Business
                 {"TempFolder",tempFolder },
                 {"FileName",fileName },
                 {"Type",type },
+                {"From",from },
                 {"Output",output },
                 {"Access",access },
                 {"HandlerId",handlerId },
