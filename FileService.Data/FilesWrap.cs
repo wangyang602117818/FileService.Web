@@ -48,7 +48,7 @@ namespace FileService.Data
                 .Group<BsonDocument>(new BsonDocument()
                 {
                     {"_id","$From" },
-                    {"count",new BsonDocument("$sum",1) }
+                    {"files",new BsonDocument("$sum",1) }
                 }).ToEnumerable();
         }
         public bool AddVideoCapture(ObjectId id, ObjectId captureId)

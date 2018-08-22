@@ -132,15 +132,17 @@ class CountTotal extends React.Component {
     }
     getByAppCount() {
         var that = this;
-        http.get(urls.overview.countByAppName, function (data) {
+        http.get(urls.overview.filesTaskCountByAppNameUrl, function (data) {
             if (data.code == 0) {
                 var xData = [];
-                var yData = [];
+                var files = [];
+                var tasks = [];
                 for (var i = 0; i < data.result.length; i++) {
                     xData.push(data.result[i]._id);
-                    yData.push(data.result[i].count);
+                    files.push(data.result[i].files);
+                    tasks.push(data.result[i].tasks);
                 }
-                that.myChart.setOption(getEchartOptionBar(xData, yData));
+                that.myChart.setOption(getEchartOptionBar(xData, files, tasks));
             }
         });
     }
@@ -148,7 +150,7 @@ class CountTotal extends React.Component {
         return (
             <div className={this.props.show ? "overview_con show" : "overview_con hidden"}>
                 <TitleTxt title={culture.count_by_app} />
-                <div className="echart_main" id="echart_count_appname" style={{height:"240px"}}>
+                <div className="echart_main" id="echart_count_appname" style={{ height: "240px", width:"1000px" }}>
                 </div>
                 <TitleTxt title={culture.totals} />
                 <div className="totals">

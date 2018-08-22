@@ -55,6 +55,17 @@ namespace FileService.Data
                  })
                  .Sort(new BsonDocument("_id", 1)).ToEnumerable();
         }
+
+        public IEnumerable<BsonDocument> GetFilesByAppName()
+        {
+            return MongoCollection.Aggregate()
+                .Match(FilterBuilder.Exists("Output._id"))
+                .Group<BsonDocument>(new BsonDocument()
+                {
+                    {"_id","$From" },
+                    {"tasks",new BsonDocument("$sum",1) }
+                }).ToEnumerable();
+        }
         public bool UpdateAccess(ObjectId id, BsonArray array)
         {
             var filter = FilterBuilder.Eq("FileId", id);

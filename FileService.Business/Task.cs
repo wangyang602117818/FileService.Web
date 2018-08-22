@@ -72,5 +72,9 @@ namespace FileService.Business
         {
             return mongoData.UpdateAccess(fileId, array);
         }
+        public IEnumerable<BsonDocument> GetFilesByAppName()
+        {
+            return mongoData.GetFilesByAppName();
+        }
     }
 }

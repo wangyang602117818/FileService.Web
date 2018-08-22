@@ -131,7 +131,7 @@ var urls = {
     overview: {
         recentUrl: appDomain + "admin/getcountrecentmonth",
         totalUrl: appDomain + "admin/gettotalcount",
-        countByAppName: appDomain + "admin/getfilesbyappname"
+        filesTaskCountByAppNameUrl: appDomain + "admin/getfilestaskcountbyappname"
     },
     log: {
         getUrl: appDomain + "admin/getlogs"
@@ -198,7 +198,7 @@ var urls = {
         addshared: appDomain + "admin/addshared",
         getShared: appDomain + "admin/getallshared",
         disabledShared: appDomain + "admin/disabledshared",
-        enableShared: appDomain +"admin/enableshared",
+        enableShared: appDomain + "admin/enableshared",
         checkPassWord: appDomain + "shared/checkpassword",
         sharedFile: appDomain + "shared/f"
     }
@@ -350,10 +350,10 @@ function getEchartOptionLine(data) {
             itemWidth: 35,
             itemHeight: 12,
             data: [{
-                name: culture.resources,
+                name: culture.resource_count,
                 icon: "roundRect"
             }, {
-                name: culture.tasks,
+                name: culture.task_count,
                 icon: "roundRect"
             }]
         },
@@ -405,7 +405,7 @@ function getEchartOptionLine(data) {
             }
         },
         series: [{
-            name: culture.resources,
+            name: culture.resource_count,
             type: 'line',
             showSymbol: false,
             symbol: "circle",
@@ -423,7 +423,7 @@ function getEchartOptionLine(data) {
             smooth: false,
             data: []
         }, {
-            name: culture.tasks,
+            name: culture.task_count,
             type: 'line',
             showSymbol: false,
             symbol: "circle",
@@ -443,7 +443,7 @@ function getEchartOptionLine(data) {
         }]
     };
 }
-function getEchartOptionBar(xData, yData) {
+function getEchartOptionBar(xData, files, tasks) {
     return {
         animation: false,
         axisPointer: {
@@ -458,10 +458,23 @@ function getEchartOptionBar(xData, yData) {
             }
         },
         grid: {
-            left: "5%",
+            left: "4%",
             top: "10%",
             bottom: "15%",
-            right: "5%",
+            right: "10%",
+        },
+        legend: {
+            right: 'right',
+            top: 10,
+            itemWidth: 35,
+            itemHeight: 12,
+            data: [{
+                name: culture.resource_count,
+                icon: "roundRect"
+            }, {
+                name: culture.task_count,
+                icon: "roundRect"
+            }]
         },
         xAxis: {
             type: 'category',
@@ -501,6 +514,30 @@ function getEchartOptionBar(xData, yData) {
         },
         series: [
             {
+                name: culture.resource_count,
+                type: 'bar',
+                barGap: 0,
+                label: {
+                    normal: {
+                        show: true,
+                        position: "top"
+                    }
+                },
+                barWidth: '15%',
+                data: files,
+                itemStyle: {
+                    normal: {
+                        //color: function (params) {
+                        //    var colorList = ["#C35C00", "#E1301E", "#968c6d", "#ffb600", "#602020", "#6d6e71", "#db536a", "#dc6900"];
+                        //    return colorList[params.dataIndex % colorList.length];
+                        //},
+                        color: "#E1301E",
+                        opacity: 0.7
+                    }
+                }
+            },
+            {
+                name: culture.task_count,
                 type: 'bar',
                 label: {
                     normal: {
@@ -508,15 +545,16 @@ function getEchartOptionBar(xData, yData) {
                         position: "top"
                     }
                 },
-                barWidth: '30%',
-                data: yData,
+                barWidth: '15%',
+                data: tasks,
                 itemStyle: {
                     normal: {
-                        color: function (params) {
-                            var colorList = ["#C35C00", "#E1301E", "#968c6d", "#ffb600", "#602020", "#6d6e71", "#db536a", "#dc6900"];
-                            return colorList[params.dataIndex % colorList.length];
-                        },
-                        opacity: 0.6
+                        //color: function (params) {
+                        //    var colorList = ["#C35C00", "#E1301E", "#968c6d", "#ffb600", "#602020", "#6d6e71", "#db536a", "#dc6900"];
+                        //    return colorList[params.dataIndex % colorList.length];
+                        //},
+                        color: "#C35C00",
+                        opacity: 0.7
                     }
                 }
             }

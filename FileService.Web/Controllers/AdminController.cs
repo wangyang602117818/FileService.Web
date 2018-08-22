@@ -259,10 +259,24 @@ namespace FileService.Web.Controllers
             result.Add("Resources", new BsonArray(filesWrap.GetFilesByType()));
             return new ResponseModel<BsonDocument>(ErrorCode.success, result);
         }
-        public ActionResult GetFilesByAppName()
+        public ActionResult GetFilesTaskCountByAppName()
         {
-            IEnumerable<BsonDocument> result = filesWrap.GetFilesByAppName();
-            return new ResponseModel<IEnumerable<BsonDocument>>(ErrorCode.success, result);
+            List<BsonDocument> files = filesWrap.GetFilesByAppName().ToList();
+            IEnumerable<BsonDocument> tasks = task.GetFilesByAppName();
+            foreach (BsonDocument file in files)
+            {
+                var appName = file["_id"].ToString();
+                BsonDocument task = tasks.Where(t => t["_id"].ToString() == appName).FirstOrDefault();
+                if (task != null)
+                {
+                    file.Add(new BsonElement("tasks", task["tasks"]));
+                }
+                else
+                {
+                    file.Add(new BsonElement("tasks", 0));
+                }
+            }
+            return new ResponseModel<IEnumerable<BsonDocument>>(ErrorCode.success, files);
         }
         public ActionResult GetHexCode(int id)
         {
