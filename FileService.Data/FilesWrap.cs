@@ -3,8 +3,6 @@ using MongoDB.Driver;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace FileService.Data
 {
@@ -113,10 +111,10 @@ namespace FileService.Data
         {
             return MongoCollection.Aggregate()
                 .Match(FilterBuilder.Gte("CreateTime", startDateTime))
-                .Group<BsonDocument>(new BsonDocument() {
-                    {"_id","$From" },
-                    {"count",new BsonDocument("$sum",1) },
-                 })
+                .Project(new BsonDocument() {
+                    {"date",new BsonDocument("$dateToString", new BsonDocument() {{"format", "%Y-%m-%d" },{"date", "$CreateTime" }})},
+                    {"from","$From" }
+                })
                 .ToEnumerable();
         }
         public override FilterDefinition<BsonDocument> GetAccessFilter(string userName)

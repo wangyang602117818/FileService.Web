@@ -2,8 +2,8 @@
     constructor(props) {
         super(props);
         this.state = {
-            recentMonth: localStorage.overview_recentMonth || 1,
-        }
+            recentMonth: localStorage.overview_recentMonth || 1
+        };
     }
     componentDidMount(e) {
         this.myChart = echarts.init(document.getElementById('echart_main'));
@@ -62,6 +62,7 @@
                 });
             }
         });
+
     }
     render() {
         return (

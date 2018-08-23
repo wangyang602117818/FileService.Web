@@ -251,12 +251,11 @@ namespace FileService.Web.Controllers
             result.Add("tasks", new BsonArray(taskResult));
             return new ResponseModel<BsonDocument>(ErrorCode.success, result);
         }
-        public ActionResult GetCountByAppName(int month)
+        public ActionResult GetFilesCountByAppName(int month)
         {
             DateTime dateTime = DateTime.Now;
             var startDateTime = new DateTime(dateTime.Year, dateTime.Month, dateTime.Day, 0, 0, 0).AddMonths(-month);
             IEnumerable<BsonDocument> fileResult = filesWrap.GetCountByAppName(startDateTime);
-
             return new ResponseModel<IEnumerable<BsonDocument>>(ErrorCode.success, fileResult);
         }
         public ActionResult GetTotalCount()

@@ -11,7 +11,7 @@
                     return <option value={item.code} key={i}>{item.name}</option>
                 }.bind(this))}
             </select>
-        )
+        );
     }
 }
 ////////////////////////////////////////////////////

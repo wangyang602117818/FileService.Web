@@ -131,7 +131,8 @@ var urls = {
     overview: {
         recentUrl: appDomain + "admin/getcountrecentmonth",
         totalUrl: appDomain + "admin/gettotalcount",
-        filesTaskCountByAppNameUrl: appDomain + "admin/getfilestaskcountbyappname"
+        filesTaskCountByAppNameUrl: appDomain + "admin/getfilestaskcountbyappname",
+        getFilesCountByAppNameUrl: appDomain + "admin/getfilescountbyappname"
     },
     log: {
         getUrl: appDomain + "admin/getlogs"
