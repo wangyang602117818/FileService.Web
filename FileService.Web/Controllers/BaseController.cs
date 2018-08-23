@@ -27,7 +27,6 @@ namespace FileService.Web.Controllers
             {
                 appName = new Application().FindByAuthCode(authCode)["ApplicationName"].AsString;
             }
-
             log.Insert(appName,
                 fileId,
                 content,

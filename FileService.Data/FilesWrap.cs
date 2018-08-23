@@ -109,6 +109,16 @@ namespace FileService.Data
             var filter = FilterBuilder.Eq("_id", id);
             return MongoCollection.UpdateOne(filter, Builders<BsonDocument>.Update.Set("Access", array)).IsAcknowledged;
         }
+        public IEnumerable<BsonDocument> GetCountByAppName(DateTime startDateTime)
+        {
+            return MongoCollection.Aggregate()
+                .Match(FilterBuilder.Gte("CreateTime", startDateTime))
+                .Group<BsonDocument>(new BsonDocument() {
+                    {"_id","$From" },
+                    {"count",new BsonDocument("$sum",1) },
+                 })
+                .ToEnumerable();
+        }
         public override FilterDefinition<BsonDocument> GetAccessFilter(string userName)
         {
             return base.GetAccessFilterBase(userName);

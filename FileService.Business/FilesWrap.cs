@@ -133,5 +133,9 @@ namespace FileService.Business
         {
             return mongoData.UpdateAccess(id, array);
         }
+        public IEnumerable<BsonDocument> GetCountByAppName(DateTime startDateTime)
+        {
+            return mongoData.GetCountByAppName(startDateTime);
+        }
     }
 }
