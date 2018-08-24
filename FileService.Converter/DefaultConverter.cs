@@ -12,24 +12,23 @@ namespace FileService.Converter
     public class DefaultConverter : Converter
     {
         FilesWrap filesWrap = new FilesWrap();
-        public override void Convert(FileItem taskItem)
+        public override bool Convert(FileItem taskItem)
         {
             ObjectId fileWrapId = taskItem.Message["FileId"].AsObjectId;
             //BsonDocument fileWrap = filesWrap.FindOne(fileWrapId);
             string fileName = taskItem.Message["FileName"].AsString;
             int processCount = taskItem.Message["ProcessCount"].AsInt32;
             string fullPath = taskItem.Message["TempFolder"].AsString + fileName;
-            if (processCount == 0)
-            {
-                if (File.Exists(fullPath))
-                {
-                    if(SaveFileFromSharedFolder(fileWrapId, fullPath))
-                    {
-                        File.Delete(fullPath);
-                    }
-                }
 
+            if (processCount == 0 && File.Exists(fullPath))
+            {
+                if (SaveFileFromSharedFolder(fileWrapId, fullPath))
+                {
+                    File.Delete(fullPath);
+                    return true;
+                }
             }
+            return false;
         }
     }
 }

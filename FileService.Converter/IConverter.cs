@@ -12,16 +12,16 @@ namespace FileService.Converter
 {
     interface IConverter
     {
-        void Convert(FileItem fileItem);
+        bool Convert(FileItem fileItem);
     }
     public class Converter : IConverter
     {
         Files files = new Files();
         FilesWrap filesWrap = new FilesWrap();
         MongoFile mongoFile = new MongoFile();
-        public virtual void Convert(FileItem fileItem)
+        public virtual bool Convert(FileItem fileItem)
         {
-
+            return false;
         }
         public bool SaveFileFromSharedFolder(ObjectId filesWrapId, string fullPath)
         {
