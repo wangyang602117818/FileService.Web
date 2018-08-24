@@ -84,7 +84,7 @@ class AddVideo extends React.Component {
             buttonValue: culture.upload,
             buttonDisabled: false,
             videos: [],
-            accesses: [],
+            accesses: []
         }
     }
     showConvert(e) {
@@ -166,7 +166,7 @@ class AddVideo extends React.Component {
                     <tbody>
                         <tr>
                             <td>{culture.video}:</td>
-                            <td colSpan="2"><input type="file" multiple name="video" accept="video/mp4,video/x-ms-wmv,video/avi" onChange={this.fileChanged.bind(this)} /></td>
+                            <td colSpan="2"><input type="file" multiple name="video" accept="video/*" onChange={this.fileChanged.bind(this)} /></td>
                         </tr>
                         <tr style={{ height: "40px" }}>
                             <td width="15%">{culture.convert}:</td>

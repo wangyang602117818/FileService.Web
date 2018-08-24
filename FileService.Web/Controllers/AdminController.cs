@@ -1,18 +1,15 @@
-﻿using FileService.Web.Models;
-using FileService.Business;
+﻿using FileService.Business;
 using FileService.Model;
 using FileService.Util;
+using FileService.Web.Models;
 using MongoDB.Bson;
-using MongoDB.Bson.IO;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Security.Principal;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Security;
-using FileService.Web.Filters;
 
 namespace FileService.Web.Controllers
 {
@@ -288,6 +285,11 @@ namespace FileService.Web.Controllers
         public ActionResult GetHexCode(int id)
         {
             return new ResponseModel<string>(ErrorCode.success, new Random().RandomCodeHex(id));
+        }
+        public ActionResult GetExtensions(string type)
+        {
+            IEnumerable<string> result = config.FindByType(type).Select(s=>s["Extension"].ToString());
+            return new ResponseModel<IEnumerable<string>>(ErrorCode.success, result);
         }
         public ActionResult GetLogs(int pageIndex = 1, int pageSize = 10, string filter = "")
         {

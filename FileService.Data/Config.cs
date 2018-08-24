@@ -26,5 +26,10 @@ namespace FileService.Data
             var filter = FilterBuilder.Eq("Extension", extension);
             return MongoCollection.DeleteOne(filter).IsAcknowledged;
         }
+        public IEnumerable<BsonDocument> FindByType(string type)
+        {
+            var filter = FilterBuilder.Eq("Type", type);
+            return MongoCollection.Find(filter).ToEnumerable();
+        }
     }
 }

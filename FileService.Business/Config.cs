@@ -49,5 +49,9 @@ namespace FileService.Business
         {
             return mongoData.DeleteConfig(extension);
         }
+        public IEnumerable<BsonDocument> FindByType(string type)
+        {
+            return mongoData.FindByType(type);
+        }
     }
 }

@@ -169,6 +169,7 @@ var urls = {
         getConfigUrl: appDomain + "admin/getconfig",
         updateUrl: appDomain + "admin/updateconfig",
         deleteUrl: appDomain + "admin/deleteconfig",
+        getExtensionsUrl: appDomain + "admin/getextensions"
     },
     application: {
         getUrl: appDomain + "admin/getapplications",
@@ -302,6 +303,12 @@ function getQueryString(name) {
 }
 function trim(str) {
     return str.replace(/(^\s*)|(\s*$)/g, "");
+}
+function trimEnd(str) {
+    return str.replace(/.{1}$/, "");
+}
+function trimStart(str) {
+    return str.replace(/^.{1}/, "");
 }
 function getIconNameByFileName(filename) {
     switch (filename.getFileExtension().toLowerCase()) {

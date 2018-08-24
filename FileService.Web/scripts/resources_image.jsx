@@ -436,7 +436,7 @@ class AddImage extends React.Component {
                     <tbody>
                         <tr>
                             <td>{culture.image}:</td>
-                            <td colSpan="2"><input type="file" multiple name="image" accept="image/gif,image/jpeg,image/png,image/bmp" onChange={this.fileChanged.bind(this)} /></td>
+                            <td colSpan="2"><input type="file" multiple name="image" accept="image/*" onChange={this.fileChanged.bind(this)} /></td>
                         </tr>
                         <tr style={{ height: "35px" }}>
                             <td width="15%">{culture.convert}:</td>
