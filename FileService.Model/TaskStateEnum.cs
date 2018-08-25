@@ -13,6 +13,7 @@ namespace FileService.Model
         completed = 2,
         deleted = 3,
         updated = 4,
-        error = -1
+        fault = -1,
+        error = -100
     }
 }

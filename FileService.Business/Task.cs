@@ -56,6 +56,10 @@ namespace FileService.Business
         {
             return mongoData.Error(id);
         }
+        public bool Fault(ObjectId id)
+        {
+            return mongoData.Fault(id);
+        }
         public bool DeleteByOutputId(ObjectId id)
         {
             return mongoData.DeleteByOutputId(id);

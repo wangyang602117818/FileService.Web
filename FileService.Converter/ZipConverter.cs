@@ -23,7 +23,7 @@ namespace FileService.Converter
         Business.Task task = new Business.Task();
         MongoFile mongoFile = new MongoFile();
         MongoFileConvert mongoFileConvert = new MongoFileConvert();
-        public override void Convert(FileItem taskItem)
+        public override bool Convert(FileItem taskItem)
         {
             ObjectId fileWrapId = taskItem.Message["FileId"].AsObjectId;
             BsonDocument fileWrap = filesWrap.FindOne(fileWrapId);
@@ -62,8 +62,12 @@ namespace FileService.Converter
             }
             BsonArray subFiles = ConvertZip(fileWrapId, fullPath);
             ////更新 fs.files表
-            filesWrap.ReplaceSubFiles(fileWrapId, subFiles);
-            if (File.Exists(fullPath)) File.Delete(fullPath);
+            if(filesWrap.ReplaceSubFiles(fileWrapId, subFiles))
+            {
+                if (File.Exists(fullPath)) File.Delete(fullPath);
+                return true;
+            }
+            return false;
         }
         public BsonArray ConvertZip(ObjectId fileWrapId, string fullSourceFileName)
         {

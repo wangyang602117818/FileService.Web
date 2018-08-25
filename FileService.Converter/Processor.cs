@@ -72,37 +72,45 @@ namespace FileService.Converter
             try
             {
                 task.UpdateState(messageId, TaskStateEnum.processing, 0);
+                bool result = false;
                 switch (item.Message["Type"].AsString)
                 {
                     case "image":
-                        new ImageConverter().Convert(item);
+                        result = new ImageConverter().Convert(item);
                         break;
                     case "video":
-                        new VideoConverter().Convert(item);
+                        result = new VideoConverter().Convert(item);
                         break;
                     case "attachment":
                         string fileExt = Path.GetExtension(item.Message["FileName"].AsString).ToLower();
                         if (fileExt == ".zip")
                         {
-                            new ZipConverter().Convert(item);
+                            result = new ZipConverter().Convert(item);
                         }
                         else if (fileExt == ".rar")
                         {
-                            new RarConverter().Convert(item);
+                            result = new RarConverter().Convert(item);
                         }
                         else if (config.GetTypeByExtension(fileExt) == "office")
                         {
-                            new OfficeConverter().Convert(item);
+                            result = new OfficeConverter().Convert(item);
                         }
                         else
                         {
-                            new DefaultConverter().Convert(item);
+                            result = new DefaultConverter().Convert(item);
                         }
                         break;
                 }
-                new Queue().MessageProcessed(item.QueueId);
-                task.Compeleted(messageId);
-                converter.AddCount(item.Message["HandlerId"].AsString, -1);
+                if (result)
+                {
+                    new Queue().MessageProcessed(item.QueueId);
+                    task.Compeleted(messageId);
+                    converter.AddCount(item.Message["HandlerId"].AsString, -1);
+                }
+                else
+                {
+                    task.Fault(messageId);
+                }
             }
             catch (Exception ex)
             {

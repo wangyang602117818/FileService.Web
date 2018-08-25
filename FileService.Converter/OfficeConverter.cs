@@ -20,7 +20,7 @@ namespace FileService.Converter
         MongoFile mongoFile = new MongoFile();
         MongoFileConvert mongoFileConvert = new MongoFileConvert();
         static object o = new object();
-        public override void Convert(FileItem taskItem)
+        public override bool Convert(FileItem taskItem)
         {
             ObjectId fileWrapId = taskItem.Message["FileId"].AsObjectId;
             BsonDocument fileWrap = filesWrap.FindOne(fileWrapId);
@@ -63,6 +63,7 @@ namespace FileService.Converter
             task.UpdateOutPutId(taskItem.Message["_id"].AsObjectId, outputId);
             if (File.Exists(destinationFullPath)) File.Delete(destinationFullPath);
             if (File.Exists(fullPath)) File.Delete(fullPath);
+            return true;
         }
         public ObjectId ConvertOffice(string sourcePath, string destinationPath, ObjectId sourceFileId)
         {

@@ -19,7 +19,7 @@ namespace FileService.Converter
         FilesWrap filesWrap = new FilesWrap();
         Thumbnail thumbnail = new Thumbnail();
         static object o = new object();
-        public override void Convert(FileItem taskItem)
+        public override bool Convert(FileItem taskItem)
         {
             BsonDocument outputDocument = taskItem.Message["Output"].AsBsonDocument;
             string fileName = taskItem.Message["FileName"].AsString;
@@ -70,6 +70,7 @@ namespace FileService.Converter
             }
             fileStream.Close();
             fileStream.Dispose();
+            return true;
         }
         public Stream GenerateThumbnail(string fileName, Stream stream, ImageModelEnum model, ImageFormat outputFormat, int x, int y, int width, int height)
         {

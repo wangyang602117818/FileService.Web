@@ -25,7 +25,7 @@ namespace FileService.Converter
         M3u8 m3u8 = new M3u8();
         Business.Task task = new Business.Task();
         static object o = new object();
-        public override void Convert(FileItem taskItem)
+        public override bool Convert(FileItem taskItem)
         {
             BsonDocument outputDocument = taskItem.Message["Output"].AsBsonDocument;
             string fileName = taskItem.Message["FileName"].AsString;
@@ -87,6 +87,7 @@ namespace FileService.Converter
                         break;
                 }
             }
+            return true;
         }
         public void ConvertVideoCp(ObjectId id, string fileWrapId, string fullPath)
         {
