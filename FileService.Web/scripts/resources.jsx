@@ -380,6 +380,8 @@ class Resources extends React.Component {
         http.get(urls.resources.deleteThumbnailUrl + "?fileId=" + fileId + "&thumbnailId=" + thumbId, function (data) {
             if (data.code == 0) {
                 this.getThumbnail(fileId);
+            } else {
+                alert(data.message);
             }
         }.bind(this));
     }
@@ -387,6 +389,8 @@ class Resources extends React.Component {
         http.get(urls.resources.deleteM3u8Url + "?fileId=" + fileId + "&m3u8Id=" + m3u8Id, function (data) {
             if (data.code == 0) {
                 this.getM3u8(fileId);
+            } else {
+                alert(data.message);
             }
         }.bind(this));
     }

@@ -670,6 +670,7 @@ namespace FileService.Web.Controllers
             }
             return new ResponseModel<string>(ErrorCode.server_exception, "");
         }
+        [Authorize(Roles = "admin")]
         public ActionResult DeleteThumbnail(string fileId, string thumbnailId)
         {
             ObjectId thumbId = ObjectId.Parse(thumbnailId);
@@ -679,6 +680,7 @@ namespace FileService.Web.Controllers
             Log(fileId, "DeleteThumbnail");
             return new ResponseModel<string>(ErrorCode.success, "");
         }
+        [Authorize(Roles = "admin")]
         public ActionResult DeleteM3u8(string fileId, string m3u8Id)
         {
             ObjectId fId = ObjectId.Parse(fileId);

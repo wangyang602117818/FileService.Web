@@ -9,4 +9,34 @@
 
 鼠标移动到预览展示缩略图
 
+updateAccess:only owner
+shared:only owner
+admin:
+	overview(view)
+	handlers(view,emptyTaskTotal)
+	tasks(preview,updateTask,redo)
+	resources(view,preview,addImage,addVideo,addAttachment,addTask,download,delete,deleteSubFile)
+	log(view)
+	config
+		extension(view,addExtension,updateExtension,deleteExtension)
+		application(view,addApplication,updateApplication,deleteApplication)
+	users
+		user(view,addUser,updateUser,deleteUser)
+		company(view,addCompany,deleteCompany,changeCompanyOrder,addSubDepartment,updateSubDepartment,deleteSubDepartment)
+management:
+	overview(view)
+	handlers(view)
+	tasks(preview,updateTask,redo)
+	resources(view,preview,addImage,addVideo,addAttachment,addTask,download)
+	log(view)
+	config
+		extension(view,addExtension,updateExtension,deleteExtension)
+		application(view,addApplication,updateApplication,deleteApplication)
+none:
+	overview(view)
+	handlers(view)
+	tasks(preview,updateTask)
+	resources(view,preview,addImage,addVideo,addAttachment,addTask,download)
+	log(view)
+
 
