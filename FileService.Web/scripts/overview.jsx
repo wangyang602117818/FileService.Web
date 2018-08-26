@@ -62,14 +62,12 @@
                 });
             }
         });
-
     }
     render() {
         return (
             <div className={this.props.show ? "overview_con show" : "overview_con hidden"}>
                 <TitleTxt title={culture.count_by_date} />
-                <div className="echart_main" id="echart_main">
-                </div>
+                <div className="echart_main" id="echart_main"></div>
                 <div className="echart_split"></div>
                 <div className="echart_option">
                     <div className="echart_option_con">

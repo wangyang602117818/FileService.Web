@@ -26,6 +26,7 @@
                     companyData.push({ code: data.result[i].DepartmentCode, name: data.result[i].DepartmentName });
                 }
             }
+            this.refs.userDropDownListWrap.emptyData();
             if (companyData.length > 0) {
                 this.setState({
                     companyCode: companyData[0].code,
@@ -37,7 +38,6 @@
                 });
             } else {
                 this.setState({ companyCode: "", companyName: "", companyData: [], departments: [] });
-                this.refs.userDropDownListWrap.emptyData();
             }
             this.setState({ codeArray: [], nameArray: [], realCodes: [], department_authority: "0", userArray: [], btn_msg: culture.save, btn_disabled: false });
         }.bind(this));
