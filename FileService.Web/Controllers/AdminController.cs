@@ -1,6 +1,7 @@
 ﻿using FileService.Business;
 using FileService.Model;
 using FileService.Util;
+using FileService.Web.Filters;
 using FileService.Web.Models;
 using MongoDB.Bson;
 using System;
@@ -418,13 +419,20 @@ namespace FileService.Web.Controllers
         public ActionResult DeleteCacheFile(string id)
         {
             BsonDocument document = task.FindOne(ObjectId.Parse(id));
-            var temp = document["TempFolder"].ToString().Substring(document["TempFolder"].ToString().TrimEnd('\\').LastIndexOf(@"\") + 1);
-            string fullPath = AppDomain.CurrentDomain.BaseDirectory + AppSettings.tempFileDir + temp + document["FileName"].ToString();
-            if (System.IO.File.Exists(fullPath))
+            if (document["State"].AsInt32 == 2)
             {
-                System.IO.File.Delete(fullPath);
+                var temp = document["TempFolder"].ToString().Substring(document["TempFolder"].ToString().TrimEnd('\\').LastIndexOf(@"\") + 1);
+                string fullPath = AppDomain.CurrentDomain.BaseDirectory + AppSettings.tempFileDir + temp + document["FileName"].ToString();
+                if (System.IO.File.Exists(fullPath))
+                {
+                    System.IO.File.Delete(fullPath);
+                }
+                return new ResponseModel<string>(ErrorCode.success, "");
             }
-            return new ResponseModel<string>(ErrorCode.success, "");
+            else
+            {
+                return new ResponseModel<string>(ErrorCode.task_not_complete, "");
+            }
         }
         public ActionResult GetAllHandlers()
         {
@@ -492,6 +500,7 @@ namespace FileService.Web.Controllers
             }
             return new ResponseModel<string>(ErrorCode.server_exception, "");
         }
+        [AppAuthorize]
         [HttpPost]
         public ActionResult AddVideoTask(AddVideoTask addVideoTask)
         {
@@ -517,6 +526,7 @@ namespace FileService.Web.Controllers
             filesWrap.AddSubVideo(fileId, subFile);
             return new ResponseModel<bool>(ErrorCode.success, true);
         }
+        [AppAuthorize]
         [HttpPost]
         public ActionResult AddThumbnailTask(AddImageTask addImageTask)
         {

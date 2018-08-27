@@ -220,7 +220,7 @@ class Tasks extends React.Component {
         if (window.confirm(" " + culture.empty_cache_file + " ?")) {
             if (this.state.id) {
                 http.get(urls.tasks.deleteCacheFileUrl + "/" + this.state.id, function (data) {
-                    if (data.code == 0) { this.getData(); that.setState({ taskShow: false }); }
+                    if (data.code == 0) { this.getData(); this.setState({ taskShow: false }); } else { alert(data.message); }
                 }.bind(this));
             }
         }

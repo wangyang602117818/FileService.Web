@@ -2,19 +2,9 @@
 using FileService.Model;
 using FileService.Util;
 using MongoDB.Bson;
-using MongoDB.Bson.Serialization;
-using MongoDB.Driver.GridFS;
 using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Drawing.Imaging;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace FileService.Converter
 {
@@ -72,14 +62,15 @@ namespace FileService.Converter
             try
             {
                 task.UpdateState(messageId, TaskStateEnum.processing, 0);
+                bool hasOutput = item.Message["Output"].AsBsonDocument.Contains("_id");
                 bool result = false;
                 switch (item.Message["Type"].AsString)
                 {
                     case "image":
-                        result = new ImageConverter().Convert(item);
+                        result = hasOutput ? new ImageConverter().Convert(item) : new DefaultConverter().Convert(item);
                         break;
                     case "video":
-                        result = new VideoConverter().Convert(item);
+                        result = hasOutput ? new VideoConverter().Convert(item) : new DefaultConverter().Convert(item);
                         break;
                     case "attachment":
                         string fileExt = Path.GetExtension(item.Message["FileName"].AsString).ToLower();
@@ -99,6 +90,9 @@ namespace FileService.Converter
                         {
                             result = new DefaultConverter().Convert(item);
                         }
+                        break;
+                    default:
+                        result = new DefaultConverter().Convert(item);
                         break;
                 }
                 if (result)

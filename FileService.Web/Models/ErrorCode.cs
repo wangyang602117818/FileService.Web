@@ -1,16 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-
-namespace FileService.Web.Models
+﻿namespace FileService.Web.Models
 {
     public enum ErrorCode
     {
-
         /// <summary>
         /// 成功
         /// </summary>
+        
         success = 0,
         /// <summary>
         /// 重定向
@@ -36,6 +31,10 @@ namespace FileService.Web.Models
         login_fault = 203,
         task_not_completed = 204,
         invalid_password = 205,
+        /// <summary>
+        /// 任务未完成
+        /// </summary>
+        task_not_complete = 300,
         /// <summary>
         /// 未知错误
         /// </summary>
