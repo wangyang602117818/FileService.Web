@@ -143,7 +143,6 @@
 }
 
     .table_modify td {
-
         border: 1px solid #e4e4e4;
         padding: 4px;
     }
@@ -185,6 +184,52 @@
             color: #888;
         }
 
+.role_help {
+    margin-left: 6px;
+}
+
+    .role_help:hover {
+        cursor: pointer;
+        color:#f60;
+    }
+
+.role_tip {
+    position: absolute;
+    background-color: #eee;
+    border: 1px solid #ccc;
+    color: #000;
+    border-radius: 4px;
+    width: 40%;
+    left: 30%;
+    margin-top:-150px;
+    height: 250px;
+    min-width: 500px;
+    padding: 5px;
+}
+
+.role_tip_title {
+    text-align: right;
+    font-size: 18px;
+}
+
+.role_tip_txt {
+    padding: 5px;
+    margin-top: 10px;
+}
+
+    .role_tip_txt span {
+        display: block;
+        margin-top: 3px;
+    }
+
+.role_tip_txt_title {
+    font-weight: bold;
+}
+
+.role_tip_txt_text {
+    padding-left: 10px;
+}
+
 .sub_button {
     padding: 4px 12px;
     border: 0;
@@ -199,7 +244,7 @@
 
     .sub_button:disabled {
         background: #E8E7E4;
-        cursor:default;
+        cursor: default;
     }
 
 .config_toolbar {

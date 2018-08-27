@@ -59,7 +59,6 @@ namespace FileService.Data
                  })
                  .Sort(new BsonDocument("_id", 1)).ToEnumerable();
         }
-
         public IEnumerable<BsonDocument> GetFilesByAppName()
         {
             return MongoCollection.Aggregate()

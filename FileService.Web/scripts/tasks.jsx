@@ -73,6 +73,7 @@ class TaskItem extends React.Component {
         }
     }
     render() {
+        var icon = this.props.task.FileExists ? "<i style='cursor:default;color:#484848' class=\"iconfont icon-c\"></i>" : "";
         return (
             <tr>
                 <td className="link"
@@ -89,7 +90,7 @@ class TaskItem extends React.Component {
                     <i className={"iconfont " + getIconNameByFileName(this.props.task.FileName.removeHTML())}></i>&nbsp;
                     <span dangerouslySetInnerHTML={{ __html: this.props.task.FileName.getFileName(10) }}></span>
                 </td>
-                <td dangerouslySetInnerHTML={{ __html: this.props.task.HandlerId }}></td>
+                <td dangerouslySetInnerHTML={{ __html: this.props.task.HandlerId + icon }}></td>
                 <td title={this.props.task.Output._id ? this.props.task.Output.Flag : ""} >
                     <span className={"state " + this.props.task.StateDesc.removeHTML()}></span>
                     {'\u00A0'}
@@ -101,7 +102,7 @@ class TaskItem extends React.Component {
                 <td>{parseBsonTime(this.props.task.CompletedTime)}</td>
                 <td>
                     <i className="iconfont icon-view" onClick={this.preView.bind(this)}
-                        id={"id=" + this.props.task.FileId.$oid+ "&filename=" + this.props.task.FileName.removeHTML() + "#" + (this.props.task.Output._id ? this.props.task.Output._id.$oid : "")}></i>
+                        id={"id=" + this.props.task.FileId.$oid + "&filename=" + this.props.task.FileName.removeHTML() + "#" + (this.props.task.Output._id ? this.props.task.Output._id.$oid : "")}></i>
                 </td>
                 <td>
                     {this.props.task.State == 2 || this.props.task.State == 4 || this.props.task.State == -1 ?
@@ -113,6 +114,34 @@ class TaskItem extends React.Component {
         )
     }
 }
+class CacheFile extends React.Component {
+    constructor(props) {
+        super(props);
+    }
+    render() {
+        return (
+            <div className={this.props.show ? "show" : "hidden"}>
+                <table className="table" style={{ width: "50%" }}>
+                    <tbody>
+                        <tr>
+                            <td width="20%">{culture.cache_file_location}:</td>
+                            <td width="80%">{this.props.cacheFullPath}</td>
+                        </tr>
+                        <tr>
+                            <td>{culture.cache_file_status}:</td>
+                            <td>{this.props.taskFileExists ? culture.exists : culture.deleted}</td>
+                        </tr>
+                        <tr>
+                            <td colSpan="2">
+                                <input type="button" className="button" value={culture.empty_cache_file} disabled={!this.props.taskFileExists} onClick={this.props.deleteCacheFile} />
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        )
+    }
+}
 class Tasks extends React.Component {
     constructor(props) {
         super(props);
@@ -120,26 +149,23 @@ class Tasks extends React.Component {
             pageShow: localStorage.task ? eval(localStorage.task) : true,
             taskShow: false,
             taskToggle: false,
+            cacheFileToggle: false,
             updateFileName: "",
             pageIndex: 1,
             pageSize: localStorage.task_pageSize || 10,
             pageCount: 1,
             filter: "",
-            data: { code: 0, message: "", count: 0, result: [] }
+            data: { code: 0, message: "", count: 0, result: [] },
+            id: null,
+            task: null,
+            taskFileExists: false,
+            cacheFullPath: ""
         };
         this.url = urls.tasks.getUrl;
         this.storagePageShowKey = "task";
         this.storagePageSizeKey = "task_pageSize";
     }
-    onTaskShow() {
-        if (this.state.taskToggle) {
-            this.setState({ taskToggle: false });
-        } else {
-            this.setState({ taskToggle: true });
-        }
-    }
     onIdClick(e) {
-        var that = this;
         var id = e.target.id || e.target.parentElement.id;
         var name = "";
         if (e.target.nodeName.toLowerCase() == "span") {
@@ -147,9 +173,24 @@ class Tasks extends React.Component {
         } else {
             name = e.target.getAttribute("data-name");
         }
-        this.setState({ taskShow: true, taskToggle: true, updateFileName: name }, function () {
-            that.refs.update_task.getTaskById(id);
-        });
+        http.get(urls.tasks.getByIdUrl + "/" + id, function (data) {
+            if (data.code == 0) {
+                var fullPath = "$" + data.result.TempFolder.substr(trimEnd(data.result.TempFolder).lastIndexOf('\\')) + data.result.FileName;
+                this.setState({
+                    id: id,
+                    task: data.result,
+                    taskShow: true,
+                    taskToggle: true,
+                    cacheFileToggle: true,
+                    updateFileName: name,
+                    taskFileExists: data.result.FileExists,
+                    cacheFullPath: fullPath
+                }, function () {
+                    this.refs.update_task.getTaskById(data.result);
+                });
+            }
+        }.bind(this));
+
     }
     updateHandler(obj) {
         var that = this;
@@ -175,6 +216,15 @@ class Tasks extends React.Component {
             if (data.code == 0) { that.getData(); that.setState({ taskShow: false }) } else { alert(data.message); }
         });
     }
+    deleteCacheFile() {
+        if (window.confirm(" " + culture.empty_cache_file + " ?")) {
+            if (this.state.id) {
+                http.get(urls.tasks.deleteCacheFileUrl + "/" + this.state.id, function (data) {
+                    if (data.code == 0) { this.getData(); that.setState({ taskShow: false }); }
+                }.bind(this));
+            }
+        }
+    }
     render() {
         return (
             <div className="main">
@@ -197,7 +247,7 @@ class Tasks extends React.Component {
                 {this.state.taskShow ?
                     <TitleArrow title={culture.update + culture.task + "(" + this.state.updateFileName + ")"}
                         show={this.state.taskToggle}
-                        onShowChange={this.onTaskShow.bind(this)} /> : null}
+                        onShowChange={(e) => { this.setState({ taskToggle: !this.state.taskToggle }) }} /> : null}
                 {this.state.taskShow ?
                     <TasksUpdate show={this.state.taskToggle} ref="update_task"
                         updateHandler={this.updateHandler.bind(this)}
@@ -205,6 +255,17 @@ class Tasks extends React.Component {
                         updateVideo={this.updateVideo.bind(this)}
                         updateAttachment={this.updateAttachment.bind(this)}
                     /> : null}
+                {this.state.taskShow ?
+                    <TitleArrow title={culture.cache_file + "(" + this.state.updateFileName + ")"}
+                        show={this.state.cacheFileToggle}
+                        onShowChange={(e) => { this.setState({ cacheFileToggle: !this.state.cacheFileToggle }) }} /> : null}
+                {this.state.taskShow ?
+                    <CacheFile show={this.state.cacheFileToggle}
+                        taskFileExists={this.state.taskFileExists}
+                        cacheFullPath={this.state.cacheFullPath}
+                        deleteCacheFile={this.deleteCacheFile.bind(this)}
+                    /> : null
+                }
             </div>
         );
     }

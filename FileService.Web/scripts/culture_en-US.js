@@ -176,5 +176,12 @@ var culture = {
     not_support_preview: "Not Supported Preview",
     date: "Date",
     used: "Used",
-    disabled: "Disabled"
+    disabled: "Disabled",
+
+    cache_file: "CacheFile",
+    cache_file_location: "CacheFileLocation",
+    cache_file_status: "CacheFileStatus",
+    deleted: "Deleted",
+    exists: "Exists",
+    empty_cache_file:"EmptyCacheFile"
 }

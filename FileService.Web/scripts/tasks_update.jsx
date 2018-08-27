@@ -12,7 +12,8 @@
             x: 0,
             y: 0,
             width: 0,
-            height: 0
+            height: 0,
+            button_disabled: false
         }
     }
     changeState(obj) {
@@ -22,29 +23,63 @@
         this.setState({ handler: e.target.value });
     }
     formatChange(e) {
-        this.setState({ format: e.target.value });
+        this.setState({ format: e.target.value }, function () { this.checkAvailable(); });
     }
     flagChange(e) {
-        this.setState({ flag: e.target.value });
+        this.setState({ flag: e.target.value }, function () { this.checkAvailable(); });
     }
     modelChange(e) {
-        this.setState({ model: e.target.value });
+        this.setState({ model: e.target.value }, function () { this.checkAvailable(); });
     }
     xChange(e) {
-        this.setState({ x: e.target.value });
+        this.setState({ x: e.target.value }, function () { this.checkAvailable(); });
     }
     yChange(e) {
-        this.setState({ y: e.target.value });
+        this.setState({ y: e.target.value }, function () { this.checkAvailable(); });
     }
     widthChange(e) {
-        this.setState({ width: e.target.value });
+        this.setState({ width: e.target.value }, function () { this.checkAvailable(); });
     }
     heightChange(e) {
-        this.setState({ height: e.target.value });
+        this.setState({ height: e.target.value }, function () { this.checkAvailable(); });
     }
     updateImage() {
         if (this.state.flag)
             this.props.updateImage(this.state);
+    }
+    checkAvailable() {
+        if (this.state.flag.length > 0) {
+            if (this.state.model == "0") {
+                if (this.state.width > 0 && this.state.height > 0) {
+                    this.setState({ button_disabled: false });
+                } else {
+                    this.setState({ button_disabled: true });
+                }
+            }
+            if (this.state.model == "1") {
+                if (this.state.width > 0 && this.state.height > 0) {
+                    this.setState({ button_disabled: false });
+                } else {
+                    this.setState({ button_disabled: true });
+                }
+            }
+            if (this.state.model == "2") {
+                if (this.state.width > 0) {
+                    this.setState({ button_disabled: false });
+                } else {
+                    this.setState({ button_disabled: true });
+                }
+            }
+            if (this.state.model == "3") {
+                if (this.state.height > 0) {
+                    this.setState({ button_disabled: false });
+                } else {
+                    this.setState({ button_disabled: true });
+                }
+            }
+        } else {
+            this.setState({ button_disabled: true });
+        }
     }
     render() {
         return (
@@ -118,7 +153,7 @@
                         </tr>
                         <tr>
                             <td colSpan="4">
-                                <input type="button" name="btnImg" className="button" value={culture.update} onClick={this.updateImage.bind(this)} />
+                                <input type="button" name="btnImg" className="button" value={culture.update} onClick={this.updateImage.bind(this)} disabled={this.state.button_disabled} />
                             </td>
                         </tr>
                     </tbody>
@@ -137,7 +172,8 @@ class VideoUpdate extends React.Component {
             handler: "",
             format: 0,
             quality: 0,
-            flag: ""
+            flag: "",
+            button_disabled: false
         }
     }
     changeState(obj) {
@@ -148,6 +184,11 @@ class VideoUpdate extends React.Component {
     }
     flagChange(e) {
         this.setState({ flag: e.target.value });
+        if (e.target.value.length > 0) {
+            this.setState({ button_disabled: false });
+        } else {
+            this.setState({ button_disabled: true });
+        }
     }
     handlerChange(e) {
         this.setState({ handler: e.target.value });
@@ -195,7 +236,7 @@ class VideoUpdate extends React.Component {
                             </td>
                         </tr>
                         <tr>
-                            <td colSpan="4"><input type="button" name="Update" className="button" value={culture.update} onClick={this.updateVideo.bind(this)} /></td>
+                            <td colSpan="4"><input type="button" name="Update" className="button" value={culture.update} onClick={this.updateVideo.bind(this)} disabled={this.state.button_disabled} /></td>
                         </tr>
                     </tbody>
                 </table>
@@ -231,6 +272,7 @@ class AttachmentUpdate extends React.Component {
         if (this.state.flag)
             this.props.updateAttachment(this.state);
     }
+
     render() {
         return (
             <div className={this.props.show ? "show" : "hidden"}>
@@ -323,75 +365,71 @@ class TasksUpdate extends React.Component {
             if (data.code == 0) {
                 for (var i = 0; i < data.result.length; i++) {
                     result.push(data.result[i].HandlerId);
-                } 
+                }
                 that.setState({ handlers: result });
             }
         });
     }
-    getTaskById(id) {
+    getTaskById(task) {
         var that = this;
-        http.get(urls.tasks.getByIdUrl + "/" + id, function (data) {
-            if (data.code == 0) {
-                if (data.result.Output._id) {
-                    if (data.result.Type == "image") {
-                        that.setState({
-                            component: ImageUpdate
-                        }, function () {
-                            that.refs.updatemodule.changeState({
-                                id: id,
-                                fileId: data.result.FileId.$oid,
-                                thumbnailId: data.result.Output._id.$oid,
-                                handler: data.result.HandlerId,
-                                format: data.result.Output.Format,
-                                flag: data.result.Output.Flag,
-                                model: data.result.Output.Model,
-                                x: data.result.Output.X,
-                                y: data.result.Output.Y,
-                                width: data.result.Output.Width,
-                                height: data.result.Output.Height
-                            });
-                        });
-                    }
-                    if (data.result.Type == "video") {
-                        that.setState({
-                            component: VideoUpdate
-                        }, function () {
-                            that.refs.updatemodule.changeState({
-                                id: id,
-                                fileId: data.result.FileId.$oid,
-                                m3u8Id: data.result.Output._id.$oid,
-                                handler: data.result.HandlerId,
-                                format: data.result.Output.Format,
-                                flag: data.result.Output.Flag,
-                                quality: data.result.Output.Quality
-                            });
-                        });
-                    }
-                    if (data.result.Type == "attachment") {
-                        that.setState({
-                            component: AttachmentUpdate
-                        }, function () {
-                            that.refs.updatemodule.changeState({
-                                id: id,
-                                fileId: data.result.FileId.$oid,
-                                subFileId: data.result.Output._id.$oid,
-                                handler: data.result.HandlerId,
-                                format: data.result.Output.Format,
-                                flag: data.result.Output.Flag
-                            });
-                        });
-                    }
-                } else {
-                    that.setState({ component: HandlerUpdate }, function () {
-                        that.refs.updatemodule.changeState({
-                            id: id,
-                            fileId: data.result.FileId.$oid,
-                            handler: data.result.HandlerId,
-                        });
+        if (task.Output._id) {
+            if (task.Type == "image") {
+                that.setState({
+                    component: ImageUpdate
+                }, function () {
+                    that.refs.updatemodule.changeState({
+                        id: task._id.$oid,
+                        fileId: task.FileId.$oid,
+                        thumbnailId: task.Output._id.$oid,
+                        handler: task.HandlerId,
+                        format: task.Output.Format,
+                        flag: task.Output.Flag,
+                        model: task.Output.Model,
+                        x: task.Output.X,
+                        y: task.Output.Y,
+                        width: task.Output.Width,
+                        height: task.Output.Height
                     });
-                }
+                });
             }
-        });
+            if (task.Type == "video") {
+                that.setState({
+                    component: VideoUpdate
+                }, function () {
+                    that.refs.updatemodule.changeState({
+                        id: task._id.$oid,
+                        fileId: task.FileId.$oid,
+                        m3u8Id: task.Output._id.$oid,
+                        handler: task.HandlerId,
+                        format: task.Output.Format,
+                        flag: task.Output.Flag,
+                        quality: task.Output.Quality
+                    });
+                });
+            }
+            if (task.Type == "attachment") {
+                that.setState({
+                    component: AttachmentUpdate
+                }, function () {
+                    that.refs.updatemodule.changeState({
+                        id: task._id.$oid,
+                        fileId: task.FileId.$oid,
+                        subFileId: task.Output._id.$oid,
+                        handler: task.HandlerId,
+                        format: task.Output.Format,
+                        flag: task.Output.Flag
+                    });
+                });
+            }
+        } else {
+            that.setState({ component: HandlerUpdate }, function () {
+                that.refs.updatemodule.changeState({
+                    id: task._id.$oid,
+                    fileId: task.FileId.$oid,
+                    handler: task.HandlerId,
+                });
+            });
+        }
     }
     render() {
         return this.state.component ? <this.state.component show={this.props.show}

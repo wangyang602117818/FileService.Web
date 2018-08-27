@@ -17,8 +17,13 @@
 
             nameArray: [],     //显示值
             role: "",
-            message: ""
+            message: "",
+
+            roleTipShow: false
         };
+    }
+    hiddenRoleTip(e) {
+        this.setState({ roleTipShow: false });
     }
     componentDidMount() {
         http.get(urls.department.getAllDepartment, function (data) {
@@ -84,7 +89,7 @@
             companyCode: companyCode,
             companyName: companyName,
             codeArray: [],
-            nameArray:[],
+            nameArray: [],
             realCodeArray: []
         }, function () {
             this.getDepartment(companyCode);
@@ -191,7 +196,9 @@
                         <tr>
                             <td>{culture.role}:</td>
                             <td>
-                                <input type="text" name="role" value={this.state.role} onChange={this.roleChanged.bind(this)} /> (?)<br />
+                                <input type="text" name="role" value={this.state.role} onChange={this.roleChanged.bind(this)} />
+                                <span className="role_help" onClick={(e) => this.setState({ roleTipShow: true })}>(?)</span>
+                                <br />
                                 <span className="tag_txt" onClick={this.tagClick.bind(this)}>admin</span>
                                 <span className="tag_txt" onClick={this.tagClick.bind(this)}>management</span>
                                 <span className="tag_txt" onClick={this.tagClick.bind(this)}>none</span>
@@ -205,7 +212,91 @@
                         </tr>
                     </tbody>
                 </table>
+                <RoleTip show={this.state.roleTipShow} hiddenRoleTip={this.hiddenRoleTip.bind(this)} />
             </div>
         );
+    }
+}
+
+class RoleTip extends React.Component {
+    constructor(props) {
+        super(props);
+    }
+    render() {
+        return (
+            <div className={this.props.show ? "role_tip show" : "role_tip hidden"}>
+                <div className="role_tip_title">
+                    <i className="iconfont icon-del" onClick={this.props.hiddenRoleTip.bind(this)}></i>
+                </div>
+                {current_culture == "zh-CN" ?
+                    <RoleTipZh /> :
+                    <RoleTipEn />
+                }
+            </div>
+        )
+    }
+}
+class RoleTipEn extends React.Component {
+    constructor(props) {
+        super(props);
+    }
+    render() {
+        return (
+            <div className="role_tip_txt">
+                <span>
+                    Only owner have the authority to shared&update file access
+                </span>
+                <span className="role_tip_txt_title">
+                    admin:
+                </span>
+                <span className="role_tip_txt_text">
+                    User can do everything in the application,manage users,config application,delete resource
+                </span>
+                <span className="role_tip_txt_title">
+                    management:
+                </span>
+                <span className="role_tip_txt_text">
+                    User can config application,upload file,but can't manage users,can't delete resource
+                </span>
+                <span className="role_tip_txt_title">
+                    none:
+                </span>
+                <span className="role_tip_txt_text">
+                    User can view resource,log,but can't config application、manage users、delete resource
+                </span>
+            </div>
+        )
+    }
+}
+class RoleTipZh extends React.Component {
+    constructor(props) {
+        super(props);
+    }
+    render() {
+        return (
+            <div className="role_tip_txt">
+                <span>
+                    只有文件的 拥有者 才有权限 配置文件访问权限 和 分享文件
+                </span>
+                <span className="role_tip_txt_title">
+                    admin:
+                </span>
+                <span className="role_tip_txt_text">
+                    用户有权限做任何事,包括管理用户,配置应用程序,删除资源
+                </span>
+                <span className="role_tip_txt_title">
+                    management:
+                </span>
+                <span className="role_tip_txt_text">
+                    用户可以配置应用程序,上传文件,但是不能管理用户,不能删除资源
+                </span>
+                <span className="role_tip_txt_title">
+                    none:
+                </span>
+                <span className="role_tip_txt_text">
+                    用户可以查看资源,查看日志,但是不能配置应用程序,不能管理用户,不能删除资源
+                </span>
+            </div>
+        )
     }
 }

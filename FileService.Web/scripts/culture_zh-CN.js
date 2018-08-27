@@ -176,5 +176,12 @@ var culture = {
     not_support_preview: "不支持预览",
     date: "时间",
     used: "可用",
-    disabled: "禁用"
+    disabled: "禁用",
+
+    cache_file: "缓存文件",
+    cache_file_location: "缓存文件位置",
+    cache_file_status: "缓存文件状态",
+    deleted: "已删除",
+    exists: "存在",
+    empty_cache_file: "清除缓存文件"
 }

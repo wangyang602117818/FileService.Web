@@ -118,7 +118,21 @@ namespace FileService.Web.Controllers
             long count = 0;
             var userName = Request.Headers["UserName"] ?? User.Identity.Name;
             Dictionary<string, string> sorts = new Dictionary<string, string> { { "CreateTime", "desc" } };
-            IEnumerable<BsonDocument> result = task.GetPageList(pageIndex, pageSize, null, sorts, filter, new List<string>() { "FileId", "FileName", "StateDesc", "HandlerId", "StateDesc", "Type" }, new List<string>() { }, out count, userName);
+            List<BsonDocument> result = task.GetPageList(pageIndex, pageSize, null, sorts, filter, new List<string>() { "FileId", "FileName", "StateDesc", "HandlerId", "StateDesc", "Type" }, new List<string>() { }, out count, userName).ToList();
+            foreach (BsonDocument bson in result)
+            {
+                var temp = bson["TempFolder"].ToString().Substring(bson["TempFolder"].ToString().TrimEnd('\\').LastIndexOf(@"\") + 1);
+                string fullPath = AppDomain.CurrentDomain.BaseDirectory + AppSettings.tempFileDir + temp + bson["FileName"].ToString();
+                if (System.IO.File.Exists(fullPath))
+                {
+                    bson.Add("FileExists", true);
+                }
+                else
+                {
+                    bson.Add("FileExists", false);
+                }
+                bson.Remove("TempFolder");
+            }
             return new ResponseModel<IEnumerable<BsonDocument>>(ErrorCode.success, result, count);
         }
         public ActionResult GetFiles(int pageIndex = 1, int pageSize = 10, string filter = "")
@@ -288,7 +302,7 @@ namespace FileService.Web.Controllers
         }
         public ActionResult GetExtensions(string type)
         {
-            IEnumerable<string> result = config.FindByType(type).Select(s=>s["Extension"].ToString());
+            IEnumerable<string> result = config.FindByType(type).Select(s => s["Extension"].ToString());
             return new ResponseModel<IEnumerable<string>>(ErrorCode.success, result);
         }
         public ActionResult GetLogs(int pageIndex = 1, int pageSize = 10, string filter = "")
@@ -389,7 +403,28 @@ namespace FileService.Web.Controllers
         public ActionResult GetTaskById(string id)
         {
             BsonDocument document = task.FindOne(ObjectId.Parse(id));
+            var temp = document["TempFolder"].ToString().Substring(document["TempFolder"].ToString().TrimEnd('\\').LastIndexOf(@"\") + 1);
+            string fullPath = AppDomain.CurrentDomain.BaseDirectory + AppSettings.tempFileDir + temp + document["FileName"].ToString();
+            if (System.IO.File.Exists(fullPath))
+            {
+                document.Add("FileExists", true);
+            }
+            else
+            {
+                document.Add("FileExists", false);
+            }
             return new ResponseModel<BsonDocument>(ErrorCode.success, document);
+        }
+        public ActionResult DeleteCacheFile(string id)
+        {
+            BsonDocument document = task.FindOne(ObjectId.Parse(id));
+            var temp = document["TempFolder"].ToString().Substring(document["TempFolder"].ToString().TrimEnd('\\').LastIndexOf(@"\") + 1);
+            string fullPath = AppDomain.CurrentDomain.BaseDirectory + AppSettings.tempFileDir + temp + document["FileName"].ToString();
+            if (System.IO.File.Exists(fullPath))
+            {
+                System.IO.File.Delete(fullPath);
+            }
+            return new ResponseModel<string>(ErrorCode.success, "");
         }
         public ActionResult GetAllHandlers()
         {
