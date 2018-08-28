@@ -121,11 +121,11 @@ class CacheFile extends React.Component {
     render() {
         return (
             <div className={this.props.show ? "show" : "hidden"}>
-                <table className="table" style={{ width: "50%" }}>
+                <table className="table">
                     <tbody>
                         <tr>
-                            <td width="20%">{culture.cache_file_location}:</td>
-                            <td width="80%">{this.props.cacheFullPath}</td>
+                            <td width="150px">{culture.cache_file_location}:</td>
+                            <td width="">{this.props.cacheFullPath}</td>
                         </tr>
                         <tr>
                             <td>{culture.cache_file_status}:</td>
@@ -142,6 +142,7 @@ class CacheFile extends React.Component {
         )
     }
 }
+
 class Tasks extends React.Component {
     constructor(props) {
         super(props);
@@ -175,7 +176,7 @@ class Tasks extends React.Component {
         }
         http.get(urls.tasks.getByIdUrl + "/" + id, function (data) {
             if (data.code == 0) {
-                var fullPath = "$" + data.result.TempFolder.substr(trimEnd(data.result.TempFolder).lastIndexOf('\\')) + data.result.FileName;
+                var fullPath = data.result.RelativePath;
                 this.setState({
                     id: id,
                     task: data.result,
@@ -229,7 +230,8 @@ class Tasks extends React.Component {
         return (
             <div className="main">
                 <h1>{culture.tasks}</h1>
-                <TitleArrow title={culture.all + culture.tasks} show={this.state.pageShow}
+                <TitleArrow title={culture.all + culture.tasks}
+                    show={this.state.pageShow}
                     count={this.state.data.count}
                     onShowChange={this.onPageShow.bind(this)} />
                 <Pagination show={this.state.pageShow}

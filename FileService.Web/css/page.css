@@ -9,7 +9,6 @@
 }
 
 .title_arrow {
-    display: flex;
     font-size: 11px;
     height: 20px;
     line-height: 20px;
@@ -28,6 +27,12 @@
         .title_arrow .title_txt:hover {
             color: #000;
         }
+
+    .title_arrow .right_tips {
+        display: inline-block;
+        float: right;
+        font-weight:normal;
+    }
 
 .overview_con {
     margin-top: 5px;
@@ -190,7 +195,7 @@
 
     .role_help:hover {
         cursor: pointer;
-        color:#f60;
+        color: #f60;
     }
 
 .role_tip {
@@ -201,7 +206,7 @@
     border-radius: 4px;
     width: 40%;
     left: 30%;
-    margin-top:-150px;
+    margin-top: -150px;
     height: 250px;
     min-width: 500px;
     padding: 5px;

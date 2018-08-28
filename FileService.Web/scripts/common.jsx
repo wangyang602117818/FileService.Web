@@ -22,6 +22,7 @@ class TitleArrow extends React.Component {
                 <span className="title_txt" onClick={this.props.onShowChange}>
                     <i className={this.props.show ? "iconfont icon-down" : "iconfont icon-right"}></i>{this.props.title} {this.props.count > 0 ? "(" + this.props.count + ")" : ""}
                 </span>
+                <div className="right_tips">xxx</div>
             </div>
         );
     }

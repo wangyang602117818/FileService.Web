@@ -414,6 +414,7 @@ namespace FileService.Web.Controllers
             {
                 document.Add("FileExists", false);
             }
+            document.Add("RelativePath", "$\\" + AppSettings.tempFileDir + temp + document["FileName"].ToString());
             return new ResponseModel<BsonDocument>(ErrorCode.success, document);
         }
         public ActionResult DeleteCacheFile(string id)
