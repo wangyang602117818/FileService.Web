@@ -31,8 +31,16 @@
     .title_arrow .right_tips {
         display: inline-block;
         float: right;
-        font-weight:normal;
+        font-weight: normal;
+        background-color:#eee;
+        padding:0 5px;
+        border-radius:2px;
     }
+
+        .title_arrow .right_tips:hover {
+            cursor:pointer;
+            background-color:#ddd;
+        }
 
 .overview_con {
     margin-top: 5px;

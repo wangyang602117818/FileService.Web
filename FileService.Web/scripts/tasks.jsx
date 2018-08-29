@@ -160,7 +160,9 @@ class Tasks extends React.Component {
             id: null,
             task: null,
             taskFileExists: false,
-            cacheFullPath: ""
+            cacheFullPath: "",
+            rightTips: culture.empty_cache_file,
+            rightTipsDisabled: false
         };
         this.url = urls.tasks.getUrl;
         this.storagePageShowKey = "task";
@@ -226,6 +228,21 @@ class Tasks extends React.Component {
             }
         }
     }
+    onRightTipsClick(e) {
+        if (this.state.rightTipsDisabled == true) return;
+        if (window.confirm(" " + culture.empty_cache_file + " ?")) {
+            this.setState({ rightTipsDisabled: true });
+            http.get(urls.tasks.deleteAllCacheFileUrl, function (data) {
+                if (data.code == 0) {
+                    this.getData();
+                    this.setState({ taskShow: false });
+                } else {
+                    alert(data.message);
+                }
+                this.setState({ rightTipsDisabled: false });
+            }.bind(this));
+        }
+    }
     render() {
         return (
             <div className="main">
@@ -233,6 +250,9 @@ class Tasks extends React.Component {
                 <TitleArrow title={culture.all + culture.tasks}
                     show={this.state.pageShow}
                     count={this.state.data.count}
+                    rightTips={this.state.rightTips}
+                    rightTipsClick={this.onRightTipsClick.bind(this)}
+                    rightTipsDisabled={this.state.rightTipsDisabled}
                     onShowChange={this.onPageShow.bind(this)} />
                 <Pagination show={this.state.pageShow}
                     pageIndex={this.state.pageIndex}

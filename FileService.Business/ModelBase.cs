@@ -5,6 +5,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace FileService.Business
 {
@@ -63,6 +64,23 @@ namespace FileService.Business
         public long Count()
         {
             return mongoData.Count();
+        }
+        /// <summary>
+        /// 将doc中的fields字段的值中word字样添加<span class=\"search_word\"></span>包围
+        /// </summary>
+        /// <param name="doc"></param>
+        /// <param name="fields"></param>
+        /// <param name="word"></param>
+        public static void StringRepace(BsonDocument doc, IEnumerable<string> fields, string word)
+        {
+            foreach (string str in fields)
+            {
+                if (doc.Contains(str)) doc[str] = Regex.Replace(doc[str].ToString(), word, MatcFunc, RegexOptions.IgnoreCase);
+            }
+        }
+        public static string MatcFunc(Match match)
+        {
+            return "<span class=\"search_word\">" + match.Value + "</span>";
         }
     }
 }

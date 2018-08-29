@@ -150,7 +150,9 @@ var urls = {
         getAllHandlersUrl: appDomain + "admin/getallhandlers",
         addVideoTaskUrl: appDomain + "admin/addvideotask",
         addThumbnailTaskUrl: appDomain + "admin/addthumbnailtask",
-        deleteCacheFileUrl: appDomain + "admin/deletecachefile"
+        deleteCacheFileUrl: appDomain + "admin/deletecachefile",
+        deleteAllCacheFileUrl: appDomain + "admin/deleteallcachefile",
+
     },
     resources: {
         getUrl: appDomain + "admin/getfiles",

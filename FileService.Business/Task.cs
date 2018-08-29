@@ -80,5 +80,9 @@ namespace FileService.Business
         {
             return mongoData.GetFilesByAppName();
         }
+        public IEnumerable<BsonDocument> FindCacheFiles()
+        {
+            return mongoData.FindCacheFiles();
+        }
     }
 }

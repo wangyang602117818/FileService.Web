@@ -70,7 +70,11 @@ Access:[
 
 Shared
 {
-	
+	"_id":ObjectId(""),
+	"FileId":ObjectId(""),
+	"PassWord":"",
+	"ExpiredDay":"7",
+	"CreateTime":"",
 }
 
 

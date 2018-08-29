@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Security;
@@ -419,6 +420,7 @@ namespace FileService.Web.Controllers
         }
         public ActionResult DeleteCacheFile(string id)
         {
+            Log(id, "DeleteCacheFile");
             BsonDocument document = task.FindOne(ObjectId.Parse(id));
             if (document["State"].AsInt32 == 2)
             {
@@ -434,6 +436,23 @@ namespace FileService.Web.Controllers
             {
                 return new ResponseModel<string>(ErrorCode.task_not_complete, "");
             }
+        }
+        public ActionResult DeleteAllCacheFile()
+        {
+            Log("-", "DeleteAllCacheFile");
+            IEnumerable<BsonDocument> list = task.FindCacheFiles();
+            int count = 0;
+            foreach (BsonDocument bson in list)
+            {
+                var temp = bson["TempFolder"].ToString().Substring(bson["TempFolder"].ToString().TrimEnd('\\').LastIndexOf(@"\") + 1);
+                string fullPath = AppDomain.CurrentDomain.BaseDirectory + AppSettings.tempFileDir + temp + bson["FileName"].ToString();
+                if (System.IO.File.Exists(fullPath))
+                {
+                    count++;
+                    System.IO.File.Delete(fullPath);
+                }
+            }
+            return new ResponseModel<string>(ErrorCode.success, "", count);
         }
         public ActionResult GetAllHandlers()
         {
@@ -780,6 +799,20 @@ namespace FileService.Web.Controllers
         [AllowAnonymous]
         public ActionResult Test()
         {
+
+            byte[] IV = { 0x12, 0x34, 0x56, 0x78, 0x90, 0xAB, 0xCD, 0xEF };
+            string iv = Convert.ToBase64String(IV);
+            string key1 = Convert.ToBase64String(Rijndael.Create().Key);
+            RijndaelManaged rijndaelManaged = new RijndaelManaged() { KeySize = 128 };
+            string key2 = Convert.ToBase64String(rijndaelManaged.Key);
+            return Json(new
+            {
+                key1,
+                key2,
+                iv,
+            }, JsonRequestBehavior.AllowGet);
+
+
             return View();
         }
     }

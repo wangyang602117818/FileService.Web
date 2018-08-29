@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using FileService.Model;
+﻿using FileService.Model;
 using MongoDB.Bson;
 using MongoDB.Driver;
-using System.Text.RegularExpressions;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace FileService.Data
 {
@@ -85,6 +82,14 @@ namespace FileService.Data
         public override long Count()
         {
             return MongoCollection.Count(FilterBuilder.Exists("Output._id"));
+        }
+        public IEnumerable<BsonDocument> FindCacheFiles()
+        {
+            List<FilterDefinition<BsonDocument>> list = new List<FilterDefinition<BsonDocument>>();
+            list.Add(FilterBuilder.In("Type", new List<string>() { "image", "video" }));
+            list.Add(FilterBuilder.Exists("Output._id"));
+            list.Add(FilterBuilder.Eq("State",2));
+            return MongoCollection.Find(FilterBuilder.And(list)).ToEnumerable();
         }
     }
 }

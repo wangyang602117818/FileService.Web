@@ -2,12 +2,21 @@
 视频50*50小图
 资源列表另类视图
 
-
-用户管理的角色说明（弹框）
-
 清除FileServiceTempFiles的缓冲文件
 
 鼠标移动到预览展示缩略图
+
+添加下载次数
+删除文件回收站
+
+
+加密ts
+视频封面
+
+
+
+ffmpeg.exe -i Wildlife.mp4 -hls_time 2 -hls_list_size 0 -hls_allow_cache 0 -hls_enc 1 -hls_enc_key N74kEdQDwUgiR5QNyMQ9fg== -hls_enc_key_url http://localhost:2431/admin/key -hls_enc_iv EjRWeJCrze8= out.m3u8
+
 
 
 
