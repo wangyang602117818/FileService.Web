@@ -69,17 +69,14 @@ class ResourceItem extends React.Component {
     render() {
         return (
             <tr className={this.props.resource.FileId.$oid == "000000000000000000000000" ? "doing" : "done"}>
-                <td className="link"
-                    data-type={this.props.resource.FileType.removeHTML()}
-                    data-filename={this.props.resource.FileName.removeHTML()}
-                    data-fileid={this.props.resource._id.$oid.removeHTML()}
-                    data-owner={this.props.resource.Owner.removeHTML()}
-                    onClick={this.props.onIdClick}>
+                <td>
                     <b
+                        className="link"
                         data-type={this.props.resource.FileType.removeHTML()}
                         data-filename={this.props.resource.FileName.removeHTML()}
                         data-fileid={this.props.resource._id.$oid.removeHTML()}
                         data-owner={this.props.resource.Owner.removeHTML()}
+                        onClick={this.props.onIdClick}
                         dangerouslySetInnerHTML={{ __html: this.props.resource._id.$oid }}>
                     </b>
                 </td>

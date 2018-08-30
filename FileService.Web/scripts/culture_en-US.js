@@ -15,6 +15,7 @@ var culture = {
     handlers: "Handlers",
     tasks: "Tasks",
     task: "Task",
+    file:"File",
     task_count:"TaskCount",
     resources: "Resources",
     resource: "Resources",
@@ -123,6 +124,7 @@ var culture = {
     extension: "Extension",
     action: "Action",
     delete: "Delete",
+    deleting:"Deleting",
 
     role: "Role",
     password_not_match: "PassWord not matched",
@@ -183,5 +185,6 @@ var culture = {
     cache_file_status: "CacheFileStatus",
     deleted: "Deleted",
     exists: "Exists",
-    empty_cache_file:"EmptyCacheFile"
+    empty_cache_file: "EmptyCacheFile",
+
 }

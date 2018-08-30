@@ -32,14 +32,19 @@
         display: inline-block;
         float: right;
         font-weight: normal;
-        background-color:#eee;
-        padding:0 5px;
-        border-radius:2px;
+        background-color: #eee;
+        padding: 0 5px;
+        border-radius: 2px;
     }
 
         .title_arrow .right_tips:hover {
-            cursor:pointer;
-            background-color:#ddd;
+            cursor: pointer;
+            background-color: #ddd;
+        }
+
+        .title_arrow .right_tips[disabled] {
+            background-color: #fff;
+            cursor:default;
         }
 
 .overview_con {

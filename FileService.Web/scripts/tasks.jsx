@@ -76,15 +76,12 @@ class TaskItem extends React.Component {
         var icon = this.props.task.FileExists ? "<i style='cursor:default;color:#484848' class=\"iconfont icon-c\"></i>" : "";
         return (
             <tr>
-                <td className="link"
-                    onClick={this.props.onIdClick}
-                    id={this.props.task._id.$oid.removeHTML()}
-                    data-name={this.props.task.FileName.removeHTML()}>
-                    <b
+                <td>
+                    <b className="link"
+                        onClick={this.props.onIdClick}
                         id={this.props.task._id.$oid.removeHTML()}
                         data-name={this.props.task.FileName.removeHTML()}
-                        dangerouslySetInnerHTML={{ __html: this.props.task.FileId.$oid }}
-                    ></b>
+                        dangerouslySetInnerHTML={{ __html: this.props.task.FileId.$oid }}></b>
                 </td>
                 <td title={this.props.task.FileName.removeHTML()}>
                     <i className={"iconfont " + getIconNameByFileName(this.props.task.FileName.removeHTML())}></i>&nbsp;
@@ -231,15 +228,15 @@ class Tasks extends React.Component {
     onRightTipsClick(e) {
         if (this.state.rightTipsDisabled == true) return;
         if (window.confirm(" " + culture.empty_cache_file + " ?")) {
-            this.setState({ rightTipsDisabled: true });
+            this.setState({ rightTipsDisabled: true, rightTips: culture.deleting + "..." });
             http.get(urls.tasks.deleteAllCacheFileUrl, function (data) {
                 if (data.code == 0) {
                     this.getData();
-                    this.setState({ taskShow: false });
+                    this.setState({ rightTips: culture.delete + culture.file + "(" + data.count + ")" });
+                    setTimeout(() => { this.setState({ rightTipsDisabled: false, rightTips: culture.empty_cache_file }) }, 2000);
                 } else {
                     alert(data.message);
                 }
-                this.setState({ rightTipsDisabled: false });
             }.bind(this));
         }
     }

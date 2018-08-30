@@ -57,14 +57,12 @@ class DepartmentItem extends React.Component {
     render() {
         return (
             <tr>
-                <td className="link"
-                    onClick={this.props.onIdClick}
-                    code={this.props.department.DepartmentCode.removeHTML()}
-                    id={this.props.department._id.$oid.removeHTML()}>
-                    <b id={this.props.department._id.$oid.removeHTML()}
-                       code={this.props.department.DepartmentCode.removeHTML()}
-                       dangerouslySetInnerHTML={{ __html: this.props.department._id.$oid }}>
-                    </b>
+                <td>
+                    <b  className="link"
+                        onClick={this.props.onIdClick}
+                        code={this.props.department.DepartmentCode.removeHTML()}
+                        id={this.props.department._id.$oid.removeHTML()}
+                        dangerouslySetInnerHTML={{ __html: this.props.department._id.$oid }}></b>
                 </td>
                 <td dangerouslySetInnerHTML={{ __html: this.props.department.DepartmentName }}></td>
                 <td dangerouslySetInnerHTML={{ __html: this.props.department.DepartmentCode }}></td>

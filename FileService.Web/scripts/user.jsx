@@ -59,11 +59,10 @@ class UserItem extends React.Component {
     render() {
         return (
             <tr>
-                <td className="link"
-                    id={this.props.user._id.$oid.removeHTML()}
-                    onClick={this.props.onIdClick}
-                >
-                    <b id={this.props.user._id.$oid.removeHTML()}
+                <td>
+                    <b className="link"
+                        id={this.props.user._id.$oid.removeHTML()}
+                        onClick={this.props.onIdClick}
                         dangerouslySetInnerHTML={{ __html: this.props.user._id.$oid }}></b>
                 </td>
                 <td dangerouslySetInnerHTML={{ __html: this.props.user.UserName }}></td>

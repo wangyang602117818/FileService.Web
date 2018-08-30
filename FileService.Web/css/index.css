@@ -46,6 +46,7 @@ h1 {
 
 .link {
     text-align: center;
+    font-weight: bold;
     cursor: pointer;
 }
 

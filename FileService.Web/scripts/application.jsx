@@ -57,10 +57,10 @@ class ApplicationItem extends React.Component {
     render() {
         return (
             <tr>
-                <td className="link"
-                    id={this.props.application._id.$oid.removeHTML()}
-                    onClick={this.props.onIdClick}>
-                    <b id={this.props.application._id.$oid.removeHTML()}
+                <td>
+                    <b  className="link"
+                        id={this.props.application._id.$oid.removeHTML()}
+                        onClick={this.props.onIdClick}
                         dangerouslySetInnerHTML={{ __html: this.props.application._id.$oid }}></b>
                 </td>
                 <td dangerouslySetInnerHTML={{ __html: this.props.application.ApplicationName }}>

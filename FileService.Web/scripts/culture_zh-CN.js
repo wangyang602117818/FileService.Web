@@ -15,6 +15,7 @@ var culture = {
     handlers: "处理器",
     tasks: "转换任务",
     task: "任务",
+    file: "文件",
     task_count: "任务总数",
     resources: "资源列表",
     resource: "资源",
@@ -123,6 +124,7 @@ var culture = {
     extension: "扩展名",
     action: "行为",
     delete: "删除",
+    deleting: "删除中",
 
     role: "角色",
     password_not_match: "密码不匹配",
