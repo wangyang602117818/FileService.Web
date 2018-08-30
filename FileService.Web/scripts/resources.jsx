@@ -8,11 +8,12 @@
                 <thead>
                     <tr>
                         <th width="18%">{culture.fileId}</th>
-                        <th width="28%">{culture.fileName}</th>
+                        <th width="25%">{culture.fileName}</th>
                         <th width="7%">{culture.size}</th>
                         <th width="14%">{culture.uploadDate}</th>
                         <th width="10%">{culture.from}</th>
-                        <th width="8%">{culture.owner}</th>
+                        <th width="5%">{culture.owner}</th>
+                        <th width="5%">{culture.downloads}</th>
                         <th width="5%">{culture.view}</th>
                         <th width="5%">{culture.dol}</th>
                         <th width="5%">{culture.del}</th>
@@ -82,17 +83,21 @@ class ResourceItem extends React.Component {
                 </td>
                 <td title={this.props.resource.FileName.removeHTML()}>
                     <i className={"iconfont " + getIconNameByFileName(this.props.resource.FileName.removeHTML())}></i>&nbsp;
-                    <span dangerouslySetInnerHTML={{ __html: this.props.resource.FileName.getFileName(15) }}>
+                    <span
+                        className="link"
+                        dangerouslySetInnerHTML={{ __html: this.props.resource.FileName.getFileName(15) }}
+                        onClick={this.preView.bind(this)}
+                        id={"id=" + this.props.resource._id.$oid + "&filename=" + this.props.resource.FileName.removeHTML()}>
                     </span>
                 </td>
                 <td>{convertFileSize(this.props.resource.Length)}</td>
                 <td>{parseBsonTime(this.props.resource.CreateTime)}</td>
                 <td dangerouslySetInnerHTML={{ __html: this.props.resource.From || culture.unknow }}></td>
                 <td>{this.props.resource.Owner}</td>
+                <td>{this.props.resource.Download}</td>
                 <td>
-                    <i className="iconfont icon-view"
-                        onClick={this.preView.bind(this)} id={"id=" + this.props.resource._id.$oid + "&filename=" + this.props.resource.FileName.removeHTML()}>
-                    </i>
+                    <i className="iconfont icon-view" onClick={this.preView.bind(this)}
+                        id={"id=" + this.props.resource._id.$oid + "&filename=" + this.props.resource.FileName.removeHTML()}></i>
                 </td>
                 <td>
                     <i className="iconfont icon-download" onClick={this.download.bind(this)} id={this.props.resource._id.$oid}></i>

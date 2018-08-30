@@ -85,7 +85,10 @@ class TaskItem extends React.Component {
                 </td>
                 <td title={this.props.task.FileName.removeHTML()}>
                     <i className={"iconfont " + getIconNameByFileName(this.props.task.FileName.removeHTML())}></i>&nbsp;
-                    <span dangerouslySetInnerHTML={{ __html: this.props.task.FileName.getFileName(10) }}></span>
+                    <span dangerouslySetInnerHTML={{ __html: this.props.task.FileName.getFileName(10) }}
+                        className="link"
+                        onClick={this.preView.bind(this)}
+                        id={"id=" + this.props.task.FileId.$oid + "&filename=" + this.props.task.FileName.removeHTML() + "#" + (this.props.task.Output._id ? this.props.task.Output._id.$oid : "")}></span>
                 </td>
                 <td dangerouslySetInnerHTML={{ __html: this.props.task.HandlerId + icon }}></td>
                 <td title={this.props.task.Output._id ? this.props.task.Output.Flag : ""} >

@@ -3,10 +3,19 @@
 资源列表另类视图
 
 清除FileServiceTempFiles的缓冲文件
+列出缓存文件
 
 鼠标移动到预览展示缩略图
 
 添加下载次数
+{
+  "_id":ObjectId(""),
+  "FileId":ObjectId(""),
+  "From":"",
+  "User":"",
+  "CreateTime":
+}
+
 删除文件回收站
 
 

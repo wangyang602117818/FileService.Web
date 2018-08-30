@@ -71,6 +71,7 @@ var culture = {
     completedTime: "完成时间",
     view: "预览",
     reDo: "重做",
+    operation:"操作",
 
     outputFormat: "输出格式",
     format: "格式",
@@ -97,6 +98,7 @@ var culture = {
     fileType: "文件类型",
     dol: "下载",
     del: "删除",
+    downloads: "下载数",
     add: "添加",
     unknow: "未知",
     ok: "确定",

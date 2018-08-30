@@ -93,7 +93,18 @@ namespace FileService.Data
             {
                 Log4Net.InfoLog(ex.Message);
             }
-            
+            try
+            {
+                database.CreateCollection("Ts");
+                CreateIndexModel<BsonDocument> c = new CreateIndexModel<BsonDocument>(new BsonDocument() {
+                { "SourceId", 1 },
+                { "N", 1 }});
+                database.GetCollection<BsonDocument>("Ts").Indexes.CreateOne(c);
+            }
+            catch (Exception ex)
+            {
+                Log4Net.InfoLog(ex.Message);
+            }
         }
     }
 }
