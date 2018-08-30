@@ -1,20 +1,16 @@
-﻿using FileService.Web.Models;
-using FileService.Business;
+﻿using FileService.Business;
 using FileService.Model;
 using FileService.Util;
+using FileService.Web.Filters;
+using FileService.Web.Models;
 using MongoDB.Bson;
-using MongoDB.Bson.Serialization;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
-using FileService.Web.Filters;
-using System.Text.RegularExpressions;
 
 namespace FileService.Web.Controllers
 {
@@ -78,7 +74,7 @@ namespace FileService.Web.Controllers
 
                 ObjectId fileId = ObjectId.GenerateNewId();
 
-                filesWrap.InsertImage(fileId, ObjectId.Empty, file.FileName, file.InputStream.Length, Request.Headers["AppName"], ImageExtention.GetContentType(file.FileName), thumbnail, access, Request.Headers["UserName"] ?? User.Identity.Name);
+                filesWrap.InsertImage(fileId, ObjectId.Empty, file.FileName, file.InputStream.Length, Request.Headers["AppName"], 0, ImageExtention.GetContentType(file.FileName), thumbnail, access, Request.Headers["UserName"] ?? User.Identity.Name);
 
                 string handlerId = converter.GetHandlerId();
                 if (output.Count == 0)
@@ -152,7 +148,7 @@ namespace FileService.Web.Controllers
 
                 ObjectId fileId = ObjectId.GenerateNewId();
 
-                filesWrap.InsertVideo(fileId, ObjectId.Empty, file.FileName, file.InputStream.Length, Request.Headers["AppName"], file.ContentType, videos, new BsonArray(), access, Request.Headers["UserName"] ?? User.Identity.Name);
+                filesWrap.InsertVideo(fileId, ObjectId.Empty, file.FileName, file.InputStream.Length, Request.Headers["AppName"],0, file.ContentType, videos, new BsonArray(), access, Request.Headers["UserName"] ?? User.Identity.Name);
 
                 string handlerId = converter.GetHandlerId();
                 if (outputs.Count == 0)
@@ -226,6 +222,7 @@ namespace FileService.Web.Controllers
                     file.FileName,
                     file.InputStream.Length,
                     Request.Headers["AppName"],
+                    0,
                     file.ContentType,
                     files,
                     access,
@@ -249,8 +246,8 @@ namespace FileService.Web.Controllers
                     InserTask(handlerId, fileId, file.FileName, "attachment", Request.Headers["AppName"], new BsonDocument() {
                         {"_id",ObjectId.Empty },
                         {"Flag","zip" }
-                    }, 
-                    access, 
+                    },
+                    access,
                     Request.Headers["UserName"] ?? User.Identity.Name);
                 }
                 else

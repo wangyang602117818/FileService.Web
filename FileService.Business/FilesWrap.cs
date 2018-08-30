@@ -1,9 +1,6 @@
 ﻿using MongoDB.Bson;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace FileService.Business
 {
@@ -14,7 +11,7 @@ namespace FileService.Business
         {
             return mongoData.CountByFileId(fileId);
         }
-        public void InsertImage(ObjectId id, ObjectId fileId, string fileName, long length, string from, string contentType, BsonArray thumbnail, BsonArray access, string owner)
+        public void InsertImage(ObjectId id, ObjectId fileId, string fileName, long length, string from, int downloads, string contentType, BsonArray thumbnail, BsonArray access, string owner)
         {
             BsonDocument filesWrap = new BsonDocument()
                 {
@@ -23,6 +20,7 @@ namespace FileService.Business
                     {"FileName",fileName },
                     {"Length",length },
                     {"From",from },
+                    {"Download",downloads },
                     {"FileType","image" },
                     {"ContentType",contentType },
                     {"Thumbnail",thumbnail },
@@ -32,7 +30,7 @@ namespace FileService.Business
                 };
             mongoData.Insert(filesWrap);
         }
-        public void InsertVideo(ObjectId id, ObjectId fileId, string fileName, long length, string from, string contentType, BsonArray videos, BsonArray videoCpIds, BsonArray access, string owner)
+        public void InsertVideo(ObjectId id, ObjectId fileId, string fileName, long length, string from, int downloads, string contentType, BsonArray videos, BsonArray videoCpIds, BsonArray access, string owner)
         {
             BsonDocument filesWrap = new BsonDocument()
                 {
@@ -41,6 +39,7 @@ namespace FileService.Business
                     {"FileName",fileName },
                     {"Length",length },
                     {"From",from },
+                    {"Download",downloads },
                     {"FileType","video" },
                     {"ContentType",contentType },
                     {"Videos",videos },
@@ -51,7 +50,7 @@ namespace FileService.Business
                 };
             mongoData.Insert(filesWrap);
         }
-        public void InsertAttachment(ObjectId id, ObjectId fileId, string fileName, long length, string from, string contentType, BsonArray files, BsonArray access, string owner)
+        public void InsertAttachment(ObjectId id, ObjectId fileId, string fileName, long length, string from, int downloads, string contentType, BsonArray files, BsonArray access, string owner)
         {
             BsonDocument filesWrap = new BsonDocument()
                 {
@@ -60,6 +59,7 @@ namespace FileService.Business
                     {"FileName",fileName },
                     {"Length",length },
                     {"From",from },
+                    {"Download",downloads },
                     {"FileType","attachment" },
                     {"ContentType",contentType },
                     {"Files",files },
@@ -72,6 +72,10 @@ namespace FileService.Business
         public bool UpdateFileId(ObjectId id, ObjectId fileId)
         {
             return mongoData.UpdateFileId(id, fileId);
+        }
+        public BsonDocument FindAndAddDownloads(ObjectId id)
+        {
+            return mongoData.FindAndAddDownloads(id);
         }
         public IEnumerable<BsonDocument> GetCountByRecentMonth(DateTime startDateTime)
         {

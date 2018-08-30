@@ -1,0 +1,21 @@
+﻿using MongoDB.Bson;
+using System;
+
+namespace FileService.Business
+{
+    public class Download : ModelBase<Data.Download>
+    {
+        public Download() : base(new Data.Download()) { }
+        public void AddDownload(ObjectId fileId, string from, string user)
+        {
+            BsonDocument bson = new BsonDocument()
+            {
+                {"FileId",fileId },
+                {"From",from },
+                {"User",user },
+                {"CreateTime",DateTime.Now },
+            };
+            mongoData.Insert(bson);
+        }
+    }
+}

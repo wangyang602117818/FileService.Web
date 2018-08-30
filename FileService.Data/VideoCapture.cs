@@ -16,7 +16,7 @@ namespace FileService.Data
         }
         public long CountBySourceId(ObjectId sourceId)
         {
-            return MongoCollection.Count(FilterBuilder.Eq("SourceId", sourceId));
+            return MongoCollection.CountDocuments(FilterBuilder.Eq("SourceId", sourceId));
         }
     }
 }

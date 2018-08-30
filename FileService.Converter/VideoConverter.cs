@@ -4,13 +4,9 @@ using FileService.Util;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
 namespace FileService.Converter
 {
@@ -167,6 +163,7 @@ namespace FileService.Converter
             string[] files = Directory.GetFiles(path);
             string m3u8Text = File.ReadAllText(path + fileNameM3u8);
             ts.DeleteBySourceId(ObjectId.Parse(m3u8FileId));
+            int n = 0;
             foreach (string file in files)
             {
                 if (Path.GetExtension(file) == ".ts")
@@ -174,7 +171,8 @@ namespace FileService.Converter
                     byte[] buffer = File.ReadAllBytes(file);
                     ObjectId tsId = ObjectId.GenerateNewId();
                     m3u8Text = m3u8Text.Replace(Path.GetFileNameWithoutExtension(file), tsId.ToString());
-                    ts.Replace(tsId, m3u8FileId, fileNameM3u8, buffer.Length, buffer);
+                    ts.Insert(tsId, m3u8FileId, fileNameM3u8, n, buffer.Length, buffer);
+                    n++;
                 }
             }
             m3u8.Replace(ObjectId.Parse(m3u8FileId), ObjectId.Parse(sourceFileId), fileNameM3u8, m3u8Text, duration, files.Length - 1, flag);

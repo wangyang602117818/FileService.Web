@@ -81,7 +81,7 @@ namespace FileService.Data
         }
         public override long Count()
         {
-            return MongoCollection.Count(FilterBuilder.Exists("Output._id"));
+            return MongoCollection.CountDocuments(FilterBuilder.Exists("Output._id"));
         }
         public IEnumerable<BsonDocument> FindCacheFiles()
         {

@@ -15,7 +15,7 @@ namespace FileService.Data
         public bool CheckExists(string userName)
         {
             var filter = FilterBuilder.Eq("UserName", userName);
-            return MongoCollection.Count(filter) > 0;
+            return MongoCollection.CountDocuments(filter) > 0;
         }
         public BsonDocument GetUser(string userName)
         {

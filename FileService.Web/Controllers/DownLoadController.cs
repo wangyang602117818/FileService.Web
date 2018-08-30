@@ -24,9 +24,10 @@ namespace FileService.Web.Controllers
         Thumbnail thumbnail = new Thumbnail();
         VideoCapture videoCapture = new VideoCapture();
         FilesWrap filesWrap = new FilesWrap();
+        Download download = new Download();
         public ActionResult Get(string id)
         {
-            BsonDocument fileWrap = filesWrap.FindOne(ObjectId.Parse(id));
+            BsonDocument fileWrap = filesWrap.FindAndAddDownloads(ObjectId.Parse(id));
             ObjectId fileId = fileWrap["FileId"].AsObjectId;
             string fileName = fileWrap["FileName"].AsString;
             if (fileId == ObjectId.Empty)

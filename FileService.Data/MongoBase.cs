@@ -60,7 +60,7 @@ namespace FileService.Data
         }
         public virtual long Count()
         {
-            return MongoCollection.Count(new BsonDocument());
+            return MongoCollection.EstimatedDocumentCount();
         }
         public bool Replace(BsonDocument document)
         {
@@ -144,12 +144,10 @@ namespace FileService.Data
             if (andFilter != null) result.Add(andFilter);
             return FilterBuilder.And(result);
         }
-
         public IEnumerable<BsonDocument> GetPageList(int pageIndex, int pageSize, BsonDocument eqs, Dictionary<string, string> sorts, string filter, IEnumerable<string> fields, IEnumerable<string> excludeFields, out long count, string userName)
         {
-
             FilterDefinition<BsonDocument> filterBuilder = GetPageFilters(eqs, fields, filter, userName);
-            count = MongoCollection.Count(filterBuilder);
+            count = MongoCollection.CountDocuments(filterBuilder);
             var exclude = Builders<BsonDocument>.Projection.Exclude("PassWord");
             foreach (string ex in excludeFields)
             {

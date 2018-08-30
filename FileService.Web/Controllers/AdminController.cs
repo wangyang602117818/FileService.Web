@@ -813,7 +813,6 @@ namespace FileService.Web.Controllers
             }, JsonRequestBehavior.AllowGet);
 
 
-            return View();
         }
     }
 }
