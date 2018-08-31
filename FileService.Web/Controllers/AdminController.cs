@@ -359,7 +359,6 @@ namespace FileService.Web.Controllers
         {
             return new ResponseModel<BsonDocument>(ErrorCode.success, application.FindOne(ObjectId.Parse(id)));
         }
-        [OutputCache(Duration = 60 * 60 * 24)]
         [Authorize(Roles = "admin,management")]
         public ActionResult GetApplicationByAuthCode(string id)
         {
