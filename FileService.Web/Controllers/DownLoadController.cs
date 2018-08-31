@@ -41,6 +41,8 @@ namespace FileService.Web.Controllers
         public ActionResult GetConvert(string id)
         {
             GridFSDownloadStream stream = mongoFileConvert.DownLoad(ObjectId.Parse(id));
+            ObjectId fileWrapId = stream.FileInfo.Metadata["SourceId"].AsObjectId;
+            filesWrap.AddDownloads(fileWrapId);
             return File(stream, stream.FileInfo.Metadata["ContentType"].AsString, stream.FileInfo.Filename);
         }
         public ActionResult GetZipInnerFile(string id, string fileName)

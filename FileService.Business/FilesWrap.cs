@@ -77,6 +77,10 @@ namespace FileService.Business
         {
             return mongoData.FindAndAddDownloads(id);
         }
+        public bool AddDownloads(ObjectId id)
+        {
+            return mongoData.AddDownloads(id);
+        }
         public IEnumerable<BsonDocument> GetCountByRecentMonth(DateTime startDateTime)
         {
             return mongoData.GetCountByRecentMonth(startDateTime);

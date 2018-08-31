@@ -21,6 +21,10 @@ namespace FileService.Data
         {
             return MongoCollection.FindOneAndUpdate(FilterBuilder.Eq("_id", id), Builders<BsonDocument>.Update.Inc("Download", 1));
         }
+        public bool AddDownloads(ObjectId id)
+        {
+            return MongoCollection.UpdateOne(FilterBuilder.Eq("_id", id), Builders<BsonDocument>.Update.Inc("Download", 1)).IsAcknowledged;
+        }
         public IEnumerable<BsonDocument> GetCountByRecentMonth(DateTime dateTime)
         {
             return MongoCollection.Aggregate()
