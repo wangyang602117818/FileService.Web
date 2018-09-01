@@ -98,7 +98,7 @@ var culture = {
     fileType: "文件类型",
     dol: "下载",
     del: "删除",
-    downloads: "下载数",
+    downloads: "下载量",
     add: "添加",
     unknow: "未知",
     ok: "确定",
