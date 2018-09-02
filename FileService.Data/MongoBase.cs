@@ -7,6 +7,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
@@ -24,11 +25,12 @@ namespace FileService.Data
         }
         public BsonDocument RsStatus()
         {
-            var database = MongoDataSource.MongoClient.GetDatabase("admin");
+            var database = MongoDataSource.MongoClient.GetDatabase("admin", new MongoDatabaseSettings()
+            {
+                ReadEncoding = new UTF8Encoding(false, false)
+            });
             return database.RunCommand<BsonDocument>(
-                new BsonDocument("replSetGetStatus", 1)
-               
-                );
+                new BsonDocument("replSetGetStatus", 1));
         }
         public void Insert(BsonDocument document)
         {
