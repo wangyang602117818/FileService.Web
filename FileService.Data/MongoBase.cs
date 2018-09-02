@@ -25,7 +25,10 @@ namespace FileService.Data
         public BsonDocument RsStatus()
         {
             var database = MongoDataSource.MongoClient.GetDatabase("admin");
-            return database.RunCommand<BsonDocument>(new BsonDocument("replSetGetStatus", 1));
+            return database.RunCommand<BsonDocument>(
+                new BsonDocument("replSetGetStatus", 1)
+               
+                );
         }
         public void Insert(BsonDocument document)
         {
