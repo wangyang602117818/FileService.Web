@@ -17,6 +17,10 @@ namespace FileService.Business
         {
             this.mongoData = mongoData;
         }
+        public BsonDocument RsStatus()
+        {
+            return mongoData.RsStatus();
+        }
         public void Insert(BsonDocument document)
         {
             mongoData.Insert(document);

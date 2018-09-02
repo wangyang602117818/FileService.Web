@@ -22,6 +22,11 @@ namespace FileService.Data
             MongoDatabase = MongoDataSource.MongoClient.GetDatabase(AppSettings.database);
             MongoCollection = MongoDatabase.GetCollection<BsonDocument>(collectionName);
         }
+        public BsonDocument RsStatus()
+        {
+            var database = MongoDataSource.MongoClient.GetDatabase("admin");
+            return database.RunCommand<BsonDocument>(new BsonDocument("replSetGetStatus", 1));
+        }
         public void Insert(BsonDocument document)
         {
             MongoCollection.InsertOne(document);

@@ -1,6 +1,7 @@
 using React;
 
 [assembly: WebActivatorEx.PreApplicationStartMethod(typeof(FileService.Web.ReactConfig), "Configure")]
+
 namespace FileService.Web
 {
 	public static class ReactConfig

@@ -798,7 +798,6 @@ namespace FileService.Web.Controllers
         [AllowAnonymous]
         public ActionResult Test()
         {
-
             byte[] IV = { 0x12, 0x34, 0x56, 0x78, 0x90, 0xAB, 0xCD, 0xEF };
             string iv = Convert.ToBase64String(IV);
             string key1 = Convert.ToBase64String(Rijndael.Create().Key);
@@ -810,8 +809,12 @@ namespace FileService.Web.Controllers
                 key2,
                 iv,
             }, JsonRequestBehavior.AllowGet);
-
-
+        }
+        [AllowAnonymous]
+        public ActionResult Test1()
+        {
+            BsonDocument status = config.RsStatus();
+            return new ResponseModel<BsonDocument>(ErrorCode.success, status);
         }
     }
 }
