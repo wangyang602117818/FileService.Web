@@ -469,7 +469,7 @@ function getEchartOptionBar(xData, files, tasks) {
             }
         },
         grid: {
-            left: "4%",
+            left: "3%",
             top: "10%",
             bottom: "15%",
             right: "10%",

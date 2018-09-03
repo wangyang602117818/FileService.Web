@@ -108,6 +108,9 @@ class CountTotal extends React.Component {
     }
     componentDidMount() {
         this.myChart = echarts.init(document.getElementById('echart_count_appname'));
+        window.onresize = function () {
+            this.myChart.resize();
+        }.bind(this)
     }
     getData() {
         this.getTotalCount();
@@ -149,7 +152,7 @@ class CountTotal extends React.Component {
         return (
             <div className={this.props.show ? "overview_con show" : "overview_con hidden"}>
                 <TitleTxt title={culture.count_by_app} />
-                <div className="echart_main" id="echart_count_appname" style={{ height: "240px", width:"1000px" }}>
+                <div className="echart_main" id="echart_count_appname" style={{ height: "240px", width:"100%" }}>
                 </div>
                 <TitleTxt title={culture.totals} />
                 <div className="totals">

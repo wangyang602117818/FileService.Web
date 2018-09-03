@@ -35,7 +35,7 @@ var culture = {
     seconds: "秒",
     minutes: "分钟",
 
-    count_by_date: "根据时间统计任务和资源个数",
+    count_by_date: "根据时间统计",
     totals: "总数",
     total: "总数",
     last: "最近",
