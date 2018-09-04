@@ -1,5 +1,6 @@
 ﻿using FileService.Business;
 using FileService.Util;
+using FileService.Web.Filters;
 using MongoDB.Bson;
 using MongoDB.Driver.GridFS;
 using System;
@@ -21,9 +22,20 @@ namespace FileService.Web.Controllers
         VideoCapture videoCapture = new VideoCapture();
         FilesWrap filesWrap = new FilesWrap();
         Download download = new Download();
+        [AppAuthorizeDefault]
         public ActionResult Get(string id)
         {
-            BsonDocument fileWrap = filesWrap.FindAndAddDownloads(ObjectId.Parse(id));
+            BsonDocument fileWrap = null;
+            ObjectId fileWrapId = ObjectId.Parse(id);
+            if (download.AddedInOneMinute(Request.Headers["AppName"], fileWrapId, Request.Headers["UserName"] ?? User.Identity.Name))
+            {
+                fileWrap = filesWrap.FindOne(fileWrapId);
+            }
+            else
+            {
+                download.AddDownload(fileWrapId, Request.Headers["AppName"], Request.Headers["UserName"] ?? User.Identity.Name);
+                fileWrap = filesWrap.FindAndAddDownloads(fileWrapId);
+            }
             ObjectId fileId = fileWrap["FileId"].AsObjectId;
             string fileName = fileWrap["FileName"].AsString;
             if (fileId == ObjectId.Empty)
@@ -38,11 +50,16 @@ namespace FileService.Web.Controllers
                 return File(stream, fileWrap["ContentType"].AsString, fileName);
             }
         }
+        [AppAuthorizeDefault]
         public ActionResult GetConvert(string id)
         {
             GridFSDownloadStream stream = mongoFileConvert.DownLoad(ObjectId.Parse(id));
             ObjectId fileWrapId = stream.FileInfo.Metadata["SourceId"].AsObjectId;
-            filesWrap.AddDownloads(fileWrapId);
+            if (!download.AddedInOneMinute(Request.Headers["AppName"], fileWrapId, Request.Headers["UserName"] ?? User.Identity.Name))
+            {
+                filesWrap.AddDownloads(fileWrapId);
+                download.AddDownload(fileWrapId, Request.Headers["AppName"], Request.Headers["UserName"] ?? User.Identity.Name);
+            }
             return File(stream, stream.FileInfo.Metadata["ContentType"].AsString, stream.FileInfo.Filename);
         }
         public ActionResult GetZipInnerFile(string id, string fileName)

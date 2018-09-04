@@ -144,7 +144,7 @@ class CountTotal extends React.Component {
                     files.push(data.result[i].files);
                     tasks.push(data.result[i].tasks);
                 }
-                that.myChart.setOption(getEchartOptionBar(xData, files, tasks));
+                that.myChart.setOption(getEchartOptionBar(xData, files, tasks, culture.resource_task_count_by_appname));
             }
         });
     }

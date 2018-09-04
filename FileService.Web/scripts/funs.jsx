@@ -454,7 +454,7 @@ function getEchartOptionLine(data) {
         }]
     };
 }
-function getEchartOptionBar(xData, files, tasks) {
+function getEchartOptionBar(xData, files, tasks,title) {
     return {
         animation: false,
         axisPointer: {
@@ -468,11 +468,20 @@ function getEchartOptionBar(xData, files, tasks) {
                 type: "dotted",
             }
         },
+        title: {
+            left: "1%",
+            text: title,
+            textStyle: {
+                fontSize: 12,
+                align: 'center'
+            },
+            top:"10px"
+        },
         grid: {
             left: "3%",
-            top: "10%",
+            top: "20%",
             bottom: "15%",
-            right: "10%",
+            right: "8%",
         },
         legend: {
             right: 'right',

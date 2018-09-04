@@ -24,7 +24,6 @@ namespace FileService.Web.Controllers
         FilesWrap filesWrap = new FilesWrap();
         VideoCapture videoCapture = new VideoCapture();
         Config config = new Config();
-
         [HttpPost]
         public ActionResult Image(UploadImgModel uploadImgModel)
         {

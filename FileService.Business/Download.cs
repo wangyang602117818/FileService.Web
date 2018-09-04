@@ -17,5 +17,10 @@ namespace FileService.Business
             };
             mongoData.Insert(bson);
         }
+        public bool AddedInOneMinute(string from, ObjectId fileId, string user)
+        {
+            DateTime gtDate = DateTime.Now.AddMinutes(-1);
+            return mongoData.DocumentMinute(from, fileId, user, gtDate) == null ? false : true;
+        }
     }
 }

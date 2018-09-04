@@ -42,6 +42,7 @@ var culture = {
     month: "月",
     year: "年",
     count_by_app: "根据应用程序总数",
+    resource_task_count_by_appname: "通过应用程序统计资源和任务总数",
 
     image: "图片",
     video: "视频",

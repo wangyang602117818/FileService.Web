@@ -40,4 +40,30 @@ namespace FileService.Web.Filters
             }
         }
     }
+    public class AppAuthorizeDefaultAttribute : ActionFilterAttribute
+    {
+        public override void OnActionExecuting(ActionExecutingContext filterContext)
+        {
+            base.OnActionExecuting(filterContext);
+            string authCode = filterContext.HttpContext.Request.Headers["AuthCode"];
+            if (string.IsNullOrEmpty(authCode))
+            {
+                filterContext.HttpContext.Request.Headers.Add("AuthCode", "3c9deb1f8f6e");
+                filterContext.HttpContext.Request.Headers.Add("AppName", "FileServiceApi");
+            }
+            else
+            {
+                BsonDocument application = new Application().FindByAuthCode(authCode);
+                if (application == null)
+                {
+                    filterContext.HttpContext.Request.Headers.Add("AuthCode", "3c9deb1f8f6e");
+                    filterContext.HttpContext.Request.Headers.Add("AppName", "FileServiceApi");
+                }
+                else
+                {
+                    filterContext.HttpContext.Request.Headers.Add("AppName", application["ApplicationName"].AsString);
+                }
+            }
+        }
+    }
 }
