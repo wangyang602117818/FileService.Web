@@ -1,9 +1,6 @@
 ﻿using Newtonsoft.Json;
-using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace FileService.Client
@@ -22,82 +19,169 @@ namespace FileService.Client
         /// </summary>
         public string RemoteUrl { get; set; }
         /// <summary>
-        /// 
+        /// 构造函数
         /// </summary>
         /// <param name="authCode">标明上传的文件来自于哪个应用程序（文件服务器统计数据时候使用，不同的application使用不同的 AuthCode）</param>
         /// <param name="remoteUrl">文件服务器的url</param>
         public FileClient(string authCode, string remoteUrl) { AuthCode = authCode; RemoteUrl = remoteUrl; }
+        //////////////////////////////////////////图片部分//////////////////////////////////////////////
         /// <summary>
-        /// 上传单张图片
+        /// 上传单张图片 没有转换任务
         /// </summary>
         /// <param name="fileName">文件名</param>
         /// <param name="stream">文件流</param>
         /// <returns></returns>
         public ResultBase<IEnumerable<ImageFileResult>> UploadImage(string fileName, Stream stream)
         {
-            return UploadImage(fileName, stream, null, null, null);
+            var images = new List<FileItem>() { new FileItem() { FileName = fileName, FileStream = stream } };
+            return UploadImage(images, null, null, null);
         }
         /// <summary>
-        /// 上传单张图片
-        /// </summary>
-        /// <param name="fileName">文件名称</param>
-        /// <param name="stream">文件流</param>
-        /// <param name="userData">用户信息</param>
-        /// <param name="userAccesses">访问权限信息</param>
-        /// <returns></returns>
-        public ResultBase<IEnumerable<ImageFileResult>> UploadImage(string fileName, Stream stream, UserData userData, IEnumerable<UserAccess> userAccesses)
-        {
-            return UploadImage(fileName, stream, null, userData, userAccesses);
-        }
-        /// <summary>
-        /// 上传单张图片，单个转换任务
+        /// 上传单张图片 没有转换任务
         /// </summary>
         /// <param name="fileName">文件名</param>
         /// <param name="stream">文件流</param>
-        /// <param name="convert">转换规则</param>
+        /// <param name="userData">用户信息</param>
+        /// <returns></returns>
+        public ResultBase<IEnumerable<ImageFileResult>> UploadImage(string fileName, Stream stream, UserData userData)
+        {
+            var images = new List<FileItem>() { new FileItem() { FileName = fileName, FileStream = stream } };
+            return UploadImage(images, null, userData, null);
+        }
+        /// <summary>
+        /// 上传单张图片 没有转换任务
+        /// </summary>
+        /// <param name="fileName">文件名</param>
+        /// <param name="stream">文件流</param>
+        /// <param name="userData">用户信息</param>
+        /// <param name="userAccesses">权限信息</param>
+        /// <returns></returns>
+        public ResultBase<IEnumerable<ImageFileResult>> UploadImage(string fileName, Stream stream, UserData userData, IEnumerable<UserAccess> userAccesses)
+        {
+            IEnumerable<FileItem> images = new List<FileItem>() { new FileItem() { FileName = fileName, FileStream = stream } };
+            return UploadImage(images, null, userData, userAccesses);
+        }
+        /// <summary>
+        /// 上传单张图片 单个转换任务
+        /// </summary>
+        /// <param name="fileName">文件名</param>
+        /// <param name="stream">文件流</param>
+        /// <param name="convert">转换任务</param>
         /// <returns></returns>
         public ResultBase<IEnumerable<ImageFileResult>> UploadImage(string fileName, Stream stream, ImageConvert convert)
         {
-            return UploadImage(fileName, stream, convert, null, null);
+            var images = new List<FileItem>() { new FileItem() { FileName = fileName, FileStream = stream } };
+            var converts = new List<ImageConvert>() { convert };
+            return UploadImage(images, converts, null, null);
         }
         /// <summary>
-        /// 上传单张图片，单个转换任务
+        /// 上传单张图片 单个转换任务
         /// </summary>
-        /// <param name="fileName">文件名称</param>
+        /// <param name="fileName">文件名</param>
         /// <param name="stream">文件流</param>
-        /// <param name="convert">转换规则</param>
+        /// <param name="convert">转换任务</param>
         /// <param name="userData">用户信息</param>
-        /// <param name="userAccesses">访问权限信息</param>
+        /// <returns></returns>
+        public ResultBase<IEnumerable<ImageFileResult>> UploadImage(string fileName, Stream stream, ImageConvert convert, UserData userData)
+        {
+            var images = new List<FileItem>() { new FileItem() { FileName = fileName, FileStream = stream } };
+            var converts = new List<ImageConvert>() { convert };
+            return UploadImage(images, converts, userData, null);
+        }
+        /// <summary>
+        /// 上传单张图片 单个转换任务
+        /// </summary>
+        /// <param name="fileName">文件名</param>
+        /// <param name="stream">文件流</param>
+        /// <param name="convert">转换任务</param>
+        /// <param name="userData">用户信息</param>
+        /// <param name="userAccesses">权限信息</param>
         /// <returns></returns>
         public ResultBase<IEnumerable<ImageFileResult>> UploadImage(string fileName, Stream stream, ImageConvert convert, UserData userData, IEnumerable<UserAccess> userAccesses)
         {
-            IEnumerable<FileItem> fileCollection = new List<FileItem>()
-            {
-                new FileItem() { FileName = fileName, FileStream = stream }
-            };
-            return UploadImage(fileCollection, convert, userData, userAccesses);
+            var images = new List<FileItem>() { new FileItem() { FileName = fileName, FileStream = stream } };
+            var converts = new List<ImageConvert>() { convert };
+            return UploadImage(images, converts, userData, userAccesses);
         }
         /// <summary>
-        /// 上传多张图片，单个转换任务
+        /// 上传单张图片 多个转换任务
         /// </summary>
-        /// <param name="images">图片列表</param>
-        /// <param name="convert">转换规则</param>
+        /// <param name="fileName">文件名</param>
+        /// <param name="stream">文件流</param>
+        /// <param name="converts">转换任务</param>
         /// <returns></returns>
-        public ResultBase<IEnumerable<ImageFileResult>> UploadImage(IEnumerable<FileItem> images, ImageConvert convert)
+        public ResultBase<IEnumerable<ImageFileResult>> UploadImage(string fileName, Stream stream, IEnumerable<ImageConvert> converts)
         {
-            return UploadImage(images, convert, null, null);
+            var images = new List<FileItem>() { new FileItem() { FileName = fileName, FileStream = stream } };
+            return UploadImage(images, converts, null, null);
         }
         /// <summary>
-        /// 上传多张图片，单个转换任务
+        /// 上传单张图片 多个转换任务
         /// </summary>
-        /// <param name="images">图片列表</param>
-        /// <param name="convert">转换规则</param>
+        /// <param name="fileName">文件名</param>
+        /// <param name="stream">文件流</param>
+        /// <param name="converts">转换任务</param>
         /// <param name="userData">用户信息</param>
-        /// <param name="userAccesses">访问权限信息</param>
         /// <returns></returns>
-        public ResultBase<IEnumerable<ImageFileResult>> UploadImage(IEnumerable<FileItem> images, ImageConvert convert, UserData userData, IEnumerable<UserAccess> userAccesses)
+        public ResultBase<IEnumerable<ImageFileResult>> UploadImage(string fileName, Stream stream, IEnumerable<ImageConvert> converts, UserData userData)
         {
-            IEnumerable<ImageConvert> converts = convert == null ? null : new List<ImageConvert>() { convert };
+            var images = new List<FileItem>() { new FileItem() { FileName = fileName, FileStream = stream } };
+            return UploadImage(images, converts, userData, null);
+        }
+        /// <summary>
+        /// 上传单张图片 多个转换任务
+        /// </summary>
+        /// <param name="fileName">文件名</param>
+        /// <param name="stream">文件流</param>
+        /// <param name="converts">转换任务</param>
+        /// <param name="userData">用户信息</param>
+        /// <param name="userAccesses">权限信息</param>
+        /// <returns></returns>
+        public ResultBase<IEnumerable<ImageFileResult>> UploadImage(string fileName, Stream stream, IEnumerable<ImageConvert> converts, UserData userData, IEnumerable<UserAccess> userAccesses)
+        {
+            var images = new List<FileItem>() { new FileItem() { FileName = fileName, FileStream = stream } };
+            return UploadImage(images, converts, userData, userAccesses);
+        }
+        /// <summary>
+        /// 上传多张图片 没有转换任务
+        /// </summary>
+        /// <param name="images">图片列表</param>
+        /// <returns></returns>
+        public ResultBase<IEnumerable<ImageFileResult>> UploadImage(IEnumerable<FileItem> images)
+        {
+            return UploadImage(images, null, null, null);
+        }
+        /// <summary>
+        /// 上传多张图片 没有转换任务
+        /// </summary>
+        /// <param name="images">图片列表</param>
+        /// <param name="userData">用户信息</param>
+        /// <returns></returns>
+        public ResultBase<IEnumerable<ImageFileResult>> UploadImage(IEnumerable<FileItem> images, UserData userData)
+        {
+            return UploadImage(images, null, userData, null);
+        }
+        /// <summary>
+        /// 上传多张图片 没有转换任务
+        /// </summary>
+        /// <param name="images">图片列表</param>
+        /// <param name="userData">用户信息</param>
+        /// <param name="userAccesses">权限信息</param>
+        /// <returns></returns>
+        public ResultBase<IEnumerable<ImageFileResult>> UploadImage(IEnumerable<FileItem> images, UserData userData, IEnumerable<UserAccess> userAccesses)
+        {
+            return UploadImage(images, null, userData, userAccesses);
+        }
+        /// <summary>
+        /// 上传多张图片 多个转换任务
+        /// </summary>
+        /// <param name="images"></param>
+        /// <param name="converts"></param>
+        /// <param name="userData"></param>
+        /// <param name="userAccesses"></param>
+        /// <returns></returns>
+        public ResultBase<IEnumerable<ImageFileResult>> UploadImage(IEnumerable<FileItem> images, IEnumerable<ImageConvert> converts, UserData userData, IEnumerable<UserAccess> userAccesses)
+        {
             Dictionary<string, string> headers = new Dictionary<string, string>();
             headers.Add("AuthCode", AuthCode);
             headers.Add("FromApi", "true");
@@ -107,43 +191,45 @@ namespace FileService.Client
                 if (!string.IsNullOrEmpty(userData.UserAgent)) headers.Add("UserAgent", userData.UserAgent);
                 if (!string.IsNullOrEmpty(userData.UserIp)) headers.Add("UserIp", userData.UserIp);
             }
-            return UploadImage(images, converts, userAccesses, headers);
-        }
-        /// <summary>
-        /// 上传多张图片，多个转换任务
-        /// </summary>
-        /// <param name="images">文件集合</param>
-        /// <param name="converts">转换任务集合</param>
-        /// <param name="headers">头信息</param>
-        /// <param name="userAccesses">访问权限信息</param>
-        /// <returns></returns>
-        public ResultBase<IEnumerable<ImageFileResult>> UploadImage(IEnumerable<FileItem> images, IEnumerable<ImageConvert> converts, IEnumerable<UserAccess> userAccesses, Dictionary<string, string> headers)
-        {
             Task<string> result = new HttpRequestHelper().PostFileImage(RemoteUrl + "/upload/image", images, converts, userAccesses, headers);
             return JsonConvert.DeserializeObject<ResultBase<IEnumerable<ImageFileResult>>>(result.Result);
         }
-
+        ////////////////////////////////////////////////视频部分///////////////////////////////////////////////////
         /// <summary>
-        /// 上传单个视频
+        /// 上传单个视频 没有转换任务
         /// </summary>
         /// <param name="fileName">文件名</param>
         /// <param name="stream">文件流</param>
         /// <returns></returns>
         public ResultBase<IEnumerable<VideoFileResult>> UploadVideo(string fileName, Stream stream)
         {
-            return UploadVideo(fileName, stream, null, null, null);
+            var videos = new List<FileItem>() { new FileItem() { FileName = fileName, FileStream = stream } };
+            return UploadVideo(videos, null, null, null);
         }
         /// <summary>
-        /// 上传单个视频
+        /// 上传单个视频 没有转换任务
         /// </summary>
         /// <param name="fileName">文件名</param>
         /// <param name="stream">文件流</param>
         /// <param name="userData">用户信息</param>
-        /// <param name="userAccesses">访问权限信息</param>
+        /// <returns></returns>
+        public ResultBase<IEnumerable<VideoFileResult>> UploadVideo(string fileName, Stream stream, UserData userData)
+        {
+            var videos = new List<FileItem>() { new FileItem() { FileName = fileName, FileStream = stream } };
+            return UploadVideo(videos, null, userData, null);
+        }
+        /// <summary>
+        /// 上传单个视频 没有转换任务
+        /// </summary>
+        /// <param name="fileName">文件名</param>
+        /// <param name="stream">文件流</param>
+        /// <param name="userData">用户信息</param>
+        /// <param name="userAccesses">权限信息</param>
         /// <returns></returns>
         public ResultBase<IEnumerable<VideoFileResult>> UploadVideo(string fileName, Stream stream, UserData userData, IEnumerable<UserAccess> userAccesses)
         {
-            return UploadVideo(fileName, stream, null, userData, userAccesses);
+            var videos = new List<FileItem>() { new FileItem() { FileName = fileName, FileStream = stream } };
+            return UploadVideo(videos, null, userData, userAccesses);
         }
         /// <summary>
         /// 上传单个视频，单个转换任务
@@ -154,7 +240,9 @@ namespace FileService.Client
         /// <returns></returns>
         public ResultBase<IEnumerable<VideoFileResult>> UploadVideo(string fileName, Stream stream, VideoConvert convert)
         {
-            return UploadVideo(fileName, stream, convert, null, null);
+            var videos = new List<FileItem>() { new FileItem() { FileName = fileName, FileStream = stream } };
+            var converts = new List<VideoConvert>() { convert };
+            return UploadVideo(videos, converts, null, null);
         }
         /// <summary>
         /// 上传单个视频，单个转换任务
@@ -163,47 +251,96 @@ namespace FileService.Client
         /// <param name="stream">文件流</param>
         /// <param name="convert">转换任务</param>
         /// <param name="userData">用户信息</param>
-        /// <param name="userAccesses">访问权限信息</param>
+        /// <returns></returns>
+        public ResultBase<IEnumerable<VideoFileResult>> UploadVideo(string fileName, Stream stream, VideoConvert convert, UserData userData)
+        {
+            var videos = new List<FileItem>() { new FileItem() { FileName = fileName, FileStream = stream } };
+            var converts = new List<VideoConvert>() { convert };
+            return UploadVideo(videos, converts, userData, null);
+        }
+        /// <summary>
+        /// 上传单个视频，单个转换任务
+        /// </summary>
+        /// <param name="fileName">文件名</param>
+        /// <param name="stream">文件流</param>
+        /// <param name="convert">转换任务</param>
+        /// <param name="userData">用户信息</param>
+        /// <param name="userAccesses">权限信息</param>
         /// <returns></returns>
         public ResultBase<IEnumerable<VideoFileResult>> UploadVideo(string fileName, Stream stream, VideoConvert convert, UserData userData, IEnumerable<UserAccess> userAccesses)
         {
-            IEnumerable<FileItem> videos = new List<FileItem>()
-            {
-                new FileItem() { FileName = fileName, FileStream = stream }
-            };
-            return UploadVideo(videos, convert, userData, userAccesses);
+            var videos = new List<FileItem>() { new FileItem() { FileName = fileName, FileStream = stream } };
+            var converts = new List<VideoConvert>() { convert };
+            return UploadVideo(videos, converts, userData, userAccesses);
         }
         /// <summary>
-        /// 上传多个视频，单个转换任务
+        /// 上传单个视频，多个转换任务
         /// </summary>
-        /// <param name="videos"></param>
-        /// <param name="convert"></param>
+        /// <param name="fileName">文件名</param>
+        /// <param name="stream">文件流</param>
+        /// <param name="converts">转换任务</param>
         /// <returns></returns>
-        public ResultBase<IEnumerable<VideoFileResult>> UploadVideo(IEnumerable<FileItem> videos, VideoConvert convert)
+        public ResultBase<IEnumerable<VideoFileResult>> UploadVideo(string fileName, Stream stream, IEnumerable<VideoConvert> converts)
         {
-            return UploadVideo(videos, convert, null, null);
+            var videos = new List<FileItem>() { new FileItem() { FileName = fileName, FileStream = stream } };
+            return UploadVideo(videos, converts, null, null);
         }
         /// <summary>
-        /// 上传多个视频，单个转换任务
+        /// 上传单个视频，多个转换任务
+        /// </summary>
+        /// <param name="fileName">文件名</param>
+        /// <param name="stream">文件流</param>
+        /// <param name="converts">转换任务</param>
+        /// <param name="userData">用户信息</param>
+        /// <returns></returns>
+        public ResultBase<IEnumerable<VideoFileResult>> UploadVideo(string fileName, Stream stream, IEnumerable<VideoConvert> converts, UserData userData)
+        {
+            IEnumerable<FileItem> videos = new List<FileItem>() { new FileItem() { FileName = fileName, FileStream = stream } };
+            return UploadVideo(videos, converts, userData, null);
+        }
+        /// <summary>
+        /// 上传单个视频，多个转换任务
+        /// </summary>
+        /// <param name="fileName">文件名</param>
+        /// <param name="stream">文件流</param>
+        /// <param name="converts">转换任务</param>
+        /// <param name="userData">用户信息</param>
+        /// <param name="userAccesses">权限信息</param>
+        /// <returns></returns>
+        public ResultBase<IEnumerable<VideoFileResult>> UploadVideo(string fileName, Stream stream, IEnumerable<VideoConvert> converts, UserData userData, IEnumerable<UserAccess> userAccesses)
+        {
+            IEnumerable<FileItem> videos = new List<FileItem>() { new FileItem() { FileName = fileName, FileStream = stream } };
+            return UploadVideo(videos, converts, userData, userAccesses);
+        }
+        /// <summary>
+        /// 上传多个视频，没有转换任务
         /// </summary>
         /// <param name="videos">文件列表</param>
-        /// <param name="convert">转换任务</param>
-        /// <param name="userData">用户信息</param>
-        /// <param name="userAccesses">访问权限信息</param>
         /// <returns></returns>
-        public ResultBase<IEnumerable<VideoFileResult>> UploadVideo(IEnumerable<FileItem> videos, VideoConvert convert, UserData userData, IEnumerable<UserAccess> userAccesses)
+        public ResultBase<IEnumerable<VideoFileResult>> UploadVideo(IEnumerable<FileItem> videos)
         {
-            IEnumerable<VideoConvert> converts = convert == null ? null : new List<VideoConvert>() { convert };
-            Dictionary<string, string> headers = new Dictionary<string, string>();
-            headers.Add("AuthCode", AuthCode);
-            headers.Add("FromApi", "true");
-            if (userData != null)
-            {
-                if (!string.IsNullOrEmpty(userData.UserName)) headers.Add("UserName", userData.UserName);
-                if (!string.IsNullOrEmpty(userData.UserAgent)) headers.Add("UserAgent", userData.UserAgent);
-                if (!string.IsNullOrEmpty(userData.UserIp)) headers.Add("UserIp", userData.UserIp);
-            }
-            return UploadVideo(videos, converts, userAccesses, headers);
+            return UploadVideo(videos, null, null, null);
+        }
+        /// <summary>
+        /// 上传多个视频，没有转换任务
+        /// </summary>
+        /// <param name="videos">文件列表</param>
+        /// <param name="userData">用户信息</param>
+        /// <returns></returns>
+        public ResultBase<IEnumerable<VideoFileResult>> UploadVideo(IEnumerable<FileItem> videos, UserData userData)
+        {
+            return UploadVideo(videos, null, userData, null);
+        }
+        /// <summary>
+        /// 上传多个视频，没有转换任务
+        /// </summary>
+        /// <param name="videos">文件列表</param>
+        /// <param name="userData">用户信息</param>
+        /// <param name="userAccesses">权限信息</param>
+        /// <returns></returns>
+        public ResultBase<IEnumerable<VideoFileResult>> UploadVideo(IEnumerable<FileItem> videos, UserData userData, IEnumerable<UserAccess> userAccesses)
+        {
+            return UploadVideo(videos, null, userData, userAccesses);
         }
         /// <summary>
         /// 上传多个视频，多个转换任务
@@ -213,12 +350,21 @@ namespace FileService.Client
         /// <param name="headers">头信息</param>
         /// <param name="userAccesses">访问权限信息</param>
         /// <returns></returns>
-        public ResultBase<IEnumerable<VideoFileResult>> UploadVideo(IEnumerable<FileItem> videos, IEnumerable<VideoConvert> converts, IEnumerable<UserAccess> userAccesses, Dictionary<string, string> headers)
+        public ResultBase<IEnumerable<VideoFileResult>> UploadVideo(IEnumerable<FileItem> videos, IEnumerable<VideoConvert> converts, UserData userData, IEnumerable<UserAccess> userAccesses)
         {
+            Dictionary<string, string> headers = new Dictionary<string, string>();
+            headers.Add("AuthCode", AuthCode);
+            headers.Add("FromApi", "true");
+            if (userData != null)
+            {
+                if (!string.IsNullOrEmpty(userData.UserName)) headers.Add("UserName", userData.UserName);
+                if (!string.IsNullOrEmpty(userData.UserAgent)) headers.Add("UserAgent", userData.UserAgent);
+                if (!string.IsNullOrEmpty(userData.UserIp)) headers.Add("UserIp", userData.UserIp);
+            }
             Task<string> result = new HttpRequestHelper().PostFileVideo(RemoteUrl + "/upload/video", videos, converts, userAccesses, headers);
             return JsonConvert.DeserializeObject<ResultBase<IEnumerable<VideoFileResult>>>(result.Result);
         }
-
+        ////////////////////////////////////////附件部分////////////////////////////////////////////////
         /// <summary>
         /// 上传单个附件
         /// </summary>
@@ -227,7 +373,20 @@ namespace FileService.Client
         /// <returns></returns>
         public ResultBase<IEnumerable<AttachmentFileResult>> UploadAttachment(string fileName, Stream stream)
         {
-            return UploadAttachment(fileName, stream, null, null);
+            var attachments = new List<FileItem>() { new FileItem() { FileName = fileName, FileStream = stream } };
+            return UploadAttachment(attachments, null, null);
+        }
+        /// <summary>
+        /// 上传单个附件
+        /// </summary>
+        /// <param name="fileName">文件名</param>
+        /// <param name="stream">文件流</param>
+        /// <param name="userData">用户信息</param>
+        /// <returns></returns>
+        public ResultBase<IEnumerable<AttachmentFileResult>> UploadAttachment(string fileName, Stream stream, UserData userData)
+        {
+            var attachments = new List<FileItem>() { new FileItem() { FileName = fileName, FileStream = stream } };
+            return UploadAttachment(attachments, userData, null);
         }
         /// <summary>
         /// 上传单个附件
@@ -239,10 +398,7 @@ namespace FileService.Client
         /// <returns></returns>
         public ResultBase<IEnumerable<AttachmentFileResult>> UploadAttachment(string fileName, Stream stream, UserData userData, IEnumerable<UserAccess> userAccesses)
         {
-            IEnumerable<FileItem> attachments = new List<FileItem>()
-            {
-                new FileItem() { FileName = fileName, FileStream = stream }
-            };
+            var attachments = new List<FileItem>() { new FileItem() { FileName = fileName, FileStream = stream } };
             return UploadAttachment(attachments, userData, userAccesses);
         }
         /// <summary>
@@ -252,14 +408,24 @@ namespace FileService.Client
         /// <returns></returns>
         public ResultBase<IEnumerable<AttachmentFileResult>> UploadAttachment(IEnumerable<FileItem> attachments)
         {
-            return UploadAttachment(attachments, null,new Dictionary<string, string>());
+            return UploadAttachment(attachments, null, null);
         }
         /// <summary>
         /// 上传多个附件
         /// </summary>
         /// <param name="attachments">附件列表</param>
         /// <param name="userData">用户信息</param>
-        /// <param name="userAccesses">访问权限信息</param>
+        /// <returns></returns>
+        public ResultBase<IEnumerable<AttachmentFileResult>> UploadAttachment(IEnumerable<FileItem> attachments, UserData userData)
+        {
+            return UploadAttachment(attachments, userData, null);
+        }
+        /// <summary>
+        /// 上传多个附件
+        /// </summary>
+        /// <param name="attachments">附件列表</param>
+        /// <param name="userData">用户信息</param>
+        /// <param name="userAccesses">权限信息</param>
         /// <returns></returns>
         public ResultBase<IEnumerable<AttachmentFileResult>> UploadAttachment(IEnumerable<FileItem> attachments, UserData userData, IEnumerable<UserAccess> userAccesses)
         {
@@ -272,16 +438,6 @@ namespace FileService.Client
                 if (!string.IsNullOrEmpty(userData.UserAgent)) headers.Add("UserAgent", userData.UserAgent);
                 if (!string.IsNullOrEmpty(userData.UserIp)) headers.Add("UserIp", userData.UserIp);
             }
-            return UploadAttachment(attachments, userAccesses, headers);
-        }
-        /// <summary>
-        /// 上传多个附件
-        /// </summary>
-        /// <param name="attachments">附件列表</param>
-        /// <param name="headers">头信息</param>
-        /// <param name="userAccesses">访问权限信息</param>
-        public ResultBase<IEnumerable<AttachmentFileResult>> UploadAttachment(IEnumerable<FileItem> attachments, IEnumerable<UserAccess> userAccesses, Dictionary<string, string> headers)
-        {
             Task<string> result = new HttpRequestHelper().PostFileAttachment(RemoteUrl + "/upload/attachment", attachments, userAccesses, headers);
             return JsonConvert.DeserializeObject<ResultBase<IEnumerable<AttachmentFileResult>>>(result.Result);
         }
