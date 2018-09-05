@@ -1,5 +1,6 @@
 ﻿using MongoDB.Bson;
 using System;
+using System.Collections.Generic;
 
 namespace FileService.Business
 {
@@ -21,6 +22,14 @@ namespace FileService.Business
         {
             DateTime gtDate = DateTime.Now.AddMinutes(-1);
             return mongoData.DocumentMinute(from, fileId, user, gtDate) == null ? false : true;
+        }
+        public IEnumerable<BsonDocument> GetCountByRecentMonth(DateTime startDateTime)
+        {
+            return mongoData.GetCountByRecentMonth(startDateTime);
+        }
+        public IEnumerable<BsonDocument> GetDownloadsByAppName(DateTime startDateTime)
+        {
+            return mongoData.GetDownloadsByAppName(startDateTime);
         }
     }
 }

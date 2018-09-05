@@ -66,6 +66,17 @@ namespace FileService.Data
                     {"tasks",new BsonDocument("$sum",1) }
                 }).ToEnumerable();
         }
+
+        public IEnumerable<BsonDocument> GetCountByAppName(DateTime startDateTime)
+        {
+            return MongoCollection.Aggregate()
+                .Match(FilterBuilder.Gte("CreateTime", startDateTime))
+                .Project(new BsonDocument() {
+                    {"date",new BsonDocument("$dateToString", new BsonDocument() {{"format", "%Y-%m-%d" },{"date", "$CreateTime" }})},
+                    {"from","$From" }
+                })
+                .ToEnumerable();
+        }
         public bool UpdateAccess(ObjectId id, BsonArray array)
         {
             var filter = FilterBuilder.Eq("FileId", id);

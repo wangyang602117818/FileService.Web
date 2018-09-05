@@ -131,7 +131,11 @@ var urls = {
     overview: {
         recentUrl: appDomain + "admin/getcountrecentmonth",
         totalUrl: appDomain + "admin/gettotalcount",
-        filesTaskCountByAppNameUrl: appDomain + "admin/getfilestaskcountbyappname",
+        filesTaskCountByAppNameUrl: appDomain + "admin/getfilestaskcountbyappname",  //总数
+        
+        getDownloadsRecentMonthUrl: appDomain + "admin/getdownloadsrecentmonth",
+        getDownloadsByAppNameUrl: appDomain + "admin/getdownloadsbyappname",
+        getTaskCountByAppNameUrl: appDomain + "admin/gettaskcountbyappname",
         getFilesCountByAppNameUrl: appDomain + "admin/getfilescountbyappname"
     },
     log: {
@@ -341,7 +345,7 @@ function getIconNameByFileName(filename) {
             return "icon-attachment";
     }
 }
-function getEchartOptionLine(data) {
+function getEchartOptionLine(data, title, legendData) {
     return {
         animation: false,
         axisPointer: {
@@ -355,24 +359,30 @@ function getEchartOptionLine(data) {
                 type: "dotted",
             }
         },
+        title: {
+            text: title,
+            textStyle: {
+                color:"#484848",
+                fontSize: 12,
+                align: 'center'
+            },
+            top: "10px"
+        },
         legend: {
             right: 'right',
             top: 10,
-            itemWidth: 35,
-            itemHeight: 12,
-            data: [{
-                name: culture.resource_count,
-                icon: "roundRect"
-            }, {
-                name: culture.task_count,
-                icon: "roundRect"
-            }]
+            itemWidth: 25,
+            itemHeight: 8,
+            data: legendData,
+            textStyle: {
+                fontSize: 11
+            }
         },
         grid: {
             left: "5%",
-            top: "10%",
+            top: "20%",
             bottom: "15%",
-            right: "17%",
+            right: "14%",
         },
         xAxis: {
             data: data,
@@ -416,7 +426,6 @@ function getEchartOptionLine(data) {
             }
         },
         series: [{
-            name: culture.resource_count,
             type: 'line',
             showSymbol: false,
             symbol: "circle",
@@ -434,7 +443,6 @@ function getEchartOptionLine(data) {
             smooth: false,
             data: []
         }, {
-            name: culture.task_count,
             type: 'line',
             showSymbol: false,
             symbol: "circle",
@@ -454,7 +462,7 @@ function getEchartOptionLine(data) {
         }]
     };
 }
-function getEchartOptionBar(xData, files, tasks,title) {
+function getEchartOptionBar(xData, files, tasks, title) {
     return {
         animation: false,
         axisPointer: {
@@ -469,13 +477,13 @@ function getEchartOptionBar(xData, files, tasks,title) {
             }
         },
         title: {
-            left: "1%",
             text: title,
             textStyle: {
+                color: "#484848",
                 fontSize: 12,
                 align: 'center'
             },
-            top:"10px"
+            top: "10px"
         },
         grid: {
             left: "3%",
@@ -486,15 +494,18 @@ function getEchartOptionBar(xData, files, tasks,title) {
         legend: {
             right: 'right',
             top: 10,
-            itemWidth: 35,
-            itemHeight: 12,
+            itemWidth: 25,
+            itemHeight: 8,
             data: [{
                 name: culture.resource_count,
                 icon: "roundRect"
             }, {
                 name: culture.task_count,
                 icon: "roundRect"
-            }]
+            }],
+            textStyle: {
+                fontSize: 11
+            }
         },
         xAxis: {
             type: 'category',

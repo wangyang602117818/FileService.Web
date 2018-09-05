@@ -123,6 +123,13 @@ namespace FileService.Data
                     {"date",new BsonDocument("$dateToString", new BsonDocument() {{"format", "%Y-%m-%d" },{"date", "$CreateTime" }})},
                     {"from","$From" }
                 })
+                .Group<BsonDocument>(new BsonDocument() {
+                    {"_id",new BsonDocument(){
+                        {"date","$date" },
+                        {"from","$from" }
+                    }},
+                    {"count",new BsonDocument("$sum",1) }
+                })
                 .ToEnumerable();
         }
         public override FilterDefinition<BsonDocument> GetAccessFilter(string userName)

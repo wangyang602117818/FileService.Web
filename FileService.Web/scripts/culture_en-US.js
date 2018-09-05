@@ -42,7 +42,9 @@ var culture = {
     month: "month",
     year: "year",
     count_by_app: "Count by AppName",
-    resource_task_count_by_appname:"Resource & Task Count By AppName",
+    resource_task_count_by_appname: "Resource & Task count by appName",
+    resource_task_count_by_date: "Resource & Task count by date",
+    download_count_by_date: "Download count by date",
 
     image: "Image",
     video: "Video",

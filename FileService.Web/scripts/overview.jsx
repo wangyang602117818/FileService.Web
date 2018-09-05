@@ -6,7 +6,16 @@
         };
     }
     componentDidMount(e) {
-        this.myChart = echarts.init(document.getElementById('echart_main'));
+        this.myChartResource = echarts.init(document.getElementById('echart_app_resourcetask'));
+        this.myChartDownload = echarts.init(document.getElementById('echart_app_alldownload'));
+        window.addEventListener('resize', this.onWindowResize.bind(this));
+    }
+    componentWillUnmount() {
+        window.removeEventListener('resize', this.onWindowResize.bind(this));
+    }
+    onWindowResize() {
+        this.myChartResource.resize();
+        this.myChartDownload.resize();
     }
     onRecentMonthChange(e) {
         if (this.state.recentMonth == e.target.id) return;
@@ -17,12 +26,21 @@
     }
     getData() {
         this.getRecentData();
+        this.getDownloadData();
+        this.getResourceByAppName();
     }
     getRecentData() {
         var that = this;
         var xData = [];
         var dataFiles = {}, dataFilesArray = [];
         var dataTasks = {}, dataTasksArray = [];
+        var legendData = [{
+            name: culture.resource_count,
+            icon: "roundRect"
+        }, {
+            name: culture.task_count,
+            icon: "roundRect"
+        }];
         http.get(urls.overview.recentUrl + "?month=" + this.state.recentMonth, function (data) {
             if (data.code == 0) {
                 for (var i = 0; i < data.result.files.length; i++) {
@@ -50,12 +68,14 @@
                     if (a[0] > b[0]) return 1;
                     return 0;
                 });
-                that.myChart.setOption(getEchartOptionLine(xData));
-                that.myChart.setOption({
+                that.myChartResource.setOption(getEchartOptionLine(xData, culture.resource_task_count_by_date, legendData));
+                that.myChartResource.setOption({
                     series: [{
+                        name: culture.resource_count,
                         type: 'line',
                         data: dataFilesArray
                     }, {
+                        name: culture.task_count,
                         type: 'line',
                         data: dataTasksArray
                     }]
@@ -63,33 +83,72 @@
             }
         });
     }
+    getDownloadData() {
+        var legendData = [{
+            name: culture.downloads,
+            icon: "roundRect"
+        }];
+        var that = this;
+        var xData = [];
+        var downloads = {}, downloadsArray = [];
+        http.get(urls.overview.getDownloadsRecentMonthUrl + "?month=" + this.state.recentMonth, function (data) {
+            if (data.code == 0) {
+                for (var i = 0; i < data.result.length; i++) {
+                    xData.push(data.result[i]._id);
+                    downloads[data.result[i]._id] = data.result[i].count;
+                }
+                xData = xData.sortAndUnique();
+                for (var i = 0; i < xData.length; i++) {
+                    if (!downloads[xData[i]]) downloads[xData[i]] = 0;
+                }
+                for (var key in downloads) downloadsArray.push([key, downloads[key]]);
+                downloadsArray.sort(function (a, b) {
+                    if (a[0] < b[0]) return -1;
+                    if (a[0] > b[0]) return 1;
+                    return 0;
+                });
+                that.myChartDownload.setOption(getEchartOptionLine(xData, culture.download_count_by_date, legendData));
+                that.myChartDownload.setOption({
+                    series: [{
+                        name: culture.downloads,
+                        type: 'line',
+                        data: downloadsArray
+                    }]
+                });
+            }
+        });
+    }
+    getResourceByAppName() {
+        var appArray = [], legendData = [], resourceArray = [];
+        http.get(urls.overview.getFilesCountByAppNameUrl + "?month=" + this.state.recentMonth, function (data) {
+            if (data.code == 0) {
+                for (var i = 0; i < data.result.length; i++) {
+                    if (appArray.indexOf(data.result[i].from) == -1) {
+                        appArray.push(data.result[i].from);
+                        legendData.push({ name: data.result[i].from, icon: "roundRect" })
+                    }
+                }
+
+                console.log(legendData);
+            }
+        }.bind(this));
+    }
     render() {
         return (
             <div className={this.props.show ? "overview_con show" : "overview_con hidden"}>
-                <TitleTxt title={culture.count_by_date} />
-                <div className="echart_main" id="echart_main"></div>
-                <div className="echart_split"></div>
-                <div className="echart_option">
-                    <div className="echart_option_con">
-                        <span id="1"
-                            className={this.state.recentMonth == "1" ? "current" : ""}
-                            onClick={this.onRecentMonthChange.bind(this)}>{culture.last} 1 {culture.month}</span>
-                        <span id="12"
-                            className={this.state.recentMonth == "12" ? "current" : ""}
-                            onClick={this.onRecentMonthChange.bind(this)}>{culture.last} 1 {culture.year}</span>
-                        <span id="3"
-                              className={this.state.recentMonth == "3" ? "current" : ""}
-                              onClick={this.onRecentMonthChange.bind(this)}>{culture.last} 3 {culture.month}</span>
-                        <span id="24"
-                              className={this.state.recentMonth == "24" ? "current" : ""}
-                              onClick={this.onRecentMonthChange.bind(this)}>{culture.last} 2 {culture.year}</span>
-                        <span id="6"
-                              className={this.state.recentMonth == "6" ? "current" : ""}
-                              onClick={this.onRecentMonthChange.bind(this)}>{culture.last} 6 {culture.month}</span>
-                        <span id="36"
-                              className={this.state.recentMonth == "36" ? "current" : ""}
-                              onClick={this.onRecentMonthChange.bind(this)}>{culture.last} 3 {culture.year}</span>
-                    </div>
+                <TitleTxtRecentMonth title={culture.count_by_date}
+                    recentMonth={this.state.recentMonth}
+                    onRecentMonthChange={this.onRecentMonthChange.bind(this)} />
+                <div className="echart_main_con">
+                    <div className="echart_app_resourcetask" id="echart_app_resourcetask"></div>
+                    <div className="echart_split"></div>
+                    <div className="echart_app_alldownload" id="echart_app_alldownload"></div>
+                </div>
+                <br />
+                <div className="echart_main_con">
+                    <div className="echart_app_resource"></div>
+                    <div className="echart_app_task"></div>
+                    <div className="echart_app_download"></div>
                 </div>
             </div>
         );
@@ -108,9 +167,13 @@ class CountTotal extends React.Component {
     }
     componentDidMount() {
         this.myChart = echarts.init(document.getElementById('echart_count_appname'));
-        window.onresize = function () {
-            this.myChart.resize();
-        }.bind(this)
+        window.addEventListener('resize', this.onWindowResize.bind(this));
+    }
+    componentWillUnmount() {
+        window.removeEventListener('resize', this.onWindowResize.bind(this));
+    }
+    onWindowResize() {
+        this.myChart.resize();
     }
     getData() {
         this.getTotalCount();
@@ -152,11 +215,11 @@ class CountTotal extends React.Component {
         return (
             <div className={this.props.show ? "overview_con show" : "overview_con hidden"}>
                 <TitleTxt title={culture.count_by_app} />
-                <div className="echart_main" id="echart_count_appname" style={{ height: "240px", width:"100%" }}>
+                <div className="echart_main" id="echart_count_appname" style={{ height: "240px", width: "100%" }}>
                 </div>
                 <TitleTxt title={culture.totals} />
                 <div className="totals">
-                    <table className="table_general" style={{width:"40%"}}>
+                    <table className="table_general" style={{ width: "40%" }}>
                         <thead>
                             <tr>
                                 <td>{culture.handlers}</td>
@@ -175,7 +238,7 @@ class CountTotal extends React.Component {
                 </div>
                 <TitleTxt title={culture.resources} />
                 <div className="totals">
-                    <table className="table_general" style={{width:"30%"}}>
+                    <table className="table_general" style={{ width: "30%" }}>
                         <thead>
                             <tr>
                                 <td>{culture.image}</td>
@@ -227,7 +290,7 @@ class Overview extends React.Component {
                 that.refs.countTotal.getData();
                 localStorage.update_time = getCurrentDateTime();
             }
-            , numb * 1000);
+                , numb * 1000);
         } else {
             window.clearInterval(this.interval);
         }
@@ -268,13 +331,13 @@ class Overview extends React.Component {
             <div className="main">
                 <h1>{culture.overview}</h1>
                 <TitleArrow title={culture.overview}
-                            show={this.state.overviewShow}
-                            onShowChange={this.onOverviewShow.bind(this)} />
+                    show={this.state.overviewShow}
+                    onShowChange={this.onOverviewShow.bind(this)} />
                 <OverViewTotal ref="overViewTotal" show={this.state.overviewShow} />
                 <TitleArrow title={culture.totals}
-                            show={this.state.totalShow} 
-                            onShowChange={this.onCountTotalShow.bind(this)}/>
-                <CountTotal ref="countTotal" show={this.state.totalShow}/>
+                    show={this.state.totalShow}
+                    onShowChange={this.onCountTotalShow.bind(this)} />
+                <CountTotal ref="countTotal" show={this.state.totalShow} />
             </div>
         )
     }

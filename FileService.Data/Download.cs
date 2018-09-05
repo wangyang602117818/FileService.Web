@@ -1,6 +1,7 @@
 ﻿using MongoDB.Bson;
 using MongoDB.Driver;
 using System;
+using System.Collections.Generic;
 
 namespace FileService.Data
 {
@@ -19,6 +20,31 @@ namespace FileService.Data
         {
             var filter = FilterBuilder.Eq("From", from) & FilterBuilder.Eq("FileId", fileId) & FilterBuilder.Eq("User", user) & FilterBuilder.Gt("CreateTime", gtDate);
             return MongoCollection.Find(filter).Limit(1).FirstOrDefault();
+        }
+
+        public IEnumerable<BsonDocument> GetCountByRecentMonth(DateTime startDateTime)
+        {
+            return MongoCollection.Aggregate()
+                 .Match(FilterBuilder.Gte("CreateTime", startDateTime))
+                 .Project(new BsonDocument("date", new BsonDocument("$dateToString", new BsonDocument() {
+                    {"format", "%Y-%m-%d" },
+                    {"date", "$CreateTime" }}
+                 )))
+                 .Group<BsonDocument>(new BsonDocument() {
+                    {"_id","$date" },
+                    {"count",new BsonDocument("$sum",1) }
+                 })
+                 .Sort(new BsonDocument("_id", 1)).ToEnumerable();
+        }
+
+        public IEnumerable<BsonDocument> GetDownloadsByAppName(DateTime startDateTime)
+        {
+            return MongoCollection.Aggregate()
+                .Group<BsonDocument>(new BsonDocument()
+                {
+                    {"_id","$From" },
+                    {"files",new BsonDocument("$sum",1) }
+                }).ToEnumerable();
         }
     }
 }

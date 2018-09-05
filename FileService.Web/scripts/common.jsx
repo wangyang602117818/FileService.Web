@@ -6,8 +6,45 @@ class TitleTxt extends React.Component {
     }
     render() {
         return (
-            <div className="title_inner">
-                {this.props.title}
+            <div className="title_arrow">
+                <div className="title_inner">
+                    {this.props.title}
+                </div>
+            </div>
+        );
+    }
+}
+
+class TitleTxtRecentMonth extends React.Component {
+    constructor(props) {
+        super(props);
+    }
+    render() {
+        return (
+            <div className="title_arrow">
+                <div className="title_inner">
+                    {this.props.title}
+                </div>
+                <div className="right_month">
+                    <span id="1"
+                        className={this.props.recentMonth == "1" ? "current" : ""}
+                        onClick={this.props.onRecentMonthChange.bind(this)}>{culture.last} 1 {culture.month}</span>
+                    <span id="3"
+                        className={this.props.recentMonth == "3" ? "current" : ""}
+                        onClick={this.props.onRecentMonthChange.bind(this)}>{culture.last} 3 {culture.month}</span>
+                    <span id="6"
+                        className={this.props.recentMonth == "6" ? "current" : ""}
+                        onClick={this.props.onRecentMonthChange.bind(this)}>{culture.last} 6 {culture.month}</span>
+                    <span id="12"
+                        className={this.props.recentMonth == "12" ? "current" : ""}
+                        onClick={this.props.onRecentMonthChange.bind(this)}>{culture.last} 1 {culture.year}</span>
+                    <span id="24"
+                        className={this.props.recentMonth == "24" ? "current" : ""}
+                        onClick={this.props.onRecentMonthChange.bind(this)}>{culture.last} 2 {culture.year}</span>
+                    <span id="36"
+                        className={this.props.recentMonth == "36" ? "current" : ""}
+                        onClick={this.props.onRecentMonthChange.bind(this)}>{culture.last} 3 {culture.year}</span>
+                </div>
             </div>
         );
     }

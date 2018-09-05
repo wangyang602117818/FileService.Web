@@ -43,6 +43,8 @@ var culture = {
     year: "年",
     count_by_app: "根据应用程序总数",
     resource_task_count_by_appname: "通过应用程序统计资源和任务总数",
+    resource_task_count_by_date: "通过时间统计资源和任务总数",
+    download_count_by_date: "通过时间统计下载量",
 
     image: "图片",
     video: "视频",

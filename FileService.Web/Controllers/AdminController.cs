@@ -30,6 +30,7 @@ namespace FileService.Web.Controllers
         Ts ts = new Ts();
         VideoCapture videoCapture = new VideoCapture();
         Shared shared = new Shared();
+        Download download = new Download();
         public ActionResult Index()
         {
             ViewBag.Name = User.Identity.Name;
@@ -269,6 +270,27 @@ namespace FileService.Web.Controllers
             DateTime dateTime = DateTime.Now;
             var startDateTime = new DateTime(dateTime.Year, dateTime.Month, dateTime.Day, 0, 0, 0).AddMonths(-month);
             IEnumerable<BsonDocument> fileResult = filesWrap.GetCountByAppName(startDateTime);
+            return new ResponseModel<IEnumerable<BsonDocument>>(ErrorCode.success, fileResult);
+        }
+        public ActionResult GetTaskCountByAppName(int month)
+        {
+            DateTime dateTime = DateTime.Now;
+            var startDateTime = new DateTime(dateTime.Year, dateTime.Month, dateTime.Day, 0, 0, 0).AddMonths(-month);
+            IEnumerable<BsonDocument> fileResult = task.GetCountByAppName(startDateTime);
+            return new ResponseModel<IEnumerable<BsonDocument>>(ErrorCode.success, fileResult);
+        }
+        public ActionResult GetDownloadsRecentMonth(int month)
+        {
+            DateTime dateTime = DateTime.Now;
+            var startDateTime = new DateTime(dateTime.Year, dateTime.Month, dateTime.Day, 0, 0, 0).AddMonths(-month);
+            IEnumerable<BsonDocument> fileResult = download.GetCountByRecentMonth(startDateTime);
+            return new ResponseModel<IEnumerable<BsonDocument>>(ErrorCode.success, fileResult);
+        }
+        public ActionResult GetDownloadsByAppName(int month)
+        {
+            DateTime dateTime = DateTime.Now;
+            var startDateTime = new DateTime(dateTime.Year, dateTime.Month, dateTime.Day, 0, 0, 0).AddMonths(-month);
+            IEnumerable<BsonDocument> fileResult = download.GetDownloadsByAppName(startDateTime);
             return new ResponseModel<IEnumerable<BsonDocument>>(ErrorCode.success, fileResult);
         }
         public ActionResult GetTotalCount()
