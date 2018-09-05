@@ -21,6 +21,7 @@ namespace FileService.Util
         public static string sharedUserPwd = ConfigurationManager.AppSettings["sharedUserPwd"];
         public static bool connectState(string path, string userName, string passWord)
         {
+            if (sharedUserName == "none" && sharedUserPwd == "none") return true;
             bool Flag = false;
             Process proc = new Process();
             try

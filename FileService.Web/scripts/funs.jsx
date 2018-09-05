@@ -105,6 +105,7 @@ var http = {
     }
 };
 var appDomain = "/";
+// var appDomain = "/FileServiceWeb/";
 var baseUrl = window.location.protocol + "//" + window.location.host + appDomain;
 var urls = {
     logoUrl: appDomain + "image/logo.png",

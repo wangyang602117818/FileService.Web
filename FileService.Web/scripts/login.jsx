@@ -5,7 +5,7 @@
     render() {
         return (
             <div className="login_row margin_top">
-                <img src="/image/logo.png" />
+                <img src={appDomain + "/image/logo.png"} />
             </div>
         );
     }
