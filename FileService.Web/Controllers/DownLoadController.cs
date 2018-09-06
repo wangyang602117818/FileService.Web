@@ -83,7 +83,7 @@ namespace FileService.Web.Controllers
             BsonDocument thumb = thumbnail.FindOne(ObjectId.Parse(id));
             return File(thumb["File"].AsByteArray, ImageExtention.GetContentType(thumb["FileName"].AsString), thumb["FileName"].AsString);
         }
-        public ActionResult M3u8(string id)
+        public ActionResult M3u8Pure(string id)
         {
             BsonDocument document = m3u8.FindOne(ObjectId.Parse(id));
             string baseUrl = Request.Url.Scheme + "://" + Request.Url.Authority + Request.ApplicationPath;
@@ -93,7 +93,7 @@ namespace FileService.Web.Controllers
             });
             return File(Encoding.UTF8.GetBytes(fileStr), "application/x-mpegURL", document["FileName"].AsString);
         }
-        public ActionResult M3u8Pure(string id)
+        public ActionResult M3u8(string id)
         {
             if (id.StartsWith("t")) return Ts(id.TrimStart('t'));
             BsonDocument document = m3u8.FindOne(ObjectId.Parse(id));

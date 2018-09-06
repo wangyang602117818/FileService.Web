@@ -600,7 +600,7 @@ namespace FileService.Client
             Dictionary<string, string> headers = new Dictionary<string, string>();
             headers.Add("AuthCode", AuthCode);
             headers.Add("FromApi", "true");
-            return new HttpRequestHelper().GetFile(RemoteUrl + "/download/m3u8pure/" + fileId, headers);
+            return new HttpRequestHelper().GetFile(RemoteUrl + "/download/m3u8/" + fileId, headers);
         }
         /// <summary>
         /// 下载视频切片
