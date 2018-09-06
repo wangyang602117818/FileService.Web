@@ -119,7 +119,7 @@ var urls = {
     downloadZipInnerUrl: appDomain + "download/getzipinnerfile",
     downloadRarInnerUrl: appDomain + "download/getrarinnerfile",
     thumbnailUrl: appDomain + "download/thumbnail",
-    m3u8Url: appDomain + "download/m3u8pure",
+    m3u8Url: appDomain + "download/m3u8",
     videoCpUrl: appDomain + "download/videocapture",
     videoCpUploadUrl: appDomain + "upload/videocapture",
     videoCpDelUrl: appDomain + "data/deletevideocapture",
