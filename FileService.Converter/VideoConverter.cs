@@ -156,9 +156,9 @@ namespace FileService.Converter
                 }
             }
             process.WaitForExit();
-            HlsToMongo(outputPath, output.Id.ToString(), fileId, Path.GetFileNameWithoutExtension(fullPath) + ".m3u8", totalDuration, output.Flag);
+            HlsToMongo(outputPath, output.Id.ToString(), fileId, Path.GetFileNameWithoutExtension(fullPath) + ".m3u8", (int)output.Quality, totalDuration, output.Flag);
         }
-        public void HlsToMongo(string path, string m3u8FileId, string sourceFileId, string fileNameM3u8, int duration, string flag)
+        public void HlsToMongo(string path, string m3u8FileId, string sourceFileId, string fileNameM3u8, int quality, int duration, string flag)
         {
             string[] files = Directory.GetFiles(path);
             string m3u8Text = File.ReadAllText(path + fileNameM3u8);
@@ -175,7 +175,7 @@ namespace FileService.Converter
                     n++;
                 }
             }
-            m3u8.Replace(ObjectId.Parse(m3u8FileId), ObjectId.Parse(sourceFileId), fileNameM3u8, m3u8Text, duration, files.Length - 1, flag);
+            m3u8.Replace(ObjectId.Parse(m3u8FileId), ObjectId.Parse(sourceFileId), fileNameM3u8, m3u8Text, quality, duration, files.Length - 1, flag);
             Directory.Delete(path, true);
         }
         private int GetTotalDuration(string str)

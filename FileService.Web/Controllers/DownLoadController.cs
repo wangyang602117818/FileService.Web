@@ -5,6 +5,7 @@ using MongoDB.Bson;
 using MongoDB.Driver.GridFS;
 using System;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Web.Mvc;
@@ -22,6 +23,7 @@ namespace FileService.Web.Controllers
         VideoCapture videoCapture = new VideoCapture();
         FilesWrap filesWrap = new FilesWrap();
         Download download = new Download();
+        static string m3u8Template = System.IO.File.ReadAllText(AppDomain.CurrentDomain.BaseDirectory + "template.m3u8");
         [AppAuthorizeDefault]
         public ActionResult Get(string id)
         {
@@ -102,6 +104,20 @@ namespace FileService.Web.Controllers
                  return "t" + match.Groups[1].Value;
              });
             return File(Encoding.UTF8.GetBytes(document["File"].AsString), "application/x-mpegURL", document["FileName"].AsString);
+        }
+        public ActionResult M3u8MultiStream(string id)
+        {
+            if (id.StartsWith("m")) return M3u8(id.TrimStart('m'));
+            if (id.StartsWith("t")) return Ts(id.TrimStart('t'));
+            string m3u8File = m3u8Template;
+            var list = m3u8.FindBySourceIdAndSort(ObjectId.Parse(id)).ToList();
+            for (var i = 0; i < 4; i++)
+            {
+                var r = list.Where(s => s["Quality"].AsInt32 >= i).FirstOrDefault();
+                BsonDocument item = r == null ? list[list.Count - 1] : r;
+                m3u8File = m3u8File.Replace("{level-" + i + "}", "m" + item["_id"].ToString());
+            }
+            return File(Encoding.UTF8.GetBytes(m3u8File), "application/x-mpegURL", list[0]["FileName"].ToString());
         }
         public ActionResult Ts(string id)
         {

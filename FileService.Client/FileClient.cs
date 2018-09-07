@@ -603,6 +603,18 @@ namespace FileService.Client
             return new HttpRequestHelper().GetFile(RemoteUrl + "/download/m3u8/" + fileId, headers);
         }
         /// <summary>
+        /// 下载自适应的m3u8视频切片列表
+        /// </summary>
+        /// <param name="fileId">视频源文件</param>
+        /// <returns></returns>
+        public DownloadFileItem DownloadM3u8MultiStream(string fileId)
+        {
+            Dictionary<string, string> headers = new Dictionary<string, string>();
+            headers.Add("AuthCode", AuthCode);
+            headers.Add("FromApi", "true");
+            return new HttpRequestHelper().GetFile(RemoteUrl + "/download/m3u8multistream/" + fileId, headers);
+        }
+        /// <summary>
         /// 下载视频切片
         /// </summary>
         /// <param name="fileId">视频切片id</param>

@@ -120,6 +120,7 @@ var urls = {
     downloadRarInnerUrl: appDomain + "download/getrarinnerfile",
     thumbnailUrl: appDomain + "download/thumbnail",
     m3u8Url: appDomain + "download/m3u8",
+    m3u8MultiStreamUrl: appDomain + "download/m3u8multistream",
     videoCpUrl: appDomain + "download/videocapture",
     videoCpUploadUrl: appDomain + "upload/videocapture",
     videoCpDelUrl: appDomain + "data/deletevideocapture",
@@ -133,7 +134,7 @@ var urls = {
         recentUrl: appDomain + "admin/getcountrecentmonth",
         totalUrl: appDomain + "admin/gettotalcount",
         filesTaskCountByAppNameUrl: appDomain + "admin/getfilestaskcountbyappname",  //总数
-        
+
         getDownloadsRecentMonthUrl: appDomain + "admin/getdownloadsrecentmonth",
         getDownloadsByAppNameUrl: appDomain + "admin/getdownloadsbyappname",
         getTaskCountByAppNameUrl: appDomain + "admin/gettaskcountbyappname",
@@ -363,7 +364,7 @@ function getEchartOptionLine(data, title, legendData) {
         title: {
             text: title,
             textStyle: {
-                color:"#484848",
+                color: "#484848",
                 fontSize: 12,
                 align: 'center'
             },

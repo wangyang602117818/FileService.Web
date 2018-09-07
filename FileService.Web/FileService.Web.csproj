@@ -388,6 +388,7 @@
     <Content Include="css\iconfont.eot" />
     <Content Include="css\iconfont.ttf" />
     <Content Include="css\iconfont.woff" />
+    <Content Include="template.m3u8" />
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>

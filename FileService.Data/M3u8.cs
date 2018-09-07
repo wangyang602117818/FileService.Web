@@ -17,5 +17,13 @@ namespace FileService.Data
                 .Project(Builders<BsonDocument>.Projection
                 .Exclude("File")).ToEnumerable();
         }
+        public IEnumerable<BsonDocument> FindBySourceIdAndSort(ObjectId sourceId)
+        {
+            return MongoCollection.Find(FilterBuilder.Eq("SourceId", sourceId))
+               .Project(Builders<BsonDocument>.Projection
+               .Exclude("File"))
+               .SortBy(s => s["Quality"])
+               .ToEnumerable();
+        }
     }
 }
