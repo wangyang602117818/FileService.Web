@@ -190,5 +190,7 @@ var culture = {
     cache_file_status: "缓存文件状态",
     deleted: "已删除",
     exists: "存在",
-    empty_cache_file: "清除缓存文件"
+    empty_cache_file: "清除缓存文件",
+    user_agent: "用户代理",
+    restore_file: "恢复文件"
 }

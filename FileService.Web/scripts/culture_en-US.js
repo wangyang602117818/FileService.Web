@@ -191,5 +191,7 @@ var culture = {
     deleted: "Deleted",
     exists: "Exists",
     empty_cache_file: "EmptyCacheFile",
+    user_agent: "UserAgent",
+    restore_file:"RestoreFile"
 
 }

@@ -673,6 +673,13 @@ function assembleDepartmentDataInternal(virtualData, departments, layer, layerAb
             topLayerCount);
     }
 }
+function getAgent(agent) {
+    if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(agent)) {
+        return "Mobile";
+    } else {
+        return "PC";
+    }
+}
 Array.prototype.sortAndUnique = function () {
     this.sort(); //先排序
     var res = [this[0]];
