@@ -4,6 +4,7 @@ using FileService.Util;
 using FileService.Web.Filters;
 using FileService.Web.Models;
 using MongoDB.Bson;
+using MongoDB.Driver.GridFS;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -809,7 +810,8 @@ namespace FileService.Web.Controllers
             }
             if (filesWrap.CountByFileId(fileWrap["FileId"].AsObjectId) == 1 && fileWrap["FileId"].AsObjectId != ObjectId.Empty)
             {
-                mongoFile.Delete(fileWrap["FileId"].AsObjectId);
+                ObjectId fId = fileWrap["FileId"].AsObjectId;
+                mongoFile.Delete(fId);
             }
             filesWrap.DeleteOne(ObjectId.Parse(id));
             task.Delete(ObjectId.Parse(id));

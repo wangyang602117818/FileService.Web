@@ -8,6 +8,7 @@
     componentDidMount(e) {
         this.myChartResource = echarts.init(document.getElementById('echart_app_resourcetask'));
         this.myChartDownload = echarts.init(document.getElementById('echart_app_alldownload'));
+        this.myChartAppResource = echarts.init(document.getElementById('echart_app_resource'));
         window.addEventListener('resize', this.onWindowResize.bind(this));
     }
     componentWillUnmount() {
@@ -68,7 +69,7 @@
                     if (a[0] > b[0]) return 1;
                     return 0;
                 });
-                that.myChartResource.setOption(getEchartOptionLine(xData, culture.resource_task_count_by_date, legendData));
+                that.myChartResource.setOption(getEchartOptionLine(xData, culture.resource_task_count_by_date,"5%", legendData));
                 that.myChartResource.setOption({
                     series: [{
                         name: culture.resource_count,
@@ -107,7 +108,7 @@
                     if (a[0] > b[0]) return 1;
                     return 0;
                 });
-                that.myChartDownload.setOption(getEchartOptionLine(xData, culture.download_count_by_date, legendData));
+                that.myChartDownload.setOption(getEchartOptionLine(xData, culture.download_count_by_date,"5%", legendData));
                 that.myChartDownload.setOption({
                     series: [{
                         name: culture.downloads,
@@ -119,17 +120,36 @@
         });
     }
     getResourceByAppName() {
-        var appArray = [], legendData = [], resourceArray = [];
+        var appArray = [], xData = [], legendData = [], series = [];
         http.get(urls.overview.getFilesCountByAppNameUrl + "?month=" + this.state.recentMonth, function (data) {
             if (data.code == 0) {
                 for (var i = 0; i < data.result.length; i++) {
-                    if (appArray.indexOf(data.result[i].from) == -1) {
-                        appArray.push(data.result[i].from);
-                        legendData.push({ name: data.result[i].from, icon: "roundRect" })
+                    xData.push(data.result[i]._id.date);
+                    if (appArray.indexOf(data.result[i]._id.from) == -1) {
+                        appArray.push(data.result[i]._id.from);
+                        series.push({
+                            name: data.result[i]._id.from,
+                            type: 'line',
+                            symbol: "circle",
+                            
+                            data: []
+                        });
+                        legendData.push({ name: data.result[i]._id.from, icon: "roundRect" });
                     }
                 }
+                for (var i = 0; i < data.result.length; i++) {
+                    for (var j = 0; j < series.length; j++) {
+                        if (data.result[i]._id.from == series[j].name) {
+                            series[j].data.push([data.result[i]._id.date, data.result[i].count]);
+                        } else {
+                            series[j].data.push([data.result[i]._id.date, 0]);
+                        }
+                    }
+                }
+                xData = xData.sortAndUnique();
 
-                console.log(legendData);
+                this.myChartAppResource.setOption(getEchartOptionLine(xData, culture.resource_count_by_appname,"3%", legendData));
+                this.myChartAppResource.setOption({ series: series });
             }
         }.bind(this));
     }
@@ -146,9 +166,11 @@
                 </div>
                 <br />
                 <div className="echart_main_con">
-                    <div className="echart_app_resource"></div>
-                    <div className="echart_app_task"></div>
+                    <div className="echart_app_resource" id="echart_app_resource"></div>
+                    {/*
+                     <div className="echart_app_task"></div>
                     <div className="echart_app_download"></div>
+                     */}
                 </div>
             </div>
         );

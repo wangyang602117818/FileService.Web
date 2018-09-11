@@ -95,7 +95,6 @@
     .echart_main_con .echart_app_resource, .echart_main_con .echart_app_task, .echart_main_con .echart_app_download {
         flex: 1;
         margin-left: 5px;
-        border: 1px solid blue;
     }
 
 .echart_split {

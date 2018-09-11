@@ -11,8 +11,4 @@ namespace FileService.Data
     {
         public MongoFileConvert() : base("admin", "convert") { }
     }
-    public class MongoFileDeleted : MongoFileBase
-    {
-        public MongoFileDeleted() : base("admin", "deleted") { }
-    }
 }

@@ -130,6 +130,7 @@ namespace FileService.Data
                     }},
                     {"count",new BsonDocument("$sum",1) }
                 })
+                .Sort(new BsonDocument("_id.date",1))
                 .ToEnumerable();
         }
         public override FilterDefinition<BsonDocument> GetAccessFilter(string userName)

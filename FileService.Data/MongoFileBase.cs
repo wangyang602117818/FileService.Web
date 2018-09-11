@@ -1,11 +1,6 @@
 ﻿using MongoDB.Bson;
 using MongoDB.Driver.GridFS;
-using MongoDB.Driver.Linq;
-using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace FileService.Data
@@ -37,5 +32,6 @@ namespace FileService.Data
         {
             gridFSBucket.Delete(id);
         }
+        
     }
 }
