@@ -49,6 +49,26 @@ class TitleTxtRecentMonth extends React.Component {
         );
     }
 }
+class TitleTxtRightTips extends React.Component {
+    constructor(props) {
+        super(props);
+    }
+    render() {
+        return (
+            <div className="title_arrow">
+                <div className="title_inner">
+                    {this.props.title}
+                </div>
+                <div className="right_tips_grid">
+                    <span >{culture.handlers}:{this.props.handlers}</span>
+                    <span >{culture.tasks}:{this.props.tasks}</span>
+                    <span >{culture.resources}:{this.props.resourcesImage + this.props.resourcesVideo + this.props.resourcesAttachment}</span>
+                    <span >{culture.downloads}:{this.props.downloads}</span>
+                </div>
+            </div>
+        );
+    }
+}
 class TitleArrow extends React.Component {
     constructor(props) {
         super(props);

@@ -75,6 +75,20 @@
                 cursor: default;
             }
 
+    .title_arrow .right_tips_grid {
+        display: inline-block;
+        float: right;
+        font-weight: normal;
+    }
+
+        .title_arrow .right_tips_grid span {
+            display: inline-block;
+            background-color: #eee;
+            margin-left: 8px;
+            padding: 0 3px;
+            cursor:default;
+        }
+
 .overview_con {
     margin-top: 5px;
     /*border: 1px solid #ccc;*/
@@ -89,7 +103,7 @@
 
     .echart_main_con .echart_app_resourcetask, .echart_main_con .echart_app_alldownload {
         flex: 1;
-        margin-left:5px;
+        margin-left: 5px;
     }
 
     .echart_main_con .echart_app_resource, .echart_main_con .echart_app_task, .echart_main_con .echart_app_download {
@@ -100,7 +114,6 @@
 .echart_split {
     display: inline-block;
     margin-left: 15px;
-
     height: 100%;
     width: 1px;
     border-left: 1px solid #e4e4e4;

@@ -350,6 +350,7 @@ function getIconNameByFileName(filename) {
 }
 function getEchartOptionLine(data, title, grid_left, legendData) {
     return {
+        color: colorList,
         animation: false,
         axisPointer: {
             show: true,
@@ -433,13 +434,7 @@ function getEchartOptionLine(data, title, grid_left, legendData) {
             symbol: "circle",
             lineStyle: {
                 normal: {
-                    color: "#C35C00",
                     width: 1
-                }
-            },
-            itemStyle: {
-                normal: {
-                    color: "#C35C00",
                 }
             },
             smooth: false,
@@ -450,13 +445,7 @@ function getEchartOptionLine(data, title, grid_left, legendData) {
             symbol: "circle",
             lineStyle: {
                 normal: {
-                    color: "#E1301E",
                     width: 1
-                }
-            },
-            itemStyle: {
-                normal: {
-                    color: "#E1301E"
                 }
             },
             smooth: false,
@@ -466,6 +455,7 @@ function getEchartOptionLine(data, title, grid_left, legendData) {
 }
 function getEchartOptionBar(xData, files, tasks, title) {
     return {
+        color: colorList,
         animation: false,
         axisPointer: {
             show: true,
@@ -563,7 +553,7 @@ function getEchartOptionBar(xData, files, tasks, title) {
                         //    var colorList = ["#C35C00", "#E1301E", "#968c6d", "#ffb600", "#602020", "#6d6e71", "#db536a", "#dc6900"];
                         //    return colorList[params.dataIndex % colorList.length];
                         //},
-                        color: "#E1301E",
+                        //color: "#E1301E",
                         opacity: 0.7
                     }
                 }
@@ -585,7 +575,7 @@ function getEchartOptionBar(xData, files, tasks, title) {
                         //    var colorList = ["#C35C00", "#E1301E", "#968c6d", "#ffb600", "#602020", "#6d6e71", "#db536a", "#dc6900"];
                         //    return colorList[params.dataIndex % colorList.length];
                         //},
-                        color: "#C35C00",
+                        //color: "#C35C00",
                         opacity: 0.7
                     }
                 }

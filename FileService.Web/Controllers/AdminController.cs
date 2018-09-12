@@ -300,6 +300,7 @@ namespace FileService.Web.Controllers
             result.Add("Handlers", converter.Count());
             result.Add("Tasks", task.Count());
             result.Add("Resources", new BsonArray(filesWrap.GetFilesByType()));
+            result.Add("Downloads", download.Count());
             return new ResponseModel<BsonDocument>(ErrorCode.success, result);
         }
         public ActionResult GetFilesTaskCountByAppName()

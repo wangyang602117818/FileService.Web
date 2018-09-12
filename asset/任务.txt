@@ -7,23 +7,11 @@
 
 鼠标移动到预览展示缩略图
 
-添加下载次数
-{
-  "_id":ObjectId(""),
-  "FileId":ObjectId(""),
-  "From":"",
-  "User":"",
-  "CreateTime":
-}
-
 操作日志，回收站
 删除文件回收站
 文件回收站，缓存文件
 
-
-图表:根据时间统计 
-resource比率，task比率  
-下载次数
+获取cpu使用率
 
 加密ts
 视频封面

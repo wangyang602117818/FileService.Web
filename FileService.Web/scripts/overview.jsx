@@ -6,22 +6,29 @@
         };
     }
     componentDidMount(e) {
-        this.myChartResource = echarts.init(document.getElementById('echart_app_resourcetask'));
-        this.myChartDownload = echarts.init(document.getElementById('echart_app_alldownload'));
-        this.myChartAppResource = echarts.init(document.getElementById('echart_app_resource'));
+        var myChartResource = document.getElementById('echart_app_resourcetask');
+        var myChartDownload = document.getElementById('echart_app_alldownload');
+        var myChartAppResource = document.getElementById('echart_app_resource');
+        this.myChartResource = echarts.init(myChartResource);
+        this.myChartDownload = echarts.init(myChartDownload);
+        this.myChartAppResource = echarts.init(myChartAppResource);
         window.addEventListener('resize', this.onWindowResize.bind(this));
     }
     componentWillUnmount() {
         window.removeEventListener('resize', this.onWindowResize.bind(this));
     }
+    componentDidUpdate() {
+        this.onWindowResize();
+    }
     onWindowResize() {
         this.myChartResource.resize();
         this.myChartDownload.resize();
+        this.myChartAppResource.resize();
     }
     onRecentMonthChange(e) {
         if (this.state.recentMonth == e.target.id) return;
         this.setState({ recentMonth: e.target.id }, function () {
-            this.getRecentData();
+            this.getData();
         });
         localStorage.overview_recentMonth = e.target.id;
     }
@@ -69,7 +76,7 @@
                     if (a[0] > b[0]) return 1;
                     return 0;
                 });
-                that.myChartResource.setOption(getEchartOptionLine(xData, culture.resource_task_count_by_date,"5%", legendData));
+                that.myChartResource.setOption(getEchartOptionLine(xData, culture.resource_task_count_by_date, "5%", legendData));
                 that.myChartResource.setOption({
                     series: [{
                         name: culture.resource_count,
@@ -108,7 +115,7 @@
                     if (a[0] > b[0]) return 1;
                     return 0;
                 });
-                that.myChartDownload.setOption(getEchartOptionLine(xData, culture.download_count_by_date,"5%", legendData));
+                that.myChartDownload.setOption(getEchartOptionLine(xData, culture.download_count_by_date, "5%", legendData));
                 that.myChartDownload.setOption({
                     series: [{
                         name: culture.downloads,
@@ -131,7 +138,12 @@
                             name: data.result[i]._id.from,
                             type: 'line',
                             symbol: "circle",
-                            
+                            showSymbol: false,
+                            lineStyle: {
+                                normal: {
+                                    width: 1
+                                }
+                            },
                             data: []
                         });
                         legendData.push({ name: data.result[i]._id.from, icon: "roundRect" });
@@ -148,7 +160,7 @@
                 }
                 xData = xData.sortAndUnique();
 
-                this.myChartAppResource.setOption(getEchartOptionLine(xData, culture.resource_count_by_appname,"3%", legendData));
+                this.myChartAppResource.setOption(getEchartOptionLine(xData, culture.resource_count_by_appname, "3%", legendData));
                 this.myChartAppResource.setOption({ series: series });
             }
         }.bind(this));
@@ -185,6 +197,7 @@ class CountTotal extends React.Component {
             ResourcesImage: 0,
             ResourcesVideo: 0,
             ResourcesAttachment: 0,
+            downloads: 0
         }
     }
     componentDidMount() {
@@ -193,6 +206,9 @@ class CountTotal extends React.Component {
     }
     componentWillUnmount() {
         window.removeEventListener('resize', this.onWindowResize.bind(this));
+    }
+    componentDidUpdate() {
+        this.onWindowResize();
     }
     onWindowResize() {
         this.myChart.resize();
@@ -205,10 +221,7 @@ class CountTotal extends React.Component {
         var that = this;
         http.get(urls.overview.totalUrl, function (data) {
             if (data.code == 0) {
-                that.setState({
-                    Handlers: data.result.Handlers,
-                    Tasks: data.result.Tasks
-                });
+                that.setState({ Handlers: data.result.Handlers, Tasks: data.result.Tasks, downloads: data.result.Downloads });
                 for (var i = 0; i < data.result.Resources.length; i++) {
                     if (data.result.Resources[i]._id == "attachment") that.setState({ ResourcesAttachment: data.result.Resources[i].count });
                     if (data.result.Resources[i]._id == "video") that.setState({ ResourcesVideo: data.result.Resources[i].count });
@@ -236,9 +249,15 @@ class CountTotal extends React.Component {
     render() {
         return (
             <div className={this.props.show ? "overview_con show" : "overview_con hidden"}>
-                <TitleTxt title={culture.count_by_app} />
-                <div className="echart_main" id="echart_count_appname" style={{ height: "240px", width: "100%" }}>
-                </div>
+                <TitleTxtRightTips title={culture.count_by_app}
+                    handlers={this.state.Handlers}
+                    tasks={this.state.Tasks}
+                    resourcesImage={this.state.ResourcesImage}
+                    resourcesVideo={this.state.ResourcesVideo}
+                    resourcesAttachment={this.state.ResourcesAttachment}
+                    downloads={this.state.downloads}/>
+                <div className="echart_main" id="echart_count_appname" style={{ height: "240px", width: "100%" }}></div>
+                {/*
                 <TitleTxt title={culture.totals} />
                 <div className="totals">
                     <table className="table_general" style={{ width: "40%" }}>
@@ -278,7 +297,7 @@ class CountTotal extends React.Component {
                             </tr>
                         </tbody>
                     </table>
-                </div>
+                </div>*/}
             </div>
         );
     }
