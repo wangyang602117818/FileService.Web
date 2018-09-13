@@ -23,9 +23,5 @@ ai开源项目 http://scikit-learn.org/stable/
 
 Keras
 
-[
-	{}
-]
-
 
 

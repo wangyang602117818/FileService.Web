@@ -109,6 +109,38 @@ class ResourceItem extends React.Component {
         )
     }
 }
+class ResourcesDataPic extends React.Component {
+    constructor(props) {
+        super(props);
+    }
+    render() {
+        return (
+            <div className="table_grid">
+                {this.props.data.map(function (item, i) {
+                    return (<ResourcesDataPicItem fileName={item.FileName} key={i}/>)
+                })}
+            </div>
+        );
+    }
+}
+class ResourcesDataPicItem extends React.Component {
+    constructor(props) {
+        super(props);
+    }
+    render() {
+        return (
+            <div className="table_grid_item_wrap" >
+                <div className="table_grid_item">
+                    <div className="table_grid_content" style={{ backgroundImage: "url('../image/video.svg')" }}>
+                    </div>
+                    <div className="table_grid_name"
+                        title={this.props.fileName.removeHTML()}
+                        dangerouslySetInnerHTML={{ __html: this.props.fileName.getFileName(5) }}></div>
+                </div>
+            </div>
+        )
+    }
+}
 class Resources extends React.Component {
     constructor(props) {
         super(props);
@@ -449,9 +481,12 @@ class Resources extends React.Component {
                     onKeyPress={this.onKeyPress.bind(this)}
                     lastPage={this.lastPage.bind(this)}
                     nextPage={this.nextPage.bind(this)} />
-                <ResourcesData data={this.state.data.result}
+                {/*
+                  <ResourcesData data={this.state.data.result}
                     deleteItem={this.deleteItem.bind(this)}
                     onIdClick={this.onIdClick.bind(this)} />
+                 */}
+                <ResourcesDataPic data={this.state.data.result} />
                 <TitleArrow title={culture.add + culture.image}
                     show={this.state.imageShow}
                     onShowChange={this.onImageShow.bind(this)} />

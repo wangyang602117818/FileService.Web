@@ -112,6 +112,56 @@ h1 {
         text-align: center;
     }
 
+.table_grid {
+    display: block;
+    margin-top: 15px;
+    width: 100%;
+    border-top: 1px solid #ddd;
+    justify-content: space-between;
+    
+}
+
+    .table_grid .table_grid_item_wrap {
+        display: inline-flex;
+        flex-direction: column;
+        width: 140px;
+        height: 130px;
+        justify-content: center;
+        cursor: pointer;
+        
+    }
+
+        .table_grid .table_grid_item_wrap .current {
+            border: 1px solid #f1c399;
+            background-color: #f0f1f1;
+        }
+
+    .table_grid .table_grid_item {
+        width: 130px;
+        height: 120px;
+    }
+
+    .table_grid .table_grid_content {
+        width: 130px;
+        height: 100px;
+        background-repeat: no-repeat;
+        background-position: center;
+        background-size: 60%;
+    }
+
+    .table_grid .table_grid_name {
+        display: inline-block;
+        height: 20px;
+        width: 130px;
+        color: #484848;
+        overflow: hidden;
+        text-align: center;
+    }
+
+    .table_grid .table_grid_item:hover {
+        background-color: #f0f1f1;
+    }
+
 .container {
     display: flex;
     flex-direction: column;
