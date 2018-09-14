@@ -67,10 +67,10 @@ namespace FileService.Converter
                 switch (item.Message["Type"].AsString)
                 {
                     case "image":
-                        result = hasOutput ? new ImageConverter().Convert(item) : new DefaultConverter().Convert(item);
+                        result = new ImageConverter().Convert(item);
                         break;
                     case "video":
-                        result = hasOutput ? new VideoConverter().Convert(item) : new DefaultConverter().Convert(item);
+                        result = new VideoConverter().Convert(item);
                         break;
                     case "attachment":
                         string fileExt = Path.GetExtension(item.Message["FileName"].AsString).ToLower();

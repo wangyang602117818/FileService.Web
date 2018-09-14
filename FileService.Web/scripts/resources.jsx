@@ -117,7 +117,7 @@ class ResourcesDataPic extends React.Component {
         return (
             <div className="table_grid">
                 {this.props.data.map(function (item, i) {
-                    return (<ResourcesDataPicItem fileName={item.FileName} key={i}/>)
+                    return (<ResourcesDataPicItem fileName={item.FileName} fileId={item._id.$oid} key={i} />)
                 })}
             </div>
         );
@@ -131,7 +131,7 @@ class ResourcesDataPicItem extends React.Component {
         return (
             <div className="table_grid_item_wrap" >
                 <div className="table_grid_item">
-                    <div className="table_grid_content" style={{ backgroundImage: "url('../image/video.svg')" }}>
+                    <div className="table_grid_content" style={{ backgroundImage: "url(" + urls.getFileIconUrl + "/" + this.props.fileId + "?name=" + this.props.fileName + ")" }}>
                     </div>
                     <div className="table_grid_name"
                         title={this.props.fileName.removeHTML()}
@@ -486,6 +486,7 @@ class Resources extends React.Component {
                     deleteItem={this.deleteItem.bind(this)}
                     onIdClick={this.onIdClick.bind(this)} />
                  */}
+
                 <ResourcesDataPic data={this.state.data.result} />
                 <TitleArrow title={culture.add + culture.image}
                     show={this.state.imageShow}

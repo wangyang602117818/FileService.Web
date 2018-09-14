@@ -1,16 +1,8 @@
 ﻿using FileService.Business;
 using MongoDB.Bson;
-using MongoDB.Driver.GridFS;
-using System.IO;
-using System.IO.Compression;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using SharpCompress.Archives.Zip;
 using SharpCompress.Readers;
-using FileService.Model;
+using System.IO;
 
 namespace FileService.Converter
 {
@@ -29,8 +21,9 @@ namespace FileService.Converter
             BsonDocument fileWrap = filesWrap.FindOne(fileWrapId);
             string fileName = taskItem.Message["FileName"].AsString;
 
-            int processCount = taskItem.Message["ProcessCount"].AsInt32;
+            int processCount = System.Convert.ToInt32(taskItem.Message["ProcessCount"]);
             string fullPath = taskItem.Message["TempFolder"].AsString + fileName;
+            //判断文件处理次数，防止文件被多次提交到mongodb
             if (processCount == 0)
             {
                 if (File.Exists(fullPath))
@@ -60,9 +53,13 @@ namespace FileService.Converter
                     if (filesConvert.FindOne(_id) != null) mongoFileConvert.Delete(_id);
                 }
             }
+            if (File.Exists(fullPath))
+            {
+
+            }
             BsonArray subFiles = ConvertZip(fileWrapId, fullPath);
             ////更新 fs.files表
-            if(filesWrap.ReplaceSubFiles(fileWrapId, subFiles))
+            if (filesWrap.ReplaceSubFiles(fileWrapId, subFiles))
             {
                 if (File.Exists(fullPath)) File.Delete(fullPath);
                 return true;

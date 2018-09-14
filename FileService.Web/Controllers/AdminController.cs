@@ -4,7 +4,6 @@ using FileService.Util;
 using FileService.Web.Filters;
 using FileService.Web.Models;
 using MongoDB.Bson;
-using MongoDB.Driver.GridFS;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -32,6 +31,7 @@ namespace FileService.Web.Controllers
         VideoCapture videoCapture = new VideoCapture();
         Shared shared = new Shared();
         Download download = new Download();
+        FilePreview filePreview = new FilePreview();
         public ActionResult Index()
         {
             ViewBag.Name = User.Identity.Name;
@@ -153,6 +153,41 @@ namespace FileService.Web.Controllers
             Dictionary<string, string> sorts = new Dictionary<string, string> { { "uploadDate", "desc" } };
             IEnumerable<BsonDocument> result = filesConvert.GetPageList(pageIndex, pageSize, null, sorts, filter, new List<string>() { "filename", "metadata.From", "metadata.FileType" }, new List<string>() { }, out count);
             return new ResponseModel<IEnumerable<BsonDocument>>(ErrorCode.success, result, count);
+        }
+        public ActionResult GetFileIcon(string id, string name)
+        {
+            BsonDocument file = filePreview.FindOne(ObjectId.Parse(id));
+            string ext = Path.GetExtension(name.ToLower());
+            string imagePath = AppDomain.CurrentDomain.BaseDirectory + "image\\";
+            if (file == null)
+            {
+                string type = config.GetTypeByExtension(ext).ToLower();
+                switch (type)
+                {
+                    case "text":
+                        return File(System.IO.File.ReadAllBytes(imagePath + "text.png"), "application/octet-stream");
+                    case "video":
+                        return File(System.IO.File.ReadAllBytes(imagePath + "video.png"), "application/octet-stream");
+                    case "image":
+                        return File(System.IO.File.ReadAllBytes(imagePath + "image.png"), "application/octet-stream");
+                    case "attachment":
+                        return File(System.IO.File.ReadAllBytes(imagePath + "attachment.png"), "application/octet-stream");
+                    case "pdf":
+                        return File(System.IO.File.ReadAllBytes(imagePath + "pdf.png"), "application/octet-stream");
+                    case "office":
+                        if (ext == ".doc" || ext == ".docx")
+                            return File(System.IO.File.ReadAllBytes(imagePath + "word.png"), "application/octet-stream");
+                        if (ext == ".xls" || ext == ".xlsx")
+                            return File(System.IO.File.ReadAllBytes(imagePath + "excel.png"), "application/octet-stream");
+                        if (ext == ".ppt" || ext == ".pptx")
+                            return File(System.IO.File.ReadAllBytes(imagePath + "ppt.png"), "application/octet-stream");
+                        break;
+                    default:
+                        return File(System.IO.File.ReadAllBytes(imagePath + "attachment.png"), "application/octet-stream");
+                }
+
+            }
+            return File(file["File"].AsByteArray, "application/octet-stream", name);
         }
         public ActionResult GetAllShared(string fileId)
         {
@@ -565,7 +600,7 @@ namespace FileService.Web.Controllers
                 {"Flag",addVideoTask.Flag }
             };
             Log(addVideoTask.FileId, "AddVideoTask");
-            InserTask(handlerId, fileId, fileWrap["FileName"].AsString, "video", Request.Headers["AppName"], output, fileWrap["Access"].AsBsonArray, Request.Headers["UserName"] ?? User.Identity.Name);
+            InsertTask(handlerId, fileId, fileWrap["FileName"].AsString, "video", Request.Headers["AppName"], output, fileWrap["Access"].AsBsonArray, Request.Headers["UserName"] ?? User.Identity.Name);
             filesWrap.AddSubVideo(fileId, subFile);
             return new ResponseModel<bool>(ErrorCode.success, true);
         }
@@ -595,7 +630,7 @@ namespace FileService.Web.Controllers
                 {"Flag",addImageTask.Flag }
             };
             Log(addImageTask.FileId, "AddThumbnailTask");
-            InserTask(handlerId, fileId, fileWrap["FileName"].AsString, "image", Request.Headers["AppName"], output, fileWrap["Access"].AsBsonArray, Request.Headers["UserName"] ?? User.Identity.Name);
+            InsertTask(handlerId, fileId, fileWrap["FileName"].AsString, "image", Request.Headers["AppName"], output, fileWrap["Access"].AsBsonArray, Request.Headers["UserName"] ?? User.Identity.Name);
             filesWrap.AddSubThumbnail(fileId, subFile);
             return new ResponseModel<bool>(ErrorCode.success, true);
         }

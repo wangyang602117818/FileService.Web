@@ -70,6 +70,7 @@
     <Compile Include="Converter.cs" />
     <Compile Include="Department.cs" />
     <Compile Include="Download.cs" />
+    <Compile Include="FilePreview.cs" />
     <Compile Include="Files.cs" />
     <Compile Include="FilesBase.cs" />
     <Compile Include="FilesWrap.cs" />

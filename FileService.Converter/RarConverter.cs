@@ -27,7 +27,7 @@ namespace FileService.Converter
             BsonDocument fileWrap = filesWrap.FindOne(fileWrapId);
             string fileName = taskItem.Message["FileName"].AsString;
 
-            int processCount = taskItem.Message["ProcessCount"].AsInt32;
+            int processCount =System.Convert.ToInt32(taskItem.Message["ProcessCount"]);
             string fullPath = taskItem.Message["TempFolder"].AsString + fileName;
             if (processCount == 0)
             {

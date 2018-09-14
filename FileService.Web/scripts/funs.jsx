@@ -131,6 +131,7 @@ var urls = {
     emptyUrl: appDomain + "admin/empty",
     getHexCodeUrl: appDomain + "admin/gethexcode",
     getObjectIdUrl: appDomain + "data/getobjectid",
+    getFileIconUrl: appDomain + "admin/getfileicon",
     overview: {
         recentUrl: appDomain + "admin/getcountrecentmonth",
         totalUrl: appDomain + "admin/gettotalcount",

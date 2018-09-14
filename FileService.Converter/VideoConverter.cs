@@ -5,6 +5,7 @@ using MongoDB.Bson;
 using MongoDB.Bson.Serialization;
 using System;
 using System.Diagnostics;
+using System.Drawing.Imaging;
 using System.IO;
 using System.Text.RegularExpressions;
 
@@ -19,7 +20,8 @@ namespace FileService.Converter
         VideoCapture videoCapture = new VideoCapture();
         Ts ts = new Ts();
         M3u8 m3u8 = new M3u8();
-        Business.Task task = new Business.Task();
+        Task task = new Task();
+        FilePreview filePreview = new FilePreview();
         static object o = new object();
         public override bool Convert(FileItem taskItem)
         {
@@ -29,7 +31,7 @@ namespace FileService.Converter
 
             VideoOutPut output = BsonSerializer.Deserialize<VideoOutPut>(outputDocument);
 
-            int processCount = taskItem.Message["ProcessCount"].AsInt32;
+            int processCount = System.Convert.ToInt32(taskItem.Message["ProcessCount"]);
             string fullPath = taskItem.Message["TempFolder"].AsString + fileName; //数据库里面存的path
 
             //第一次转换，文件肯定在共享文件夹
@@ -85,11 +87,13 @@ namespace FileService.Converter
             }
             return true;
         }
-        public void ConvertVideoCp(ObjectId id, string fileWrapId, string fullPath)
+        public void ConvertVideoCp(ObjectId id, string sourceId, string fullPath)
         {
-            if (videoCapture.CountBySourceId(ObjectId.Parse(fileWrapId)) <= 0)
+            ObjectId fileWrapId = ObjectId.Parse(sourceId);
+            if (videoCapture.CountBySourceId(fileWrapId) <= 0)
             {
                 string cpPath = MongoFileBase.AppDataDir + Path.GetFileNameWithoutExtension(fullPath) + ".jpg";
+                string fileName = Path.GetFileName(cpPath);
                 string cmd = "\"" + ExePath + "\" -ss 00:00:01 -i \"" + fullPath + "\" -vframes 1 \"" + cpPath + "\"";
                 Process process = new Process()
                 {
@@ -109,14 +113,19 @@ namespace FileService.Converter
                     BsonDocument document = new BsonDocument()
                     {
                         {"_id",cpId },
-                        {"SourceId",ObjectId.Parse(fileWrapId) },
+                        {"SourceId",fileWrapId },
                         {"Length",imageStream.Length },
-                        {"FileName",Path.GetFileName(cpPath) },
+                        {"FileName",fileName },
                         {"File",imageStream.ToBytes() },
                         {"CreateTime",DateTime.Now }
                     };
                     videoCapture.Insert(document);
-                    filesWrap.AddVideoCapture(ObjectId.Parse(fileWrapId), cpId);
+                    filesWrap.AddVideoCapture(fileWrapId, cpId);
+                    imageStream.Position = 0;
+                    using (Stream stream = ImageExtention.GenerateFilePreview(fileName, imageStream, ImageModelEnum.scale, ImageFormat.Jpeg))
+                    {
+                        filePreview.Replace(fileWrapId, stream.Length, fileName, stream.ToBytes());
+                    }
                     imageStream.Close();
                     imageStream.Dispose();
                 }

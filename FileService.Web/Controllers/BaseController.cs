@@ -49,7 +49,7 @@ namespace FileService.Web.Controllers
                 Request.Headers["UserIp"] ?? Request.UserHostAddress,
                 Request.Headers["UserAgent"] ?? Request.UserAgent);
         }
-        public void InserTask(string handlerId, ObjectId fileId, string fileName, string type, string from, BsonDocument outPut, BsonArray access,string owner)
+        public void InsertTask(string handlerId, ObjectId fileId, string fileName, string type, string from, BsonDocument outPut, BsonArray access,string owner)
         {
             converter.AddCount(handlerId, 1);
             ObjectId taskId = ObjectId.GenerateNewId();
