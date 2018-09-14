@@ -118,7 +118,6 @@ h1 {
     width: 100%;
     border-top: 1px solid #ddd;
     justify-content: space-between;
-    
 }
 
     .table_grid .table_grid_item_wrap {
@@ -128,7 +127,6 @@ h1 {
         height: 130px;
         justify-content: center;
         cursor: pointer;
-        
     }
 
         .table_grid .table_grid_item_wrap .current {
@@ -147,6 +145,10 @@ h1 {
         background-repeat: no-repeat;
         background-position: center;
         background-size: 50%;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        overflow:hidden;
     }
 
     .table_grid .table_grid_name {

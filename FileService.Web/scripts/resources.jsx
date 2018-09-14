@@ -131,7 +131,8 @@ class ResourcesDataPicItem extends React.Component {
         return (
             <div className="table_grid_item_wrap" >
                 <div className="table_grid_item">
-                    <div className="table_grid_content" style={{ backgroundImage: "url(" + urls.getFileIconUrl + "/" + this.props.fileId + "?name=" + this.props.fileName + ")" }}>
+                    <div className="table_grid_content">
+                        <img src={urls.getFileIconUrl + "/" + this.props.fileId.removeHTML() + "?name=" + this.props.fileName.removeHTML()} />
                     </div>
                     <div className="table_grid_name"
                         title={this.props.fileName.removeHTML()}
