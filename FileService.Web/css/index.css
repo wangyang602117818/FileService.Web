@@ -121,12 +121,13 @@ h1 {
 }
 
     .table_grid .table_grid_item_wrap {
-        display: inline-flex;
+        display: inline-block;
         flex-direction: column;
         width: 140px;
         height: 130px;
         justify-content: center;
         cursor: pointer;
+        margin-top:10px;
     }
 
         .table_grid .table_grid_item_wrap .current {
@@ -136,7 +137,8 @@ h1 {
 
     .table_grid .table_grid_item {
         width: 130px;
-        height: 120px;
+        height: 130px;
+        overflow: hidden;
     }
 
     .table_grid .table_grid_content {
@@ -145,19 +147,24 @@ h1 {
         background-repeat: no-repeat;
         background-position: center;
         background-size: 50%;
-        display:flex;
-        align-items:center;
-        justify-content:center;
-        overflow:hidden;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
     }
+
+        .table_grid .table_grid_content img {
+            opacity: 0.8
+        }
 
     .table_grid .table_grid_name {
         display: inline-block;
-        height: 20px;
+        height: 30px;
         width: 130px;
         color: #484848;
         overflow: hidden;
         text-align: center;
+        
     }
 
     .table_grid .table_grid_item:hover {
@@ -377,16 +384,6 @@ h1 {
 
     .table .icon-excel:hover {
         color: #58C012;
-        margin-left: 0;
-    }
-
-.table .icon-ppt {
-    color: #FF9843;
-    cursor: default;
-}
-
-    .table .icon-ppt:hover {
-        color: #FF9843;
         margin-left: 0;
     }
 
