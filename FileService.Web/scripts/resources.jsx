@@ -150,6 +150,7 @@ class Resources extends React.Component {
             imageShow: eval(localStorage.image_show) ? true : false,
             videoShow: eval(localStorage.video_show) ? true : false,
             attachmentShow: eval(localStorage.attachment_show) ? true : false,
+            listType: localStorage.resourse_list_type || "list",
             ///////////
             subFileShow: false,
             subFileToggle: true,
@@ -465,13 +466,24 @@ class Resources extends React.Component {
             }
         }.bind(this))
     }
+    onTipsClick(e) {
+        if (e.target.id == "resource_list") {
+            this.setState({ listType: "icon" });
+            localStorage.resourse_list_type = "icon";
+        } else {
+            this.setState({ listType: "list" });
+            localStorage.resourse_list_type = "list";
+        }
+    }
     render() {
         return (
             <div className="main">
                 <h1>{culture.resources}</h1>
-                <TitleArrow title={culture.all + culture.resources}
+                <TitleArrowComponent title={culture.all + culture.resources}
                     show={this.state.pageShow}
                     count={this.state.data.count}
+                    listType={this.state.listType}
+                    onTipsClick={this.onTipsClick.bind(this)}
                     onShowChange={this.onPageShow.bind(this)} />
                 <Pagination show={this.state.pageShow}
                     pageIndex={this.state.pageIndex}
@@ -482,13 +494,12 @@ class Resources extends React.Component {
                     onKeyPress={this.onKeyPress.bind(this)}
                     lastPage={this.lastPage.bind(this)}
                     nextPage={this.nextPage.bind(this)} />
-                {/*
-                  <ResourcesData data={this.state.data.result}
-                    deleteItem={this.deleteItem.bind(this)}
-                    onIdClick={this.onIdClick.bind(this)} />
-                 */}
-
-                <ResourcesDataPic data={this.state.data.result} />
+                {this.state.listType == "list" ?
+                    <ResourcesData data={this.state.data.result}
+                        deleteItem={this.deleteItem.bind(this)}
+                        onIdClick={this.onIdClick.bind(this)} /> :
+                    <ResourcesDataPic data={this.state.data.result} />
+                }
                 <TitleArrow title={culture.add + culture.image}
                     show={this.state.imageShow}
                     onShowChange={this.onImageShow.bind(this)} />

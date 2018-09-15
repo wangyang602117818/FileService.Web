@@ -87,6 +87,38 @@ class TitleArrow extends React.Component {
         );
     }
 }
+class TitleTips extends React.Component {
+    constructor(props) {
+        super(props);
+    }
+    render() {
+        if (this.props.listType == "list") {
+            return (<i className='iconfont icon-listicon' id='resource_list'
+                onClick={this.props.onTipsClick.bind(this)}></i>)
+        } else {
+            return (<i className='iconfont icon-list' id='resource_icon'
+                onClick={this.props.onTipsClick.bind(this)}></i>)
+        }
+    }
+}
+class TitleArrowComponent extends React.Component {
+    constructor(props) {
+        super(props);
+    }
+    render() {
+        return (
+            <div className="title_arrow">
+                <span className="title_txt" onClick={this.props.onShowChange}>
+                    <i className={this.props.show ? "iconfont icon-down" : "iconfont icon-right"}></i>{this.props.title} {this.props.count > 0 ? "(" + this.props.count + ")" : ""}
+                </span>
+                <div className="right_component">
+                    <TitleTips listType={this.props.listType}
+                        onTipsClick={this.props.onTipsClick} />
+                </div>
+            </div>
+        );
+    }
+}
 class Pagination extends React.Component {
     constructor(props) {
         super(props);

@@ -48,6 +48,12 @@
             cursor: default;
         }
 
+    .title_arrow .right_component {
+        display: inline-block;
+        float: right;
+        padding: 0 5px;
+    }
+
     .title_arrow .right_month {
         display: inline-block;
         float: right;
@@ -86,7 +92,7 @@
             background-color: #eee;
             margin-left: 8px;
             padding: 0 3px;
-            cursor:default;
+            cursor: default;
         }
 
 .overview_con {
