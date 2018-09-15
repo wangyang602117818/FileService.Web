@@ -127,7 +127,7 @@ h1 {
         height: 130px;
         justify-content: center;
         cursor: pointer;
-        margin-top:10px;
+        margin-top: 10px;
     }
 
         .table_grid .table_grid_item_wrap .current {
@@ -140,6 +140,14 @@ h1 {
         height: 130px;
         overflow: hidden;
     }
+
+        .table_grid .table_grid_item:hover {
+            background-color: #f0f1f1;
+        }
+
+            .table_grid .table_grid_item:hover svg {
+                visibility: visible;
+            }
 
     .table_grid .table_grid_content {
         width: 130px;
@@ -164,11 +172,20 @@ h1 {
         color: #484848;
         overflow: hidden;
         text-align: center;
-        
     }
 
-    .table_grid .table_grid_item:hover {
-        background-color: #f0f1f1;
+    .table_grid .file_icon_preview {
+        position: absolute;
+        height: 50px;
+        width: 50px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .table_grid svg {
+        visibility: hidden;
+        opacity: 0.6;
     }
 
 .container {

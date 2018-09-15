@@ -185,7 +185,6 @@ namespace FileService.Web.Controllers
                     default:
                         return File(System.IO.File.ReadAllBytes(imagePath + "attachment.png"), "application/octet-stream");
                 }
-
             }
             return File(file["File"].AsByteArray, "application/octet-stream", name);
         }
