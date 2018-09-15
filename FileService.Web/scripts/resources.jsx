@@ -117,8 +117,14 @@ class ResourcesDataPic extends React.Component {
         return (
             <div className="table_grid">
                 {this.props.data.map(function (item, i) {
-                    return (<ResourcesDataPicItem fileName={item.FileName} fileId={item._id.$oid} key={i} />)
-                })}
+                    return (<ResourcesDataPicItem
+                        onResourceSelected={this.props.onResourceSelected}
+                        fileName={item.FileName}
+                        fileId={item._id.$oid}
+                        fileType={item.FileType}
+                        selected={item.selected}
+                        key={i} />)
+                }.bind(this))}
             </div>
         );
     }
@@ -129,12 +135,17 @@ class ResourcesDataPicItem extends React.Component {
     }
     render() {
         return (
-            <div className="table_grid_item_wrap" >
+            <div className={this.props.selected ? "table_grid_item_wrap selected" :"table_grid_item_wrap"} >
                 <div className="table_grid_item">
+                    <i className="iconfont icon-ok"
+                        onClick={this.props.onResourceSelected}
+                        id={this.props.fileId.removeHTML()} />
                     <div className="table_grid_content">
                         <img src={urls.getFileIconUrl + "/" + this.props.fileId.removeHTML() + "?name=" + this.props.fileName.removeHTML()} />
                         <div className="file_icon_preview">
-                            <svg viewBox="0 0 1024 1024" version="1.1" width="32" height="32"><path d="M512 64C264.576 64 64 264.576 64 512s200.576 448 448 448 448-200.576 448-448S759.424 64 512 64zM414.656 726.272 414.656 297.728l311.616 190.464L414.656 726.272z" fill="#484848"></path></svg>
+                            {this.props.fileType == "video" ?
+                                <svg viewBox="0 0 1024 1024" version="1.1" width="32" height="32"><path d="M512 64C264.576 64 64 264.576 64 512s200.576 448 448 448 448-200.576 448-448S759.424 64 512 64zM414.656 726.272 414.656 297.728l311.616 190.464L414.656 726.272z" fill="#484848"></path></svg> : null
+                            }
                         </div>
                     </div>
                     <div className="table_grid_name"
@@ -478,6 +489,15 @@ class Resources extends React.Component {
             localStorage.resourse_list_type = "list";
         }
     }
+    onResourceSelected(e) {
+        var id = e.target.id;
+        for (var i = 0; i < this.state.data.result.length; i++) {
+            if (this.state.data.result[i]._id.$oid == id) {
+                this.state.data.result[i].selected = !this.state.data.result[i].selected;
+            }
+        }
+        this.setState({ data: this.state.data });
+    }
     render() {
         return (
             <div className="main">
@@ -501,7 +521,8 @@ class Resources extends React.Component {
                     <ResourcesData data={this.state.data.result}
                         deleteItem={this.deleteItem.bind(this)}
                         onIdClick={this.onIdClick.bind(this)} /> :
-                    <ResourcesDataPic data={this.state.data.result} />
+                    <ResourcesDataPic data={this.state.data.result}
+                        onResourceSelected={this.onResourceSelected.bind(this)} />
                 }
                 <TitleArrow title={culture.add + culture.image}
                     show={this.state.imageShow}

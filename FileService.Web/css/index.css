@@ -130,15 +130,42 @@ h1 {
         margin-top: 10px;
     }
 
-        .table_grid .table_grid_item_wrap .current {
-            border: 1px solid #f1c399;
-            background-color: #f0f1f1;
+        .table_grid .table_grid_item_wrap:hover .icon-ok {
+            visibility: visible;
         }
+
+        .table_grid .table_grid_item_wrap .icon-ok {
+            visibility: hidden;
+            position: absolute;
+            margin-top: 3px;
+            margin-left: 5px;
+            color: #f60;
+            font-size: 20px;
+            opacity: 0.5;
+        }
+
+            .table_grid .table_grid_item_wrap .icon-ok:hover {
+                color: #f60;
+                opacity: 1;
+            }
+
+    .table_grid .selected .table_grid_item {
+        border: 1px solid #f60;
+        border-radius: 5px;
+        background-color: #f0f1f1;
+    }
+
+    .table_grid .selected .icon-ok {
+        visibility: visible;
+        color: #f60;
+        opacity: 1;
+    }
 
     .table_grid .table_grid_item {
         width: 130px;
         height: 130px;
         overflow: hidden;
+        border: 1px solid transparent;
     }
 
         .table_grid .table_grid_item:hover {
@@ -185,7 +212,7 @@ h1 {
 
     .table_grid svg {
         visibility: hidden;
-        opacity: 0.6;
+        opacity: 0.9;
     }
 
 .container {
