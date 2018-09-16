@@ -93,10 +93,12 @@ class TitleTips extends React.Component {
     }
     render() {
         if (this.props.listType == "list") {
-            return (<i className='iconfont icon-listicon' id='resource_list'
+            return (<i className='iconfont icon-listicon'
+                id='resource_list'
                 onClick={this.props.onTipsClick.bind(this)}></i>)
         } else {
-            return (<i className='iconfont icon-list' id='resource_icon'
+            return (<i className='iconfont icon-list'
+                id='resource_icon'
                 onClick={this.props.onTipsClick.bind(this)}></i>)
         }
     }

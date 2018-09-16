@@ -23,7 +23,10 @@
             var companyData = [];
             if (data.code == 0) {
                 for (var i = 0; i < data.result.length; i++) {
-                    companyData.push({ code: data.result[i].DepartmentCode, name: data.result[i].DepartmentName });
+                    companyData.push({
+                        code: data.result[i].DepartmentCode,
+                        name: data.result[i].DepartmentName
+                    });
                 }
             }
             this.refs.userDropDownListWrap.emptyData();

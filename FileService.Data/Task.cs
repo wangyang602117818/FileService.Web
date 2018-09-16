@@ -77,9 +77,9 @@ namespace FileService.Data
                 })
                 .ToEnumerable();
         }
-        public bool UpdateAccess(ObjectId id, BsonArray array)
+        public bool UpdateAccess(IEnumerable<ObjectId> ids, BsonArray array)
         {
-            var filter = FilterBuilder.Eq("FileId", id);
+            var filter = FilterBuilder.In("FileId", ids);
             return MongoCollection.UpdateMany(filter, Builders<BsonDocument>.Update.Set("Access", array)).IsAcknowledged;
         }
         public override FilterDefinition<BsonDocument> GetAccessFilter(string userName)

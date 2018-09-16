@@ -87,7 +87,7 @@ class ResourceItem extends React.Component {
                         className="link"
                         dangerouslySetInnerHTML={{ __html: this.props.resource.FileName.getFileName(15) }}
                         onClick={this.preView.bind(this)}
-                        id={"id=" + this.props.resource._id.$oid + "&filename=" + this.props.resource.FileName.removeHTML()}>
+                        id={"id=" + this.props.resource._id.$oid.removeHTML() + "&filename=" + this.props.resource.FileName.removeHTML()}>
                     </span>
                 </td>
                 <td>{convertFileSize(this.props.resource.Length)}</td>
@@ -96,8 +96,9 @@ class ResourceItem extends React.Component {
                 <td>{this.props.resource.Owner}</td>
                 <td>{this.props.resource.Download}</td>
                 <td>
-                    <i className="iconfont icon-view" onClick={this.preView.bind(this)}
-                        id={"id=" + this.props.resource._id.$oid + "&filename=" + this.props.resource.FileName.removeHTML()}></i>
+                    <i className="iconfont icon-view"
+                        onClick={this.preView.bind(this)}
+                        id={"id=" + this.props.resource._id.$oid.removeHTML() + "&filename=" + this.props.resource.FileName.removeHTML()}></i>
                 </td>
                 <td>
                     <i className="iconfont icon-download" onClick={this.download.bind(this)} id={this.props.resource._id.$oid}></i>
@@ -119,10 +120,7 @@ class ResourcesDataPic extends React.Component {
                 {this.props.data.map(function (item, i) {
                     return (<ResourcesDataPicItem
                         onResourceSelected={this.props.onResourceSelected}
-                        fileName={item.FileName}
-                        fileId={item._id.$oid}
-                        fileType={item.FileType}
-                        selected={item.selected}
+                        resource={item}
                         key={i} />)
                 }.bind(this))}
             </div>
@@ -133,24 +131,41 @@ class ResourcesDataPicItem extends React.Component {
     constructor(props) {
         super(props);
     }
+    preView(e) {
+        var target = e.target;
+        while (target.nodeName == "path" || target.nodeName == "svg" || target.className.indexOf("table_grid_item_wrap") == -1) {
+            target = target.parentElement;
+        }
+        window.open(urls.preview + "?" + target.id, "_blank");
+    }
     render() {
+        var fileId = this.props.resource._id.$oid.removeHTML();
+        var fileName = this.props.resource.FileName.removeHTML();
+        var fileType = this.props.resource.FileType.removeHTML();
+        var owner = this.props.resource.Owner.removeHTML();
+        var select = this.props.resource.selected;
         return (
-            <div className={this.props.selected ? "table_grid_item_wrap selected" :"table_grid_item_wrap"} >
+            <div className={select ? "table_grid_item_wrap selected" : "table_grid_item_wrap"}
+                onClick={this.preView.bind(this)}
+                id={"id=" + fileId + "&filename=" + fileName}>
                 <div className="table_grid_item">
                     <i className="iconfont icon-ok"
                         onClick={this.props.onResourceSelected}
-                        id={this.props.fileId.removeHTML()} />
+                        data-type={fileType}
+                        data-filename={fileName}
+                        data-fileid={fileId}
+                        data-owner={owner}
+                    />
                     <div className="table_grid_content">
-                        <img src={urls.getFileIconUrl + "/" + this.props.fileId.removeHTML() + "?name=" + this.props.fileName.removeHTML()} />
+                        <img src={urls.getFileIconUrl + "/" + fileId + fileName.getFileExtension()+"/"} />
                         <div className="file_icon_preview">
-                            {this.props.fileType == "video" ?
-                                <svg viewBox="0 0 1024 1024" version="1.1" width="32" height="32"><path d="M512 64C264.576 64 64 264.576 64 512s200.576 448 448 448 448-200.576 448-448S759.424 64 512 64zM414.656 726.272 414.656 297.728l311.616 190.464L414.656 726.272z" fill="#484848"></path></svg> : null
-                            }
+                            {fileType == "video" ?
+                                <svg viewBox="0 0 1024 1024" version="1.1" width="32" height="32"><path d="M512 64C264.576 64 64 264.576 64 512s200.576 448 448 448 448-200.576 448-448S759.424 64 512 64zM414.656 726.272 414.656 297.728l311.616 190.464L414.656 726.272z" fill="#484848" ></path></svg> : null}
                         </div>
                     </div>
                     <div className="table_grid_name"
-                        title={this.props.fileName.removeHTML()}
-                        dangerouslySetInnerHTML={{ __html: this.props.fileName.getFileName(5) }}></div>
+                        title={fileName}
+                        dangerouslySetInnerHTML={{ __html: this.props.resource.FileName.getFileName(5) }}></div>
                 </div>
             </div>
         )
@@ -175,7 +190,9 @@ class Resources extends React.Component {
             owner: "",
             subComponent: null,
             ////////////
+            accessFileShow: false,
             accessToggle: true,
+            sharedFileShow: false,
             sharedToggle: true,
             sharedUrl: "",
             sharedData: [],
@@ -187,6 +204,7 @@ class Resources extends React.Component {
             filter: "",
             data: { code: 0, message: "", count: 0, result: [] }
         }
+        this.selectedList = [];
         this.url = urls.resources.getUrl;
         this.storagePageShowKey = "resource";
         this.storagePageSizeKey = "handler_pageSize";
@@ -267,10 +285,8 @@ class Resources extends React.Component {
     onIdClick(e) {
         var fileId = "",
             fileType = "",
-            innerFileName = "",
             fileName = "",
-            owner = "",
-            subComponent = null;
+            owner = "";
         if (e.target.nodeName.toLowerCase() == "span") {
             fileId = e.target.parentElement.getAttribute("data-fileid");
             fileName = e.target.parentElement.getAttribute("data-filename");
@@ -282,7 +298,10 @@ class Resources extends React.Component {
             fileType = e.target.getAttribute("data-type");
             owner = e.target.getAttribute("data-owner");
         }
-        innerFileName = fileName;
+        this.getFileMetaData(fileId, fileName, fileType, owner);
+    }
+    getFileMetaData(fileId, fileName, fileType, owner) {
+        var innerFileName = fileName, subComponent = null;
         this.state.subFileArray = [];
         switch (fileType) {
             case "image":
@@ -310,6 +329,11 @@ class Resources extends React.Component {
         var departments = this.getAllCompany();
         this.getSharedUrl();
         this.getSharedList(fileId);
+        if (owner == userName || trim(this.state.owner) == "") {
+            this.setState({ accessFileShow: true, sharedFileShow: true });
+        } else {
+            this.setState({ accessFileShow: false, sharedFileShow: false });
+        }
         this.setState({
             fileName: fileName,
             innerFileName: innerFileName,
@@ -320,9 +344,8 @@ class Resources extends React.Component {
             access: access,
             departments: departments
         }, function () {
-            if (this.refs.updateAccess)
-                this.refs.updateAccess.getCompany();
-        });
+            if (this.refs.updateAccess) { this.refs.updateAccess.getCompany(); }
+        }.bind(this));
     }
     getFileAccess(fileId) {
         if (fileId.length != 24) return;
@@ -400,14 +423,25 @@ class Resources extends React.Component {
                 AccessUsers: userArray
             });
         }
-        http.postJson(urls.resources.updateAccessUrl, { fileId: this.state.fileId, access: this.state.access }, function (data) {
-            if (data.code == 0) {
-                this.setState({ access: this.state.access });
-            } else {
-                alert(data.message);
-            }
-            if (success) success(data);
-        }.bind(this))
+        var fileIds = [];
+        if (this.state.listType == "list") {
+            fileIds.push(this.state.fileId);
+        } else {
+            fileIds = this.selectedList;
+        }
+        this.updateAccess(fileIds, this.state.access, success);
+    }
+    updateAccess(fileIds, access, success) {
+        http.postJson(urls.resources.updateAccessUrl,
+            { fileIds: fileIds, access: access },
+            function (data) {
+                if (data.code == 0) {
+                    this.setState({ access: this.state.access });
+                } else {
+                    alert(data.message);
+                }
+                if (success) success(data);
+            }.bind(this))
     }
     emptyAccess(e) {
         http.postJson(urls.resources.updateAccessUrl, { fileId: this.state.fileId, access: [] }, function (data) {
@@ -490,13 +524,52 @@ class Resources extends React.Component {
         }
     }
     onResourceSelected(e) {
-        var id = e.target.id;
+        var id = e.target.getAttribute("data-fileid");
         for (var i = 0; i < this.state.data.result.length; i++) {
             if (this.state.data.result[i]._id.$oid == id) {
                 this.state.data.result[i].selected = !this.state.data.result[i].selected;
+                if (this.state.data.result[i].selected) {
+                    this.selectedList.push(id);
+                } else {
+                    this.selectedList.remove(id);
+                }
             }
         }
         this.setState({ data: this.state.data });
+        //选择单个
+        if (this.selectedList.length == 1) {
+            var fileId = this.selectedList[0];
+            for (var i = 0; i < this.state.data.result.length; i++) {
+                if (this.state.data.result[i]._id.$oid == fileId) {
+                    var fileName = this.state.data.result[i].FileName.removeHTML();
+                    var fileType = this.state.data.result[i].FileType.removeHTML();
+                    var owner = this.state.data.result[i].Owner.removeHTML();
+                    this.getFileMetaData(fileId, fileName, fileType, owner);
+                }
+            }
+        } else {
+            var selCount = this.selectedList.length, innerFileName = [];
+            for (var i = 0; i < this.state.data.result.length; i++) {
+                var fileId = this.state.data.result[i]._id.$oid.removeHTML();
+                var owner = this.state.data.result[i].Owner.removeHTML();
+                if (this.selectedList.indexOf(fileId) > -1) {
+                    innerFileName.push(this.state.data.result[i].FileName.removeHTML())
+                    if (owner == userName) selCount--;
+                }
+            }
+            if (selCount == 0) {
+                this.setState({
+                    accessFileShow: true,
+                    innerFileName: innerFileName
+                });
+            } else {
+                this.setState({ accessFileShow: false });
+            }
+            this.setState({ subFileShow: false, sharedFileShow: false }, function () {
+                if (this.refs.updateAccess) { this.refs.updateAccess.getCompany(); }
+            }.bind(this));
+        }
+        e.stopPropagation();
     }
     render() {
         return (
@@ -554,39 +627,39 @@ class Resources extends React.Component {
                         deleteM3u8={this.deleteM3u8.bind(this)}
                     /> : null
                 }
-                {
-                    ((this.state.owner == userName || trim(this.state.owner) == "") && this.state.subFileShow) ?
-                        <TitleArrow title={culture.change_access + "(" + this.state.innerFileName + ")"}
-                            show={this.state.accessToggle}
-                            onShowChange={e => this.setState({ accessToggle: !this.state.accessToggle })} /> : null
+                {this.state.accessFileShow ?
+                    <TitleArrow
+                        title={culture.change_access + "(" + this.state.innerFileName + ")"}
+                        show={this.state.accessToggle}
+                        onShowChange={e => this.setState({ accessToggle: !this.state.accessToggle })} /> : null
                 }
-                {
-                    ((this.state.owner == userName || trim(this.state.owner) == "") && this.state.subFileShow) ?
-                        <UpdateAccess show={this.state.accessToggle}
-                            ref="updateAccess"
-                            departments={this.state.departments}
-                            access={this.state.access}
-                            delAccess={this.delAccess.bind(this)}
-                            emptyAccess={this.emptyAccess.bind(this)}
-                            onSaveAccess={this.onSaveAccess.bind(this)}
-                        /> : null
+                {this.state.accessFileShow ?
+                    <UpdateAccess
+                        show={this.state.accessToggle}
+                        ref="updateAccess"
+                        departments={this.state.departments}
+                        access={this.state.access}
+                        delAccess={this.delAccess.bind(this)}
+                        emptyAccess={this.emptyAccess.bind(this)}
+                        onSaveAccess={this.onSaveAccess.bind(this)}
+                    /> : null
                 }
-                {
-                    ((this.state.owner == userName || trim(this.state.owner) == "") && this.state.subFileShow) ?
-                        <TitleArrow title={culture.shared + "(" + this.state.innerFileName + ")"}
-                            show={this.state.sharedToggle}
-                            onShowChange={e => this.setState({ sharedToggle: !this.state.sharedToggle })} /> : null
+                {this.state.sharedFileShow ?
+                    <TitleArrow
+                        title={culture.shared + "(" + this.state.innerFileName + ")"}
+                        show={this.state.sharedToggle}
+                        onShowChange={e => this.setState({ sharedToggle: !this.state.sharedToggle })} /> : null
                 }
-                {
-                    ((this.state.owner == userName || trim(this.state.owner) == "") && this.state.subFileShow) ?
-                        <SharedFile show={this.state.sharedToggle}
-                            data={this.state.sharedData}
-                            fileId={this.state.fileId}
-                            sharedUrl={this.state.sharedUrl}
-                            shared={this.shared.bind(this)}
-                            disableShared={this.disableShared.bind(this)}
-                            enableShared={this.enableShared.bind(this)}
-                        /> : null
+                {this.state.sharedFileShow ?
+                    <SharedFile
+                        show={this.state.sharedToggle}
+                        data={this.state.sharedData}
+                        fileId={this.state.fileId}
+                        sharedUrl={this.state.sharedUrl}
+                        shared={this.shared.bind(this)}
+                        disableShared={this.disableShared.bind(this)}
+                        enableShared={this.enableShared.bind(this)}
+                    /> : null
                 }
             </div>
         );

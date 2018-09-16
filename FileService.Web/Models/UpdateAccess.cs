@@ -10,7 +10,7 @@ namespace FileService.Web.Models
     public class UpdateAccess
     {
         [Required]
-        public string FileId { get; set; }
+        public IEnumerable<string> FileIds { get; set; }
         public List<AccessModel> Access { get; set; }
     }
 

@@ -137,9 +137,9 @@ namespace FileService.Business
         {
             return mongoData.ReplaceSubFiles(id, array);
         }
-        public bool UpdateAccess(ObjectId id, BsonArray array)
+        public bool UpdateAccess(IEnumerable<ObjectId> ids, BsonArray array)
         {
-            return mongoData.UpdateAccess(id, array);
+            return mongoData.UpdateAccess(ids, array);
         }
         public IEnumerable<BsonDocument> GetCountByAppName(DateTime startDateTime)
         {

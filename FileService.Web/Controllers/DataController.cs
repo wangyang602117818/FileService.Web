@@ -25,17 +25,23 @@ namespace FileService.Web.Controllers
         public ActionResult UpdateFileAccess(UpdateAccess updateAccess)
         {
             if (updateAccess.Access == null) updateAccess.Access = new List<Model.AccessModel>();
-             //只有发布人才有权限修改
-             BsonDocument document = filesWrap.FindOne(ObjectId.Parse(updateAccess.FileId));
-            string documentOwner = document["Owner"].AsString;
-            if (!string.IsNullOrEmpty(documentOwner))
+            //只有发布人才有权限修改
+            IEnumerable<ObjectId> fileIds = updateAccess.FileIds.Select(s => ObjectId.Parse(s));
+            //检查是否有无权限修改的document
+            foreach (ObjectId fileId in fileIds)
             {
-                string userName = Request.Headers["UserName"] ?? User.Identity.Name;
-                if (userName != documentOwner)
+                BsonDocument document = filesWrap.FindOne(fileId);
+                string documentOwner = document["Owner"].AsString;
+                if (!string.IsNullOrEmpty(documentOwner))
                 {
-                    return new ResponseModel<string>(ErrorCode.owner_not_match, "");
+                    string userName = Request.Headers["UserName"] ?? User.Identity.Name;
+                    if (userName != documentOwner)
+                    {
+                        return new ResponseModel<string>(ErrorCode.owner_not_match, "");
+                    }
                 }
             }
+            //填充默认值
             for (var i = 0; i < updateAccess.Access.Count; i++)
             {
                 if (updateAccess.Access[i].DepartmentCodes == null) updateAccess.Access[i].DepartmentCodes = new string[] { };
@@ -44,8 +50,11 @@ namespace FileService.Web.Controllers
                 if (updateAccess.Access[i].AccessUsers == null) updateAccess.Access[i].AccessUsers = new string[] { };
             }
             BsonArray access = new BsonArray(updateAccess.Access.Select(s => s.ToBsonDocument()));
-            Log(updateAccess.FileId.ToString(), "UpdateFileAccess");
-            if (filesWrap.UpdateAccess(ObjectId.Parse(updateAccess.FileId), access) && task.UpdateAccess(ObjectId.Parse(updateAccess.FileId), access))
+            foreach(ObjectId fileId in fileIds)
+            {
+                Log(fileId.ToString(), "UpdateFileAccess");
+            }
+            if (filesWrap.UpdateAccess(fileIds, access) && task.UpdateAccess(fileIds, access))
             {
                 return new ResponseModel<string>(ErrorCode.success, "");
             }
@@ -136,6 +145,6 @@ namespace FileService.Web.Controllers
         {
             return new ResponseModel<string>(ErrorCode.success, ObjectId.GenerateNewId().ToString());
         }
-        
+
     }
 }

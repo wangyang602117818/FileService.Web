@@ -154,11 +154,11 @@ namespace FileService.Web.Controllers
             IEnumerable<BsonDocument> result = filesConvert.GetPageList(pageIndex, pageSize, null, sorts, filter, new List<string>() { "filename", "metadata.From", "metadata.FileType" }, new List<string>() { }, out count);
             return new ResponseModel<IEnumerable<BsonDocument>>(ErrorCode.success, result, count);
         }
-        public ActionResult GetFileIcon(string id, string name)
+        public ActionResult GetFileIcon(string id)
         {
-            BsonDocument file = filePreview.FindOne(ObjectId.Parse(id));
-            string ext = Path.GetExtension(name.ToLower());
+            BsonDocument file = filePreview.FindOne(ObjectId.Parse(id.Split('.')[0]));
             string imagePath = AppDomain.CurrentDomain.BaseDirectory + "image\\";
+            string ext = "." + id.Split('.')[1].TrimEnd('/');
             if (file == null)
             {
                 string type = config.GetTypeByExtension(ext).ToLower();
@@ -186,7 +186,7 @@ namespace FileService.Web.Controllers
                         return File(System.IO.File.ReadAllBytes(imagePath + "attachment.png"), "application/octet-stream");
                 }
             }
-            return File(file["File"].AsByteArray, "application/octet-stream", name);
+            return File(file["File"].AsByteArray, "application/octet-stream");
         }
         public ActionResult GetAllShared(string fileId)
         {

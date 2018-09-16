@@ -110,10 +110,10 @@ namespace FileService.Data
             var filter = FilterBuilder.Eq("_id", id);
             return MongoCollection.UpdateOne(filter, Builders<BsonDocument>.Update.Set("Files", array)).IsAcknowledged;
         }
-        public bool UpdateAccess(ObjectId id, BsonArray array)
+        public bool UpdateAccess(IEnumerable<ObjectId> ids, BsonArray array)
         {
-            var filter = FilterBuilder.Eq("_id", id);
-            return MongoCollection.UpdateOne(filter, Builders<BsonDocument>.Update.Set("Access", array)).IsAcknowledged;
+            var filter = FilterBuilder.In("_id", ids);
+            return MongoCollection.UpdateMany(filter, Builders<BsonDocument>.Update.Set("Access", array)).IsAcknowledged;
         }
         public IEnumerable<BsonDocument> GetCountByAppName(DateTime startDateTime)
         {

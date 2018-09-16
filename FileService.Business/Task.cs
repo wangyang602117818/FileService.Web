@@ -72,9 +72,9 @@ namespace FileService.Business
         {
             return mongoData.GetCountByRecentMonth(startDateTime);
         }
-        public bool UpdateAccess(ObjectId fileId, BsonArray array)
+        public bool UpdateAccess(IEnumerable<ObjectId> fileIds, BsonArray array)
         {
-            return mongoData.UpdateAccess(fileId, array);
+            return mongoData.UpdateAccess(fileIds, array);
         }
         public IEnumerable<BsonDocument> GetFilesByAppName()
         {
