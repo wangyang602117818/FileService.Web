@@ -29,6 +29,12 @@
             color: #000;
         }
 
+    .title_arrow .use_util {
+        display: inline-block;
+        margin-left:50px;
+        
+    }
+
     .title_arrow .right_tips {
         display: inline-block;
         float: right;

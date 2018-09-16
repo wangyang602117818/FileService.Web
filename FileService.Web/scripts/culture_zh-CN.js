@@ -102,6 +102,7 @@ var culture = {
     owner: "所有者",
     fileType: "文件类型",
     dol: "下载",
+    download: "下载",
     del: "删除",
     downloads: "下载量",
     add: "添加",

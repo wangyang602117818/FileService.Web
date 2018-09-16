@@ -113,7 +113,16 @@ class TitleArrowComponent extends React.Component {
                 <span className="title_txt" onClick={this.props.onShowChange}>
                     <i className={this.props.show ? "iconfont icon-down" : "iconfont icon-right"}></i>{this.props.title} {this.props.count > 0 ? "(" + this.props.count + ")" : ""}
                 </span>
+                <span className="use_util">
+                    
+                </span>
                 <div className="right_component">
+                    <i className="iconfont icon-download" />
+                    {'\u00A0'}{'\u00A0'}{'\u00A0'}
+                    <i className="iconfont icon-del" />
+                    {'\u00A0'}{'\u00A0'}{'\u00A0'}
+                    <i className="iconfont icon-order" />
+                    {'\u00A0'}{'\u00A0'}{'\u00A0'}
                     <TitleTips listType={this.props.listType}
                         onTipsClick={this.props.onTipsClick} />
                 </div>

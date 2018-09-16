@@ -102,6 +102,7 @@ var culture = {
     owner: "Owner",
     fileType: "FileType",
     dol: "Dol",
+    download:"Download",
     downloads: "Downloads",
     del: "Del",
     add: "Add ",
