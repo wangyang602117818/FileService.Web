@@ -442,12 +442,12 @@ h1 {
     }
 
 .table .icon-text {
-    color: #91A7B9;
+    color: #607D8B;
     cursor: default;
 }
 
     .table .icon-text:hover {
-        color: #91A7B9;
+        color: #607D8B;
         margin-left: 0;
     }
 
@@ -462,12 +462,12 @@ h1 {
     }
 
 .table .icon-image {
-    color: #90CAF9;
+    color: #469FCC;
     cursor: default;
 }
 
     .table .icon-image:hover {
-        color: #90CAF9;
+        color: #469FCC;
         margin-left: 0;
     }
 
