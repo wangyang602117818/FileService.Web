@@ -157,7 +157,7 @@ class ResourcesDataPicItem extends React.Component {
                         data-owner={owner}
                     />
                     <div className="table_grid_content">
-                        <img src={urls.getFileIconUrl + "/" + fileId + fileName.getFileExtension()+"/"} />
+                        <img src={urls.getFileIconUrl + "/" + fileId + fileName.getFileExtension() + "/"} />
                         <div className="file_icon_preview">
                             {fileType == "video" ?
                                 <svg viewBox="0 0 1024 1024" version="1.1" width="32" height="32"><path d="M512 64C264.576 64 64 264.576 64 512s200.576 448 448 448 448-200.576 448-448S759.424 64 512 64zM414.656 726.272 414.656 297.728l311.616 190.464L414.656 726.272z" fill="#484848" ></path></svg> : null}
@@ -201,10 +201,12 @@ class Resources extends React.Component {
             pageIndex: 1,
             pageSize: localStorage.handler_pageSize || 10,
             pageCount: 1,
+            orderField: "CreateTime",
+            orderFieldType: "desc",
+            selectedList: [],
             filter: "",
             data: { code: 0, message: "", count: 0, result: [] }
         }
-        this.selectedList = [];
         this.url = urls.resources.getUrl;
         this.storagePageShowKey = "resource";
         this.storagePageSizeKey = "handler_pageSize";
@@ -239,16 +241,18 @@ class Resources extends React.Component {
     deleteItem(e) {
         var id = e.target.id;
         if (window.confirm(" " + culture.delete + " ?")) {
-            var that = this;
-            http.get(urls.deleteUrl + "?id=" + id, function (data) {
-                if (data.code == 0) {
-                    that.getData();
-                }
-                else {
-                    alert(data.message);
-                }
-            });
+            this.deleteFile(id);
         }
+    }
+    deleteFile(id) {
+        http.get(urls.deleteUrl + "?id=" + id, function (data) {
+            if (data.code == 0) {
+                this.getData();
+            }
+            else {
+                alert(data.message);
+            }
+        }.bind(this));
     }
     imageUpload(input, thumbnails, access, success, process) {
         var that = this;
@@ -427,7 +431,7 @@ class Resources extends React.Component {
         if (this.state.listType == "list") {
             fileIds.push(this.state.fileId);
         } else {
-            fileIds = this.selectedList;
+            fileIds = this.state.selectedList;
         }
         this.updateAccess(fileIds, this.state.access, success);
     }
@@ -529,16 +533,16 @@ class Resources extends React.Component {
             if (this.state.data.result[i]._id.$oid == id) {
                 this.state.data.result[i].selected = !this.state.data.result[i].selected;
                 if (this.state.data.result[i].selected) {
-                    this.selectedList.push(id);
+                    this.state.selectedList.push(id);
                 } else {
-                    this.selectedList.remove(id);
+                    this.state.selectedList.remove(id);
                 }
             }
         }
         this.setState({ data: this.state.data });
         //选择单个
-        if (this.selectedList.length == 1) {
-            var fileId = this.selectedList[0];
+        if (this.state.selectedList.length == 1) {
+            var fileId = this.state.selectedList[0];
             for (var i = 0; i < this.state.data.result.length; i++) {
                 if (this.state.data.result[i]._id.$oid == fileId) {
                     var fileName = this.state.data.result[i].FileName.removeHTML();
@@ -548,11 +552,11 @@ class Resources extends React.Component {
                 }
             }
         } else {
-            var selCount = this.selectedList.length, innerFileName = [];
+            var selCount = this.state.selectedList.length, innerFileName = [];
             for (var i = 0; i < this.state.data.result.length; i++) {
                 var fileId = this.state.data.result[i]._id.$oid.removeHTML();
                 var owner = this.state.data.result[i].Owner.removeHTML();
-                if (this.selectedList.indexOf(fileId) > -1) {
+                if (this.state.selectedList.indexOf(fileId) > -1) {
                     innerFileName.push(this.state.data.result[i].FileName.removeHTML())
                     if (owner == userName) selCount--;
                 }
@@ -569,7 +573,37 @@ class Resources extends React.Component {
                 if (this.refs.updateAccess) { this.refs.updateAccess.getCompany(); }
             }.bind(this));
         }
+        this.setState({ selectedList: this.state.selectedList });
         e.stopPropagation();
+    }
+    onOrderChanged(e) {
+        var order = e.target.getAttribute("order");
+        if (order) {
+            this.setState({
+                orderField: order,
+                orderFieldType: this.state.orderFieldType == "desc" ? "asc" : "desc"
+            }, function () {
+                this.getData();
+            }.bind(this));
+        }
+    }
+    deleteByIds() {
+        if (window.confirm(" " + culture.delete + " ?")) {
+            http.post(urls.deleteFilesUrl, { ids: this.state.selectedList }, function (data) {
+                if (data.code == 0) {
+                    this.getData();
+                }
+                else {
+                    alert(data.message);
+                }
+            }.bind(this));
+        }
+    }
+    downloadByIds() {
+        for (var i = 0; i < this.state.selectedList.length; i++) {
+            var url = urls.downloadUrl + "/" + this.state.selectedList[i];
+            window.open(url);
+        }
     }
     render() {
         return (
@@ -579,6 +613,11 @@ class Resources extends React.Component {
                     show={this.state.pageShow}
                     count={this.state.data.count}
                     listType={this.state.listType}
+                    delShow={this.state.selectedList.length > 0 ? true : false}
+                    deleteByIds={this.deleteByIds.bind(this)}
+                    downloadByIds={this.downloadByIds.bind(this)}
+                    orderField={this.state.orderField}
+                    onOrderChanged={this.onOrderChanged.bind(this)}
                     onTipsClick={this.onTipsClick.bind(this)}
                     onShowChange={this.onPageShow.bind(this)} />
                 <Pagination show={this.state.pageShow}

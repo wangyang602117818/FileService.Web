@@ -195,5 +195,5 @@ var culture = {
     exists: "存在",
     empty_cache_file: "清除缓存文件",
     user_agent: "用户代理",
-    restore_file: "恢复文件"
+    restore_file: "恢复文件",
 }

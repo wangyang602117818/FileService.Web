@@ -95,10 +95,12 @@ class TitleTips extends React.Component {
         if (this.props.listType == "list") {
             return (<i className='iconfont icon-listicon'
                 id='resource_list'
+
                 onClick={this.props.onTipsClick.bind(this)}></i>)
         } else {
             return (<i className='iconfont icon-list'
                 id='resource_icon'
+
                 onClick={this.props.onTipsClick.bind(this)}></i>)
         }
     }
@@ -106,6 +108,16 @@ class TitleTips extends React.Component {
 class TitleArrowComponent extends React.Component {
     constructor(props) {
         super(props);
+        this.state = {
+            orderDisp: false
+        }
+    }
+
+    orderNone(e) {
+        this.setState({ orderDisp: false });
+    }
+    onOrderDisp(e) {
+        this.setState({ orderDisp: true });
     }
     render() {
         return (
@@ -113,18 +125,22 @@ class TitleArrowComponent extends React.Component {
                 <span className="title_txt" onClick={this.props.onShowChange}>
                     <i className={this.props.show ? "iconfont icon-down" : "iconfont icon-right"}></i>{this.props.title} {this.props.count > 0 ? "(" + this.props.count + ")" : ""}
                 </span>
-                <span className="use_util">
-                    
-                </span>
-                <div className="right_component">
-                    <i className="iconfont icon-download" />
-                    {'\u00A0'}{'\u00A0'}{'\u00A0'}
-                    <i className="iconfont icon-del" />
-                    {'\u00A0'}{'\u00A0'}{'\u00A0'}
-                    <i className="iconfont icon-order" />
-                    {'\u00A0'}{'\u00A0'}{'\u00A0'}
-                    <TitleTips listType={this.props.listType}
-                        onTipsClick={this.props.onTipsClick} />
+                <div className="right_component" onMouseLeave={this.orderNone.bind(this)}>
+                    <div className="order_list"
+                        style={{ display: this.state.orderDisp ? "inline-block" : "none" }}
+                        onClick={this.props.onOrderChanged}>
+                        <span order="FileName">{culture.fileName} {this.props.orderField == "FileName" ? "✔" : ""}</span>
+                        <span order="Length">{culture.size} {this.props.orderField == "Length" ? "✔" : ""}</span>
+                        <span order="CreateTime">{culture.createTime} {this.props.orderField == "CreateTime" ? "✔" : ""}</span>
+                    </div>
+                    <i className="iconfont icon-download" title={culture.download}
+                        onClick={this.props.downloadByIds}
+                        style={{ visibility: this.props.delShow ? "visible" : "hidden" }} />
+                    <i className="iconfont icon-del" title={culture.delete}
+                        onClick={this.props.deleteByIds}
+                        style={{ visibility: this.props.delShow ? "visible" : "hidden" }} />
+                    <i className="iconfont icon-order" title={culture.order} onMouseEnter={this.onOrderDisp.bind(this)}></i>
+                    <TitleTips listType={this.props.listType} onTipsClick={this.props.onTipsClick} />
                 </div>
             </div>
         );
@@ -150,7 +166,6 @@ class Pagination extends React.Component {
                     <i className="iconfont icon-last" title={culture.last_page} onClick={this.props.lastPage}></i>
                     {'\u00A0'}
                     <i className="iconfont icon-next" title={culture.next_page} onClick={this.props.nextPage}></i>
-
                     {'\u00A0'}{'\u00A0'}{'\u00A0'}{'\u00A0'}
                     {culture.filter}:
                     <input type="text" name="filter"
@@ -194,6 +209,8 @@ var CommonUsePagination = {
         localStorage.update_time = getCurrentDateTime();
         var that = this;
         var url = this.url + "?pageindex=" + this.state.pageIndex + "&pagesize=" + this.state.pageSize + "&filter=" + this.state.filter;
+        if (this.state.orderField) url = url + "&orderField=" + this.state.orderField;
+        if (this.state.orderFieldType) url = url + "&orderFieldType=" + this.state.orderFieldType;
         http.get(url, function (result) {
             setKeyWord(result, that.state.filter);
             that.setState({ data: result, pageCount: Math.ceil(result.count / that.state.pageSize) || 1 });

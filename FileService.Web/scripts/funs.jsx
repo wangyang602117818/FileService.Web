@@ -115,6 +115,7 @@ var urls = {
     preview: appDomain + "admin/preview",
     previewConvert: appDomain + "admin/previewconvert",
     deleteUrl: appDomain + "admin/delete",
+    deleteFilesUrl: appDomain + "admin/deletefiles",
     downloadUrl: appDomain + "download/get",
     downloadConvertUrl: appDomain + "download/getconvert",
     downloadZipInnerUrl: appDomain + "download/getzipinnerfile",

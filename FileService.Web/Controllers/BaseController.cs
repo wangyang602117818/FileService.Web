@@ -4,22 +4,28 @@ using FileService.Util;
 using MongoDB.Bson;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text.RegularExpressions;
-using System.Web;
 using System.Web.Mvc;
 
 namespace FileService.Web.Controllers
 {
     public class BaseController : Controller
     {
-        public Log log = new Log();
-        public Regex regex = new Regex(@"\\(\w+)\\$");
-        public Converter converter = new Converter();
-        public Task task = new Task();
-        public Queue queue = new Queue();
-        Department department = new Department();
-        public void Log(string fileId, string content)
+        protected Log log = new Log();
+        protected Regex regex = new Regex(@"\\(\w+)\\$");
+        protected Converter converter = new Converter();
+        protected Task task = new Task();
+        protected Queue queue = new Queue();
+        protected Department department = new Department();
+        protected FilesWrap filesWrap = new FilesWrap();
+        protected Thumbnail thumbnail = new Thumbnail();
+        protected M3u8 m3u8 = new M3u8();
+        protected Ts ts = new Ts();
+        protected VideoCapture videoCapture = new VideoCapture();
+        protected FilesConvert filesConvert = new FilesConvert();
+        protected MongoFile mongoFile = new MongoFile();
+        protected MongoFileConvert mongoFileConvert = new MongoFileConvert();
+        protected void Log(string fileId, string content)
         {
             var authCode = Request.Headers["AuthCode"];
             var appName = Request.Headers["AppName"];
@@ -34,7 +40,7 @@ namespace FileService.Web.Controllers
                 Request.Headers["UserIp"] ?? Request.UserHostAddress,
                 Request.Headers["UserAgent"] ?? Request.UserAgent);
         }
-        public void LogInRecord(string content, string userName)
+        protected void LogInRecord(string content, string userName)
         {
             var authCode = Request.Headers["AuthCode"];
             var appName = Request.Headers["AppName"];
@@ -49,7 +55,7 @@ namespace FileService.Web.Controllers
                 Request.Headers["UserIp"] ?? Request.UserHostAddress,
                 Request.Headers["UserAgent"] ?? Request.UserAgent);
         }
-        public void InsertTask(string handlerId, ObjectId fileId, string fileName, string type, string from, BsonDocument outPut, BsonArray access,string owner)
+        protected void InsertTask(string handlerId, ObjectId fileId, string fileName, string type, string from, BsonDocument outPut, BsonArray access, string owner)
         {
             converter.AddCount(handlerId, 1);
             ObjectId taskId = ObjectId.GenerateNewId();
@@ -59,7 +65,7 @@ namespace FileService.Web.Controllers
             //添加队列
             queue.Insert(handlerId, type, "Task", taskId, false, new BsonDocument());
         }
-        public void ConvertAccess(List<AccessModel> accessList)
+        protected void ConvertAccess(List<AccessModel> accessList)
         {
             foreach (AccessModel accessModel in accessList)
             {
@@ -71,6 +77,43 @@ namespace FileService.Web.Controllers
                 accessModel.CompanyDisplay = companyName;
                 accessModel.DepartmentDisplay = departmentDisplay.ToArray();
             }
+        }
+        protected void DeleteFile(string id)
+        {
+            BsonDocument fileWrap = filesWrap.FindOne(ObjectId.Parse(id));
+            if (filesWrap == null) return;
+            //删除 thumbnail
+            if (fileWrap["FileType"] == "image")
+            {
+                List<ObjectId> thumbnailIds = new List<ObjectId>();
+                foreach (BsonDocument d in fileWrap["Thumbnail"].AsBsonArray) thumbnailIds.Add(d["_id"].AsObjectId);
+                thumbnail.DeleteMany(thumbnailIds);
+            }
+            //删除 video 相关
+            if (fileWrap["FileType"] == "video")
+            {
+                List<ObjectId> m3u8Ids = new List<ObjectId>();
+                foreach (BsonDocument d in fileWrap["Videos"].AsBsonArray) m3u8Ids.Add(d["_id"].AsObjectId);
+                m3u8.DeleteMany(m3u8Ids);
+                ts.DeleteBySourceId(m3u8Ids);
+                videoCapture.DeleteBySourceId(ObjectId.Parse(id));
+            }
+            //删除 attachment 相关
+            if (fileWrap["FileType"] == "attachment")
+            {
+                foreach (BsonDocument bson in fileWrap["Files"].AsBsonArray)
+                {
+                    if (!bson.Contains("_id")) continue;
+                    if (filesConvert.FindOne(bson["_id"].AsObjectId) != null) mongoFileConvert.Delete(bson["_id"].AsObjectId);
+                }
+            }
+            if (filesWrap.CountByFileId(fileWrap["FileId"].AsObjectId) == 1 && fileWrap["FileId"].AsObjectId != ObjectId.Empty)
+            {
+                ObjectId fId = fileWrap["FileId"].AsObjectId;
+                mongoFile.Delete(fId);
+            }
+            filesWrap.DeleteOne(ObjectId.Parse(id));
+            task.Delete(ObjectId.Parse(id));
         }
     }
 }

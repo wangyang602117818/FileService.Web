@@ -188,10 +188,6 @@ h1 {
         overflow: hidden;
     }
 
-        .table_grid .table_grid_content img {
-            opacity: 0.8
-        }
-
     .table_grid .table_grid_name {
         display: inline-block;
         height: 30px;
