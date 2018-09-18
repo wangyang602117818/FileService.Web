@@ -44,7 +44,7 @@ namespace FileService.Converter
                     {
                         SaveFileFromSharedFolder(filesWrapId, fullPath);
                         //第一次转换，先截一张图
-                        ConvertVideoCp(taskItem.Message["_id"].AsObjectId, taskItem.Message["FileId"].ToString(), fullPath);
+                        ConvertVideoCp(taskItem.Message["FileId"].AsObjectId, fullPath);
                     }
                     //任务肯定是后加的
                     else
@@ -87,9 +87,8 @@ namespace FileService.Converter
             }
             return true;
         }
-        public void ConvertVideoCp(ObjectId id, string sourceId, string fullPath)
+        public void ConvertVideoCp(ObjectId fileWrapId, string fullPath)
         {
-            ObjectId fileWrapId = ObjectId.Parse(sourceId);
             if (videoCapture.CountBySourceId(fileWrapId) <= 0)
             {
                 string cpPath = MongoFileBase.AppDataDir + Path.GetFileNameWithoutExtension(fullPath) + ".jpg";

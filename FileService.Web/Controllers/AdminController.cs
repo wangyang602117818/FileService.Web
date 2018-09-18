@@ -22,7 +22,6 @@ namespace FileService.Web.Controllers
         User user = new User();
         Shared shared = new Shared();
         Download download = new Download();
-        FilePreview filePreview = new FilePreview();
         public ActionResult Index()
         {
             ViewBag.Name = User.Identity.Name;
@@ -438,7 +437,8 @@ namespace FileService.Web.Controllers
         {
             Log(id, "ReDo");
             BsonDocument document = task.FindOne(ObjectId.Parse(id));
-            if (document["State"].AsInt32 == 2 || document["State"].AsInt32 == 4 || document["State"].AsInt32 == -1)
+            int state = Convert.ToInt32(document["State"]);
+            if (state == 2 || state == 4 || state == -1)
             {
                 task.UpdateState(ObjectId.Parse(id), TaskStateEnum.wait, 0);
                 queue.Insert(document["HandlerId"].AsString, type, "Task", ObjectId.Parse(id), false, new BsonDocument());
@@ -470,7 +470,7 @@ namespace FileService.Web.Controllers
         {
             Log(id, "DeleteCacheFile");
             BsonDocument document = task.FindOne(ObjectId.Parse(id));
-            if (document["State"].AsInt32 == 2)
+            if (Convert.ToInt32(document["State"]) == 2)
             {
                 var temp = document["TempFolder"].ToString().Substring(document["TempFolder"].ToString().TrimEnd('\\').LastIndexOf(@"\") + 1);
                 string fullPath = AppDomain.CurrentDomain.BaseDirectory + AppSettings.tempFileDir + temp + document["FileName"].ToString();

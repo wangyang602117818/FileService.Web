@@ -105,7 +105,7 @@ h1 {
     }
 
     .table .doing td, .table .dong th {
-        color: #999999;
+        opacity: 0.5;
     }
 
     .table .tdCenter {
@@ -119,6 +119,10 @@ h1 {
     border-top: 1px solid #ddd;
     justify-content: space-between;
 }
+
+    .table_grid .doing {
+        opacity: 0.5;
+    }
 
     .table_grid .table_grid_item_wrap {
         display: inline-block;

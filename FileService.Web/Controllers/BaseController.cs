@@ -25,6 +25,7 @@ namespace FileService.Web.Controllers
         protected FilesConvert filesConvert = new FilesConvert();
         protected MongoFile mongoFile = new MongoFile();
         protected MongoFileConvert mongoFileConvert = new MongoFileConvert();
+        protected FilePreview filePreview = new FilePreview();
         protected void Log(string fileId, string content)
         {
             var authCode = Request.Headers["AuthCode"];
@@ -80,7 +81,8 @@ namespace FileService.Web.Controllers
         }
         protected void DeleteFile(string id)
         {
-            BsonDocument fileWrap = filesWrap.FindOne(ObjectId.Parse(id));
+            ObjectId fileWrapId = ObjectId.Parse(id);
+            BsonDocument fileWrap = filesWrap.FindOne(fileWrapId);
             if (filesWrap == null) return;
             //删除 thumbnail
             if (fileWrap["FileType"] == "image")
@@ -96,7 +98,7 @@ namespace FileService.Web.Controllers
                 foreach (BsonDocument d in fileWrap["Videos"].AsBsonArray) m3u8Ids.Add(d["_id"].AsObjectId);
                 m3u8.DeleteMany(m3u8Ids);
                 ts.DeleteBySourceId(m3u8Ids);
-                videoCapture.DeleteBySourceId(ObjectId.Parse(id));
+                videoCapture.DeleteBySourceId(fileWrapId);
             }
             //删除 attachment 相关
             if (fileWrap["FileType"] == "attachment")
@@ -112,8 +114,9 @@ namespace FileService.Web.Controllers
                 ObjectId fId = fileWrap["FileId"].AsObjectId;
                 mongoFile.Delete(fId);
             }
-            filesWrap.DeleteOne(ObjectId.Parse(id));
-            task.Delete(ObjectId.Parse(id));
+            filePreview.DeleteOne(fileWrapId);
+            task.Delete(fileWrapId);
+            filesWrap.DeleteOne(fileWrapId);
         }
     }
 }

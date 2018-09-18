@@ -13,9 +13,6 @@ namespace FileService.Web.Controllers
     [AllowAnonymous]
     public class DataController : BaseController
     {
-        FilesWrap filesWrap = new FilesWrap();
-        FilesConvert filesConvert = new FilesConvert();
-        VideoCapture videoCapture = new VideoCapture();
         public ActionResult GetFileAccess(string id)
         {
             BsonDocument document = filesWrap.FindOne(ObjectId.Parse(id));

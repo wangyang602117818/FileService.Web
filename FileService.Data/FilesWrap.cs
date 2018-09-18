@@ -65,6 +65,10 @@ namespace FileService.Data
         {
             return MongoCollection.UpdateOne(FilterBuilder.Eq("_id", id), Builders<BsonDocument>.Update.Pull("VideoCpIds", captureId)).IsAcknowledged;
         }
+        public bool DeleteVideoCapture(ObjectId id)
+        {
+            return MongoCollection.UpdateOne(FilterBuilder.Eq("_id", id), Builders<BsonDocument>.Update.Set("VideoCpIds", new BsonArray())).IsAcknowledged;
+        }
         public bool DeleteThumbnail(ObjectId id, ObjectId thumbnailId)
         {
             var filter = FilterBuilder.Eq("_id", id);
@@ -130,7 +134,7 @@ namespace FileService.Data
                     }},
                     {"count",new BsonDocument("$sum",1) }
                 })
-                .Sort(new BsonDocument("_id.date",1))
+                .Sort(new BsonDocument("_id.date", 1))
                 .ToEnumerable();
         }
         public override FilterDefinition<BsonDocument> GetAccessFilter(string userName)

@@ -213,7 +213,7 @@ var CommonUsePagination = {
         if (this.state.orderFieldType) url = url + "&orderFieldType=" + this.state.orderFieldType;
         http.get(url, function (result) {
             setKeyWord(result, that.state.filter);
-            that.setState({ data: result, pageCount: Math.ceil(result.count / that.state.pageSize) || 1 });
+            that.setState({ data: result, pageCount: Math.ceil(result.count / that.state.pageSize) || 1, selectedList: [] });
         });
     },
     onPageShow(e) {

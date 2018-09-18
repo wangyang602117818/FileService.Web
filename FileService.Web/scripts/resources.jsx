@@ -69,7 +69,7 @@ class ResourceItem extends React.Component {
     }
     render() {
         return (
-            <tr className={this.props.resource.FileId.$oid == "000000000000000000000000" ? "doing" : "done"}>
+            <tr className={this.props.resource.FileId.$oid.removeHTML() == "000000000000000000000000" ? "doing" : "done"}>
                 <td>
                     <b
                         className="link"
@@ -144,8 +144,11 @@ class ResourcesDataPicItem extends React.Component {
         var fileType = this.props.resource.FileType.removeHTML();
         var owner = this.props.resource.Owner.removeHTML();
         var select = this.props.resource.selected;
+        var className = "table_grid_item_wrap ";
+        className += this.props.resource.FileId.$oid.removeHTML() == "000000000000000000000000" ? "doing " : "done ";
+        className += select ? "selected" : "";
         return (
-            <div className={select ? "table_grid_item_wrap selected" : "table_grid_item_wrap"}
+            <div className={className}
                 onClick={this.preView.bind(this)}
                 id={"id=" + fileId + "&filename=" + fileName}>
                 <div className="table_grid_item">

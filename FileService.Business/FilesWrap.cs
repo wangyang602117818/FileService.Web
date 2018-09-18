@@ -101,6 +101,10 @@ namespace FileService.Business
         {
             return mongoData.DeleteVideoCapture(id, captureId);
         }
+        public bool DeleteVideoCapture(ObjectId id)
+        {
+            return mongoData.DeleteVideoCapture(id);
+        }
         public bool DeleteThumbnail(ObjectId id, ObjectId thumbnailId)
         {
             return mongoData.DeleteThumbnail(id, thumbnailId);

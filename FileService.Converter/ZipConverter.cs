@@ -12,7 +12,7 @@ namespace FileService.Converter
         FilesWrap filesWrap = new FilesWrap();
         FilesConvert filesConvert = new FilesConvert();
         Config config = new Config();
-        Business.Task task = new Business.Task();
+        Task task = new Task();
         MongoFile mongoFile = new MongoFile();
         MongoFileConvert mongoFileConvert = new MongoFileConvert();
         public override bool Convert(FileItem taskItem)
@@ -52,10 +52,6 @@ namespace FileService.Converter
                     ObjectId _id = bson["_id"].AsObjectId;
                     if (filesConvert.FindOne(_id) != null) mongoFileConvert.Delete(_id);
                 }
-            }
-            if (File.Exists(fullPath))
-            {
-
             }
             BsonArray subFiles = ConvertZip(fileWrapId, fullPath);
             ////更新 fs.files表

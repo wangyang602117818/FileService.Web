@@ -20,9 +20,6 @@ namespace FileService.Web.Controllers
     {
         string tempFileDirectory = AppDomain.CurrentDomain.BaseDirectory + AppSettings.tempFileDir + DateTime.Now.ToString("yyyyMMdd") + "\\";
         Application application = new Application();
-        MongoFile mongoFile = new MongoFile();
-        FilesWrap filesWrap = new FilesWrap();
-        VideoCapture videoCapture = new VideoCapture();
         Config config = new Config();
         [HttpPost]
         public ActionResult Image(UploadImgModel uploadImgModel)
