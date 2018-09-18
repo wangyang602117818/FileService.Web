@@ -19,40 +19,24 @@
                         <th width="5%">{culture.del}</th>
                     </tr>
                 </thead>
-                <ResourcesList data={this.props.data}
-                    deleteItem={this.props.deleteItem}
-                    onIdClick={this.props.onIdClick} />
+                {this.props.data.length == 0 ?
+                    <tbody>
+                        <tr>
+                            <td colSpan='10'>... {culture.no_data} ...</td>
+                        </tr>
+                    </tbody> :
+                    <tbody>
+                        {this.props.data.map(function (item, i) {
+                            return (
+                                <ResourceItem resource={item} key={i}
+                                    deleteItem={this.props.deleteItem}
+                                    onIdClick={this.props.onIdClick} />
+                            )
+                        }.bind(this))}
+                    </tbody>
+                }
             </table>
         );
-    }
-}
-class ResourcesList extends React.Component {
-    constructor(props) {
-        super(props);
-    }
-    render() {
-        var that = this;
-        if (this.props.data.length == 0) {
-            return (
-                <tbody>
-                    <tr>
-                        <td colSpan='10'>... {culture.no_data} ...</td>
-                    </tr>
-                </tbody>
-            )
-        } else {
-            return (
-                <tbody>
-                    {this.props.data.map(function (item, i) {
-                        return (
-                            <ResourceItem resource={item} key={i}
-                                deleteItem={that.props.deleteItem}
-                                onIdClick={that.props.onIdClick} />
-                        )
-                    })}
-                </tbody>
-            );
-        }
     }
 }
 class ResourceItem extends React.Component {
@@ -98,6 +82,7 @@ class ResourceItem extends React.Component {
                 <td>
                     <i className="iconfont icon-view"
                         onClick={this.preView.bind(this)}
+
                         id={"id=" + this.props.resource._id.$oid.removeHTML() + "&filename=" + this.props.resource.FileName.removeHTML()}></i>
                 </td>
                 <td>
