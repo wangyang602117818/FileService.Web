@@ -129,11 +129,11 @@ namespace FileService.Web.Controllers
             }
             return new ResponseModel<IEnumerable<BsonDocument>>(ErrorCode.success, result, count);
         }
-        public ActionResult GetFiles(int pageIndex = 1, int pageSize = 10, string filter = "")
+        public ActionResult GetFiles(int pageIndex = 1, int pageSize = 10, string orderField = "CreateTime", string orderFieldType = "desc", string filter = "")
         {
             long count = 0;
             var userName = Request.Headers["UserName"] ?? User.Identity.Name;
-            Dictionary<string, string> sorts = new Dictionary<string, string> { { "CreateTime", "desc" } };
+            Dictionary<string, string> sorts = new Dictionary<string, string> { { orderField, orderFieldType } };
             IEnumerable<BsonDocument> result = filesWrap.GetPageList(pageIndex, pageSize, null, sorts, filter, new List<string>() { "_id", "FileName", "From", "FileType" }, new List<string>() { }, out count, userName);
             return new ResponseModel<IEnumerable<BsonDocument>>(ErrorCode.success, result, count);
         }
@@ -814,7 +814,7 @@ namespace FileService.Web.Controllers
         }
         public ActionResult DeleteFiles(IEnumerable<string> ids)
         {
-            foreach(string id in ids)
+            foreach (string id in ids)
             {
                 DeleteFile(id);
                 Log(id, "DeleteFile");

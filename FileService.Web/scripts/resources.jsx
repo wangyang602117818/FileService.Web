@@ -577,6 +577,7 @@ class Resources extends React.Component {
             }.bind(this));
         }
         this.setState({ selectedList: this.state.selectedList });
+        if (this.state.selectedList.length == 0) this.setState({ subFileShow: false, accessFileShow: false });
         e.stopPropagation();
     }
     onOrderChanged(e) {
