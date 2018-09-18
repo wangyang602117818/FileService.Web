@@ -93,10 +93,11 @@ namespace FileService.Data
             {
                 Log4Net.InfoLog(ex.Message);
             }
+            //设置分片键/////////////////////////////////////////////////////////////////////////////////////
             try
             {
                 database.CreateCollection("Ts");
-                var c = new CreateIndexModel<BsonDocument>(new BsonDocument() {{ "SourceId", 1 },{ "N", 1 }});  //shared key
+                var c = new CreateIndexModel<BsonDocument>(new BsonDocument() { { "SourceId", 1 }, { "N", 1 } });  //shared key
                 database.GetCollection<BsonDocument>("Ts").Indexes.CreateOne(c);
             }
             catch (Exception ex)
@@ -106,8 +107,48 @@ namespace FileService.Data
             try
             {
                 database.CreateCollection("Download");
-                var c = new CreateIndexModel<BsonDocument>(new BsonDocument() {{ "From", 1 },{ "CreateTime", -1 }}); //shared key
+                var c = new CreateIndexModel<BsonDocument>(new BsonDocument() { { "From", 1 }, { "CreateTime", -1 } }); //shared key
                 database.GetCollection<BsonDocument>("Download").Indexes.CreateOne(c);
+            }
+            catch (Exception ex)
+            {
+                Log4Net.InfoLog(ex.Message);
+            }
+            try
+            {
+                database.CreateCollection("Log");
+                var c = new CreateIndexModel<BsonDocument>(new BsonDocument() { { "From", 1 }, { "CreateTime", -1 } }); //shared key
+                database.GetCollection<BsonDocument>("Log").Indexes.CreateOne(c);
+            }
+            catch (Exception ex)
+            {
+                Log4Net.InfoLog(ex.Message);
+            }
+            try
+            {
+                database.CreateCollection("VideoCapture");
+                var c = new CreateIndexModel<BsonDocument>(new BsonDocument() { { "From", 1 }, { "CreateTime", -1 } });  //shared key
+                database.GetCollection<BsonDocument>("VideoCapture").Indexes.CreateOne(c);
+            }
+            catch (Exception ex)
+            {
+                Log4Net.InfoLog(ex.Message);
+            }
+            try
+            {
+                database.CreateCollection("FilePreview");
+                var c = new CreateIndexModel<BsonDocument>(new BsonDocument() { { "From", 1 }, { "CreateTime", -1 } });  //shared key
+                database.GetCollection<BsonDocument>("FilePreview").Indexes.CreateOne(c);
+            }
+            catch (Exception ex)
+            {
+                Log4Net.InfoLog(ex.Message);
+            }
+            try
+            {
+                database.CreateCollection("Thumbnail");
+                var c = new CreateIndexModel<BsonDocument>(new BsonDocument() { { "From", 1 }, { "CreateTime", -1 } });  //shared key
+                database.GetCollection<BsonDocument>("Thumbnail").Indexes.CreateOne(c);
             }
             catch (Exception ex)
             {

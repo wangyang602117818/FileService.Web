@@ -26,6 +26,7 @@ namespace FileService.Converter
         public override bool Convert(FileItem taskItem)
         {
             BsonDocument outputDocument = taskItem.Message["Output"].AsBsonDocument;
+            string from = taskItem.Message["From"].AsString;
             string fileName = taskItem.Message["FileName"].AsString;
             ObjectId filesWrapId = taskItem.Message["FileId"].AsObjectId;
 
@@ -44,7 +45,7 @@ namespace FileService.Converter
                     {
                         SaveFileFromSharedFolder(filesWrapId, fullPath);
                         //第一次转换，先截一张图
-                        ConvertVideoCp(taskItem.Message["FileId"].AsObjectId, fullPath);
+                        ConvertVideoCp(from, taskItem.Message["FileId"].AsObjectId, fullPath);
                     }
                     //任务肯定是后加的
                     else
@@ -81,57 +82,55 @@ namespace FileService.Converter
                 switch (output.Format)
                 {
                     case VideoOutPutFormat.M3u8:
-                        ConvertHls(taskItem.Message["_id"].AsObjectId, taskItem.Message["FileId"].ToString(), fullPath, output);
+                        ConvertHls(from, taskItem.Message["_id"].AsObjectId, taskItem.Message["FileId"].ToString(), fullPath, output);
                         break;
                 }
             }
             return true;
         }
-        public void ConvertVideoCp(ObjectId fileWrapId, string fullPath)
+        public void ConvertVideoCp(string from, ObjectId fileWrapId, string fullPath)
         {
-            if (videoCapture.CountBySourceId(fileWrapId) <= 0)
+            string cpPath = MongoFileBase.AppDataDir + Path.GetFileNameWithoutExtension(fullPath) + ".jpg";
+            string fileName = Path.GetFileName(cpPath);
+            string cmd = "\"" + ExePath + "\" -ss 00:00:01 -i \"" + fullPath + "\" -vframes 1 \"" + cpPath + "\"";
+            Process process = new Process()
             {
-                string cpPath = MongoFileBase.AppDataDir + Path.GetFileNameWithoutExtension(fullPath) + ".jpg";
-                string fileName = Path.GetFileName(cpPath);
-                string cmd = "\"" + ExePath + "\" -ss 00:00:01 -i \"" + fullPath + "\" -vframes 1 \"" + cpPath + "\"";
-                Process process = new Process()
+                StartInfo = new ProcessStartInfo(cmd)
                 {
-                    StartInfo = new ProcessStartInfo(cmd)
-                    {
-                        UseShellExecute = false,
-                        CreateNoWindow = true,
-                        RedirectStandardError = true
-                    }
-                };
-                process.Start();
-                process.WaitForExit();
-                if (File.Exists(cpPath))
-                {
-                    FileStream imageStream = new FileStream(cpPath, FileMode.Open, FileAccess.Read);
-                    ObjectId cpId = ObjectId.GenerateNewId();
-                    BsonDocument document = new BsonDocument()
+                    UseShellExecute = false,
+                    CreateNoWindow = true,
+                    RedirectStandardError = true
+                }
+            };
+            process.Start();
+            process.WaitForExit();
+            if (File.Exists(cpPath))
+            {
+                FileStream imageStream = new FileStream(cpPath, FileMode.Open, FileAccess.Read);
+                ObjectId cpId = ObjectId.GenerateNewId();
+                BsonDocument document = new BsonDocument()
                     {
                         {"_id",cpId },
+                        {"From",from },
                         {"SourceId",fileWrapId },
                         {"Length",imageStream.Length },
                         {"FileName",fileName },
                         {"File",imageStream.ToBytes() },
                         {"CreateTime",DateTime.Now }
                     };
-                    videoCapture.Insert(document);
-                    filesWrap.AddVideoCapture(fileWrapId, cpId);
-                    imageStream.Position = 0;
-                    using (Stream stream = ImageExtention.GenerateFilePreview(fileName, imageStream, ImageModelEnum.scale, ImageFormat.Jpeg))
-                    {
-                        filePreview.Replace(fileWrapId, stream.Length, fileName, stream.ToBytes());
-                    }
-                    imageStream.Close();
-                    imageStream.Dispose();
+                videoCapture.Insert(document);
+                filesWrap.AddVideoCapture(fileWrapId, cpId);
+                imageStream.Position = 0;
+                using (Stream stream = ImageExtention.GenerateFilePreview(fileName, imageStream, ImageModelEnum.scale, ImageFormat.Jpeg))
+                {
+                    filePreview.Replace(fileWrapId, from, stream.Length, fileName, stream.ToBytes());
                 }
-                File.Delete(cpPath);
+                imageStream.Close();
+                imageStream.Dispose();
             }
+            File.Delete(cpPath);
         }
-        public void ConvertHls(ObjectId id, string fileId, string fullPath, VideoOutPut output)
+        public void ConvertHls(string from, ObjectId id, string fileId, string fullPath, VideoOutPut output)
         {
             string sengmentFileName = fileId.Substring(0, 18) + "%06d.ts";
             string outputPath = MongoFile.AppDataDir + output.Id.ToString() + "\\";
@@ -164,9 +163,9 @@ namespace FileService.Converter
                 }
             }
             process.WaitForExit();
-            HlsToMongo(outputPath, output.Id.ToString(), fileId, Path.GetFileNameWithoutExtension(fullPath) + ".m3u8", (int)output.Quality, totalDuration, output.Flag);
+            HlsToMongo(from, outputPath, output.Id.ToString(), fileId, Path.GetFileNameWithoutExtension(fullPath) + ".m3u8", (int)output.Quality, totalDuration, output.Flag);
         }
-        public void HlsToMongo(string path, string m3u8FileId, string sourceFileId, string fileNameM3u8, int quality, int duration, string flag)
+        public void HlsToMongo(string from, string path, string m3u8FileId, string sourceFileId, string fileNameM3u8, int quality, int duration, string flag)
         {
             string[] files = Directory.GetFiles(path);
             string m3u8Text = File.ReadAllText(path + fileNameM3u8);
@@ -179,11 +178,11 @@ namespace FileService.Converter
                     byte[] buffer = File.ReadAllBytes(file);
                     ObjectId tsId = ObjectId.GenerateNewId();
                     m3u8Text = m3u8Text.Replace(Path.GetFileNameWithoutExtension(file), tsId.ToString());
-                    ts.Insert(tsId, m3u8FileId, fileNameM3u8, n, buffer.Length, buffer);
+                    ts.Insert(tsId, from, m3u8FileId, fileNameM3u8, n, buffer.Length, buffer);
                     n++;
                 }
             }
-            m3u8.Replace(ObjectId.Parse(m3u8FileId), ObjectId.Parse(sourceFileId), fileNameM3u8, m3u8Text, quality, duration, files.Length - 1, flag);
+            m3u8.Replace(ObjectId.Parse(m3u8FileId), from, ObjectId.Parse(sourceFileId), fileNameM3u8, m3u8Text, quality, duration, files.Length - 1, flag);
             Directory.Delete(path, true);
         }
         private int GetTotalDuration(string str)

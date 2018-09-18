@@ -1,22 +1,15 @@
 ﻿using MongoDB.Bson;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace FileService.Data
 {
     public class VideoCapture : MongoBase
     {
         public VideoCapture() : base("VideoCapture") { }
-        public bool DeleteBySourceId(ObjectId sourceId)
+        public bool DeleteByIds(string from, IEnumerable<ObjectId> ids)
         {
-            return MongoCollection.DeleteMany(FilterBuilder.Eq("SourceId", sourceId)).IsAcknowledged;
-        }
-        public long CountBySourceId(ObjectId sourceId)
-        {
-            return MongoCollection.CountDocuments(FilterBuilder.Eq("SourceId", sourceId));
+            var filter = FilterBuilder.Eq("From", from) & FilterBuilder.In("_id", ids);
+            return MongoCollection.DeleteMany(filter).IsAcknowledged;
         }
     }
 }

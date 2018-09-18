@@ -14,10 +14,13 @@ namespace FileService.Business
         {
             return mongoData.GetShared(fileId);
         }
-
         public bool DisabledShared(ObjectId id, bool disable)
         {
             return mongoData.DisabledShared(id, disable);
+        }
+        public bool DeleteShared(ObjectId fileId)
+        {
+            return mongoData.DeleteShared(fileId);
         }
     }
 }

@@ -233,7 +233,7 @@ class Resources extends React.Component {
         }
     }
     deleteFile(id) {
-        http.get(urls.deleteUrl + "?id=" + id, function (data) {
+        http.get(urls.deleteUrl + "/" + id, function (data) {
             if (data.code == 0) {
                 this.getData();
             }

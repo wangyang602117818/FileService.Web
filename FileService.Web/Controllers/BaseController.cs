@@ -26,6 +26,7 @@ namespace FileService.Web.Controllers
         protected MongoFile mongoFile = new MongoFile();
         protected MongoFileConvert mongoFileConvert = new MongoFileConvert();
         protected FilePreview filePreview = new FilePreview();
+        protected Shared shared = new Shared();
         protected void Log(string fileId, string content)
         {
             var authCode = Request.Headers["AuthCode"];
@@ -95,10 +96,12 @@ namespace FileService.Web.Controllers
             if (fileWrap["FileType"] == "video")
             {
                 List<ObjectId> m3u8Ids = new List<ObjectId>();
+                List<ObjectId> videoCpIds = new List<ObjectId>();
                 foreach (BsonDocument d in fileWrap["Videos"].AsBsonArray) m3u8Ids.Add(d["_id"].AsObjectId);
+                foreach (BsonObjectId oId in fileWrap["VideoCpIds"].AsBsonArray) videoCpIds.Add(oId.AsObjectId);
                 m3u8.DeleteMany(m3u8Ids);
                 ts.DeleteBySourceId(m3u8Ids);
-                videoCapture.DeleteBySourceId(fileWrapId);
+                videoCapture.DeleteByIds(fileWrap["From"].AsString, videoCpIds);
             }
             //删除 attachment 相关
             if (fileWrap["FileType"] == "attachment")
@@ -115,6 +118,7 @@ namespace FileService.Web.Controllers
                 mongoFile.Delete(fId);
             }
             filePreview.DeleteOne(fileWrapId);
+            shared.DeleteShared(fileWrapId);
             task.Delete(fileWrapId);
             filesWrap.DeleteOne(fileWrapId);
         }

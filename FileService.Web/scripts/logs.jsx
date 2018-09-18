@@ -8,7 +8,7 @@
                 <thead>
                     <tr>
                         <td width="15%">{culture.id}</td>
-                        <td width="10%">{culture.appName}</td>
+                        <td width="10%">{culture.from}</td>
                         <td width="18%">{culture.fileId}/{culture.taskId}</td>
                         <td width="12%">{culture.content}</td>
                         <td width="9%">{culture.user}</td>
@@ -58,8 +58,8 @@ class LogItem extends React.Component {
             <tr>
                 <td dangerouslySetInnerHTML={{ __html: this.props.log._id.$oid }}
                 ></td>
-                <td dangerouslySetInnerHTML={{ __html: this.props.log.AppName }}
-                    id={this.props.log.AppName.removeHTML()}>
+                <td dangerouslySetInnerHTML={{ __html: this.props.log.From }}
+                    id={this.props.log.From.removeHTML()}>
                 </td>
                 <td dangerouslySetInnerHTML={{ __html: this.props.log.FileId }}></td>
                 <td dangerouslySetInnerHTML={{ __html: this.props.log.Content }}></td>

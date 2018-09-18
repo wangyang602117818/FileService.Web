@@ -20,7 +20,6 @@ namespace FileService.Web.Controllers
         Config config = new Config();
         Application application = new Application();
         User user = new User();
-        Shared shared = new Shared();
         Download download = new Download();
         public ActionResult Index()
         {
@@ -220,7 +219,9 @@ namespace FileService.Web.Controllers
         }
         public ActionResult GetThumbnailMetadata(string id)
         {
-            IEnumerable<BsonDocument> thumbs = thumbnail.FindBySourceId(ObjectId.Parse(id));
+            ObjectId fileWrapId = ObjectId.Parse(id);
+            IEnumerable<ObjectId> thumbnailIds = filesWrap.FindOne(fileWrapId)["Thumbnail"].AsBsonArray.Select(s => s["_id"].AsObjectId);
+            IEnumerable<BsonDocument> thumbs = thumbnail.FindByIds(thumbnailIds);
             return new ResponseModel<IEnumerable<BsonDocument>>(ErrorCode.success, thumbs);
         }
         public ActionResult GetM3u8Metadata(string id)

@@ -1,19 +1,15 @@
 ﻿using MongoDB.Bson;
 using MongoDB.Driver;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace FileService.Data
 {
     public class Thumbnail : MongoBase
     {
         public Thumbnail() : base("Thumbnail") { }
-        public IEnumerable<BsonDocument> FindBySourceId(ObjectId sourceId)
+        public IEnumerable<BsonDocument> FindByIds(IEnumerable<ObjectId> ids)
         {
-            return MongoCollection.Find(FilterBuilder.Eq("SourceId", sourceId))
+            return MongoCollection.Find(FilterBuilder.In("_id", ids))
                 .Project(Builders<BsonDocument>.Projection
                 .Exclude("File")).ToEnumerable();
         }

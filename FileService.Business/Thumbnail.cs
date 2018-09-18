@@ -1,21 +1,18 @@
 ﻿using MongoDB.Bson;
 using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace FileService.Business
 {
     public partial class Thumbnail : ModelBase<Data.Thumbnail>
     {
         public Thumbnail() : base(new Data.Thumbnail()) { }
-        public bool Replace(ObjectId id, ObjectId sourceId, long length, string fileName, string flag, byte[] file)
+        public bool Replace(ObjectId id, string from, ObjectId sourceId, long length, string fileName, string flag, byte[] file)
         {
             BsonDocument document = new BsonDocument()
             {
                 {"_id",id },
+                {"From",from },
                 {"SourceId",sourceId },
                 {"Length",length },
                 {"FileName",fileName },
@@ -25,9 +22,9 @@ namespace FileService.Business
             };
             return mongoData.Replace(document);
         }
-        public IEnumerable<BsonDocument> FindBySourceId(ObjectId sourceId)
+        public IEnumerable<BsonDocument> FindByIds(IEnumerable<ObjectId> ids)
         {
-            return mongoData.FindBySourceId(sourceId);
+            return mongoData.FindByIds(ids);
         }
     }
 }

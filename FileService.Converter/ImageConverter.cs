@@ -19,6 +19,7 @@ namespace FileService.Converter
         public override bool Convert(FileItem taskItem)
         {
             BsonDocument outputDocument = taskItem.Message["Output"].AsBsonDocument;
+            string from = taskItem.Message["From"].AsString;
             string fileName = taskItem.Message["FileName"].AsString;
             ObjectId filesWrapId = taskItem.Message["FileId"].AsObjectId;
 
@@ -59,13 +60,13 @@ namespace FileService.Converter
                 {
                     using (Stream stream = ImageExtention.GenerateThumbnail(fileName, fileStream, output.Model, format, output.X, output.Y, output.Width, output.Height))
                     {
-                        thumbnail.Replace(output.Id, taskItem.Message["FileId"].AsObjectId, stream.Length, Path.GetFileNameWithoutExtension(fileName) + outputExt, output.Flag, stream.ToBytes());
+                        thumbnail.Replace(output.Id, from, taskItem.Message["FileId"].AsObjectId, stream.Length, Path.GetFileNameWithoutExtension(fileName) + outputExt, output.Flag, stream.ToBytes());
                     }
                 }
                 fileStream.Position = 0;
                 using (Stream stream = ImageExtention.GenerateFilePreview(fileName, fileStream, ImageModelEnum.scale, format))
                 {
-                    filePreview.Replace(filesWrapId, stream.Length, fileName, stream.ToBytes());
+                    filePreview.Replace(filesWrapId, from, stream.Length, fileName, stream.ToBytes());
                 }
             }
             fileStream.Close();

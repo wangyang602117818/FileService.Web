@@ -2,6 +2,7 @@
 using FileService.Model;
 using FileService.Util;
 using MongoDB.Bson;
+using System.Collections.Generic;
 using System.Drawing.Imaging;
 using System.IO;
 
@@ -17,7 +18,7 @@ namespace FileService.Converter
         public override bool Convert(FileItem taskItem)
         {
             ObjectId fileWrapId = taskItem.Message["FileId"].AsObjectId;
-            //BsonDocument fileWrap = filesWrap.FindOne(fileWrapId);
+            string from = taskItem.Message["From"].AsString;
             string fileName = taskItem.Message["FileName"].AsString;
             string fileType = config.GetTypeByExtension(Path.GetExtension(fileName).ToLower()).ToLower();
             int processCount = System.Convert.ToInt32(taskItem.Message["ProcessCount"]);
@@ -30,29 +31,31 @@ namespace FileService.Converter
             //生成图片文件缩略图
             if (fileType == "image")
             {
-                GenerateImageFilePreview(fullPath, fileName, fileWrapId);
+                GenerateImageFilePreview(from, fullPath, fileName, fileWrapId);
             }
             //生成视频文件缩略图
             if (fileType == "video")
             {
+                BsonDocument fileWrap = filesWrap.FindOne(fileWrapId);
                 if (!File.Exists(fullPath))
                 {
                     string newPath = MongoFileBase.AppDataDir + fileName;
                     if (!File.Exists(newPath))
                     {
-                        BsonDocument filesWrap = new FilesWrap().FindOne(fileWrapId);
-                        mongoFile.SaveTo(filesWrap["FileId"].AsObjectId);
+                        mongoFile.SaveTo(fileWrap["FileId"].AsObjectId);
                     }
                     fullPath = newPath;
                 }
-                videoCapture.DeleteBySourceId(fileWrapId);
+                List<ObjectId> videoCpIds = new List<ObjectId>();
+                foreach (BsonObjectId oId in fileWrap["VideoCpIds"].AsBsonArray) videoCpIds.Add(oId.AsObjectId);
+                videoCapture.DeleteByIds(fileWrap["From"].AsString, videoCpIds);
                 filesWrap.DeleteVideoCapture(fileWrapId);
-                new VideoConverter().ConvertVideoCp(fileWrapId, fullPath);
+                new VideoConverter().ConvertVideoCp(from, fileWrapId, fullPath);
             }
             if (File.Exists(fullPath)) File.Delete(fullPath);
             return true;
         }
-        public void GenerateImageFilePreview(string fullPath, string fileName, ObjectId fileWrapId)
+        public void GenerateImageFilePreview(string from, string fullPath, string fileName, ObjectId fileWrapId)
         {
             string outputExt = "";
             ImageFormat format = ImageExtention.GetFormat(ImageOutPutFormat.Default, fileName, out outputExt);
@@ -69,7 +72,7 @@ namespace FileService.Converter
             }
             using (Stream stream = ImageExtention.GenerateFilePreview(fileName, fileStream, ImageModelEnum.scale, format))
             {
-                filePreview.Replace(fileWrapId, stream.Length, fileName, stream.ToBytes());
+                filePreview.Replace(fileWrapId, from, stream.Length, fileName, stream.ToBytes());
             }
             fileStream.Close();
             fileStream.Dispose();

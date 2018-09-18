@@ -7,11 +7,12 @@ namespace FileService.Business
     public class Ts : ModelBase<Data.Ts>
     {
         public Ts() : base(new Data.Ts()) { }
-        public void Insert(ObjectId id, string sourceId, string sourceName, int n, long length, byte[] file)
+        public void Insert(ObjectId id, string from, string sourceId, string sourceName, int n, long length, byte[] file)
         {
             BsonDocument document = new BsonDocument()
             {
                 {"_id",id },
+                {"From",from },
                 {"SourceId",ObjectId.Parse(sourceId) },
                 {"SourceName",sourceName },
                 {"N",n },

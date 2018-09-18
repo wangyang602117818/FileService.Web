@@ -15,10 +15,13 @@ namespace FileService.Data
         {
             return MongoCollection.Find(FilterBuilder.Eq("FileId", fileId)).ToEnumerable();
         }
-
-        public bool DisabledShared(object id, bool disable)
+        public bool DisabledShared(ObjectId id, bool disable)
         {
             return MongoCollection.UpdateOne(FilterBuilder.Eq("_id", id), Builders<BsonDocument>.Update.Set("Disabled", disable)).IsAcknowledged;
+        }
+        public bool DeleteShared(ObjectId fileId)
+        {
+            return MongoCollection.DeleteMany(FilterBuilder.Eq("FileId", fileId)).IsAcknowledged;
         }
     }
 }
