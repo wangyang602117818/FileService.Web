@@ -340,6 +340,7 @@
     <Content Include="scripts\dropdownlist.jsx" />
     <Content Include="scripts\echarts.js" />
     <Content Include="scripts\echarts.min.js" />
+    <Content Include="scripts\file_recycle.jsx" />
     <Content Include="scripts\funs.jsx" />
     <Content Include="scripts\handlers.jsx" />
     <Content Include="scripts\index.jsx" />

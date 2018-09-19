@@ -27,7 +27,6 @@ class LogList extends React.Component {
         super(props);
     }
     render() {
-        var that = this;
         if (this.props.data.length == 0) {
             return (
                 <tbody>
@@ -91,6 +90,8 @@ class Logs extends React.Component {
         return (
             <div className="main">
                 <h1>{culture.logs}</h1>
+                <LogToolBar section={this.props.section}
+                    onSectionChange={this.props.onSectionChange} />
                 <TitleArrow title={culture.all + culture.logs} show={this.state.pageShow}
                     count={this.state.data.count}
                     onShowChange={this.onPageShow.bind(this)} />
@@ -109,3 +110,46 @@ class Logs extends React.Component {
     }
 }
 for (var item in CommonUsePagination) Logs.prototype[item] = CommonUsePagination[item];
+
+class LogToolBar extends React.Component {
+    constructor(props) {
+        super(props);
+    }
+    render() {
+        return (
+            <div className="config_toolbar">
+                <div className={this.props.section == "recycle" ? "config_info select" : "config_info"} onClick={this.props.onSectionChange} id="recycle">{culture.recycle_bin}</div>
+                <div className={this.props.section == "log" ? "config_info select" : "config_info"} onClick={this.props.onSectionChange} id="log">{culture.log}</div>
+            </div>
+        )
+    }
+}
+class LogContainer extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            section: localStorage.storageLogSection || "log"
+        }
+    }
+    onSectionChange(e) {
+        var value = e.target.id.toLowerCase();
+        localStorage.storageLogSection = value;
+        this.setState({ section: value });
+    }
+    onRefreshChange(value) {
+        this.refs.log.onRefreshChange(value);
+    }
+    render() {
+        if (this.state.section == "log") {
+            return <Logs ref="log"
+                refresh={this.props.refresh}
+                section={this.state.section}
+                onSectionChange={this.onSectionChange.bind(this)} />
+        } else {
+            return <FileRecycle ref="log"
+                refresh={this.props.refresh}
+                section={this.state.section}
+                onSectionChange={this.onSectionChange.bind(this)} />
+        }
+    }
+}

@@ -52,6 +52,7 @@ namespace FileService.Web
                 .Include("~/scripts/resources_shared_file.jsx")
                 .Include("~/scripts/resources.jsx")
                 .Include("~/scripts/logs.jsx")
+                .Include("~/scripts/file_recycle.jsx")
             );
             //management
             bundles.Add(new BabelBundle("~/scripts/management")

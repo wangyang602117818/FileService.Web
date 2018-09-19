@@ -116,6 +116,8 @@ var urls = {
     previewConvert: appDomain + "admin/previewconvert",
     removeUrl: appDomain + "admin/remove",
     removeFilesUrl: appDomain + "admin/removefiles",
+    deleteFileUrl: appDomain + "admin/delete",
+    restoreFileUrl: appDomain + "admin/restore",
     downloadUrl: appDomain + "download/get",
     downloadConvertUrl: appDomain + "download/getconvert",
     downloadZipInnerUrl: appDomain + "download/getzipinnerfile",
@@ -165,6 +167,7 @@ var urls = {
     },
     resources: {
         getUrl: appDomain + "admin/getfiles",
+        getDeleteUrl: appDomain + "admin/getdeletefiles",
         getAccessUrl: appDomain + "data/getfileaccess",
         updateAccessUrl: appDomain + "data/updateFileAccess",
         getThumbnailMetadataUrl: appDomain + "admin/getthumbnailmetadata",

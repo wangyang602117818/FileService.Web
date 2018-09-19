@@ -98,13 +98,15 @@ var culture = {
 
     size: "大小",
     uploadDate: "上传时间",
+    deleteDate: "删除时间",
     from: "来源",
     owner: "所有者",
     fileType: "文件类型",
     dol: "下载",
     download: "下载",
-    del: "删除",
     downloads: "下载量",
+    del: "删除",
+    permanent_del: "永久删除",
     add: "添加",
     unknow: "未知",
     ok: "确定",
@@ -196,4 +198,5 @@ var culture = {
     empty_cache_file: "清除缓存文件",
     user_agent: "用户代理",
     restore_file: "恢复文件",
+    recycle_bin: "文件回收站"
 }

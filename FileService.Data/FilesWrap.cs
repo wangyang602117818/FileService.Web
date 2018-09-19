@@ -19,9 +19,14 @@ namespace FileService.Data
             var filter = FilterBuilder.Eq("_id", id) & FilterBuilder.Eq("Delete", false);
             return MongoCollection.Find(filter).FirstOrDefault();
         }
+        public BsonDocument FindDelete(ObjectId id)
+        {
+            var filter = FilterBuilder.Eq("_id", id) & FilterBuilder.Eq("Delete", true);
+            return MongoCollection.Find(filter).FirstOrDefault();
+        }
         public override IEnumerable<BsonDocument> FindAll()
         {
-            var filter= FilterBuilder.Eq("Delete", false);
+            var filter = FilterBuilder.Eq("Delete", false);
             return MongoCollection.Find(filter).ToEnumerable();
         }
         public override long Count()
@@ -31,7 +36,7 @@ namespace FileService.Data
         }
         public long CountByFileId(ObjectId fileId)
         {
-            var filter = FilterBuilder.Eq("FileId", fileId) & FilterBuilder.Eq("Delete", false);
+            var filter = FilterBuilder.Eq("FileId", fileId);
             return MongoCollection.CountDocuments(filter);
         }
         public bool UpdateFileId(ObjectId id, ObjectId fileId)
@@ -48,11 +53,11 @@ namespace FileService.Data
         }
         public bool Remove(ObjectId id)
         {
-            return MongoCollection.UpdateOne(FilterBuilder.Eq("_id", id), Builders<BsonDocument>.Update.Set("Delete", true)).IsAcknowledged;
+            return MongoCollection.UpdateOne(FilterBuilder.Eq("_id", id), Builders<BsonDocument>.Update.Set("Delete", true).Set("DeleteTime", DateTime.Now)).IsAcknowledged;
         }
         public bool Restore(ObjectId id)
         {
-            return MongoCollection.UpdateOne(FilterBuilder.Eq("_id", id), Builders<BsonDocument>.Update.Set("Delete", false)).IsAcknowledged;
+            return MongoCollection.UpdateOne(FilterBuilder.Eq("_id", id), Builders<BsonDocument>.Update.Set("Delete", false).Set("DeleteTime", BsonNull.Value)).IsAcknowledged;
         }
         public IEnumerable<BsonDocument> GetCountByRecentMonth(DateTime dateTime)
         {
@@ -172,9 +177,6 @@ namespace FileService.Data
         {
             return base.GetAccessFilterBase(userName);
         }
-        public override FilterDefinition<BsonDocument> GetAndFilter()
-        {
-            return FilterBuilder.Eq("Delete", false);
-        }
+
     }
 }

@@ -56,11 +56,11 @@ namespace FileService.Data
         }
         public bool RemoveByFileId(ObjectId fileId)
         {
-            return MongoCollection.UpdateMany(FilterBuilder.Eq("FileId", fileId), Builders<BsonDocument>.Update.Set("Delete", true)).IsAcknowledged;
+            return MongoCollection.UpdateMany(FilterBuilder.Eq("FileId", fileId), Builders<BsonDocument>.Update.Set("Delete", true).Set("DeleteTime", DateTime.Now)).IsAcknowledged;
         }
         public bool RestoreByFileId(ObjectId fileId)
         {
-            return MongoCollection.UpdateMany(FilterBuilder.Eq("FileId", fileId), Builders<BsonDocument>.Update.Set("Delete", false)).IsAcknowledged;
+            return MongoCollection.UpdateMany(FilterBuilder.Eq("FileId", fileId), Builders<BsonDocument>.Update.Set("Delete", false).Set("DeleteTime", BsonNull.Value)).IsAcknowledged;
         }
         public bool DeleteByFileId(ObjectId fileId)
         {
@@ -115,7 +115,7 @@ namespace FileService.Data
         }
         public override FilterDefinition<BsonDocument> GetAndFilter()
         {
-            return FilterBuilder.Eq("Delete", false) & FilterBuilder.Exists("Output._id");
+            return FilterBuilder.Exists("Output._id");
         }
         public IEnumerable<BsonDocument> FindCacheFiles()
         {

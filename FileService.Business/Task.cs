@@ -22,6 +22,7 @@ namespace FileService.Business
                 {"Access",access },
                 {"Owner",owner },
                 {"Delete",false },
+                {"DeleteTime",BsonNull.Value },
                 {"HandlerId",handlerId },
                 {"ProcessCount",processCount },
                 {"State",state },

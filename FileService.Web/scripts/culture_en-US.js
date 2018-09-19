@@ -98,13 +98,15 @@ var culture = {
 
     size: "Size",
     uploadDate: "UploadDate",
+    deleteDate: "deleteDate",
     from: "From",
     owner: "Owner",
     fileType: "FileType",
     dol: "Dol",
-    download:"Download",
+    download: "Download",
     downloads: "Downloads",
     del: "Del",
+    permanent_del: "PermanentDel",
     add: "Add ",
     unknow: "unknow",
     ok: "Ok",
@@ -195,6 +197,6 @@ var culture = {
     exists: "Exists",
     empty_cache_file: "EmptyCacheFile",
     user_agent: "UserAgent",
-    restore_file:"RestoreFile"
-
+    restore_file: "RestoreFile",
+    recycle_bin: "FileRecycleBin"
 }

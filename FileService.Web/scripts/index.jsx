@@ -146,7 +146,7 @@ class Container extends React.Component {
                 component = Resources;
                 break;
             case "logs":
-                component = Logs;
+                component = LogContainer;
                 break;
             case "config":
                 component = typeof (ConfigContainer) === "undefined" ? Overview : ConfigContainer;

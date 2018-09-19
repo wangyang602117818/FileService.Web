@@ -111,7 +111,7 @@ namespace FileService.Web.Controllers
             long count = 0;
             var userName = Request.Headers["UserName"] ?? User.Identity.Name;
             Dictionary<string, string> sorts = new Dictionary<string, string> { { "CreateTime", "desc" } };
-            List<BsonDocument> result = task.GetPageList(pageIndex, pageSize, null, sorts, filter, new List<string>() { "FileId", "FileName", "StateDesc", "HandlerId", "StateDesc", "Type" }, new List<string>() { }, out count, userName).ToList();
+            List<BsonDocument> result = task.GetPageList(pageIndex, pageSize, new BsonDocument("Delete",false), sorts, filter, new List<string>() { "FileId", "FileName", "StateDesc", "HandlerId", "StateDesc", "Type" }, new List<string>() { }, out count, userName).ToList();
             foreach (BsonDocument bson in result)
             {
                 var temp = bson["TempFolder"].ToString().Substring(bson["TempFolder"].ToString().TrimEnd('\\').LastIndexOf(@"\") + 1);
@@ -133,7 +133,15 @@ namespace FileService.Web.Controllers
             long count = 0;
             var userName = Request.Headers["UserName"] ?? User.Identity.Name;
             Dictionary<string, string> sorts = new Dictionary<string, string> { { orderField, orderFieldType } };
-            IEnumerable<BsonDocument> result = filesWrap.GetPageList(pageIndex, pageSize, null, sorts, filter, new List<string>() { "_id", "FileName", "From", "FileType" }, new List<string>() { }, out count, userName);
+            IEnumerable<BsonDocument> result = filesWrap.GetPageList(pageIndex, pageSize, new BsonDocument("Delete", false), sorts, filter, new List<string>() { "_id", "FileName", "From", "FileType" }, new List<string>() { }, out count, userName);
+            return new ResponseModel<IEnumerable<BsonDocument>>(ErrorCode.success, result, count);
+        }
+        public ActionResult GetDeleteFiles(int pageIndex = 1, int pageSize = 10, string filter = "")
+        {
+            long count = 0;
+            var userName = Request.Headers["UserName"] ?? User.Identity.Name;
+            Dictionary<string, string> sorts = new Dictionary<string, string> { { "CreateTime", "desc" } };
+            IEnumerable<BsonDocument> result = filesWrap.GetPageList(pageIndex, pageSize, new BsonDocument("Delete", true), sorts, filter, new List<string>() { "_id", "FileName", "From", "FileType" }, new List<string>() { }, out count, userName);
             return new ResponseModel<IEnumerable<BsonDocument>>(ErrorCode.success, result, count);
         }
         public ActionResult GetConvertFiles(int pageIndex = 1, int pageSize = 10, string filter = "")
@@ -835,9 +843,15 @@ namespace FileService.Web.Controllers
         [Authorize(Roles = "admin")]
         public ActionResult Delete(string id)
         {
-            DeleteFile(id);
-            Log(id, "DeleteFile");
-            return new ResponseModel<string>(ErrorCode.success, "");
+            if (DeleteFile(id))
+            {
+                Log(id, "DeleteFile");
+                return new ResponseModel<string>(ErrorCode.success, "");
+            }
+            else
+            {
+                return new ResponseModel<string>(ErrorCode.server_exception, "");
+            }
         }
 
         [AllowAnonymous]

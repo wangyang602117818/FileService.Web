@@ -88,11 +88,11 @@ namespace FileService.Web.Controllers
             task.RemoveByFileId(fileWrapId);
             filesWrap.Remove(fileWrapId);
         }
-        protected void DeleteFile(string id)
+        protected bool DeleteFile(string id)
         {
             ObjectId fileWrapId = ObjectId.Parse(id);
-            BsonDocument fileWrap = filesWrap.FindOne(fileWrapId);
-            if (filesWrap == null) return;
+            BsonDocument fileWrap = filesWrap.FindDelete(fileWrapId);
+            if (filesWrap == null) return false;
             //删除 thumbnail
             if (fileWrap["FileType"] == "image")
             {
@@ -129,6 +129,7 @@ namespace FileService.Web.Controllers
             shared.DeleteShared(fileWrapId);
             task.DeleteByFileId(fileWrapId);
             filesWrap.DeleteOne(fileWrapId);
+            return true;
         }
     }
 }

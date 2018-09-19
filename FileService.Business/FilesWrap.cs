@@ -27,6 +27,7 @@ namespace FileService.Business
                     {"Access",access },
                     {"Owner",owner },
                     {"Delete",false },
+                    {"DeleteTime",BsonNull.Value },
                     {"CreateTime",DateTime.Now }
                 };
             mongoData.Insert(filesWrap);
@@ -48,6 +49,7 @@ namespace FileService.Business
                     {"Access",access },
                     {"Owner",owner },
                     {"Delete",false },
+                    {"DeleteTime",BsonNull.Value },
                     {"CreateTime",DateTime.Now }
                 };
             mongoData.Insert(filesWrap);
@@ -68,6 +70,7 @@ namespace FileService.Business
                     {"Access",access },
                     {"Owner",owner },
                     {"Delete",false },
+                    {"DeleteTime",BsonNull.Value },
                     {"CreateTime",DateTime.Now }
                 };
             mongoData.Insert(filesWrap);
@@ -91,6 +94,10 @@ namespace FileService.Business
         public bool Restore(ObjectId id)
         {
             return mongoData.Restore(id);
+        }
+        public BsonDocument FindDelete(ObjectId id)
+        {
+            return mongoData.FindDelete(id);
         }
         public IEnumerable<BsonDocument> GetCountByRecentMonth(DateTime startDateTime)
         {

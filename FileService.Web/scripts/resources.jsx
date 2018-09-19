@@ -86,10 +86,10 @@ class ResourceItem extends React.Component {
                         id={"id=" + this.props.resource._id.$oid.removeHTML() + "&filename=" + this.props.resource.FileName.removeHTML()}></i>
                 </td>
                 <td>
-                    <i className="iconfont icon-download" onClick={this.download.bind(this)} id={this.props.resource._id.$oid}></i>
+                    <i className="iconfont icon-download" onClick={this.download.bind(this)} id={this.props.resource._id.$oid.removeHTML()}></i>
                 </td>
                 <td>
-                    <i className="iconfont icon-del" onClick={this.props.removeItem} id={this.props.resource._id.$oid}></i>
+                    <i className="iconfont icon-del" onClick={this.props.removeItem} id={this.props.resource._id.$oid.removeHTML()}></i>
                 </td>
             </tr>
         )
