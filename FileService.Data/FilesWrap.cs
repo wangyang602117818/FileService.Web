@@ -9,9 +9,30 @@ namespace FileService.Data
     public class FilesWrap : MongoBase
     {
         public FilesWrap() : base("FilesWrap") { }
+        public override IEnumerable<BsonDocument> Find(BsonDocument document)
+        {
+            document.Add("Delete", false);
+            return MongoCollection.Find(document).ToEnumerable();
+        }
+        public override BsonDocument FindOne(ObjectId id)
+        {
+            var filter = FilterBuilder.Eq("_id", id) & FilterBuilder.Eq("Delete", false);
+            return MongoCollection.Find(filter).FirstOrDefault();
+        }
+        public override IEnumerable<BsonDocument> FindAll()
+        {
+            var filter= FilterBuilder.Eq("Delete", false);
+            return MongoCollection.Find(filter).ToEnumerable();
+        }
+        public override long Count()
+        {
+            var filter = FilterBuilder.Eq("Delete", false);
+            return MongoCollection.CountDocuments(filter);
+        }
         public long CountByFileId(ObjectId fileId)
         {
-            return MongoCollection.CountDocuments(FilterBuilder.Eq("FileId", fileId));
+            var filter = FilterBuilder.Eq("FileId", fileId) & FilterBuilder.Eq("Delete", false);
+            return MongoCollection.CountDocuments(filter);
         }
         public bool UpdateFileId(ObjectId id, ObjectId fileId)
         {
@@ -25,10 +46,18 @@ namespace FileService.Data
         {
             return MongoCollection.UpdateOne(FilterBuilder.Eq("_id", id), Builders<BsonDocument>.Update.Inc("Download", 1)).IsAcknowledged;
         }
+        public bool Remove(ObjectId id)
+        {
+            return MongoCollection.UpdateOne(FilterBuilder.Eq("_id", id), Builders<BsonDocument>.Update.Set("Delete", true)).IsAcknowledged;
+        }
+        public bool Restore(ObjectId id)
+        {
+            return MongoCollection.UpdateOne(FilterBuilder.Eq("_id", id), Builders<BsonDocument>.Update.Set("Delete", false)).IsAcknowledged;
+        }
         public IEnumerable<BsonDocument> GetCountByRecentMonth(DateTime dateTime)
         {
             return MongoCollection.Aggregate()
-                 .Match(FilterBuilder.Gte("CreateTime", dateTime))
+                 .Match(FilterBuilder.Eq("Delete", false) & FilterBuilder.Gte("CreateTime", dateTime))
                  .Project(new BsonDocument("date", new BsonDocument("$dateToString", new BsonDocument() {
                     {"format", "%Y-%m-%d" },
                     {"date", "$CreateTime" }}
@@ -42,6 +71,7 @@ namespace FileService.Data
         public IEnumerable<BsonDocument> GetFilesByType()
         {
             return MongoCollection.Aggregate()
+                .Match(FilterBuilder.Eq("Delete", false))
                 .Group<BsonDocument>(new BsonDocument()
                 {
                     {"_id","$FileType" },
@@ -51,6 +81,7 @@ namespace FileService.Data
         public IEnumerable<BsonDocument> GetFilesByAppName()
         {
             return MongoCollection.Aggregate()
+                .Match(FilterBuilder.Eq("Delete", false))
                 .Group<BsonDocument>(new BsonDocument()
                 {
                     {"_id","$From" },
@@ -122,7 +153,7 @@ namespace FileService.Data
         public IEnumerable<BsonDocument> GetCountByAppName(DateTime startDateTime)
         {
             return MongoCollection.Aggregate()
-                .Match(FilterBuilder.Gte("CreateTime", startDateTime))
+                .Match(FilterBuilder.Eq("Delete", false) & FilterBuilder.Gte("CreateTime", startDateTime))
                 .Project(new BsonDocument() {
                     {"date",new BsonDocument("$dateToString", new BsonDocument() {{"format", "%Y-%m-%d" },{"date", "$CreateTime" }})},
                     {"from","$From" }
@@ -140,6 +171,10 @@ namespace FileService.Data
         public override FilterDefinition<BsonDocument> GetAccessFilter(string userName)
         {
             return base.GetAccessFilterBase(userName);
+        }
+        public override FilterDefinition<BsonDocument> GetAndFilter()
+        {
+            return FilterBuilder.Eq("Delete", false);
         }
     }
 }

@@ -807,22 +807,39 @@ namespace FileService.Web.Controllers
             return new ResponseModel<string>(ErrorCode.success, "");
         }
         [Authorize(Roles = "admin")]
+        public ActionResult Remove(string id)
+        {
+            RemoveFile(id);
+            Log(id, "RemoveFile");
+            return new ResponseModel<string>(ErrorCode.success, "");
+        }
+        [Authorize(Roles = "admin")]
+        public ActionResult RemoveFiles(IEnumerable<string> ids)
+        {
+            foreach (string id in ids)
+            {
+                RemoveFile(id);
+                Log(id, "RemoveFile");
+            }
+            return new ResponseModel<string>(ErrorCode.success, "");
+        }
+        [Authorize(Roles = "admin")]
+        public ActionResult Restore(string id)
+        {
+            ObjectId fileWrapId = ObjectId.Parse(id);
+            task.RestoreByFileId(fileWrapId);
+            filesWrap.Restore(fileWrapId);
+            Log(id, "RestoreFile");
+            return new ResponseModel<string>(ErrorCode.success, "");
+        }
+        [Authorize(Roles = "admin")]
         public ActionResult Delete(string id)
         {
             DeleteFile(id);
             Log(id, "DeleteFile");
             return new ResponseModel<string>(ErrorCode.success, "");
         }
-        [Authorize(Roles = "admin")]
-        public ActionResult DeleteFiles(IEnumerable<string> ids)
-        {
-            foreach (string id in ids)
-            {
-                DeleteFile(id);
-                Log(id, "DeleteFile");
-            }
-            return new ResponseModel<string>(ErrorCode.success, "");
-        }
+
         [AllowAnonymous]
         public ActionResult Test()
         {

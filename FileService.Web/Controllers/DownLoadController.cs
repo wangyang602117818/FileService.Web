@@ -27,16 +27,13 @@ namespace FileService.Web.Controllers
         [AppAuthorizeDefault]
         public ActionResult Get(string id)
         {
-            BsonDocument fileWrap = null;
             ObjectId fileWrapId = ObjectId.Parse(id);
-            if (download.AddedInOneMinute(Request.Headers["AppName"], fileWrapId, Request.Headers["UserName"] ?? User.Identity.Name))
-            {
-                fileWrap = filesWrap.FindOne(fileWrapId);
-            }
-            else
+            BsonDocument fileWrap = filesWrap.FindOne(fileWrapId);
+            if (filesWrap == null) return File(new MemoryStream(), "application/octet-stream");
+            if (!download.AddedInOneMinute(Request.Headers["AppName"], fileWrapId, Request.Headers["UserName"] ?? User.Identity.Name))
             {
                 download.AddDownload(fileWrapId, Request.Headers["AppName"], Request.Headers["UserName"] ?? User.Identity.Name);
-                fileWrap = filesWrap.FindAndAddDownloads(fileWrapId);
+                filesWrap.AddDownloads(fileWrapId);
             }
             ObjectId fileId = fileWrap["FileId"].AsObjectId;
             string fileName = fileWrap["FileName"].AsString;

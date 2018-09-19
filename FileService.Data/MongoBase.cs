@@ -1,15 +1,10 @@
 ﻿using FileService.Util;
 using MongoDB.Bson;
 using MongoDB.Driver;
-using MongoDB.Driver.GridFS;
-using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
 namespace FileService.Data
 {
@@ -56,15 +51,15 @@ namespace FileService.Data
         {
             return MongoCollection.DeleteMany(FilterBuilder.In("_id", ids)).IsAcknowledged;
         }
-        public IEnumerable<BsonDocument> Find(BsonDocument document)
+        public virtual IEnumerable<BsonDocument> Find(BsonDocument document)
         {
             return MongoCollection.Find(document).ToEnumerable();
         }
-        public BsonDocument FindOne(ObjectId id)
+        public virtual BsonDocument FindOne(ObjectId id)
         {
             return MongoCollection.Find(new BsonDocument("_id", id)).FirstOrDefault();
         }
-        public IEnumerable<BsonDocument> FindAll()
+        public virtual IEnumerable<BsonDocument> FindAll()
         {
             return MongoCollection.Find(new BsonDocument()).ToEnumerable();
         }

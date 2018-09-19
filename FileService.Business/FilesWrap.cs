@@ -26,6 +26,7 @@ namespace FileService.Business
                     {"Thumbnail",thumbnail },
                     {"Access",access },
                     {"Owner",owner },
+                    {"Delete",false },
                     {"CreateTime",DateTime.Now }
                 };
             mongoData.Insert(filesWrap);
@@ -46,6 +47,7 @@ namespace FileService.Business
                     {"VideoCpIds",videoCpIds },
                     {"Access",access },
                     {"Owner",owner },
+                    {"Delete",false },
                     {"CreateTime",DateTime.Now }
                 };
             mongoData.Insert(filesWrap);
@@ -65,6 +67,7 @@ namespace FileService.Business
                     {"Files",files },
                     {"Access",access },
                     {"Owner",owner },
+                    {"Delete",false },
                     {"CreateTime",DateTime.Now }
                 };
             mongoData.Insert(filesWrap);
@@ -80,6 +83,14 @@ namespace FileService.Business
         public bool AddDownloads(ObjectId id)
         {
             return mongoData.AddDownloads(id);
+        }
+        public bool Remove(ObjectId id)
+        {
+            return mongoData.Remove(id);
+        }
+        public bool Restore(ObjectId id)
+        {
+            return mongoData.Restore(id);
         }
         public IEnumerable<BsonDocument> GetCountByRecentMonth(DateTime startDateTime)
         {

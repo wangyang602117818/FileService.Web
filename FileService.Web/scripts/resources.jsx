@@ -29,7 +29,7 @@
                         {this.props.data.map(function (item, i) {
                             return (
                                 <ResourceItem resource={item} key={i}
-                                    deleteItem={this.props.deleteItem}
+                                    removeItem={this.props.removeItem}
                                     onIdClick={this.props.onIdClick} />
                             )
                         }.bind(this))}
@@ -89,7 +89,7 @@ class ResourceItem extends React.Component {
                     <i className="iconfont icon-download" onClick={this.download.bind(this)} id={this.props.resource._id.$oid}></i>
                 </td>
                 <td>
-                    <i className="iconfont icon-del" onClick={this.props.deleteItem} id={this.props.resource._id.$oid}></i>
+                    <i className="iconfont icon-del" onClick={this.props.removeItem} id={this.props.resource._id.$oid}></i>
                 </td>
             </tr>
         )
@@ -226,14 +226,14 @@ class Resources extends React.Component {
             localStorage.attachment_show = true;
         }
     }
-    deleteItem(e) {
+    removeItem(e) {
         var id = e.target.id;
         if (window.confirm(" " + culture.delete + " ?")) {
-            this.deleteFile(id);
+            this.removeFile(id);
         }
     }
-    deleteFile(id) {
-        http.get(urls.deleteUrl + "/" + id, function (data) {
+    removeFile(id) {
+        http.get(urls.removeUrl + "/" + id, function (data) {
             if (data.code == 0) {
                 this.getData();
             }
@@ -576,9 +576,9 @@ class Resources extends React.Component {
             }.bind(this));
         }
     }
-    deleteByIds() {
+    removeByIds() {
         if (window.confirm(" " + culture.delete + " ?")) {
-            http.post(urls.deleteFilesUrl, { ids: this.state.selectedList }, function (data) {
+            http.post(urls.removeFilesUrl, { ids: this.state.selectedList }, function (data) {
                 if (data.code == 0) {
                     this.getData();
                 }
@@ -603,7 +603,7 @@ class Resources extends React.Component {
                     count={this.state.data.count}
                     listType={this.state.listType}
                     delShow={this.state.selectedList.length > 0 ? true : false}
-                    deleteByIds={this.deleteByIds.bind(this)}
+                    removeByIds={this.removeByIds.bind(this)}
                     downloadByIds={this.downloadByIds.bind(this)}
                     orderField={this.state.orderField}
                     onOrderChanged={this.onOrderChanged.bind(this)}
@@ -620,7 +620,7 @@ class Resources extends React.Component {
                     nextPage={this.nextPage.bind(this)} />
                 {this.state.listType == "list" ?
                     <ResourcesData data={this.state.data.result}
-                        deleteItem={this.deleteItem.bind(this)}
+                        removeItem={this.removeItem.bind(this)}
                         onIdClick={this.onIdClick.bind(this)} /> :
                     <ResourcesDataPic data={this.state.data.result}
                         onResourceSelected={this.onResourceSelected.bind(this)} />

@@ -10,6 +10,26 @@ namespace FileService.Data
     public class Task : MongoBase
     {
         public Task() : base("Task") { }
+        public override IEnumerable<BsonDocument> Find(BsonDocument document)
+        {
+            document.Add("Delete", false);
+            return MongoCollection.Find(document).ToEnumerable();
+        }
+        public override BsonDocument FindOne(ObjectId id)
+        {
+            var filter = FilterBuilder.Eq("_id", id) & FilterBuilder.Eq("Delete", false);
+            return MongoCollection.Find(filter).FirstOrDefault();
+        }
+        public override IEnumerable<BsonDocument> FindAll()
+        {
+            var filter = FilterBuilder.Eq("Delete", false);
+            return MongoCollection.Find(filter).ToEnumerable();
+        }
+        public override long Count()
+        {
+            var filter = FilterBuilder.Eq("Delete", false) & FilterBuilder.Exists("Output._id");
+            return MongoCollection.CountDocuments(filter);
+        }
         public bool UpdateState(ObjectId id, TaskStateEnum state, int percent)
         {
             return MongoCollection.UpdateOne(FilterBuilder.Eq("_id", id), Builders<BsonDocument>.Update.Set("State", state).Set("StateDesc", state.ToString()).Set("Percent", percent)).IsAcknowledged;
@@ -34,7 +54,15 @@ namespace FileService.Data
         {
             return MongoCollection.UpdateOne(FilterBuilder.Eq("_id", id), Builders<BsonDocument>.Update.Set("State", TaskStateEnum.fault).Set("StateDesc", TaskStateEnum.fault.ToString())).IsAcknowledged;
         }
-        public bool Delete(ObjectId fileId)
+        public bool RemoveByFileId(ObjectId fileId)
+        {
+            return MongoCollection.UpdateMany(FilterBuilder.Eq("FileId", fileId), Builders<BsonDocument>.Update.Set("Delete", true)).IsAcknowledged;
+        }
+        public bool RestoreByFileId(ObjectId fileId)
+        {
+            return MongoCollection.UpdateMany(FilterBuilder.Eq("FileId", fileId), Builders<BsonDocument>.Update.Set("Delete", false)).IsAcknowledged;
+        }
+        public bool DeleteByFileId(ObjectId fileId)
         {
             return MongoCollection.DeleteMany(FilterBuilder.Eq("FileId", fileId)).IsAcknowledged;
         }
@@ -45,7 +73,7 @@ namespace FileService.Data
         public IEnumerable<BsonDocument> GetCountByRecentMonth(DateTime dateTime)
         {
             return MongoCollection.Aggregate()
-                 .Match(FilterBuilder.Gte("CreateTime", dateTime) & FilterBuilder.Exists("Output._id"))
+                 .Match(FilterBuilder.Eq("Delete", false) & FilterBuilder.Gte("CreateTime", dateTime) & FilterBuilder.Exists("Output._id"))
                  .Project(new BsonDocument("date", new BsonDocument("$dateToString", new BsonDocument() {
                     {"format", "%Y-%m-%d" },
                     {"date", "$CreateTime" }}
@@ -59,18 +87,17 @@ namespace FileService.Data
         public IEnumerable<BsonDocument> GetFilesByAppName()
         {
             return MongoCollection.Aggregate()
-                .Match(FilterBuilder.Exists("Output._id"))
+                .Match(FilterBuilder.Eq("Delete", false) & FilterBuilder.Exists("Output._id"))
                 .Group<BsonDocument>(new BsonDocument()
                 {
                     {"_id","$From" },
                     {"tasks",new BsonDocument("$sum",1) }
                 }).ToEnumerable();
         }
-
         public IEnumerable<BsonDocument> GetCountByAppName(DateTime startDateTime)
         {
             return MongoCollection.Aggregate()
-                .Match(FilterBuilder.Gte("CreateTime", startDateTime))
+                .Match(FilterBuilder.Eq("Delete", false) & FilterBuilder.Gte("CreateTime", startDateTime))
                 .Project(new BsonDocument() {
                     {"date",new BsonDocument("$dateToString", new BsonDocument() {{"format", "%Y-%m-%d" },{"date", "$CreateTime" }})},
                     {"from","$From" }
@@ -88,18 +115,14 @@ namespace FileService.Data
         }
         public override FilterDefinition<BsonDocument> GetAndFilter()
         {
-            return FilterBuilder.Exists("Output._id");
-        }
-        public override long Count()
-        {
-            return MongoCollection.CountDocuments(FilterBuilder.Exists("Output._id"));
+            return FilterBuilder.Eq("Delete", false) & FilterBuilder.Exists("Output._id");
         }
         public IEnumerable<BsonDocument> FindCacheFiles()
         {
             List<FilterDefinition<BsonDocument>> list = new List<FilterDefinition<BsonDocument>>();
             list.Add(FilterBuilder.In("Type", new List<string>() { "image", "video" }));
             list.Add(FilterBuilder.Exists("Output._id"));
-            list.Add(FilterBuilder.Eq("State",2));
+            list.Add(FilterBuilder.Eq("State", 2));
             return MongoCollection.Find(FilterBuilder.And(list)).ToEnumerable();
         }
     }

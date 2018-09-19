@@ -112,7 +112,6 @@ class TitleArrowComponent extends React.Component {
             orderDisp: false
         }
     }
-
     orderNone(e) {
         this.setState({ orderDisp: false });
     }
@@ -137,7 +136,7 @@ class TitleArrowComponent extends React.Component {
                         onClick={this.props.downloadByIds}
                         style={{ visibility: this.props.delShow ? "visible" : "hidden" }} />
                     <i className="iconfont icon-del" title={culture.delete}
-                        onClick={this.props.deleteByIds}
+                        onClick={this.props.removeByIds}
                         style={{ visibility: this.props.delShow ? "visible" : "hidden" }} />
                     <i className="iconfont icon-order" title={culture.order} onMouseEnter={this.onOrderDisp.bind(this)}></i>
                     <TitleTips listType={this.props.listType} onTipsClick={this.props.onTipsClick} />

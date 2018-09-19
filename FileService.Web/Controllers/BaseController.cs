@@ -80,6 +80,14 @@ namespace FileService.Web.Controllers
                 accessModel.DepartmentDisplay = departmentDisplay.ToArray();
             }
         }
+        protected void RemoveFile(string id)
+        {
+            ObjectId fileWrapId = ObjectId.Parse(id);
+            BsonDocument fileWrap = filesWrap.FindOne(fileWrapId);
+            if (filesWrap == null) return;
+            task.RemoveByFileId(fileWrapId);
+            filesWrap.Remove(fileWrapId);
+        }
         protected void DeleteFile(string id)
         {
             ObjectId fileWrapId = ObjectId.Parse(id);
@@ -119,7 +127,7 @@ namespace FileService.Web.Controllers
             }
             filePreview.DeleteOne(fileWrapId);
             shared.DeleteShared(fileWrapId);
-            task.Delete(fileWrapId);
+            task.DeleteByFileId(fileWrapId);
             filesWrap.DeleteOne(fileWrapId);
         }
     }

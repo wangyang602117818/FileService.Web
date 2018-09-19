@@ -1,18 +1,14 @@
 ﻿using FileService.Model;
 using MongoDB.Bson;
-using MongoDB.Bson.Serialization.Attributes;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace FileService.Business
 {
     public partial class Task : ModelBase<Data.Task>
     {
         public Task() : base(new Data.Task()) { }
-        public void Insert(ObjectId id, ObjectId fileId, string tempFolder, string fileName, string type,string from, BsonDocument output, BsonArray access,string owner, string handlerId, int processCount, TaskStateEnum state, int priority)
+        public void Insert(ObjectId id, ObjectId fileId, string tempFolder, string fileName, string type, string from, BsonDocument output, BsonArray access, string owner, string handlerId, int processCount, TaskStateEnum state, int priority)
         {
             BsonDocument task = new BsonDocument()
             {
@@ -25,6 +21,7 @@ namespace FileService.Business
                 {"Output",output },
                 {"Access",access },
                 {"Owner",owner },
+                {"Delete",false },
                 {"HandlerId",handlerId },
                 {"ProcessCount",processCount },
                 {"State",state },
@@ -64,9 +61,17 @@ namespace FileService.Business
         {
             return mongoData.DeleteByOutputId(id);
         }
-        public bool Delete(ObjectId fileId)
+        public bool RemoveByFileId(ObjectId fileId)
         {
-            return mongoData.Delete(fileId);
+            return mongoData.RemoveByFileId(fileId);
+        }
+        public bool RestoreByFileId(ObjectId fileId)
+        {
+            return mongoData.RestoreByFileId(fileId);
+        }
+        public bool DeleteByFileId(ObjectId fileId)
+        {
+            return mongoData.DeleteByFileId(fileId);
         }
         public IEnumerable<BsonDocument> GetCountByRecentMonth(DateTime startDateTime)
         {
