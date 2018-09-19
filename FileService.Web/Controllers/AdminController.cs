@@ -813,6 +813,7 @@ namespace FileService.Web.Controllers
             Log(id, "DeleteFile");
             return new ResponseModel<string>(ErrorCode.success, "");
         }
+        [Authorize(Roles = "admin")]
         public ActionResult DeleteFiles(IEnumerable<string> ids)
         {
             foreach (string id in ids)

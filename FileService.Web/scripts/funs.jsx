@@ -671,6 +671,18 @@ function getAgent(agent) {
         return "PC";
     }
 }
+function getQuality(quality) {
+    switch (quality) {
+        case 0:
+            return culture.original;
+        case 1:
+            return culture.lower;
+        case 2:
+            return culture.medium;
+        case 3:
+            return culture.bad;
+    }
+}
 Array.prototype.sortAndUnique = function () {
     this.sort(); //先排序
     var res = [this[0]];

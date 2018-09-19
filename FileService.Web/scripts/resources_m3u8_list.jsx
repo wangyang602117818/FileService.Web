@@ -10,11 +10,12 @@
                         <tr>
                             <th width="20%">{culture.m3u8Id}</th>
                             <th width="25%">{culture.fileName}</th>
-                            <th width="10%">{culture.duration}</th>
+                            <th width="6%">{culture.quality}</th>
+                            <th width="8%">{culture.duration}</th>
                             <th width="6%">{culture.ts}</th>
                             <th width="6%">{culture.cp}</th>
                             <th width="6%">{culture.type}</th>
-                            <th width="12%">{culture.flag}</th>
+                            <th width="8%">{culture.flag}</th>
                             <th width="5%">{culture.view}</th>
                             <th width="5%">{culture.dol}</th>
                             <th width="5%">{culture.del}</th>
@@ -26,7 +27,7 @@
                 </table>
                 <AddSubFile
                     fileId={this.props.fileId}
-                    />
+                />
             </div>
         );
     }
@@ -67,6 +68,7 @@ class M3u8FileList extends React.Component {
                             <tr key={i}>
                                 <td>{item._id.$oid}</td>
                                 <td>{item.FileName}</td>
+                                <td>{getQuality(item.Quality)}</td>
                                 <td>{convertTime(item.Duration)}</td>
                                 <td>{item.TsCount}</td>
                                 <td>{item.Cp}</td>
@@ -98,14 +100,14 @@ class AddSubFile extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            
+
         }
     }
     videoOk(obj) {
         obj.fileId = this.props.fileId;
         http.postJson(urls.tasks.addVideoTaskUrl, obj, function (data) {
             if (data.code == 0) {
-                
+
             } else {
                 alert(data.message);
             }
@@ -115,8 +117,8 @@ class AddSubFile extends React.Component {
         return (
             <div>
                 <TitleTxt title={culture.add + culture.convert + culture.task} />
-                <br/>
-                <ConvertVideo videoOk={this.videoOk.bind(this)}/>
+                <br />
+                <ConvertVideo videoOk={this.videoOk.bind(this)} />
             </div>
         );
     }
