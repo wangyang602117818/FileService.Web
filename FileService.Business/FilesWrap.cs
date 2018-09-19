@@ -32,7 +32,7 @@ namespace FileService.Business
                 };
             mongoData.Insert(filesWrap);
         }
-        public void InsertVideo(ObjectId id, ObjectId fileId, string fileName, long length, string from, int downloads, string contentType, BsonArray videos, BsonArray videoCpIds, BsonArray access, string owner)
+        public void InsertVideo(ObjectId id, ObjectId fileId, string fileName, long length, string from, int downloads, string contentType, BsonArray videos, BsonArray access, string owner)
         {
             BsonDocument filesWrap = new BsonDocument()
                 {
@@ -45,7 +45,7 @@ namespace FileService.Business
                     {"FileType","video" },
                     {"ContentType",contentType },
                     {"Videos",videos },
-                    {"VideoCpIds",videoCpIds },
+                    {"VideoCpIds",new BsonArray(){ ObjectId.GenerateNewId()} },
                     {"Access",access },
                     {"Owner",owner },
                     {"Delete",false },
@@ -54,7 +54,7 @@ namespace FileService.Business
                 };
             mongoData.Insert(filesWrap);
         }
-        public void InsertAttachment(ObjectId id, ObjectId fileId, string fileName, long length, string from, int downloads, string contentType, BsonArray files, BsonArray access, string owner)
+        public void InsertAttachment(ObjectId id, ObjectId fileId, string fileName, string fileType, long length, string from, int downloads, string contentType, BsonArray files, BsonArray access, string owner)
         {
             BsonDocument filesWrap = new BsonDocument()
                 {
@@ -67,12 +67,15 @@ namespace FileService.Business
                     {"FileType","attachment" },
                     {"ContentType",contentType },
                     {"Files",files },
-                    {"Access",access },
-                    {"Owner",owner },
-                    {"Delete",false },
-                    {"DeleteTime",BsonNull.Value },
-                    {"CreateTime",DateTime.Now }
                 };
+            if (fileType == "video") filesWrap.Add("VideoCpIds", new BsonArray() { ObjectId.GenerateNewId() });
+            filesWrap.AddRange(new Dictionary<string, object>{
+                { "Access",access },
+                { "Owner",owner },
+                { "Delete",false },
+                { "DeleteTime",BsonNull.Value },
+                { "CreateTime",DateTime.Now }
+            });
             mongoData.Insert(filesWrap);
         }
         public bool UpdateFileId(ObjectId id, ObjectId fileId)

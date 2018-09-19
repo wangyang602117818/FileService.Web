@@ -46,11 +46,8 @@ namespace FileService.Converter
                     }
                     fullPath = newPath;
                 }
-                List<ObjectId> videoCpIds = new List<ObjectId>();
-                foreach (BsonObjectId oId in fileWrap["VideoCpIds"].AsBsonArray) videoCpIds.Add(oId.AsObjectId);
-                videoCapture.DeleteByIds(fileWrap["From"].AsString, videoCpIds);
-                filesWrap.DeleteVideoCapture(fileWrapId);
-                new VideoConverter().ConvertVideoCp(from, fileWrapId, fullPath);
+                ObjectId videoCpId = fileWrap["VideoCpIds"].AsBsonArray[0].AsObjectId;
+                new VideoConverter().ConvertVideoCp(videoCpId, from, fileWrapId, fullPath);
             }
             if (File.Exists(fullPath)) File.Delete(fullPath);
             return true;

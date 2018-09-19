@@ -29,7 +29,7 @@ namespace FileService.Converter
             string from = taskItem.Message["From"].AsString;
             string fileName = taskItem.Message["FileName"].AsString;
             ObjectId filesWrapId = taskItem.Message["FileId"].AsObjectId;
-
+            ObjectId videoCpId = filesWrap.FindOne(filesWrapId)["VideoCpIds"].AsBsonArray[0].AsObjectId;
             VideoOutPut output = BsonSerializer.Deserialize<VideoOutPut>(outputDocument);
 
             int processCount = System.Convert.ToInt32(taskItem.Message["ProcessCount"]);
@@ -45,7 +45,7 @@ namespace FileService.Converter
                     {
                         SaveFileFromSharedFolder(filesWrapId, fullPath);
                         //第一次转换，先截一张图
-                        ConvertVideoCp(from, taskItem.Message["FileId"].AsObjectId, fullPath);
+                        ConvertVideoCp(videoCpId, from, taskItem.Message["FileId"].AsObjectId, fullPath);
                     }
                     //任务肯定是后加的
                     else
@@ -88,7 +88,7 @@ namespace FileService.Converter
             }
             return true;
         }
-        public void ConvertVideoCp(string from, ObjectId fileWrapId, string fullPath)
+        public void ConvertVideoCp(ObjectId id, string from, ObjectId fileWrapId, string fullPath)
         {
             string cpPath = MongoFileBase.AppDataDir + Path.GetFileNameWithoutExtension(fullPath) + ".jpg";
             string fileName = Path.GetFileName(cpPath);
@@ -107,10 +107,9 @@ namespace FileService.Converter
             if (File.Exists(cpPath))
             {
                 FileStream imageStream = new FileStream(cpPath, FileMode.Open, FileAccess.Read);
-                ObjectId cpId = ObjectId.GenerateNewId();
                 BsonDocument document = new BsonDocument()
                     {
-                        {"_id",cpId },
+                        {"_id",id },
                         {"From",from },
                         {"SourceId",fileWrapId },
                         {"Length",imageStream.Length },
@@ -118,8 +117,7 @@ namespace FileService.Converter
                         {"File",imageStream.ToBytes() },
                         {"CreateTime",DateTime.Now }
                     };
-                videoCapture.Insert(document);
-                filesWrap.AddVideoCapture(fileWrapId, cpId);
+                videoCapture.Replace(document);
                 imageStream.Position = 0;
                 using (Stream stream = ImageExtention.GenerateFilePreview(fileName, imageStream, ImageModelEnum.scale, ImageFormat.Jpeg))
                 {
@@ -133,7 +131,7 @@ namespace FileService.Converter
         public void ConvertHls(string from, ObjectId id, string fileId, string fullPath, VideoOutPut output)
         {
             string sengmentFileName = fileId.Substring(0, 18) + "%06d.ts";
-            string outputPath = MongoFile.AppDataDir + output.Id.ToString() + "\\";
+            string outputPath = MongoFileBase.AppDataDir + output.Id.ToString() + "\\";
             if (!Directory.Exists(outputPath)) Directory.CreateDirectory(outputPath);
             int crf = 23 + (int)output.Quality * 6;
             string cmd = "\"" + ExePath + "\"" + " -i " + "\"" + fullPath + "\"" + " -crf " + crf + " -f hls -hls_list_size 0 -hls_segment_filename " + "\"" + outputPath + sengmentFileName + "\" \"" + outputPath + Path.GetFileNameWithoutExtension(fullPath) + ".m3u8" + "\"";

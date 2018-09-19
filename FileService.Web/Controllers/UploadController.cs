@@ -144,7 +144,7 @@ namespace FileService.Web.Controllers
 
                 ObjectId fileId = ObjectId.GenerateNewId();
 
-                filesWrap.InsertVideo(fileId, ObjectId.Empty, file.FileName, file.InputStream.Length, Request.Headers["AppName"],0, file.ContentType, videos, new BsonArray(), access, Request.Headers["UserName"] ?? User.Identity.Name);
+                filesWrap.InsertVideo(fileId, ObjectId.Empty, file.FileName, file.InputStream.Length, Request.Headers["AppName"], 0, file.ContentType, videos, access, Request.Headers["UserName"] ?? User.Identity.Name);
 
                 string handlerId = converter.GetHandlerId();
                 if (outputs.Count == 0)
@@ -197,8 +197,9 @@ namespace FileService.Web.Controllers
                     continue;
                 }
                 BsonArray files = new BsonArray();
+                string fileType = config.GetTypeByExtension(fileExt);
                 //office
-                if (config.GetTypeByExtension(fileExt) == "office")
+                if (fileType.ToLower() == "office")
                 {
                     files.Add(new BsonDocument() {
                         {"_id",ObjectId.Empty },
@@ -216,6 +217,7 @@ namespace FileService.Web.Controllers
                 filesWrap.InsertAttachment(fileId,
                     ObjectId.Empty,
                     file.FileName,
+                    fileType,
                     file.InputStream.Length,
                     Request.Headers["AppName"],
                     0,
@@ -226,7 +228,7 @@ namespace FileService.Web.Controllers
 
                 string handlerId = converter.GetHandlerId();
                 //office转换任务
-                if (config.GetTypeByExtension(fileExt) == "office")
+                if (fileType == "office")
                 {
                     InsertTask(handlerId, fileId, file.FileName, "attachment", Request.Headers["AppName"], new BsonDocument() {
                         {"_id",ObjectId.Empty },
@@ -272,6 +274,7 @@ namespace FileService.Web.Controllers
             BsonDocument document = new BsonDocument()
             {
                 {"_id",id },
+                {"From",Request.Headers["AppName"] },
                 {"SourceId",ObjectId.Parse(uploadVideoCPModel.FileId) },
                 {"Length",image.Length },
                 {"FileName",Path.GetFileNameWithoutExtension(fileWrap["FileName"].AsString)+".png" },
@@ -300,6 +303,7 @@ namespace FileService.Web.Controllers
                 BsonDocument document = new BsonDocument()
                 {
                     {"_id",id },
+                    {"From",Request.Headers["AppName"] },
                     {"SourceId",ObjectId.Parse(uploadVideoCPStreamModel.FileId) },
                     {"Length",file.InputStream.Length },
                     {"FileName",file.FileName },
