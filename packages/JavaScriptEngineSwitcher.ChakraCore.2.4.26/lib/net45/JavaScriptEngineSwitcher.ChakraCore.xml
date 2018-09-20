@@ -291,63 +291,15 @@
             Constructs an instance of the ChakraCore settings
             </summary>
         </member>
-        <member name="T:JavaScriptEngineSwitcher.ChakraCore.Helpers.NumericHelpers">
+        <member name="T:JavaScriptEngineSwitcher.ChakraCore.JsRt.DefaultExternalBufferFinalizeCallback">
             <summary>
-            Numeric helpers
+            Default callback for finalization of external buffer
             </summary>
         </member>
-        <member name="M:JavaScriptEngineSwitcher.ChakraCore.Helpers.NumericHelpers.IsNumericType(System.Type)">
+        <member name="F:JavaScriptEngineSwitcher.ChakraCore.JsRt.DefaultExternalBufferFinalizeCallback.Instance">
             <summary>
-            Gets a value indicating whether the specified type is one of the numeric types
+            Gets a instance of default callback for finalization of external buffer
             </summary>
-            <param name="type">The type</param>
-            <returns>true if the specified type is one of the numeric types; otherwise, false</returns>
-        </member>
-        <member name="M:JavaScriptEngineSwitcher.ChakraCore.Helpers.NumericHelpers.CastDoubleValueToCorrectType(System.Double)">
-            <summary>
-            Casts a double value to the correct type
-            </summary>
-            <param name="value">Double value</param>
-            <returns>Numeric value with the correct type</returns>
-        </member>
-        <member name="T:JavaScriptEngineSwitcher.ChakraCore.Helpers.ReflectionHelpers">
-            <summary>
-            Reflection helpers
-            </summary>
-        </member>
-        <member name="P:JavaScriptEngineSwitcher.ChakraCore.Helpers.ReflectionHelpers.MethodWithMetadata.CompatibilityScore">
-            TODO: In future will need to change type to <code>double</code>
-        </member>
-        <member name="T:JavaScriptEngineSwitcher.ChakraCore.JsEngineFactoryCollectionExtensions">
-            <summary>
-            JS engine factory collection extensions
-            </summary>
-        </member>
-        <member name="M:JavaScriptEngineSwitcher.ChakraCore.JsEngineFactoryCollectionExtensions.AddChakraCore(JavaScriptEngineSwitcher.Core.JsEngineFactoryCollection)">
-            <summary>
-            Adds a instance of <see cref="T:JavaScriptEngineSwitcher.ChakraCore.ChakraCoreJsEngineFactory"/> to
-            the specified <see cref="T:JavaScriptEngineSwitcher.Core.JsEngineFactoryCollection" />
-            </summary>
-            <param name="source">Instance of <see cref="T:JavaScriptEngineSwitcher.Core.JsEngineFactoryCollection" /></param>
-            <returns>Instance of <see cref="T:JavaScriptEngineSwitcher.Core.JsEngineFactoryCollection" /></returns>
-        </member>
-        <member name="M:JavaScriptEngineSwitcher.ChakraCore.JsEngineFactoryCollectionExtensions.AddChakraCore(JavaScriptEngineSwitcher.Core.JsEngineFactoryCollection,System.Action{JavaScriptEngineSwitcher.ChakraCore.ChakraCoreSettings})">
-            <summary>
-            Adds a instance of <see cref="T:JavaScriptEngineSwitcher.ChakraCore.ChakraCoreJsEngineFactory"/> to
-            the specified <see cref="T:JavaScriptEngineSwitcher.Core.JsEngineFactoryCollection" />
-            </summary>
-            <param name="source">Instance of <see cref="T:JavaScriptEngineSwitcher.Core.JsEngineFactoryCollection" /></param>
-            <param name="configure">The delegate to configure the provided <see cref="T:JavaScriptEngineSwitcher.ChakraCore.ChakraCoreSettings"/></param>
-            <returns>Instance of <see cref="T:JavaScriptEngineSwitcher.Core.JsEngineFactoryCollection" /></returns>
-        </member>
-        <member name="M:JavaScriptEngineSwitcher.ChakraCore.JsEngineFactoryCollectionExtensions.AddChakraCore(JavaScriptEngineSwitcher.Core.JsEngineFactoryCollection,JavaScriptEngineSwitcher.ChakraCore.ChakraCoreSettings)">
-            <summary>
-            Adds a instance of <see cref="T:JavaScriptEngineSwitcher.ChakraCore.ChakraCoreJsEngineFactory"/> to
-            the specified <see cref="T:JavaScriptEngineSwitcher.Core.JsEngineFactoryCollection" />
-            </summary>
-            <param name="source">Instance of <see cref="T:JavaScriptEngineSwitcher.Core.JsEngineFactoryCollection" /></param>
-            <param name="settings">Settings of the ChakraCore JS engine</param>
-            <returns>Instance of <see cref="T:JavaScriptEngineSwitcher.Core.JsEngineFactoryCollection" /></returns>
         </member>
         <member name="T:JavaScriptEngineSwitcher.ChakraCore.JsRt.JsBackgroundWorkItemCallback">
             <summary>
@@ -459,26 +411,16 @@
         </member>
         <member name="M:JavaScriptEngineSwitcher.ChakraCore.JsRt.JsContext.ParseScript(System.String,JavaScriptEngineSwitcher.ChakraCore.JsRt.JsSourceContext,System.String)">
             <summary>
-            Parses a script and returns a <c>Function</c> representing the script
+            Parses a script and returns a function representing the script
             </summary>
             <remarks>
             Requires an active script context.
             </remarks>
             <param name="script">The script to parse</param>
-            <param name="sourceContext">The cookie identifying the script that can be used
-            by script contexts that have debugging enabled</param>
-            <param name="sourceName">The location the script came from</param>
-            <returns>The <c>Function</c> representing the script code</returns>
-        </member>
-        <member name="M:JavaScriptEngineSwitcher.ChakraCore.JsRt.JsContext.ParseScript(System.String)">
-            <summary>
-            Parses a script and returns a <c>Function</c> representing the script
-            </summary>
-            <remarks>
-            Requires an active script context.
-            </remarks>
-            <param name="script">The script to parse</param>
-            <returns>The <c>Function</c> representing the script code</returns>
+            <param name="sourceContext">A cookie identifying the script that can be used
+            by debuggable script contexts</param>
+            <param name="sourceUrl">The location the script came from</param>
+            <returns>A function representing the script code</returns>
         </member>
         <member name="M:JavaScriptEngineSwitcher.ChakraCore.JsRt.JsContext.RunScript(System.String,JavaScriptEngineSwitcher.ChakraCore.JsRt.JsSourceContext,System.String)">
             <summary>
@@ -488,28 +430,18 @@
             Requires an active script context.
             </remarks>
             <param name="script">The script to run</param>
-            <param name="sourceContext">The cookie identifying the script that can be used
-            by script contexts that have debugging enabled</param>
-            <param name="sourceName">The location the script came from</param>
+            <param name="sourceContext">A cookie identifying the script that can be used
+            by debuggable script contexts</param>
+            <param name="sourceUrl">The location the script came from</param>
             <returns>The result of the script, if any</returns>
         </member>
-        <member name="M:JavaScriptEngineSwitcher.ChakraCore.JsRt.JsContext.RunScript(System.String)">
-            <summary>
-            Executes a script
-            </summary>
-            <remarks>
-            Requires an active script context
-            </remarks>
-            <param name="script">The script to run</param>
-            <returns>The result of the script, if any</returns>
-        </member>
-        <member name="M:JavaScriptEngineSwitcher.ChakraCore.JsRt.JsContext.SerializeScript(System.String,System.Byte[])">
+        <member name="M:JavaScriptEngineSwitcher.ChakraCore.JsRt.JsContext.SerializeScript(System.String)">
             <summary>
             Serializes a parsed script to a buffer than can be reused
             </summary>
             <remarks>
             <para>
-            SerializeScript parses a script and then stores the parsed form of the script in a
+            <c>SerializeScript</c> parses a script and then stores the parsed form of the script in a
             runtime-independent format. The serialized script then can be deserialized in any
             runtime without requiring the script to be re-parsed.
             </para>
@@ -518,8 +450,7 @@
             </para>
             </remarks>
             <param name="script">The script to serialize</param>
-            <param name="buffer">The buffer to put the serialized script into. Can be null</param>
-            <returns>The size of the buffer, in bytes, required to hold the serialized script</returns>
+            <returns>The buffer to put the serialized script into</returns>
         </member>
         <member name="M:JavaScriptEngineSwitcher.ChakraCore.JsRt.JsContext.GetAndClearException">
             <summary>
@@ -1882,6 +1813,14 @@
             Requires an active script context.
             </remarks>
         </member>
+        <member name="P:JavaScriptEngineSwitcher.ChakraCore.JsRt.JsValue.ArrayBufferBytes">
+            <summary>
+            Gets a bytes from an <c>ArrayBuffer</c>
+            </summary>
+            <remarks>
+            Requires an active script context.
+            </remarks>
+        </member>
         <member name="M:JavaScriptEngineSwitcher.ChakraCore.JsRt.JsValue.#ctor(System.IntPtr)">
             <summary>
             Initializes a new instance of the <see cref="T:JavaScriptEngineSwitcher.ChakraCore.JsRt.JsValue"/> struct
@@ -1978,6 +1917,14 @@
             </remarks>
             <param name="length">The initial length of the array</param>
             <returns>The new array object</returns>
+        </member>
+        <member name="M:JavaScriptEngineSwitcher.ChakraCore.JsRt.JsValue.CreateExternalArrayBuffer(System.Byte[])">
+            <summary>
+            Creates a Javascript <c>ArrayBuffer</c> object to access external memory
+            </summary>
+            <remarks>Requires an active script context.</remarks>
+            <param name="buffer">Buffer for an external memory</param>
+            <returns>The new <c>ArrayBuffer</c> object</returns>
         </member>
         <member name="M:JavaScriptEngineSwitcher.ChakraCore.JsRt.JsValue.CreateError(JavaScriptEngineSwitcher.ChakraCore.JsRt.JsValue)">
             <summary>
@@ -2487,6 +2434,64 @@
             <summary>
             Native methods
             </summary>
+        </member>
+        <member name="T:JavaScriptEngineSwitcher.ChakraCore.Helpers.NumericHelpers">
+            <summary>
+            Numeric helpers
+            </summary>
+        </member>
+        <member name="M:JavaScriptEngineSwitcher.ChakraCore.Helpers.NumericHelpers.IsNumericType(System.Type)">
+            <summary>
+            Gets a value indicating whether the specified type is one of the numeric types
+            </summary>
+            <param name="type">The type</param>
+            <returns>true if the specified type is one of the numeric types; otherwise, false</returns>
+        </member>
+        <member name="M:JavaScriptEngineSwitcher.ChakraCore.Helpers.NumericHelpers.CastDoubleValueToCorrectType(System.Double)">
+            <summary>
+            Casts a double value to the correct type
+            </summary>
+            <param name="value">Double value</param>
+            <returns>Numeric value with the correct type</returns>
+        </member>
+        <member name="T:JavaScriptEngineSwitcher.ChakraCore.Helpers.ReflectionHelpers">
+            <summary>
+            Reflection helpers
+            </summary>
+        </member>
+        <member name="P:JavaScriptEngineSwitcher.ChakraCore.Helpers.ReflectionHelpers.MethodWithMetadata.CompatibilityScore">
+            TODO: In future will need to change type to <code>double</code>
+        </member>
+        <member name="T:JavaScriptEngineSwitcher.ChakraCore.JsEngineFactoryCollectionExtensions">
+            <summary>
+            JS engine factory collection extensions
+            </summary>
+        </member>
+        <member name="M:JavaScriptEngineSwitcher.ChakraCore.JsEngineFactoryCollectionExtensions.AddChakraCore(JavaScriptEngineSwitcher.Core.JsEngineFactoryCollection)">
+            <summary>
+            Adds a instance of <see cref="T:JavaScriptEngineSwitcher.ChakraCore.ChakraCoreJsEngineFactory"/> to
+            the specified <see cref="T:JavaScriptEngineSwitcher.Core.JsEngineFactoryCollection" />
+            </summary>
+            <param name="source">Instance of <see cref="T:JavaScriptEngineSwitcher.Core.JsEngineFactoryCollection" /></param>
+            <returns>Instance of <see cref="T:JavaScriptEngineSwitcher.Core.JsEngineFactoryCollection" /></returns>
+        </member>
+        <member name="M:JavaScriptEngineSwitcher.ChakraCore.JsEngineFactoryCollectionExtensions.AddChakraCore(JavaScriptEngineSwitcher.Core.JsEngineFactoryCollection,System.Action{JavaScriptEngineSwitcher.ChakraCore.ChakraCoreSettings})">
+            <summary>
+            Adds a instance of <see cref="T:JavaScriptEngineSwitcher.ChakraCore.ChakraCoreJsEngineFactory"/> to
+            the specified <see cref="T:JavaScriptEngineSwitcher.Core.JsEngineFactoryCollection" />
+            </summary>
+            <param name="source">Instance of <see cref="T:JavaScriptEngineSwitcher.Core.JsEngineFactoryCollection" /></param>
+            <param name="configure">The delegate to configure the provided <see cref="T:JavaScriptEngineSwitcher.ChakraCore.ChakraCoreSettings"/></param>
+            <returns>Instance of <see cref="T:JavaScriptEngineSwitcher.Core.JsEngineFactoryCollection" /></returns>
+        </member>
+        <member name="M:JavaScriptEngineSwitcher.ChakraCore.JsEngineFactoryCollectionExtensions.AddChakraCore(JavaScriptEngineSwitcher.Core.JsEngineFactoryCollection,JavaScriptEngineSwitcher.ChakraCore.ChakraCoreSettings)">
+            <summary>
+            Adds a instance of <see cref="T:JavaScriptEngineSwitcher.ChakraCore.ChakraCoreJsEngineFactory"/> to
+            the specified <see cref="T:JavaScriptEngineSwitcher.Core.JsEngineFactoryCollection" />
+            </summary>
+            <param name="source">Instance of <see cref="T:JavaScriptEngineSwitcher.Core.JsEngineFactoryCollection" /></param>
+            <param name="settings">Settings of the ChakraCore JS engine</param>
+            <returns>Instance of <see cref="T:JavaScriptEngineSwitcher.Core.JsEngineFactoryCollection" /></returns>
         </member>
         <member name="T:JavaScriptEngineSwitcher.ChakraCore.Resources.Strings">
             <summary>

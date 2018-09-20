@@ -62,14 +62,14 @@
     <Compile Include="VideoItem.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="FileService.Client.nuspec">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="nuget.exe" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
     <None Include="publish to nuget" />
-    <None Include="FileService.Client.nuspec">
-      <SubType>Designer</SubType>
-    </None>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
