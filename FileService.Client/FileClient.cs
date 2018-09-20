@@ -347,7 +347,7 @@ namespace FileService.Client
         /// </summary>
         /// <param name="videos">视频列表</param>
         /// <param name="converts">转换列表</param>
-        /// <param name="headers">头信息</param>
+        /// <param name="userData">用户信息</param>
         /// <param name="userAccesses">访问权限信息</param>
         /// <returns></returns>
         public ResultBase<IEnumerable<VideoFileResult>> UploadVideo(IEnumerable<FileItem> videos, IEnumerable<VideoConvert> converts, UserData userData, IEnumerable<UserAccess> userAccesses)
