@@ -206,6 +206,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="css\datepicker-orange.min.css" />
     <Content Include="css\iconfont.css" />
     <Content Include="css\iconfont.svg" />
     <Content Include="css\index.css" />
@@ -327,7 +328,7 @@
     <Content Include="pdfview\viewer.css" />
     <Content Include="pdfview\viewer.js" />
     <Content Include="pdfview\viewer.min.js" />
-    <Content Include="readme.txt" />
+    <None Include="readme.txt" />
     <Content Include="scripts\application.jsx" />
     <Content Include="scripts\application_add.jsx" />
     <Content Include="scripts\common.jsx" />
@@ -335,6 +336,8 @@
     <Content Include="scripts\config_add.jsx" />
     <Content Include="scripts\culture_en-US.js" />
     <Content Include="scripts\culture_zh-CN.js" />
+    <Content Include="scripts\datepicker-template.html" />
+    <Content Include="scripts\datepicker.min.js" />
     <Content Include="scripts\department.jsx" />
     <Content Include="scripts\department_detail.jsx" />
     <Content Include="scripts\dropdownlist.jsx" />
@@ -398,7 +401,7 @@
     <Content Include="css\iconfont.eot" />
     <Content Include="css\iconfont.ttf" />
     <Content Include="css\iconfont.woff" />
-    <Content Include="template.m3u8" />
+    <Content Include="scripts\template.m3u8" />
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>

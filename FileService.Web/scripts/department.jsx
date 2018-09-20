@@ -98,6 +98,8 @@ class Department extends React.Component {
             pageSize: localStorage.department_pageSize || 10,
             pageCount: 1,
             filter: "",
+            startTime: "",
+            endTime: "",
             data: { code: 0, message: "", count: 0, result: [] },
         }
         this.url = urls.department.getUrl;
@@ -337,6 +339,8 @@ class Department extends React.Component {
                     pageSize={this.state.pageSize}
                     pageCount={this.state.pageCount}
                     filter={this.state.filter}
+                    startTime={this.state.startTime}
+                    endTime={this.state.endTime}
                     onInput={this.onInput.bind(this)}
                     onKeyPress={this.onKeyPress.bind(this)}
                     lastPage={this.lastPage.bind(this)}

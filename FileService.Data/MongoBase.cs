@@ -1,6 +1,7 @@
 ﻿using FileService.Util;
 using MongoDB.Bson;
 using MongoDB.Driver;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -114,7 +115,7 @@ namespace FileService.Data
         {
             return null;
         }
-        public FilterDefinition<BsonDocument> GetPageFilters(BsonDocument eqs, IEnumerable<string> fields, string filter, string userName)
+        public FilterDefinition<BsonDocument> GetPageFilters(BsonDocument eqs, DateTime start, DateTime end, IEnumerable<string> fields, string filter, string userName)
         {
             FilterDefinition<BsonDocument> filterBuilder = null;
             if (!string.IsNullOrEmpty(filter))
@@ -143,15 +144,17 @@ namespace FileService.Data
             List<FilterDefinition<BsonDocument>> result = new List<FilterDefinition<BsonDocument>>();
             result.Add(filterBuilder);
             if (eqs != null) result.Add(eqs);
+            if (start != DateTime.MinValue) result.Add(FilterBuilder.Gte("CreateTime", start));
+            if (end != DateTime.MinValue) result.Add(FilterBuilder.Lte("CreateTime", end));
             var accessFilter = GetAccessFilter(userName);
             if (accessFilter != null) result.Add(accessFilter);
             var andFilter = GetAndFilter();
             if (andFilter != null) result.Add(andFilter);
             return FilterBuilder.And(result);
         }
-        public IEnumerable<BsonDocument> GetPageList(int pageIndex, int pageSize, BsonDocument eqs, Dictionary<string, string> sorts, string filter, IEnumerable<string> fields, IEnumerable<string> excludeFields, out long count, string userName)
+        public IEnumerable<BsonDocument> GetPageList(int pageIndex, int pageSize, BsonDocument eqs, DateTime start, DateTime end, Dictionary<string, string> sorts, string filter, IEnumerable<string> fields, IEnumerable<string> excludeFields, out long count, string userName)
         {
-            FilterDefinition<BsonDocument> filterBuilder = GetPageFilters(eqs, fields, filter, userName);
+            FilterDefinition<BsonDocument> filterBuilder = GetPageFilters(eqs, start, end, fields, filter, userName);
             count = MongoCollection.CountDocuments(filterBuilder);
             var exclude = Builders<BsonDocument>.Projection.Exclude("PassWord");
             foreach (string ex in excludeFields)

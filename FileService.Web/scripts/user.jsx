@@ -113,6 +113,8 @@ class User extends React.Component {
             pageSize: localStorage.user_pageSize || 10,
             pageCount: 1,
             filter: "",
+            startTime: "",
+            endTime: "",
             data: { code: 0, message: "", count: 0, result: [] },
         }
         this.url = urls.user.getUrl;
@@ -178,6 +180,8 @@ class User extends React.Component {
                     pageSize={this.state.pageSize}
                     pageCount={this.state.pageCount}
                     filter={this.state.filter}
+                    startTime={this.state.startTime}
+                    endTime={this.state.endTime}
                     onInput={this.onInput.bind(this)}
                     onKeyPress={this.onKeyPress.bind(this)}
                     lastPage={this.lastPage.bind(this)}

@@ -29,7 +29,8 @@ namespace FileService.Converter
                 MachineName = Environment.MachineName,
                 Total = 0,
                 State = ConverterStateEnum.running,
-                StartTime = DateTime.Now
+                StartTime = DateTime.Now,
+                CreateTime = DateTime.Now
             };
             if (!Directory.Exists(MongoFile.AppDataDir)) Directory.CreateDirectory(MongoFile.AppDataDir);
         }

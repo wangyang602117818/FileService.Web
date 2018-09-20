@@ -198,5 +198,8 @@ var culture = {
     empty_cache_file: "清除缓存文件",
     user_agent: "用户代理",
     restore_file: "恢复文件",
-    recycle_bin: "文件回收站"
+    recycle_bin: "文件回收站",
+    date_range: "时段",
+    from1: "从",
+    to: "到",
 }

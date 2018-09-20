@@ -14,7 +14,6 @@ class TitleTxt extends React.Component {
         );
     }
 }
-
 class TitleTxtRecentMonth extends React.Component {
     constructor(props) {
         super(props);
@@ -95,12 +94,10 @@ class TitleTips extends React.Component {
         if (this.props.listType == "list") {
             return (<i className='iconfont icon-listicon'
                 id='resource_list'
-
                 onClick={this.props.onTipsClick.bind(this)}></i>)
         } else {
             return (<i className='iconfont icon-list'
                 id='resource_icon'
-
                 onClick={this.props.onTipsClick.bind(this)}></i>)
         }
     }
@@ -149,6 +146,9 @@ class Pagination extends React.Component {
     constructor(props) {
         super(props);
     }
+    componentDidMount() {
+        datepicker();
+    }
     render() {
         return (
             <div className={this.props.show ? "pagenation show" : "pagenation hidden"}>
@@ -173,6 +173,25 @@ class Pagination extends React.Component {
                         className="filter"
                         onChange={this.props.onInput}
                         onKeyPress={this.props.onKeyPress} />
+                    {'\u00A0'}{'\u00A0'}{'\u00A0'}{'\u00A0'}{'\u00A0'}{'\u00A0'}
+                    {culture.from1}:{'\u00A0'}
+                    <input type="text" className="datepicker" size="15"
+                        name="starttime"
+                        value={this.props.startTime}
+                        date-lang={current_culture.toLocaleLowerCase()}
+                        onChange={this.props.onInput}
+                        onFocus={this.props.onInput}
+                        onKeyPress={this.props.onKeyPress}
+                        title={culture.createTime} />
+                    {'\u00A0'}{'\u00A0'}{culture.to}:
+                    <input type="text" className="datepicker date-end" size="15"
+                        name="endtime"
+                        value={this.props.endTime}
+                        date-lang={current_culture.toLocaleLowerCase()}
+                        onChange={this.props.onInput}
+                        onFocus={this.props.onInput}
+                        onKeyPress={this.props.onKeyPress}
+                        title={culture.createTime} />
                 </div>
                 <div className="size">
                     {culture.page_size_up} :
@@ -207,7 +226,7 @@ var CommonUsePagination = {
     getData() {
         localStorage.update_time = getCurrentDateTime();
         var that = this;
-        var url = this.url + "?pageindex=" + this.state.pageIndex + "&pagesize=" + this.state.pageSize + "&filter=" + this.state.filter;
+        var url = this.url + "?pageindex=" + this.state.pageIndex + "&pagesize=" + this.state.pageSize + "&filter=" + this.state.filter + "&startTime=" + this.state.startTime + "&endTime=" + this.state.endTime;
         if (this.state.orderField) url = url + "&orderField=" + this.state.orderField;
         if (this.state.orderFieldType) url = url + "&orderFieldType=" + this.state.orderFieldType;
         http.get(url, function (result) {
@@ -235,6 +254,8 @@ var CommonUsePagination = {
             }
         }
         if (e.target.name == "filter") this.setState({ filter: value });
+        if (e.target.name == "starttime") this.setState({ startTime: e.target.getAttribute("date-val")||"" });
+        if (e.target.name == "endtime") this.setState({ endTime: e.target.getAttribute("date-val")||"" });
     },
     onKeyPress(e) {  //过滤栏所有的enter事件
         if (e.key.toLowerCase() == "enter") {

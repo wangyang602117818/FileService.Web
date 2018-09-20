@@ -1,10 +1,7 @@
 ﻿using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 using System.Text.RegularExpressions;
 
 namespace FileService.Business
@@ -61,9 +58,9 @@ namespace FileService.Business
         {
             return mongoData.Replace(document);
         }
-        public IEnumerable<BsonDocument> GetPageList(int pageIndex, int pageSize, BsonDocument eqs, Dictionary<string, string> sorts, string filter, IEnumerable<string> fields, IEnumerable<string> excludeFields, out long count, string userName = null)
+        public IEnumerable<BsonDocument> GetPageList(int pageIndex, int pageSize, BsonDocument eqs, DateTime start, DateTime end, Dictionary<string, string> sorts, string filter, IEnumerable<string> fields, IEnumerable<string> excludeFields, out long count, string userName = null)
         {
-            return mongoData.GetPageList(pageIndex, pageSize, eqs, sorts, filter, fields, excludeFields, out count, userName);
+            return mongoData.GetPageList(pageIndex, pageSize, eqs, start, end, sorts, filter, fields, excludeFields, out count, userName);
         }
         public long Count()
         {

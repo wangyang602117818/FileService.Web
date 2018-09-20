@@ -198,5 +198,7 @@ var culture = {
     empty_cache_file: "EmptyCacheFile",
     user_agent: "UserAgent",
     restore_file: "RestoreFile",
-    recycle_bin: "FileRecycleBin"
+    recycle_bin: "FileRecycleBin",
+    from1: "From",
+    to:"To",
 }

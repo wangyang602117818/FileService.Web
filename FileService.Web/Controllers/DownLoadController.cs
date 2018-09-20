@@ -23,7 +23,7 @@ namespace FileService.Web.Controllers
         VideoCapture videoCapture = new VideoCapture();
         FilesWrap filesWrap = new FilesWrap();
         Download download = new Download();
-        static string m3u8Template = System.IO.File.ReadAllText(AppDomain.CurrentDomain.BaseDirectory + "template.m3u8");
+        static string m3u8Template = System.IO.File.ReadAllText(AppDomain.CurrentDomain.BaseDirectory + "scripts\\template.m3u8");
         [AppAuthorizeDefault]
         public ActionResult Get(string id)
         {
