@@ -86,22 +86,6 @@ class TitleArrow extends React.Component {
         );
     }
 }
-class TitleTips extends React.Component {
-    constructor(props) {
-        super(props);
-    }
-    render() {
-        if (this.props.listType == "list") {
-            return (<i className='iconfont icon-listicon'
-                id='resource_list'
-                onClick={this.props.onTipsClick.bind(this)}></i>)
-        } else {
-            return (<i className='iconfont icon-list'
-                id='resource_icon'
-                onClick={this.props.onTipsClick.bind(this)}></i>)
-        }
-    }
-}
 class TitleArrowComponent extends React.Component {
     constructor(props) {
         super(props);
@@ -135,8 +119,17 @@ class TitleArrowComponent extends React.Component {
                     <i className="iconfont icon-del" title={culture.delete}
                         onClick={this.props.removeByIds}
                         style={{ visibility: this.props.delShow ? "visible" : "hidden" }} />
-                    <i className="iconfont icon-order" title={culture.order} onMouseEnter={this.onOrderDisp.bind(this)}></i>
-                    <TitleTips listType={this.props.listType} onTipsClick={this.props.onTipsClick} />
+                    {this.props.listType == "list" ?
+                        <i className='iconfont icon-listicon'
+                            id='resource_list'
+                            onMouseEnter={this.onOrderDisp.bind(this)}
+                            onClick={this.props.onTipsClick.bind(this)}></i> :
+                        <i className='iconfont icon-list'
+                            id='resource_icon'
+                            onMouseEnter={this.onOrderDisp.bind(this)}
+                            onClick={this.props.onTipsClick.bind(this)}></i>
+                    }
+                    
                 </div>
             </div>
         );
