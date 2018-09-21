@@ -35,6 +35,9 @@
                         }.bind(this))}
                     </tbody>
                 }
+                <div className="preLayer">
+                    <img src={urls.getFileIconUrl + "/5ba3025fc4181b5118b31a20.gif/"}/>
+                </div>
             </table>
         );
     }
@@ -50,6 +53,11 @@ class ResourceItem extends React.Component {
     download(e) {
         var id = e.target.id;
         window.location.href = urls.downloadUrl + "/" + id;
+    }
+    mouseOverView(e) {
+        var id = e.target.getAttribute("data-id");
+        var clientX = e.clientX, clientY = e.clientY;
+        
     }
     render() {
         return (
@@ -82,7 +90,8 @@ class ResourceItem extends React.Component {
                 <td>
                     <i className="iconfont icon-view"
                         onClick={this.preView.bind(this)}
-
+                        onMouseOver={this.mouseOverView.bind(this)}
+                        data-id={this.props.resource._id.$oid.removeHTML() + this.props.resource.FileName.removeHTML().getFileExtension()}
                         id={"id=" + this.props.resource._id.$oid.removeHTML() + "&filename=" + this.props.resource.FileName.removeHTML()}></i>
                 </td>
                 <td>

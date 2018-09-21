@@ -87,6 +87,16 @@ h1 {
     width: 100%;
 }
 
+    .table .preLayer {
+        position: absolute;
+        padding:20px;
+        border: 1px solid #ddd;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        background-color:#fff;
+    }
+
     .table thead tr {
         font-weight: bold;
         background: linear-gradient(bottom, #e0e0e0 10%, #f0f0f0 90%);
