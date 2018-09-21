@@ -146,6 +146,16 @@ namespace FileService.Data
             }
             try
             {
+                database.CreateCollection("FilePreviewBig");
+                var c = new CreateIndexModel<BsonDocument>(new BsonDocument() { { "From", 1 }, { "CreateTime", -1 } });  //shared key
+                database.GetCollection<BsonDocument>("FilePreviewBig").Indexes.CreateOne(c);
+            }
+            catch (Exception ex)
+            {
+                Log4Net.InfoLog(ex.Message);
+            }
+            try
+            {
                 database.CreateCollection("Thumbnail");
                 var c = new CreateIndexModel<BsonDocument>(new BsonDocument() { { "From", 1 }, { "CreateTime", -1 } });  //shared key
                 database.GetCollection<BsonDocument>("Thumbnail").Indexes.CreateOne(c);

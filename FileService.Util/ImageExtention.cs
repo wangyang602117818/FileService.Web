@@ -62,7 +62,7 @@ namespace FileService.Util
             ext = ".jpg";
             return ImageFormat.Jpeg;
         }
-        public static Stream GenerateThumbnail(string fileName, Stream stream, ImageModelEnum model, ImageFormat outputFormat, int x, int y, int width, int height)
+        public static Stream GenerateThumbnail(string fileName, Stream stream, ImageModelEnum model, ImageFormat outputFormat, int x, int y, ref int width, ref int height)
         {
             bool isGif = Path.GetExtension(fileName).ToLower() == ".gif" ? true : false;
             bool cut = false;
@@ -87,21 +87,20 @@ namespace FileService.Util
                 return isGif ? ConvertImageGif(image, x, y, width, height, cut) : ConvertImage(image, outputFormat, x, y, width, height, cut);
             }
         }
-        public static Stream GenerateFilePreview(string fileName, Stream stream, ImageModelEnum model, ImageFormat outputFormat)
+        public static Stream GenerateFilePreview(string fileName, int fileHW, Stream stream, ImageModelEnum model, ImageFormat outputFormat, ref int width, ref int height)
         {
             bool isGif = Path.GetExtension(fileName).ToLower() == ".gif" ? true : false;
-            int width = 0, height = 0;
             using (Image image = Image.FromStream(stream))
             {
                 if (image.Width >= image.Height)
                 {
-                    width = 80;
-                    height = image.Height * 80 / image.Width;
+                    width = fileHW;
+                    height = image.Height * fileHW / image.Width;
                 }
                 if (image.Width < image.Height)
                 {
-                    height = 80;
-                    width = image.Width * 80 / image.Height;
+                    height = fileHW;
+                    width = image.Width * fileHW / image.Height;
                 }
                 return isGif ? ConvertImageGif(image, 0, 0, width, height, false) : ConvertImage(image, outputFormat, 0, 0, width, height, false);
             }

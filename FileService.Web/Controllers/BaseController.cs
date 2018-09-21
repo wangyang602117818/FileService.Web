@@ -4,6 +4,7 @@ using FileService.Util;
 using MongoDB.Bson;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text.RegularExpressions;
 using System.Web.Mvc;
 
@@ -26,6 +27,7 @@ namespace FileService.Web.Controllers
         protected MongoFile mongoFile = new MongoFile();
         protected MongoFileConvert mongoFileConvert = new MongoFileConvert();
         protected FilePreview filePreview = new FilePreview();
+        protected FilePreviewBig filePreviewBig = new FilePreviewBig();
         protected Shared shared = new Shared();
         protected void Log(string fileId, string content)
         {
@@ -119,6 +121,10 @@ namespace FileService.Web.Controllers
                     if (!bson.Contains("_id")) continue;
                     if (filesConvert.FindOne(bson["_id"].AsObjectId) != null) mongoFileConvert.Delete(bson["_id"].AsObjectId);
                 }
+                if (fileWrap.Contains("VideoCpIds"))
+                {
+                    videoCapture.DeleteByIds(fileWrap["From"].AsString, fileWrap["VideoCpIds"].AsBsonArray.Select(s => s.AsObjectId));
+                }
             }
             if (filesWrap.CountByFileId(fileWrap["FileId"].AsObjectId) == 1 && fileWrap["FileId"].AsObjectId != ObjectId.Empty)
             {
@@ -126,6 +132,7 @@ namespace FileService.Web.Controllers
                 mongoFile.Delete(fId);
             }
             filePreview.DeleteOne(fileWrapId);
+            filePreviewBig.DeleteOne(fileWrapId);
             shared.DeleteShared(fileWrapId);
             task.DeleteByFileId(fileWrapId);
             filesWrap.DeleteOne(fileWrapId);

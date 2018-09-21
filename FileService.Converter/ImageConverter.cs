@@ -15,13 +15,14 @@ namespace FileService.Converter
         FilesWrap filesWrap = new FilesWrap();
         Thumbnail thumbnail = new Thumbnail();
         FilePreview filePreview = new FilePreview();
+        FilePreviewBig filePreviewBig = new FilePreviewBig();
         static object o = new object();
         public override bool Convert(FileItem taskItem)
         {
             BsonDocument outputDocument = taskItem.Message["Output"].AsBsonDocument;
             string from = taskItem.Message["From"].AsString;
             string fileName = taskItem.Message["FileName"].AsString;
-            ObjectId filesWrapId = taskItem.Message["FileId"].AsObjectId;
+            ObjectId fileWrapId = taskItem.Message["FileId"].AsObjectId;
 
             ImageOutPut output = BsonSerializer.Deserialize<ImageOutPut>(outputDocument);
             string outputExt = "";
@@ -38,11 +39,11 @@ namespace FileService.Converter
                     if (File.Exists(fullPath))
                     {
                         fileStream = new FileStream(fullPath, FileMode.Open, FileAccess.Read);
-                        SaveFileFromSharedFolder(filesWrapId, fileName, fileStream);
+                        SaveFileFromSharedFolder(fileWrapId, fileName, fileStream);
                     }
                     else
                     {
-                        BsonDocument filesWrap = new FilesWrap().FindOne(filesWrapId);
+                        BsonDocument filesWrap = new FilesWrap().FindOne(fileWrapId);
                         ObjectId fileId = filesWrap["FileId"].AsObjectId;
                         fileStream = mongoFile.DownLoadSeekable(fileId);
                     }
@@ -50,7 +51,7 @@ namespace FileService.Converter
             }
             else
             {
-                BsonDocument filesWrap = new FilesWrap().FindOne(filesWrapId);
+                BsonDocument filesWrap = new FilesWrap().FindOne(fileWrapId);
                 ObjectId fileId = filesWrap["FileId"].AsObjectId;
                 fileStream = mongoFile.DownLoadSeekable(fileId);
             }
@@ -58,15 +59,22 @@ namespace FileService.Converter
             {
                 if (output.Id != ObjectId.Empty)
                 {
-                    using (Stream stream = ImageExtention.GenerateThumbnail(fileName, fileStream, output.Model, format, output.X, output.Y, output.Width, output.Height))
+                    int twidth = output.Width, theight = output.Height;
+                    using (Stream stream = ImageExtention.GenerateThumbnail(fileName, fileStream, output.Model, format, output.X, output.Y,ref twidth, ref theight))
                     {
-                        thumbnail.Replace(output.Id, from, taskItem.Message["FileId"].AsObjectId, stream.Length, Path.GetFileNameWithoutExtension(fileName) + outputExt, output.Flag, stream.ToBytes());
+                        thumbnail.Replace(output.Id, from, taskItem.Message["FileId"].AsObjectId, stream.Length, twidth, theight, Path.GetFileNameWithoutExtension(fileName) + outputExt, output.Flag, stream.ToBytes());
                     }
                 }
                 fileStream.Position = 0;
-                using (Stream stream = ImageExtention.GenerateFilePreview(fileName, fileStream, ImageModelEnum.scale, format))
+                int width = 0, height = 0;
+                using (Stream stream = ImageExtention.GenerateFilePreview(fileName, 80, fileStream, ImageModelEnum.scale, format, ref width, ref height))
                 {
-                    filePreview.Replace(filesWrapId, from, stream.Length, fileName, stream.ToBytes());
+                    filePreview.Replace(fileWrapId, from, stream.Length, width, height, fileName, stream.ToBytes());
+                }
+                fileStream.Position = 0;
+                using (Stream stream = ImageExtention.GenerateFilePreview(fileName, 300, fileStream, ImageModelEnum.scale, format, ref width, ref height))
+                {
+                    filePreviewBig.Replace(fileWrapId, from, stream.Length, width, height, fileName, stream.ToBytes());
                 }
             }
             fileStream.Close();

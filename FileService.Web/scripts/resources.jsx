@@ -35,9 +35,12 @@
                         }.bind(this))}
                     </tbody>
                 }
-                <div className="preLayer">
+                {/*
+                  <div className="preLayer">
                     <img src={urls.getFileIconUrl + "/5ba3025fc4181b5118b31a20.gif/"}/>
                 </div>
+                 */}
+               
             </table>
         );
     }

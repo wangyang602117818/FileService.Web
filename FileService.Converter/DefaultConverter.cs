@@ -2,7 +2,6 @@
 using FileService.Model;
 using FileService.Util;
 using MongoDB.Bson;
-using System.Collections.Generic;
 using System.Drawing.Imaging;
 using System.IO;
 
@@ -15,6 +14,7 @@ namespace FileService.Converter
         VideoCapture videoCapture = new VideoCapture();
         Config config = new Config();
         FilePreview filePreview = new FilePreview();
+        FilePreviewBig filePreviewBig = new FilePreviewBig();
         public override bool Convert(FileItem taskItem)
         {
             ObjectId fileWrapId = taskItem.Message["FileId"].AsObjectId;
@@ -67,9 +67,16 @@ namespace FileService.Converter
                 ObjectId fileId = filesWrap["FileId"].AsObjectId;
                 fileStream = mongoFile.DownLoadSeekable(fileId);
             }
-            using (Stream stream = ImageExtention.GenerateFilePreview(fileName, fileStream, ImageModelEnum.scale, format))
+            fileStream.Position = 0;
+            int width = 0, height = 0;
+            using (Stream stream = ImageExtention.GenerateFilePreview(fileName, 80, fileStream, ImageModelEnum.scale, format, ref width, ref height))
             {
-                filePreview.Replace(fileWrapId, from, stream.Length, fileName, stream.ToBytes());
+                filePreview.Replace(fileWrapId, from, stream.Length, width, height, fileName, stream.ToBytes());
+            }
+            fileStream.Position = 0;
+            using (Stream stream = ImageExtention.GenerateFilePreview(fileName, 300, fileStream, ImageModelEnum.scale, format, ref width, ref height))
+            {
+                filePreviewBig.Replace(fileWrapId, from, stream.Length, width, height, fileName, stream.ToBytes());
             }
             fileStream.Close();
             fileStream.Dispose();

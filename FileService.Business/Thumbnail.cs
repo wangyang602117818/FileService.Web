@@ -7,7 +7,7 @@ namespace FileService.Business
     public partial class Thumbnail : ModelBase<Data.Thumbnail>
     {
         public Thumbnail() : base(new Data.Thumbnail()) { }
-        public bool Replace(ObjectId id, string from, ObjectId sourceId, long length, string fileName, string flag, byte[] file)
+        public bool Replace(ObjectId id, string from, ObjectId sourceId, long length, int width, int height, string fileName, string flag, byte[] file)
         {
             BsonDocument document = new BsonDocument()
             {
@@ -15,6 +15,8 @@ namespace FileService.Business
                 {"From",from },
                 {"SourceId",sourceId },
                 {"Length",length },
+                {"Width",width },
+                {"Height",height },
                 {"FileName",fileName },
                 {"File",file },
                 {"Flag",flag },

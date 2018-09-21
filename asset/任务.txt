@@ -1,7 +1,4 @@
 
-清除FileServiceTempFiles的缓冲文件
-列出
-
 bug:
 
 

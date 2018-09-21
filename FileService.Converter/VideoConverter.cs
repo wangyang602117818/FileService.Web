@@ -22,6 +22,7 @@ namespace FileService.Converter
         M3u8 m3u8 = new M3u8();
         Task task = new Task();
         FilePreview filePreview = new FilePreview();
+        FilePreviewBig filePreviewBig = new FilePreviewBig();
         static object o = new object();
         public override bool Convert(FileItem taskItem)
         {
@@ -119,9 +120,15 @@ namespace FileService.Converter
                     };
                 videoCapture.Replace(document);
                 imageStream.Position = 0;
-                using (Stream stream = ImageExtention.GenerateFilePreview(fileName, imageStream, ImageModelEnum.scale, ImageFormat.Jpeg))
+                int width = 0, height = 0;
+                using (Stream stream = ImageExtention.GenerateFilePreview(fileName, 80, imageStream, ImageModelEnum.scale, ImageFormat.Jpeg, ref width, ref height))
                 {
-                    filePreview.Replace(fileWrapId, from, stream.Length, fileName, stream.ToBytes());
+                    filePreview.Replace(fileWrapId, from, stream.Length, width, height, fileName, stream.ToBytes());
+                }
+                imageStream.Position = 0;
+                using (Stream stream = ImageExtention.GenerateFilePreview(fileName, 300, imageStream, ImageModelEnum.scale, ImageFormat.Jpeg, ref width, ref height))
+                {
+                    filePreviewBig.Replace(fileWrapId, from, stream.Length, width, height, fileName, stream.ToBytes());
                 }
                 imageStream.Close();
                 imageStream.Dispose();
