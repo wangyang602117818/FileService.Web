@@ -184,7 +184,7 @@ class Pagination extends React.Component {
                         onKeyPress={this.props.onKeyPress}
                         title={culture.createTime} />
                     {'\u00A0'}{'\u00A0'}{culture.to}:
-                    <input type="text" className="datepicker date-end" size="15"
+                    <input type="text" className="datepicker" size="15"
                         name="endtime"
                         value={this.props.endTime}
                         date-lang={current_culture.toLocaleLowerCase()}
@@ -192,6 +192,7 @@ class Pagination extends React.Component {
                         onFocus={this.props.onInput}
                         onKeyPress={this.props.onKeyPress}
                         title={culture.createTime} />
+                    
                 </div>
                 <div className="size">
                     {culture.page_size_up} :
