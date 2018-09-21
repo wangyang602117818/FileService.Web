@@ -180,7 +180,7 @@ class Pagination extends React.Component {
                         value={this.props.startTime}
                         date-lang={current_culture.toLocaleLowerCase()}
                         onChange={this.props.onInput}
-                        
+                        onFocus={this.props.onInput}
                         onKeyPress={this.props.onKeyPress}
                         title={culture.createTime} />
                     {'\u00A0'}{'\u00A0'}{culture.to}:
@@ -189,7 +189,7 @@ class Pagination extends React.Component {
                         value={this.props.endTime}
                         date-lang={current_culture.toLocaleLowerCase()}
                         onChange={this.props.onInput}
-                        
+                        onFocus={this.props.onInput}
                         onKeyPress={this.props.onKeyPress}
                         title={culture.createTime} />
                 </div>
@@ -254,8 +254,8 @@ var CommonUsePagination = {
             }
         }
         if (e.target.name == "filter") this.setState({ filter: value });
-        if (e.target.name == "starttime") this.setState({ startTime: e.target.getAttribute("date-val")||"" });
-        if (e.target.name == "endtime") this.setState({ endTime: e.target.getAttribute("date-val")||"" });
+        if (e.target.name == "starttime") this.setState({ startTime: value||"" });
+        if (e.target.name == "endtime") this.setState({ endTime: value||"" });
     },
     onKeyPress(e) {  //过滤栏所有的enter事件
         if (e.key.toLowerCase() == "enter") {

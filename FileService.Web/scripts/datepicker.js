@@ -211,7 +211,7 @@
             writeDate(curr_time_arr);
         });
         //选中了一个,冒泡
-        datepicker.off().on("click", function (event) {
+        datepicker.off("click").on("click", function (event) {
             var srcElement = $(event.target);
             if (srcElement.hasClass("disabled")) return false;
             var data = srcElement.text();
@@ -340,9 +340,8 @@
         }
         var usedate = dateFormat(curr_time_arr, model.defaults.useFormat);
         var showdate = dateFormat(curr_time_arr, model.defaults.showFormat);
-        that.val(showdate);
+        that.val(showdate).change();
         that.attr("date-val", usedate).removeClass("datepicker-error-format").focus();
-        that.change();
     }
     //显示年份div
     function showYearLayer() {
