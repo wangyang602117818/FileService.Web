@@ -18,6 +18,12 @@ namespace FileService.Web
                 .Include("~/scripts/react.js")
                 .Include("~/scripts/react-dom.js")
             );
+            bundles.Add(new ScriptBundle("~/scripts/datepicker")
+                .Include("~/scripts/datepicker.js")
+            );
+            bundles.Add(new ScriptBundle("~/scripts/datepickertemplate")
+                .Include("~/scripts/datepicker-template.html")
+            );
             //js-boundles
             bundles.Add(new ScriptBundle("~/scripts/index-common-js")
                 .Include("~/scripts/jquery-3.3.1.js")
@@ -120,6 +126,9 @@ namespace FileService.Web
             );
             bundles.Add(new StyleBundle("~/css/login")
                 .Include("~/css/login.css")
+            );
+            bundles.Add(new StyleBundle("~/css/datepicker-orange")
+                .Include("~/css/datepicker-orange.css")
             );
         }
     }

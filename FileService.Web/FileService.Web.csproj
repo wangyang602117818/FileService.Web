@@ -206,7 +206,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="css\datepicker-orange.min.css" />
+    <Content Include="css\datepicker-orange.css" />
     <Content Include="css\iconfont.css" />
     <Content Include="css\iconfont.svg" />
     <Content Include="css\index.css" />
@@ -337,7 +337,7 @@
     <Content Include="scripts\culture_en-US.js" />
     <Content Include="scripts\culture_zh-CN.js" />
     <Content Include="scripts\datepicker-template.html" />
-    <Content Include="scripts\datepicker.min.js" />
+    <Content Include="scripts\datepicker.js" />
     <Content Include="scripts\department.jsx" />
     <Content Include="scripts\department_detail.jsx" />
     <Content Include="scripts\dropdownlist.jsx" />

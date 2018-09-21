@@ -180,7 +180,7 @@ class Pagination extends React.Component {
                         value={this.props.startTime}
                         date-lang={current_culture.toLocaleLowerCase()}
                         onChange={this.props.onInput}
-                        onFocus={this.props.onInput}
+                        
                         onKeyPress={this.props.onKeyPress}
                         title={culture.createTime} />
                     {'\u00A0'}{'\u00A0'}{culture.to}:
@@ -189,7 +189,7 @@ class Pagination extends React.Component {
                         value={this.props.endTime}
                         date-lang={current_culture.toLocaleLowerCase()}
                         onChange={this.props.onInput}
-                        onFocus={this.props.onInput}
+                        
                         onKeyPress={this.props.onKeyPress}
                         title={culture.createTime} />
                 </div>

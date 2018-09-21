@@ -7,7 +7,9 @@
     <meta name="viewport" content="width=device-width" />
     <link rel="icon" href="~/image/data.ico" type="image/x-ico" />
     @Scripts.Render("~/scripts/index-common-js")
-    <script src="@Url.Content("~/scripts/datepicker.min.js")" datepicker-template="@Url.Content("~/scripts/datepicker-template.html")" datepicker-css="@Url.Content("~/css/datepicker-orange.min.css")"></script>
+
+    @Scripts.RenderFormat("<script type=\"text/javascript\" src=\"{0}\" datepicker-template=\"" + Url.Content("~/scripts/datepicker-template.html") + "\" datepicker-css=\""+Url.Content("~/css/datepicker-orange.min.css") +"\"></script>", "~/scripts/datepicker")
+
     @{
         if (CultureInfo.GetCulture() == "zh-CN")
         {
