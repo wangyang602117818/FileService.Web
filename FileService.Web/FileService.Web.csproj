@@ -207,6 +207,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="css\datepicker-orange.css" />
+    <Content Include="css\datepicker-orange.min.css" />
     <Content Include="css\iconfont.css" />
     <Content Include="css\iconfont.svg" />
     <Content Include="css\index.css" />
