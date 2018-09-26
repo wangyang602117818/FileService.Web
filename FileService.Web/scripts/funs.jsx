@@ -105,8 +105,8 @@ var http = {
     }
 };
 var colorList = ["#C35C00", "#E1301E", "#968c6d", "#ffb600", "#602020", "#6d6e71", "#db536a", "#dc6900"];
-var appDomain = "/";
-// var appDomain = "/FileServiceWeb/";
+var appPath = document.getElementById("appPath").value;
+var appDomain = appPath == "/" ? "/" : appPath + "/";
 var baseUrl = window.location.protocol + "//" + window.location.host + appDomain;
 var urls = {
     logoUrl: appDomain + "image/logo.png",

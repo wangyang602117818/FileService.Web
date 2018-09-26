@@ -37,11 +37,13 @@ namespace FileService.Web.Controllers
                 }
             }
             ViewBag.Role = User.Identity.Name == "local" ? "admin" : bsonUser["Role"].AsString;
+            ViewBag.AppPath = Request.ApplicationPath;
             return View();
         }
         [AllowAnonymous]
         public ActionResult Login(string returnUrl = "")
         {
+            ViewBag.AppPath = Request.ApplicationPath;
             if (User.Identity.IsAuthenticated)
             {
                 if (Url.IsLocalUrl(returnUrl) && returnUrl.Length > 1 && returnUrl.StartsWith("/")
