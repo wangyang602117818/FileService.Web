@@ -135,6 +135,7 @@ var urls = {
     getHexCodeUrl: appDomain + "admin/gethexcode",
     getObjectIdUrl: appDomain + "data/getobjectid",
     getFileIconUrl: appDomain + "admin/getfileicon",
+    getFileIconBigUrl: appDomain + "admin/getfileiconbig",
     overview: {
         recentUrl: appDomain + "admin/getcountrecentmonth",
         totalUrl: appDomain + "admin/gettotalcount",

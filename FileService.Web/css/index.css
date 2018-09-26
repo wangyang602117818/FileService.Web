@@ -80,22 +80,22 @@ h1 {
         color: #484848;
     }
 
+.preLayer {
+    position: absolute;
+    padding: 0px;
+    border: 1px solid #ddd;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #fff;
+}
+
 .table {
     border-collapse: collapse;
     border: 1px solid #ddd;
     margin-top: 15px;
     width: 100%;
 }
-
-    .table .preLayer {
-        position: absolute;
-        padding:20px;
-        border: 1px solid #ddd;
-        display:flex;
-        align-items:center;
-        justify-content:center;
-        background-color:#fff;
-    }
 
     .table thead tr {
         font-weight: bold;

@@ -10,7 +10,8 @@ namespace FileService.Data
     {
         public static void Init(IMongoDatabase database)
         {
-            try
+            var databases= database.ListCollectionNames().ToList();
+            if (!databases.Contains("queue"))
             {
                 database.CreateCollection("queue", new CreateCollectionOptions() { Capped = true, MaxSize = 1048576 * 100 });
                 database.GetCollection<BsonDocument>("queue").InsertOne(new BsonDocument()
@@ -25,11 +26,7 @@ namespace FileService.Data
                     {"createTime",DateTime.Now }
                 });
             }
-            catch (Exception ex)
-            {
-                Log4Net.InfoLog(ex.Message);
-            }
-            try
+            if (!databases.Contains("Config"))
             {
                 database.CreateCollection("Config");
                 List<BsonDocument> list = new List<BsonDocument>()
@@ -59,11 +56,7 @@ namespace FileService.Data
                 };
                 database.GetCollection<BsonDocument>("Config").InsertMany(list);
             }
-            catch (Exception ex)
-            {
-                Log4Net.InfoLog(ex.Message);
-            }
-            try
+            if (!databases.Contains("Application"))
             {
                 database.CreateCollection("Application");
                 database.GetCollection<BsonDocument>("Application").InsertOne(new BsonDocument()
@@ -74,11 +67,7 @@ namespace FileService.Data
                     {"CreateTime", DateTime.Now }
                 });
             }
-            catch (Exception ex)
-            {
-                Log4Net.InfoLog(ex.Message);
-            }
-            try
+            if (!databases.Contains("Department"))
             {
                 database.CreateCollection("Department");
                 database.GetCollection<BsonDocument>("Department").InsertOne(new BsonDocument()
@@ -89,80 +78,48 @@ namespace FileService.Data
                     {"CreateTime", DateTime.Now }
                 });
             }
-            catch (Exception ex)
-            {
-                Log4Net.InfoLog(ex.Message);
-            }
             //设置分片键/////////////////////////////////////////////////////////////////////////////////////
-            try
+            if (!databases.Contains("Ts"))
             {
                 database.CreateCollection("Ts");
-                var c = new CreateIndexModel<BsonDocument>(new BsonDocument() { { "SourceId", 1 }, { "N", 1 } });  //shared key
+                var c = new CreateIndexModel<BsonDocument>(new BsonDocument() { { "From", 1 }, { "CreateTime", -1 } });  //shared key
                 database.GetCollection<BsonDocument>("Ts").Indexes.CreateOne(c);
             }
-            catch (Exception ex)
-            {
-                Log4Net.InfoLog(ex.Message);
-            }
-            try
+            if (!databases.Contains("Download"))
             {
                 database.CreateCollection("Download");
                 var c = new CreateIndexModel<BsonDocument>(new BsonDocument() { { "From", 1 }, { "CreateTime", -1 } }); //shared key
                 database.GetCollection<BsonDocument>("Download").Indexes.CreateOne(c);
             }
-            catch (Exception ex)
-            {
-                Log4Net.InfoLog(ex.Message);
-            }
-            try
+            if (!databases.Contains("Log"))
             {
                 database.CreateCollection("Log");
                 var c = new CreateIndexModel<BsonDocument>(new BsonDocument() { { "From", 1 }, { "CreateTime", -1 } }); //shared key
                 database.GetCollection<BsonDocument>("Log").Indexes.CreateOne(c);
             }
-            catch (Exception ex)
-            {
-                Log4Net.InfoLog(ex.Message);
-            }
-            try
+            if (!databases.Contains("VideoCapture"))
             {
                 database.CreateCollection("VideoCapture");
                 var c = new CreateIndexModel<BsonDocument>(new BsonDocument() { { "From", 1 }, { "CreateTime", -1 } });  //shared key
                 database.GetCollection<BsonDocument>("VideoCapture").Indexes.CreateOne(c);
             }
-            catch (Exception ex)
-            {
-                Log4Net.InfoLog(ex.Message);
-            }
-            try
+            if (!databases.Contains("FilePreview"))
             {
                 database.CreateCollection("FilePreview");
                 var c = new CreateIndexModel<BsonDocument>(new BsonDocument() { { "From", 1 }, { "CreateTime", -1 } });  //shared key
                 database.GetCollection<BsonDocument>("FilePreview").Indexes.CreateOne(c);
             }
-            catch (Exception ex)
-            {
-                Log4Net.InfoLog(ex.Message);
-            }
-            try
+            if (!databases.Contains("FilePreviewBig"))
             {
                 database.CreateCollection("FilePreviewBig");
                 var c = new CreateIndexModel<BsonDocument>(new BsonDocument() { { "From", 1 }, { "CreateTime", -1 } });  //shared key
                 database.GetCollection<BsonDocument>("FilePreviewBig").Indexes.CreateOne(c);
             }
-            catch (Exception ex)
-            {
-                Log4Net.InfoLog(ex.Message);
-            }
-            try
+            if (!databases.Contains("Thumbnail"))
             {
                 database.CreateCollection("Thumbnail");
                 var c = new CreateIndexModel<BsonDocument>(new BsonDocument() { { "From", 1 }, { "CreateTime", -1 } });  //shared key
                 database.GetCollection<BsonDocument>("Thumbnail").Indexes.CreateOne(c);
-            }
-            catch (Exception ex)
-            {
-                Log4Net.InfoLog(ex.Message);
             }
         }
     }

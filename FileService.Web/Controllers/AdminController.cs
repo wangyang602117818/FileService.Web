@@ -195,6 +195,18 @@ namespace FileService.Web.Controllers
             }
             return File(file["File"].AsByteArray, "application/octet-stream");
         }
+        public ActionResult GetFileIconBig(string id)
+        {
+            BsonDocument file = filePreviewBig.FindOne(ObjectId.Parse(id.Split('.')[0]));
+            if (file == null)
+            {
+                return new ResponseModel<string>(ErrorCode.record_not_exist, "");
+            }
+            else
+            {
+                return new ResponseModel<BsonDocument>(ErrorCode.success, file);
+            }
+        }
         public ActionResult GetAllShared(string fileId)
         {
             return new ResponseModel<IEnumerable<BsonDocument>>(ErrorCode.success, shared.GetShared(ObjectId.Parse(fileId)));
@@ -825,11 +837,12 @@ namespace FileService.Web.Controllers
             return new ResponseModel<string>(ErrorCode.success, "");
         }
         [Authorize(Roles = "admin")]
+        [AppAuthorizeDefault]
         public ActionResult DeleteM3u8(string fileId, string m3u8Id)
         {
             ObjectId fId = ObjectId.Parse(fileId);
             ObjectId mId = ObjectId.Parse(m3u8Id);
-            ts.DeleteBySourceId(mId);
+            ts.DeleteBySourceId(Request.Headers["AppName"], mId);
             m3u8.DeleteOne(mId);
             task.DeleteByOutputId(mId);
             filesWrap.DeleteM3u8(fId, mId);

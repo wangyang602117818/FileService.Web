@@ -110,7 +110,7 @@ namespace FileService.Web.Controllers
                 foreach (BsonDocument d in fileWrap["Videos"].AsBsonArray) m3u8Ids.Add(d["_id"].AsObjectId);
                 foreach (BsonObjectId oId in fileWrap["VideoCpIds"].AsBsonArray) videoCpIds.Add(oId.AsObjectId);
                 m3u8.DeleteMany(m3u8Ids);
-                ts.DeleteBySourceId(m3u8Ids);
+                ts.DeleteBySourceId(fileWrap["From"].AsString, m3u8Ids);
                 videoCapture.DeleteByIds(fileWrap["From"].AsString, videoCpIds);
             }
             //删除 attachment 相关
