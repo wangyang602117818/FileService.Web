@@ -28,9 +28,10 @@
 <body tabindex="1" class="loadingInProgress" id="body">
     <div id="preview"></div>
 
-    @Scripts.Render("~/scripts/preview")
     <input type="hidden" name="fileId" id="fileId" value="@ViewBag.id" />
     <input type="hidden" name="convert" id="convert" value="@ViewBag.convert" />
+    <input type="hidden" name="appPath" id="appPath" value="@ViewBag.AppPath" />
+    @Scripts.Render("~/scripts/preview")
     @if (ViewBag.fileType == "image")
     {
         @Scripts.Render("~/scripts/preview_image")

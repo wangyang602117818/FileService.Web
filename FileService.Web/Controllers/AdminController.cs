@@ -300,6 +300,7 @@ namespace FileService.Web.Controllers
             }
             ViewBag.FileName = fileName;
             ViewBag.template = System.IO.File.ReadAllText(AppDomain.CurrentDomain.BaseDirectory + "/pdfview/template.html");
+            ViewBag.AppPath = Request.ApplicationPath;
             return View();
         }
         public ActionResult PreviewConvert(string id, string fileName)
@@ -310,6 +311,7 @@ namespace FileService.Web.Controllers
             ViewBag.fileType = fileType;
             ViewBag.FileName = fileName;
             ViewBag.template = System.IO.File.ReadAllText(AppDomain.CurrentDomain.BaseDirectory + "pdfview/template.html");
+            ViewBag.AppPath = Request.ApplicationPath;
             return View("Preview");
         }
         public ActionResult GetCountRecentMonth(int month)

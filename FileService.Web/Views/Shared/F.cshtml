@@ -10,7 +10,6 @@
     <meta name="viewport" content="width=device-width" />
     <link rel="icon" href="~/image/data.ico" type="image/x-ico" />
     @Scripts.Render("~/scripts/react-only-js")
-    @Scripts.Render("~/scripts/preview")
     @{
         if (CultureInfo.GetCulture() == "zh-CN")
         {
@@ -32,6 +31,8 @@
     <input type="hidden" name="fileName" id="fileName" value="@ViewBag.fileName" />
     <input type="hidden" name="fileType" id="fileType" value="@ViewBag.fileType" />
     <input type="hidden" name="convert" id="convert" value="@ViewBag.convert" />
+    <input type="hidden" name="appPath" id="appPath" value="@ViewBag.AppPath" />
+    @Scripts.Render("~/scripts/preview")
     @if (ViewBag.fileType == "video")
     {
         <script src="~/scripts/jquery-3.3.1.min.js"></script>

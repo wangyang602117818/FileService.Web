@@ -31,7 +31,7 @@ namespace FileService.Web.Controllers
             ViewBag.hasPassword = hasPassword;
             ViewBag.expired = expired;
             ViewBag.id = id;
-
+            ViewBag.AppPath = Request.ApplicationPath;
             return View();
         }
         public ActionResult F(string id)
@@ -69,6 +69,7 @@ namespace FileService.Web.Controllers
                 ViewBag.fileId = fileWrap.Contains("Files") ? fileWrap["Files"].AsBsonArray[0]["_id"].ToString() : ObjectId.Empty.ToString();
             }
             ViewBag.template = System.IO.File.ReadAllText(AppDomain.CurrentDomain.BaseDirectory + "/pdfview/template.html");
+            ViewBag.AppPath = Request.ApplicationPath;
             return View();
         }
         public ActionResult CheckPassWord(string id, string password)
