@@ -24,9 +24,9 @@ namespace FileService.Business
             };
             return mongoData.Replace(document);
         }
-        public IEnumerable<BsonDocument> FindByIds(IEnumerable<ObjectId> ids)
+        public IEnumerable<BsonDocument> FindByIds(string from, IEnumerable<ObjectId> ids)
         {
-            return mongoData.FindByIds(ids);
+            return mongoData.FindByIds(from, ids);
         }
     }
 }

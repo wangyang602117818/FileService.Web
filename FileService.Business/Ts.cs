@@ -22,6 +22,10 @@ namespace FileService.Business
             };
             mongoData.Insert(document);
         }
+        public BsonDocument GetByMd5(string from, string md5)
+        {
+            return mongoData.GetByMd5(from, md5);
+        }
         public bool DeleteBySourceId(string from, IEnumerable<ObjectId> sourceIds)
         {
             return mongoData.DeleteBySourceId(from, sourceIds);

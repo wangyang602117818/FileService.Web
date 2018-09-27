@@ -1,4 +1,5 @@
 ﻿using MongoDB.Bson;
+using MongoDB.Driver;
 using System.Collections.Generic;
 
 namespace FileService.Data
@@ -9,6 +10,10 @@ namespace FileService.Data
         public bool DeleteBySourceId(string from, IEnumerable<ObjectId> sourceIds)
         {
             return MongoCollection.DeleteMany(FilterBuilder.Eq("From", from) & FilterBuilder.In("SourceId", sourceIds)).IsAcknowledged;
+        }
+        public BsonDocument GetByMd5(string from, string md5)
+        {
+            return MongoCollection.Find(FilterBuilder.Eq("From", from) & FilterBuilder.Eq("Md5", md5)).FirstOrDefault();
         }
         public bool DeleteBySourceId(string from, ObjectId sourceId)
         {

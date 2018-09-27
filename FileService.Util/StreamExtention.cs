@@ -17,7 +17,6 @@ namespace FileService.Util
         /// <summary>
         /// 获取文件的MD5码
         /// </summary>
-        /// <param name="fileName">传入的文件名（含路径及后缀名）</param>
         /// <returns></returns>
         public static string GetMD5(this Stream fileStream)
         {
@@ -29,6 +28,17 @@ namespace FileService.Util
                 sb.Append(retVal[i].ToString("x2"));
             }
             fileStream.Position = 0;
+            return sb.ToString();
+        }
+        public static string GetMD5(this byte[] bytes)
+        {
+            MD5 md5 = new MD5CryptoServiceProvider();
+            byte[] retVal = md5.ComputeHash(bytes);
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < retVal.Length; i++)
+            {
+                sb.Append(retVal[i].ToString("x2"));
+            }
             return sb.ToString();
         }
         public static BsonArray GetDeCompressionZipFiles(this Stream stream)

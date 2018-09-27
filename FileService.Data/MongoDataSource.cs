@@ -13,6 +13,8 @@ namespace FileService.Data
     public class MongoDataSource
     {
         public static MongoClient MongoClient;   //mongo数据库操作
+        public static string UserName;
+        public static string Password;
         static MongoDataSource()
         {
             MongoClient = new MongoClient(AppSettings.mongodb);

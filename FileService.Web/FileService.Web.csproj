@@ -181,6 +181,7 @@
     <Compile Include="Controllers\BaseController.cs" />
     <Compile Include="Controllers\DataController.cs" />
     <Compile Include="Controllers\DownLoadController.cs" />
+    <Compile Include="Controllers\ServerController.cs" />
     <Compile Include="Controllers\SharedController.cs" />
     <Compile Include="Controllers\UploadController.cs" />
     <Compile Include="CultureInfo.cs" />

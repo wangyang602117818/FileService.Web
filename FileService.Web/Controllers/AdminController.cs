@@ -252,8 +252,9 @@ namespace FileService.Web.Controllers
         public ActionResult GetThumbnailMetadata(string id)
         {
             ObjectId fileWrapId = ObjectId.Parse(id);
-            IEnumerable<ObjectId> thumbnailIds = filesWrap.FindOne(fileWrapId)["Thumbnail"].AsBsonArray.Select(s => s["_id"].AsObjectId);
-            IEnumerable<BsonDocument> thumbs = thumbnail.FindByIds(thumbnailIds);
+            BsonDocument fileWrap = filesWrap.FindOne(fileWrapId);
+            IEnumerable<ObjectId> thumbnailIds = fileWrap["Thumbnail"].AsBsonArray.Select(s => s["_id"].AsObjectId);
+            IEnumerable<BsonDocument> thumbs = thumbnail.FindByIds(fileWrap["From"].ToString(), thumbnailIds);
             return new ResponseModel<IEnumerable<BsonDocument>>(ErrorCode.success, thumbs);
         }
         public ActionResult GetM3u8Metadata(string id)
@@ -907,12 +908,6 @@ namespace FileService.Web.Controllers
                 key2,
                 iv,
             }, JsonRequestBehavior.AllowGet);
-        }
-        [AllowAnonymous]
-        public ActionResult Test1()
-        {
-            BsonDocument status = config.RsStatus();
-            return new ResponseModel<BsonDocument>(ErrorCode.success, status);
         }
     }
 }

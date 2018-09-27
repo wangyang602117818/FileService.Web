@@ -4,29 +4,27 @@ using MongoDB.Driver;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
 
 namespace FileService.Data
 {
     public class MongoBase
     {
-        public IMongoDatabase MongoDatabase;
-        public IMongoCollection<BsonDocument> MongoCollection;
+        protected IMongoDatabase MongoDatabase;
+        protected IMongoCollection<BsonDocument> MongoCollection;
         protected FilterDefinitionBuilder<BsonDocument> FilterBuilder = Builders<BsonDocument>.Filter;
         public MongoBase(string collectionName)
         {
             MongoDatabase = MongoDataSource.MongoClient.GetDatabase(AppSettings.database);
             MongoCollection = MongoDatabase.GetCollection<BsonDocument>(collectionName);
         }
-        public BsonDocument RsStatus()
+        public BsonDocument ServerStatus()
         {
-            var database = MongoDataSource.MongoClient.GetDatabase("admin", new MongoDatabaseSettings()
-            {
-                ReadEncoding = new UTF8Encoding(false, false)
-            });
-            return database.RunCommand<BsonDocument>(
-                new BsonDocument("replSetGetStatus", 1));
+           return MongoDatabase.RunCommand<BsonDocument>(new BsonDocument("serverStatus", 1));
+        }
+        public BsonDocument DbStats()
+        {
+            return MongoDatabase.RunCommand<BsonDocument>(new BsonDocument("dbStats", 1));
         }
         public void Insert(BsonDocument document)
         {

@@ -10,7 +10,7 @@ namespace FileService.Data
     {
         public static void Init(IMongoDatabase database)
         {
-            var databases= database.ListCollectionNames().ToList();
+            var databases = database.ListCollectionNames().ToList();
             if (!databases.Contains("queue"))
             {
                 database.CreateCollection("queue", new CreateCollectionOptions() { Capped = true, MaxSize = 1048576 * 100 });
@@ -82,43 +82,43 @@ namespace FileService.Data
             if (!databases.Contains("Ts"))
             {
                 database.CreateCollection("Ts");
-                var c = new CreateIndexModel<BsonDocument>(new BsonDocument() { { "From", 1 }, { "CreateTime", -1 } });  //shared key
+                var c = new CreateIndexModel<BsonDocument>(new BsonDocument() { { "From", 1 }, { "CreateTime", 1 } });  //shared key
                 database.GetCollection<BsonDocument>("Ts").Indexes.CreateOne(c);
             }
             if (!databases.Contains("Download"))
             {
                 database.CreateCollection("Download");
-                var c = new CreateIndexModel<BsonDocument>(new BsonDocument() { { "From", 1 }, { "CreateTime", -1 } }); //shared key
+                var c = new CreateIndexModel<BsonDocument>(new BsonDocument() { { "From", 1 }, { "CreateTime", 1 } }); //shared key
                 database.GetCollection<BsonDocument>("Download").Indexes.CreateOne(c);
             }
             if (!databases.Contains("Log"))
             {
                 database.CreateCollection("Log");
-                var c = new CreateIndexModel<BsonDocument>(new BsonDocument() { { "From", 1 }, { "CreateTime", -1 } }); //shared key
+                var c = new CreateIndexModel<BsonDocument>(new BsonDocument() { { "From", 1 }, { "CreateTime", 1 } }); //shared key
                 database.GetCollection<BsonDocument>("Log").Indexes.CreateOne(c);
             }
             if (!databases.Contains("VideoCapture"))
             {
                 database.CreateCollection("VideoCapture");
-                var c = new CreateIndexModel<BsonDocument>(new BsonDocument() { { "From", 1 }, { "CreateTime", -1 } });  //shared key
+                var c = new CreateIndexModel<BsonDocument>(new BsonDocument() { { "From", 1 }, { "CreateTime", 1 } });  //shared key
                 database.GetCollection<BsonDocument>("VideoCapture").Indexes.CreateOne(c);
             }
             if (!databases.Contains("FilePreview"))
             {
                 database.CreateCollection("FilePreview");
-                var c = new CreateIndexModel<BsonDocument>(new BsonDocument() { { "From", 1 }, { "CreateTime", -1 } });  //shared key
+                var c = new CreateIndexModel<BsonDocument>(new BsonDocument() { { "From", 1 }, { "CreateTime", 1 } });  //shared key
                 database.GetCollection<BsonDocument>("FilePreview").Indexes.CreateOne(c);
             }
             if (!databases.Contains("FilePreviewBig"))
             {
                 database.CreateCollection("FilePreviewBig");
-                var c = new CreateIndexModel<BsonDocument>(new BsonDocument() { { "From", 1 }, { "CreateTime", -1 } });  //shared key
+                var c = new CreateIndexModel<BsonDocument>(new BsonDocument() { { "From", 1 }, { "CreateTime", 1 } });  //shared key
                 database.GetCollection<BsonDocument>("FilePreviewBig").Indexes.CreateOne(c);
             }
             if (!databases.Contains("Thumbnail"))
             {
                 database.CreateCollection("Thumbnail");
-                var c = new CreateIndexModel<BsonDocument>(new BsonDocument() { { "From", 1 }, { "CreateTime", -1 } });  //shared key
+                var c = new CreateIndexModel<BsonDocument>(new BsonDocument() { { "From", 1 }, { "CreateTime", 1 } });  //shared key
                 database.GetCollection<BsonDocument>("Thumbnail").Indexes.CreateOne(c);
             }
         }
