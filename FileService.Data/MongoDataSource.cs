@@ -1,12 +1,6 @@
 ﻿using FileService.Util;
-using MongoDB.Bson;
 using MongoDB.Driver;
-using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Text.RegularExpressions;
 
 namespace FileService.Data
 {
@@ -18,8 +12,16 @@ namespace FileService.Data
         static MongoDataSource()
         {
             MongoClient = new MongoClient(AppSettings.mongodb);
+            ParseUserNamePassword(AppSettings.mongodb);
             IMongoDatabase database = MongoClient.GetDatabase(AppSettings.database);
             MongoDBInit.Init(database);
+        }
+        static void ParseUserNamePassword(string connectionString)
+        {
+            Regex regex = new Regex("mongodb://(.*?):(.*?)@", RegexOptions.IgnoreCase);
+            Match match = regex.Match(connectionString);
+            UserName = match.Groups[1].Value;
+            Password = match.Groups[2].Value;
         }
     }
 }

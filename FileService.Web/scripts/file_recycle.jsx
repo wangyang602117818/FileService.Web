@@ -18,7 +18,7 @@
                         <th width="6%">{culture.permanent_del}</th>
                     </tr>
                 </thead>
-                {   this.props.data.length==0?
+                {this.props.data.length == 0 ?
                     <tbody>
                         <tr>
                             <td colSpan='10'>... no data ...</td>
@@ -70,9 +70,11 @@ class FileRecycle extends React.Component {
         super(props);
         this.state = {
             pageShow: localStorage.recycle ? eval(localStorage.recycle) : true,
+            listType: localStorage.file_recycle_type || "list",
             pageIndex: 1,
             pageSize: localStorage.recycle_pageSize || 15,
             pageCount: 1,
+            selectedList: [],
             filter: "",
             startTime: "",
             endTime: "",
@@ -82,10 +84,31 @@ class FileRecycle extends React.Component {
         this.storagePageShowKey = "recycle";
         this.storagePageSizeKey = "recycle_pageSize";
     }
+    onTipsClick(e) {
+        if (e.target.id == "resource_list") {
+            this.setState({ listType: "icon" });
+            localStorage.file_recycle_type = "icon";
+        } else {
+            this.setState({ listType: "list" });
+            localStorage.file_recycle_type = "list";
+        }
+    }
     deleteFile(e) {
         var id = e.target.id;
         if (window.confirm(" " + culture.permanent_del + " ?")) {
             http.get(urls.deleteFileUrl + "/" + id, function (data) {
+                if (data.code == 0) {
+                    this.getData();
+                }
+                else {
+                    alert(data.message);
+                }
+            }.bind(this));
+        }
+    }
+    deleteFiles() {
+        if (window.confirm(" " + culture.permanent_del + " ?")) {
+            http.post(urls.deleteFilesUrl, { ids: this.state.selectedList }, function (data) {
                 if (data.code == 0) {
                     this.getData();
                 }
@@ -108,14 +131,48 @@ class FileRecycle extends React.Component {
             }.bind(this));
         }
     }
+    restoreFiles(e) {
+        if (window.confirm(" " + culture.restore_file + " ?")) {
+            http.post(urls.restoreFilesUrl, { ids: this.state.selectedList }, function (data) {
+                if (data.code == 0) {
+                    this.getData();
+                }
+                else {
+                    alert(data.message);
+                }
+            }.bind(this));
+        }
+    }
+    onResourceSelected(e) {
+        var id = e.target.getAttribute("data-fileid");
+        for (var i = 0; i < this.state.data.result.length; i++) {
+            if (this.state.data.result[i]._id.$oid == id) {
+                this.state.data.result[i].selected = !this.state.data.result[i].selected;
+                if (this.state.data.result[i].selected) {
+                    this.state.selectedList.push(id);
+                } else {
+                    this.state.selectedList.remove(id);
+                }
+            }
+        }
+        this.setState({ data: this.state.data, selectedList: this.state.selectedList });
+        e.stopPropagation();
+    }
     render() {
         return (
             <div className="main">
                 <h1>{culture.recycle_bin}</h1>
                 <LogToolBar section={this.props.section}
                     onSectionChange={this.props.onSectionChange} />
-                <TitleArrow title={culture.all + culture.file} show={this.state.pageShow}
+                <TitleArrowComponent title={culture.all + culture.resources}
+                    type="file_recycle"
+                    show={this.state.pageShow}
                     count={this.state.data.count}
+                    listType={this.state.listType}
+                    delShow={this.state.selectedList.length > 0 ? true : false}
+                    removeByIds={this.deleteFiles.bind(this)}
+                    onTipsClick={this.onTipsClick.bind(this)}
+                    restoreFiles={this.restoreFiles.bind(this)}
                     onShowChange={this.onPageShow.bind(this)} />
                 <Pagination show={this.state.pageShow}
                     pageIndex={this.state.pageIndex}
@@ -128,12 +185,17 @@ class FileRecycle extends React.Component {
                     onKeyPress={this.onKeyPress.bind(this)}
                     lastPage={this.lastPage.bind(this)}
                     nextPage={this.nextPage.bind(this)} />
-                <FileRecycleData
-                    data={this.state.data.result}
-                    show={this.state.pageShow}
-                    restoreFile={this.restoreFile.bind(this)}
-                    deleteFile={this.deleteFile.bind(this)}
-                />
+                {this.state.listType == "list" ?
+                    <FileRecycleData
+                        data={this.state.data.result}
+                        show={this.state.pageShow}
+                        deleteFile={this.deleteFile.bind(this)}
+                        restoreFile={this.restoreFile.bind(this)}
+                    /> :
+                    <ResourcesDataPic data={this.state.data.result}
+                        canPreview={false}
+                        onResourceSelected={this.onResourceSelected.bind(this)} />
+                }
             </div>
         );
     }

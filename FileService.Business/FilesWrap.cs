@@ -98,6 +98,10 @@ namespace FileService.Business
         {
             return mongoData.Restore(id);
         }
+        public bool RestoreFiles(IEnumerable<ObjectId> ids)
+        {
+            return mongoData.RestoreFiles(ids);
+        }
         public BsonDocument FindDelete(ObjectId id)
         {
             return mongoData.FindDelete(id);

@@ -144,13 +144,13 @@ namespace FileService.Web.Controllers
             IEnumerable<BsonDocument> result = filesWrap.GetPageList(pageIndex, pageSize, new BsonDocument("Delete", false), timeStart, timeEnd, sorts, filter, new List<string>() { "_id", "FileName", "From", "FileType" }, new List<string>() { }, out count, userName);
             return new ResponseModel<IEnumerable<BsonDocument>>(ErrorCode.success, result, count);
         }
-        public ActionResult GetDeleteFiles(int pageIndex = 1, int pageSize = 10, string filter = "", string startTime = null, string endTime = null)
+        public ActionResult GetDeleteFiles(int pageIndex = 1, int pageSize = 10, string orderField = "DeleteTime", string orderFieldType = "desc", string filter = "", string startTime = null, string endTime = null)
         {
             long count = 0;
             var userName = Request.Headers["UserName"] ?? User.Identity.Name;
             DateTime.TryParse(startTime, out DateTime timeStart);
             DateTime.TryParse(endTime, out DateTime timeEnd);
-            Dictionary<string, string> sorts = new Dictionary<string, string> { { "CreateTime", "desc" } };
+            Dictionary<string, string> sorts = new Dictionary<string, string> { { orderField, orderFieldType } };
             IEnumerable<BsonDocument> result = filesWrap.GetPageList(pageIndex, pageSize, new BsonDocument("Delete", true), timeStart, timeEnd, sorts, filter, new List<string>() { "_id", "FileName", "From", "FileType" }, new List<string>() { }, out count, userName);
             return new ResponseModel<IEnumerable<BsonDocument>>(ErrorCode.success, result, count);
         }
@@ -881,6 +881,15 @@ namespace FileService.Web.Controllers
             return new ResponseModel<string>(ErrorCode.success, "");
         }
         [Authorize(Roles = "admin")]
+        public ActionResult RestoreFiles(IEnumerable<string> ids)
+        {
+            IEnumerable<ObjectId> idsObject = ids.Select(s => ObjectId.Parse(s));
+            task.RestoreByFileIds(idsObject);
+            filesWrap.RestoreFiles(idsObject);
+            foreach(string id in ids) Log(id, "RestoreFile");
+            return new ResponseModel<string>(ErrorCode.success, "");
+        }
+        [Authorize(Roles = "admin")]
         public ActionResult Delete(string id)
         {
             if (DeleteFile(id))
@@ -893,7 +902,18 @@ namespace FileService.Web.Controllers
                 return new ResponseModel<string>(ErrorCode.server_exception, "");
             }
         }
-
+        [Authorize(Roles = "admin")]
+        public ActionResult DeleteFiles(IEnumerable<string> ids)
+        {
+            foreach(string id in ids)
+            {
+                if (DeleteFile(id))
+                {
+                    Log(id, "DeleteFile");
+                }
+            }
+            return new ResponseModel<string>(ErrorCode.success, "");
+        }
         [AllowAnonymous]
         public ActionResult Test()
         {

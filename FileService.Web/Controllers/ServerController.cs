@@ -13,16 +13,18 @@ namespace FileService.Web.Controllers
     {
         Admin admin = new Admin();
         Application application = new Application();
-
         public ActionResult ServerStatus()
         {
-            BsonDocument bson = application.ServerStatus();
-            return new ResponseModel<BsonDocument>(ErrorCode.success, bson);
+
+            BsonDocument serverStatus = application.ServerStatus();
+
+
+            return new ResponseModel<BsonDocument>(ErrorCode.success, serverStatus);
         }
         public ActionResult DbStats()
         {
-            BsonDocument bson = application.DbStats();
-            return new ResponseModel<BsonDocument>(ErrorCode.success, bson);
+            BsonDocument dbStats = application.DbStats();
+            return new ResponseModel<BsonDocument>(ErrorCode.success, dbStats);
         }
         public ActionResult RsStatus()
         {

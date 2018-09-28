@@ -106,16 +106,25 @@ class TitleArrowComponent extends React.Component {
                     <i className={this.props.show ? "iconfont icon-down" : "iconfont icon-right"}></i>{this.props.title} {this.props.count > 0 ? "(" + this.props.count + ")" : ""}
                 </span>
                 <div className="right_component" onMouseLeave={this.orderNone.bind(this)}>
-                    <div className="order_list"
-                        style={{ display: this.state.orderDisp ? "inline-block" : "none" }}
-                        onClick={this.props.onOrderChanged}>
-                        <span order="FileName">{culture.fileName} {this.props.orderField == "FileName" ? "✔" : ""}</span>
-                        <span order="Length">{culture.size} {this.props.orderField == "Length" ? "✔" : ""}</span>
-                        <span order="CreateTime">{culture.createTime} {this.props.orderField == "CreateTime" ? "✔" : ""}</span>
-                    </div>
-                    <i className="iconfont icon-download" title={culture.download}
-                        onClick={this.props.downloadByIds}
-                        style={{ visibility: this.props.delShow ? "visible" : "hidden" }} />
+                    {this.props.type == "file" ?
+                        <div className="order_list"
+                            style={{ display: this.state.orderDisp ? "inline-block" : "none" }}
+                            onClick={this.props.onOrderChanged}>
+                            <span order="FileName">{culture.fileName} {this.props.orderField == "FileName" ? "✔" : ""}</span>
+                            <span order="Length">{culture.size} {this.props.orderField == "Length" ? "✔" : ""}</span>
+                            <span order="CreateTime">{culture.createTime} {this.props.orderField == "CreateTime" ? "✔" : ""}</span>
+                        </div> : null
+                    }
+                    {this.props.type == "file" ?
+                        <i className="iconfont icon-download" title={this.props.type == "file" ? culture.download : culture.permanent_del}
+                            onClick={this.props.downloadByIds}
+                            style={{ visibility: this.props.delShow ? "visible" : "hidden" }} /> : null
+                    }
+                    {this.props.type == "file_recycle" ?
+                        <i className="iconfont icon-restore"
+                            onClick={this.props.restoreFiles}
+                            style={{ visibility: this.props.delShow ? "visible" : "hidden" }}></i> : null
+                    }
                     <i className="iconfont icon-del" title={culture.delete}
                         onClick={this.props.removeByIds}
                         style={{ visibility: this.props.delShow ? "visible" : "hidden" }} />
@@ -127,9 +136,7 @@ class TitleArrowComponent extends React.Component {
                         <i className='iconfont icon-list'
                             id='resource_icon'
                             onMouseEnter={this.onOrderDisp.bind(this)}
-                            onClick={this.props.onTipsClick.bind(this)}></i>
-                    }
-                    
+                            onClick={this.props.onTipsClick.bind(this)}></i>}
                 </div>
             </div>
         );
@@ -185,7 +192,7 @@ class Pagination extends React.Component {
                         onFocus={this.props.onInput}
                         onKeyPress={this.props.onKeyPress}
                         title={culture.createTime} />
-                    
+
                 </div>
                 <div className="size">
                     {culture.page_size_up} :
@@ -248,8 +255,8 @@ var CommonUsePagination = {
             }
         }
         if (e.target.name == "filter") this.setState({ filter: value });
-        if (e.target.name == "starttime") this.setState({ startTime: value||"" });
-        if (e.target.name == "endtime") this.setState({ endTime: value||"" });
+        if (e.target.name == "starttime") this.setState({ startTime: value || "" });
+        if (e.target.name == "endtime") this.setState({ endTime: value || "" });
     },
     onKeyPress(e) {  //过滤栏所有的enter事件
         if (e.key.toLowerCase() == "enter") {

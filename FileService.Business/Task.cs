@@ -70,6 +70,10 @@ namespace FileService.Business
         {
             return mongoData.RestoreByFileId(fileId);
         }
+        public bool RestoreByFileIds(IEnumerable<ObjectId> fileIds)
+        {
+            return mongoData.RestoreByFileIds(fileIds);
+        }
         public bool DeleteByFileId(ObjectId fileId)
         {
             return mongoData.DeleteByFileId(fileId);

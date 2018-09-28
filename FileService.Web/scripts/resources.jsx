@@ -56,7 +56,7 @@
                 </table>
                 {this.state.imageData ?
                     <div className="preLayer" style={{ left: this.state.x, top: this.state.y }}>
-                        <img src={this.state.prefix+this.state.imageData} />
+                        <img src={this.state.prefix + this.state.imageData} />
                     </div> : null
                 }
             </div>
@@ -135,6 +135,7 @@ class ResourcesDataPic extends React.Component {
             <div className="table_grid">
                 {this.props.data.map(function (item, i) {
                     return (<ResourcesDataPicItem
+                        canPreview={this.props.canPreview}
                         onResourceSelected={this.props.onResourceSelected}
                         resource={item}
                         key={i} />)
@@ -148,11 +149,15 @@ class ResourcesDataPicItem extends React.Component {
         super(props);
     }
     preView(e) {
-        var target = e.target;
-        while (target.nodeName == "path" || target.nodeName == "svg" || target.className.indexOf("table_grid_item_wrap") == -1) {
-            target = target.parentElement;
+        if (this.props.canPreview) {
+            var target = e.target;
+            while (target.nodeName == "path" || target.nodeName == "svg" || target.className.indexOf("table_grid_item_wrap") == -1) {
+                target = target.parentElement;
+            }
+            window.open(urls.preview + "?" + target.id, "_blank");
+        } else {
+            this.props.onResourceSelected(e);
         }
-        window.open(urls.preview + "?" + target.id, "_blank");
     }
     render() {
         var fileId = this.props.resource._id.$oid.removeHTML();
@@ -166,6 +171,7 @@ class ResourcesDataPicItem extends React.Component {
         return (
             <div className={className}
                 onClick={this.preView.bind(this)}
+                data-fileid={fileId}
                 id={"id=" + fileId + "&filename=" + fileName}>
                 <div className="table_grid_item">
                     <i className="iconfont icon-ok"
@@ -218,7 +224,7 @@ class Resources extends React.Component {
             access: [],
             departments: [],
             pageIndex: 1,
-            pageSize: localStorage.handler_pageSize || 10,
+            pageSize: localStorage.handler_pageSize || 15,
             pageCount: 1,
             orderField: "CreateTime",
             orderFieldType: "desc",
@@ -632,6 +638,7 @@ class Resources extends React.Component {
             <div className="main">
                 <h1>{culture.resources}</h1>
                 <TitleArrowComponent title={culture.all + culture.resources}
+                    type="file"
                     show={this.state.pageShow}
                     count={this.state.data.count}
                     listType={this.state.listType}
@@ -658,6 +665,7 @@ class Resources extends React.Component {
                         removeItem={this.removeItem.bind(this)}
                         onIdClick={this.onIdClick.bind(this)} /> :
                     <ResourcesDataPic data={this.state.data.result}
+                        canPreview={true}
                         onResourceSelected={this.onResourceSelected.bind(this)} />
                 }
                 <TitleArrow title={culture.add + culture.image}
