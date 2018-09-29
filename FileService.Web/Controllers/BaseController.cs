@@ -131,6 +131,13 @@ namespace FileService.Web.Controllers
                 ObjectId fId = fileWrap["FileId"].AsObjectId;
                 mongoFile.Delete(fId);
             }
+            IEnumerable<BsonDocument> tasks = task.FindCacheFiles(fileWrapId);
+            foreach (BsonDocument task in tasks)
+            {
+                var temp = task["TempFolder"].ToString().Substring(task["TempFolder"].ToString().TrimEnd('\\').LastIndexOf(@"\") + 1);
+                string fullPath = AppDomain.CurrentDomain.BaseDirectory + AppSettings.tempFileDir + temp + task["FileName"].ToString();
+                if (System.IO.File.Exists(fullPath)) System.IO.File.Delete(fullPath);
+            }
             filePreview.DeleteOne(fileWrapId);
             filePreviewBig.DeleteOne(fileWrapId);
             shared.DeleteShared(fileWrapId);

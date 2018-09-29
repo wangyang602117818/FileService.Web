@@ -94,6 +94,10 @@ namespace FileService.Business
         {
             return mongoData.FindCacheFiles();
         }
+        public IEnumerable<BsonDocument> FindCacheFiles(ObjectId fileId)
+        {
+            return mongoData.FindCacheFiles(fileId);
+        }
         public IEnumerable<BsonDocument> GetCountByAppName(DateTime startDateTime)
         {
             return mongoData.GetCountByAppName(startDateTime);

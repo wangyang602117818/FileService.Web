@@ -125,7 +125,14 @@ namespace FileService.Data
         {
             List<FilterDefinition<BsonDocument>> list = new List<FilterDefinition<BsonDocument>>();
             list.Add(FilterBuilder.In("Type", new List<string>() { "image", "video" }));
-            list.Add(FilterBuilder.Exists("Output._id"));
+            list.Add(FilterBuilder.Eq("State", 2));
+            return MongoCollection.Find(FilterBuilder.And(list)).ToEnumerable();
+        }
+        public IEnumerable<BsonDocument> FindCacheFiles(ObjectId fileId)
+        {
+            List<FilterDefinition<BsonDocument>> list = new List<FilterDefinition<BsonDocument>>();
+            list.Add(FilterBuilder.Eq("FileId", fileId));
+            list.Add(FilterBuilder.In("Type", new List<string>() { "image", "video" }));
             list.Add(FilterBuilder.Eq("State", 2));
             return MongoCollection.Find(FilterBuilder.And(list)).ToEnumerable();
         }
