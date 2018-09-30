@@ -1,14 +1,16 @@
 ﻿using System;
 using System.Diagnostics;
-
-namespace FileService.Model
+using System.Management;
+using Microsoft.VisualBasic;
+namespace FileService.Util
 {
     public class ServerState
     {
-        static readonly PerformanceCounter ramCounter = new PerformanceCounter("Memory", "Available MBytes");
         public string ServerName { get; set; }
         public string OS { get; set; }
-        public string Memory { get; set; }
+        public string MemoryTotal { get; set; }
+        public string MemoryUsage { get; set; }
+        public string CPUUsage { get; set; }
         public string DiskTotal { get; set; }
         public string DiskUsage { get; set; }
         public string CacheFiles { get; set; }
@@ -17,9 +19,14 @@ namespace FileService.Model
         {
             ServerName = Environment.MachineName;
             OS = Environment.OSVersion.VersionString;
-            Memory=
+            ManagementObjectSearcher objCS = new ManagementObjectSearcher("SELECT * FROM Win32_ComputerSystem");
+            foreach (ManagementObject objMgmt in objCS.Get())
+            {
+                MemoryTotal = Math.Round(Convert.ToDouble(objMgmt["totalphysicalmemory"].ToString()) / 1024 / 1024 / 1024).ToString();
+            }
+            MemoryUsage = Math.Round(AppSettings.ramCounter.NextValue() / 1024).ToString();
+            CPUUsage = Math.Round(AppSettings.cpuCounter.NextValue()) + "%";
 
-            Microsoft.VisualBasic.VBCodeProvider.
             return this;
         }
     }

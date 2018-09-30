@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Configuration;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace FileService.Util
 {
@@ -17,8 +13,12 @@ namespace FileService.Util
         public static string libreOffice = ConfigurationManager.AppSettings["libreOffice"];
         public static string tempFileDir = ConfigurationManager.AppSettings["tempFileDir"];
         public static string sharedFolder = ConfigurationManager.AppSettings["sharedFolder"];
-        public static string sharedUserName= ConfigurationManager.AppSettings["sharedUserName"];
+        public static string sharedUserName = ConfigurationManager.AppSettings["sharedUserName"];
         public static string sharedUserPwd = ConfigurationManager.AppSettings["sharedUserPwd"];
+
+        public static PerformanceCounter cpuCounter = new PerformanceCounter("Processor", "% Processor Time", "_Total");
+        public static PerformanceCounter ramCounter = new PerformanceCounter("Memory", "Available MBytes");
+
         public static bool connectState(string path, string userName, string passWord)
         {
             if (sharedUserName == "none" && sharedUserPwd == "none") return true;
@@ -33,7 +33,7 @@ namespace FileService.Util
                 proc.StartInfo.RedirectStandardError = true;
                 proc.StartInfo.CreateNoWindow = true;
                 proc.Start();
-                string dosLine = "net use " + path + " " + passWord + " /user:\"" + userName+"\"";
+                string dosLine = "net use " + path + " " + passWord + " /user:\"" + userName + "\"";
                 proc.StandardInput.WriteLine(dosLine);
                 proc.StandardInput.WriteLine("exit");
                 while (!proc.HasExited)

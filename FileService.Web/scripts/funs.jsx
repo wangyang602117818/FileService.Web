@@ -74,6 +74,7 @@ var http = {
             success(JSON.parse(target.responseText));
         };
         if (error) xhr.onerror = error;
+        url = assemblyUrl(url);
         xhr.open('get', url);
         xhr.setRequestHeader("AuthCode", authCode);
         xhr.send();
@@ -85,6 +86,7 @@ var http = {
             success(JSON.parse(target.responseText));
         };
         if (error) xhr.onerror = error;
+        url = assemblyUrl(url);
         xhr.open('get', url, false);
         xhr.setRequestHeader("AuthCode", authCode);
         xhr.send();
@@ -96,13 +98,11 @@ var http = {
             success(target.responseText);
         };
         if (error) xhr.onerror = error;
+        url = assemblyUrl(url);
         xhr.open('get', url);
         xhr.setRequestHeader("AuthCode", authCode);
         xhr.send();
     },
-    getTemplate: function (url, success, error) {
-
-    }
 };
 var colorList = ["#C35C00", "#E1301E", "#968c6d", "#ffb600", "#602020", "#6d6e71", "#db536a", "#dc6900"];
 var appPath = document.getElementById("appPath").value;
@@ -119,7 +119,7 @@ var urls = {
     deleteFileUrl: appDomain + "admin/delete",
     deleteFilesUrl: appDomain + "admin/deletefiles",
     restoreFileUrl: appDomain + "admin/restore",
-    restoreFilesUrl: appDomain +"admin/restorefiles",
+    restoreFilesUrl: appDomain + "admin/restorefiles",
     downloadUrl: appDomain + "download/get",
     downloadConvertUrl: appDomain + "download/getconvert",
     downloadZipInnerUrl: appDomain + "download/getzipinnerfile",
@@ -222,6 +222,14 @@ var urls = {
         checkPassWord: appDomain + "shared/checkpassword",
         sharedFile: appDomain + "shared/f"
     }
+}
+function assemblyUrl(url) {
+    if (url.indexOf("?") > -1) {
+        url = url + "&r=" + selectFrom(1000, 1000000);
+    } else {
+        url = url + "?r=" + selectFrom(1000, 1000000);
+    }
+    return url;
 }
 //随机数
 function selectFrom(lowerValue, upperValue) {
