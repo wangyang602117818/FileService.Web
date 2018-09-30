@@ -1,7 +1,6 @@
 导出
 转换任务，图模式
 处理器图模式
-bug:
 判断每个切片的md5是否一致
 
 获取cpu使用率
@@ -17,4 +16,109 @@ ai开源项目 http://scikit-learn.org/stable/
 Keras
 
 
+db.stats()
+	如果有 raw 字段 -》分片集群
+	没有没有 raw 字段 -》
+		db.serverStatus
+			repl 中 有hosts吗？如果有 就是副本集，没有就是一般的单台服务器
 
+			
+{
+	type:"sharding",   // replSet single
+	webserver:{
+		serverName:"",
+		os:"",
+		raw:"",
+		disk:"",
+		cacheFiles:"",
+		logFiles:""
+	},
+	mongosserver":{
+		serverName:"",
+		port:"",
+		version:"",
+		os:"",
+		ram:"",
+		health:""
+	},
+	dataserver:[
+		{
+			replSetName:"ShardA",
+			servers:[
+				
+			]
+		}
+	]
+	dataserver:[
+		{
+			replSetName:"ShardA",
+			servers:[
+				{
+					state:"",   //1:PRIMARY,2:SECONDARY,7:ARBITER,8:not reachable
+					serverName:"",
+					port:"",
+					version:"",
+					os:"",
+					ram:"",
+					data:"",
+					health:""
+				},
+				{
+					state:"",   //1:PRIMARY,2:SECONDARY,7:ARBITER,8:not reachable
+					serverName:"",
+					port:"",
+					version:"",
+					os:"",
+					ram:"",
+					health:""
+				}
+			]
+		},
+		{
+			replSetName:"ShardB",
+			servers:[
+				{
+					state:"",   //1:PRIMARY,2:SECONDARY,7:ARBITER,8:not reachable
+					serverName:"",
+					port:"",
+					version:"",
+					os:"",
+					ram:"",
+					health:""
+				},
+				{
+					state:"",   //1:PRIMARY,2:SECONDARY,7:ARBITER,8:not reachable
+					serverName:"",
+					port:"",
+					version:"",
+					os:"",
+					ram:"",
+					health:""
+				}
+			]
+		},
+		{
+			replSetName:"Config",
+			servers:[
+				{
+					state:"",   //1:PRIMARY,2:SECONDARY,7:ARBITER,8:not reachable
+					serverName:"",
+					port:"",
+					version:"",
+					os:"",
+					ram:"",
+					health:""
+				},
+				{
+					state:"",   //1:PRIMARY,2:SECONDARY,7:ARBITER,8:not reachable
+					serverName:"",
+					port:"",
+					version:"",
+					os:"",
+					ram:"",
+					health:""
+				}
+			]
+		}
+	]
+}

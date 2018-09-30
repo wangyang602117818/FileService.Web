@@ -255,51 +255,18 @@ class CountTotal extends React.Component {
                     resourcesImage={this.state.ResourcesImage}
                     resourcesVideo={this.state.ResourcesVideo}
                     resourcesAttachment={this.state.ResourcesAttachment}
-                    downloads={this.state.downloads}/>
+                    downloads={this.state.downloads} />
                 <div className="echart_main" id="echart_count_appname" style={{ height: "240px", width: "100%" }}></div>
-                {/*
-                <TitleTxt title={culture.totals} />
-                <div className="totals">
-                    <table className="table_general" style={{ width: "40%" }}>
-                        <thead>
-                            <tr>
-                                <td>{culture.handlers}</td>
-                                <td>{culture.tasks}</td>
-                                <td>{culture.resources}</td>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>{this.state.Handlers}</td>
-                                <td>{this.state.Tasks}</td>
-                                <td>{this.state.ResourcesAttachment + this.state.ResourcesImage + this.state.ResourcesVideo}</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-                <TitleTxt title={culture.resources} />
-                <div className="totals">
-                    <table className="table_general" style={{ width: "30%" }}>
-                        <thead>
-                            <tr>
-                                <td>{culture.image}</td>
-                                <td>{culture.video}</td>
-                                <td>{culture.attachment}</td>
-                                <td>{culture.total}</td>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>{this.state.ResourcesImage}</td>
-                                <td>{this.state.ResourcesVideo}</td>
-                                <td>{this.state.ResourcesAttachment}</td>
-                                <td>{this.state.ResourcesImage + this.state.ResourcesVideo + this.state.ResourcesAttachment}</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>*/}
             </div>
         );
+    }
+}
+class Server extends React.Component {
+    constructor(props) {
+        super(props);
+    }
+    render() {
+        return null;
     }
 }
 class Overview extends React.Component {
@@ -379,6 +346,7 @@ class Overview extends React.Component {
                     show={this.state.totalShow}
                     onShowChange={this.onCountTotalShow.bind(this)} />
                 <CountTotal ref="countTotal" show={this.state.totalShow} />
+
             </div>
         )
     }

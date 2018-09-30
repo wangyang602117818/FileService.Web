@@ -1,25 +1,33 @@
-﻿using FileService.Business;
+﻿using FileService.Data;
+using FileService.Model;
 using FileService.Web.Models;
 using MongoDB.Bson;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
 using System.Web.Mvc;
 
 namespace FileService.Web.Controllers
 {
     public class ServerController : Controller
     {
-        Admin admin = new Admin();
-        Application application = new Application();
+        Business.Admin admin = new Business.Admin();
+        Business.Application application = new Business.Application();
         public ActionResult ServerStatus()
         {
-
+            string Type = "single";
+            BsonDocument stats = application.DbStats();
             BsonDocument serverStatus = application.ServerStatus();
+            if (stats.Contains("raw"))
+            {
+                Type = "sharding";
+            }
+            //BsonDocument bson = stats["raw"].AsBsonDocument;
+            //foreach (var item in bson)
+            //{
+            //    string connsr = item.Name.Split('/')[1];
+            //    string conn = MongoDataSource.GetConnectionString(connsr.Split(','));
+            //    return new ResponseModel<string>(ErrorCode.success, conn);
+            //}
 
-
-            return new ResponseModel<BsonDocument>(ErrorCode.success, serverStatus);
+            return new ResponseModel<ServerState>(ErrorCode.success, new ServerState().GetServerState());
         }
         public ActionResult DbStats()
         {

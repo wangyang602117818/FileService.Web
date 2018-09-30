@@ -23,5 +23,12 @@ namespace FileService.Data
             UserName = match.Groups[1].Value;
             Password = match.Groups[2].Value;
         }
+        public static string GetConnectionString(params string[] address)
+        {
+            string auth = UserName.Length > 0 ? UserName + ":" + Password + "@" : "";
+            if (address.Length == 1) return "mongodb://" + auth + address[0] + "/admin";
+            return "mongodb://" + auth + string.Join(",", address) + "/admin";
+        }
+
     }
 }
