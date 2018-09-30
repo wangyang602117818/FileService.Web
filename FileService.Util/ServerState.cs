@@ -9,8 +9,8 @@ namespace FileService.Util
         public string ServerName { get; set; }
         public string OS { get; set; }
         public string MemoryTotal { get; set; }
-        public string MemoryUsage { get; set; }
-        public string CPUUsage { get; set; }
+        //public string MemoryUsage { get; set; }
+        //public string CPUUsage { get; set; }
         public string DiskTotal { get; set; }
         public string DiskUsage { get; set; }
         public string CacheFiles { get; set; }
@@ -24,8 +24,8 @@ namespace FileService.Util
             {
                 MemoryTotal = Math.Round(Convert.ToDouble(objMgmt["totalphysicalmemory"].ToString()) / 1024 / 1024 / 1024).ToString();
             }
-            MemoryUsage = Math.Round(AppSettings.ramCounter.NextValue() / 1024).ToString();
-            CPUUsage = Math.Round(AppSettings.cpuCounter.NextValue()) + "%";
+            //MemoryUsage = Math.Round(AppSettings.ramCounter.NextValue() / 1024).ToString();
+            //CPUUsage = Math.Round(AppSettings.cpuCounter.NextValue()) + "%";
 
             return this;
         }

@@ -16,8 +16,8 @@ namespace FileService.Util
         public static string sharedUserName = ConfigurationManager.AppSettings["sharedUserName"];
         public static string sharedUserPwd = ConfigurationManager.AppSettings["sharedUserPwd"];
 
-        public static PerformanceCounter cpuCounter = new PerformanceCounter("Processor", "% Processor Time", "_Total");
-        public static PerformanceCounter ramCounter = new PerformanceCounter("Memory", "Available MBytes");
+        //public static PerformanceCounter cpuCounter = new PerformanceCounter("Processor", "% Processor Time", "_Total");
+        //public static PerformanceCounter ramCounter = new PerformanceCounter("Memory", "Available MBytes");
 
         public static bool connectState(string path, string userName, string passWord)
         {
