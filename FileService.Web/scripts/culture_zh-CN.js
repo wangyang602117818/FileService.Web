@@ -213,5 +213,6 @@ var culture = {
     route_server: "路由服务器",
     port: "端口",
     version: "版本",
-    data_server: "数据服务器"
+    data_server: "数据服务器",
+    data: "数据"
 }

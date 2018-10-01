@@ -213,5 +213,6 @@ var culture = {
     route_server: "RouteServer",
     port: "Port",
     version: "Version",
-    data_server:"DataServer"
+    data_server: "DataServer",
+    data:"Data"
 }

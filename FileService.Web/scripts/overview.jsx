@@ -323,11 +323,12 @@ class Servers extends React.Component {
                         <tr>
                             <td width="20%">{culture.server_name}</td>
                             <td width="10%">{culture.port}</td>
-                            <td width="10%">{culture.version}</td>
+                            <td width="8%">{culture.version}</td>
                             <td width="30%">{culture.os}</td>
-                            <td width="10%">{culture.memory}</td>
-                            <td width="10%">{culture.type}</td>
-                            <td width="10%">{culture.state}</td>
+                            <td width="8%">{culture.memory}</td>
+                            <td width="8%">{culture.data}</td>
+                            <td width="8%">{culture.type}</td>
+                            <td width="8%">{culture.state}</td>
                         </tr>
                         <tr>
                             <td>AFOFD-608200745</td>
@@ -335,6 +336,7 @@ class Servers extends React.Component {
                             <td>4.0.2</td>
                             <td>Microsoft Windows NT 10.0.17134.0</td>
                             <td>8G</td>
+                            <td>560M</td>
                             <td>mongos</td>
                             <td>running</td>
                         </tr>
@@ -350,11 +352,12 @@ class Servers extends React.Component {
                         <tr>
                             <td width="20%">{culture.server_name}</td>
                             <td width="10%">{culture.port}</td>
-                            <td width="10%">{culture.version}</td>
+                            <td width="8%">{culture.version}</td>
                             <td width="30%">{culture.os}</td>
-                            <td width="10%">{culture.memory}</td>
-                            <td width="10%">{culture.type}</td>
-                            <td width="10%">{culture.state}</td>
+                            <td width="8%">{culture.memory}</td>
+                            <td width="8%">{culture.data}</td>
+                            <td width="8%">{culture.type}</td>
+                            <td width="8%">{culture.state}</td>
                         </tr>
                         <tr>
                             <td>AFOFD-608200745</td>
@@ -362,6 +365,7 @@ class Servers extends React.Component {
                             <td>4.0.2</td>
                             <td>Microsoft Windows NT 10.0.17134.0</td>
                             <td>8G</td>
+                            <td>560M</td>
                             <td>mongos</td>
                             <td>running</td>
                         </tr>
@@ -377,11 +381,12 @@ class Servers extends React.Component {
                         <tr>
                             <td width="20%">{culture.server_name}</td>
                             <td width="10%">{culture.port}</td>
-                            <td width="10%">{culture.version}</td>
+                            <td width="8%">{culture.version}</td>
                             <td width="30%">{culture.os}</td>
-                            <td width="10%">{culture.memory}</td>
-                            <td width="10%">{culture.type}</td>
-                            <td width="10%">{culture.state}</td>
+                            <td width="8%">{culture.memory}</td>
+                            <td width="8%">{culture.data}</td>
+                            <td width="8%">{culture.type}</td>
+                            <td width="8%">{culture.state}</td>
                         </tr>
                         <tr>
                             <td>AFOFD-608200745</td>
@@ -389,6 +394,7 @@ class Servers extends React.Component {
                             <td>4.0.2</td>
                             <td>Microsoft Windows NT 10.0.17134.0</td>
                             <td>8G</td>
+                            <td>560M</td>
                             <td>mongos</td>
                             <td>running</td>
                         </tr>
