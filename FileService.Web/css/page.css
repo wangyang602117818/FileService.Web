@@ -133,6 +133,16 @@
     /*border: 1px solid #ccc;*/
 }
 
+.server_con {
+}
+
+    .server_con .web_server_con {
+        width:60%;
+        margin-top:5px;
+        height:150px;
+        border:1px solid #ccc;
+    }
+
 .echart_main_con {
     display: flex;
     flex-direction: row;

@@ -202,4 +202,16 @@ var culture = {
     date_range: "时段",
     from1: "从",
     to: "到",
+    servers: "服务器",
+    web_server: "Web服务器",
+    server_name: "服务器名称",
+    os: "操作系统",
+    memory: "内存",
+    disk: "磁盘",
+    cacheFiles: "缓存文件",
+    logFiles: "日志文件",
+    route_server: "路由服务器",
+    port: "端口",
+    version: "版本",
+    data_server: "数据服务器"
 }
