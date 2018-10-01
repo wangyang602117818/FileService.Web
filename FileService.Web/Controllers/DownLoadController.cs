@@ -29,7 +29,7 @@ namespace FileService.Web.Controllers
         {
             ObjectId fileWrapId = ObjectId.Parse(id);
             BsonDocument fileWrap = filesWrap.FindOne(fileWrapId);
-            if (filesWrap == null) return File(new MemoryStream(), "application/octet-stream");
+            if (fileWrap == null) return File(new MemoryStream(), "application/octet-stream");
             if (!download.AddedInOneMinute(Request.Headers["AppName"], fileWrapId, Request.Headers["UserName"] ?? User.Identity.Name))
             {
                 download.AddDownload(fileWrapId, Request.Headers["AppName"], Request.Headers["UserName"] ?? User.Identity.Name);

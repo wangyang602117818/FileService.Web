@@ -174,7 +174,7 @@ namespace FileService.Converter
         {
             string[] files = Directory.GetFiles(path);
             string m3u8Text = File.ReadAllText(path + fileNameM3u8);
-            ts.DeleteBySourceId(ObjectId.Parse(m3u8FileId));
+            ts.DeleteBySourceId(from, ObjectId.Parse(m3u8FileId));
             int n = 0;
             foreach (string file in files)
             {

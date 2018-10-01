@@ -22,13 +22,17 @@ namespace FileService.Business
             };
             mongoData.Insert(document);
         }
-        public bool DeleteBySourceId(IEnumerable<ObjectId> sourceIds)
+        public BsonDocument GetByMd5(string from, string md5)
         {
-            return mongoData.DeleteBySourceId(sourceIds);
+            return mongoData.GetByMd5(from, md5);
         }
-        public bool DeleteBySourceId(ObjectId sourceId)
+        public bool DeleteBySourceId(string from, IEnumerable<ObjectId> sourceIds)
         {
-            return mongoData.DeleteBySourceId(sourceId);
+            return mongoData.DeleteBySourceId(from, sourceIds);
+        }
+        public bool DeleteBySourceId(string from, ObjectId sourceId)
+        {
+            return mongoData.DeleteBySourceId(from, sourceId);
         }
     }
 }

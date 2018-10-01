@@ -110,7 +110,7 @@ namespace FileService.Web.Controllers
                 foreach (BsonDocument d in fileWrap["Videos"].AsBsonArray) m3u8Ids.Add(d["_id"].AsObjectId);
                 foreach (BsonObjectId oId in fileWrap["VideoCpIds"].AsBsonArray) videoCpIds.Add(oId.AsObjectId);
                 m3u8.DeleteMany(m3u8Ids);
-                ts.DeleteBySourceId(m3u8Ids);
+                ts.DeleteBySourceId(fileWrap["From"].AsString, m3u8Ids);
                 videoCapture.DeleteByIds(fileWrap["From"].AsString, videoCpIds);
             }
             //删除 attachment 相关
@@ -130,6 +130,13 @@ namespace FileService.Web.Controllers
             {
                 ObjectId fId = fileWrap["FileId"].AsObjectId;
                 mongoFile.Delete(fId);
+            }
+            IEnumerable<BsonDocument> tasks = task.FindCacheFiles(fileWrapId);
+            foreach (BsonDocument task in tasks)
+            {
+                var temp = task["TempFolder"].ToString().Substring(task["TempFolder"].ToString().TrimEnd('\\').LastIndexOf(@"\") + 1);
+                string fullPath = AppDomain.CurrentDomain.BaseDirectory + AppSettings.tempFileDir + temp + task["FileName"].ToString();
+                if (System.IO.File.Exists(fullPath)) System.IO.File.Delete(fullPath);
             }
             filePreview.DeleteOne(fileWrapId);
             filePreviewBig.DeleteOne(fileWrapId);

@@ -1,47 +1,65 @@
 ﻿class ResourcesData extends React.Component {
     constructor(props) {
         super(props);
+        this.state = {
+            x: 0,
+            y: 0,
+            prefix: "data:image/*;base64,",
+            imageData: ""
+        }
+    }
+    mouseMove(id, x, y) {
+        //http.get(urls.getFileIconBigUrl + "/" + id + "/", function (data) {
+        //    if (data.code == 0) {
+        //        this.setState({ x: this.state.x - data.result.Width, y: y, imageData: data.result.File.$binary });
+        //    } else {
+        //        this.setState({ imageData: "" });
+        //    }
+        //}.bind(this));
+        //this.setState({ id: id, x: x, y: y });
     }
     render() {
         return (
-            <table className="table">
-                <thead>
-                    <tr>
-                        <th width="18%">{culture.fileId}</th>
-                        <th width="25%">{culture.fileName}</th>
-                        <th width="7%">{culture.size}</th>
-                        <th width="14%">{culture.uploadDate}</th>
-                        <th width="10%">{culture.from}</th>
-                        <th width="5%">{culture.owner}</th>
-                        <th width="5%">{culture.downloads}</th>
-                        <th width="5%">{culture.view}</th>
-                        <th width="5%">{culture.dol}</th>
-                        <th width="5%">{culture.del}</th>
-                    </tr>
-                </thead>
-                {this.props.data.length == 0 ?
-                    <tbody>
+            <div>
+                <table className="table">
+                    <thead>
                         <tr>
-                            <td colSpan='10'>... {culture.no_data} ...</td>
+                            <th width="18%">{culture.fileId}</th>
+                            <th width="25%">{culture.fileName}</th>
+                            <th width="7%">{culture.size}</th>
+                            <th width="14%">{culture.uploadDate}</th>
+                            <th width="10%">{culture.from}</th>
+                            <th width="5%">{culture.owner}</th>
+                            <th width="5%">{culture.downloads}</th>
+                            <th width="5%">{culture.view}</th>
+                            <th width="5%">{culture.dol}</th>
+                            <th width="5%">{culture.del}</th>
                         </tr>
-                    </tbody> :
-                    <tbody>
-                        {this.props.data.map(function (item, i) {
-                            return (
-                                <ResourceItem resource={item} key={i}
-                                    removeItem={this.props.removeItem}
-                                    onIdClick={this.props.onIdClick} />
-                            )
-                        }.bind(this))}
-                    </tbody>
+                    </thead>
+                    {this.props.data.length == 0 ?
+                        <tbody>
+                            <tr>
+                                <td colSpan='10'>... {culture.no_data} ...</td>
+                            </tr>
+                        </tbody> :
+                        <tbody>
+                            {this.props.data.map(function (item, i) {
+                                return (
+                                    <ResourceItem resource={item} key={i}
+                                        removeItem={this.props.removeItem}
+                                        mouseMove={this.mouseMove.bind(this)}
+                                        onIdClick={this.props.onIdClick} />
+                                )
+                            }.bind(this))}
+                        </tbody>
+                    }
+                </table>
+                {this.state.imageData ?
+                    <div className="preLayer" style={{ left: this.state.x, top: this.state.y }}>
+                        <img src={this.state.prefix + this.state.imageData} />
+                    </div> : null
                 }
-                {/*
-                  <div className="preLayer">
-                    <img src={urls.getFileIconUrl + "/5ba3025fc4181b5118b31a20.gif/"}/>
-                </div>
-                 */}
-               
-            </table>
+            </div>
         );
     }
 }
@@ -59,8 +77,9 @@ class ResourceItem extends React.Component {
     }
     mouseOverView(e) {
         var id = e.target.getAttribute("data-id");
-        var clientX = e.clientX, clientY = e.clientY;
-        
+        var pageX = e.target.parentElement.getBoundingClientRect().left;
+        var pageY = e.pageY;
+        this.props.mouseMove(id, pageX, pageY);
     }
     render() {
         return (
@@ -116,6 +135,7 @@ class ResourcesDataPic extends React.Component {
             <div className="table_grid">
                 {this.props.data.map(function (item, i) {
                     return (<ResourcesDataPicItem
+                        canPreview={this.props.canPreview}
                         onResourceSelected={this.props.onResourceSelected}
                         resource={item}
                         key={i} />)
@@ -129,11 +149,15 @@ class ResourcesDataPicItem extends React.Component {
         super(props);
     }
     preView(e) {
-        var target = e.target;
-        while (target.nodeName == "path" || target.nodeName == "svg" || target.className.indexOf("table_grid_item_wrap") == -1) {
-            target = target.parentElement;
+        if (this.props.canPreview) {
+            var target = e.target;
+            while (target.nodeName == "path" || target.nodeName == "svg" || target.className.indexOf("table_grid_item_wrap") == -1) {
+                target = target.parentElement;
+            }
+            window.open(urls.preview + "?" + target.id, "_blank");
+        } else {
+            this.props.onResourceSelected(e);
         }
-        window.open(urls.preview + "?" + target.id, "_blank");
     }
     render() {
         var fileId = this.props.resource._id.$oid.removeHTML();
@@ -147,6 +171,7 @@ class ResourcesDataPicItem extends React.Component {
         return (
             <div className={className}
                 onClick={this.preView.bind(this)}
+                data-fileid={fileId}
                 id={"id=" + fileId + "&filename=" + fileName}>
                 <div className="table_grid_item">
                     <i className="iconfont icon-ok"
@@ -199,7 +224,7 @@ class Resources extends React.Component {
             access: [],
             departments: [],
             pageIndex: 1,
-            pageSize: localStorage.handler_pageSize || 10,
+            pageSize: localStorage.handler_pageSize || 15,
             pageCount: 1,
             orderField: "CreateTime",
             orderFieldType: "desc",
@@ -613,6 +638,7 @@ class Resources extends React.Component {
             <div className="main">
                 <h1>{culture.resources}</h1>
                 <TitleArrowComponent title={culture.all + culture.resources}
+                    type="file"
                     show={this.state.pageShow}
                     count={this.state.data.count}
                     listType={this.state.listType}
@@ -639,6 +665,7 @@ class Resources extends React.Component {
                         removeItem={this.removeItem.bind(this)}
                         onIdClick={this.onIdClick.bind(this)} /> :
                     <ResourcesDataPic data={this.state.data.result}
+                        canPreview={true}
                         onResourceSelected={this.onResourceSelected.bind(this)} />
                 }
                 <TitleArrow title={culture.add + culture.image}

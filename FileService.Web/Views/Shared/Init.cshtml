@@ -10,8 +10,6 @@
     <meta name="viewport" content="width=device-width" />
     <link rel="icon" href="~/image/data.ico" type="image/x-ico" />
     @Scripts.Render("~/scripts/react-only-js")
-    @Scripts.Render("~/scripts/preview")
-
     @{
         if (CultureInfo.GetCulture() == "zh-CN")
         {
@@ -32,7 +30,8 @@
     <input type="hidden" name="hasPassword" id="hasPassword" value="@ViewBag.hasPassword.ToString()" />
     <input type="hidden" name="expired" id="expired" value="@ViewBag.expired.ToString()" />
     <input type="hidden" name="disabled" id="disabled" value="@ViewBag.disabled.ToString()" />
-
+    <input type="hidden" name="appPath" id="appPath" value="@ViewBag.AppPath" />
+    @Scripts.Render("~/scripts/preview")
     @Scripts.Render("~/scripts/shared_init")
 </body>
 </html>

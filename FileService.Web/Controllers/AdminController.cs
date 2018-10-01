@@ -37,11 +37,13 @@ namespace FileService.Web.Controllers
                 }
             }
             ViewBag.Role = User.Identity.Name == "local" ? "admin" : bsonUser["Role"].AsString;
+            ViewBag.AppPath = Request.ApplicationPath;
             return View();
         }
         [AllowAnonymous]
         public ActionResult Login(string returnUrl = "")
         {
+            ViewBag.AppPath = Request.ApplicationPath;
             if (User.Identity.IsAuthenticated)
             {
                 if (Url.IsLocalUrl(returnUrl) && returnUrl.Length > 1 && returnUrl.StartsWith("/")
@@ -142,13 +144,13 @@ namespace FileService.Web.Controllers
             IEnumerable<BsonDocument> result = filesWrap.GetPageList(pageIndex, pageSize, new BsonDocument("Delete", false), timeStart, timeEnd, sorts, filter, new List<string>() { "_id", "FileName", "From", "FileType" }, new List<string>() { }, out count, userName);
             return new ResponseModel<IEnumerable<BsonDocument>>(ErrorCode.success, result, count);
         }
-        public ActionResult GetDeleteFiles(int pageIndex = 1, int pageSize = 10, string filter = "", string startTime = null, string endTime = null)
+        public ActionResult GetDeleteFiles(int pageIndex = 1, int pageSize = 10, string orderField = "DeleteTime", string orderFieldType = "desc", string filter = "", string startTime = null, string endTime = null)
         {
             long count = 0;
             var userName = Request.Headers["UserName"] ?? User.Identity.Name;
             DateTime.TryParse(startTime, out DateTime timeStart);
             DateTime.TryParse(endTime, out DateTime timeEnd);
-            Dictionary<string, string> sorts = new Dictionary<string, string> { { "CreateTime", "desc" } };
+            Dictionary<string, string> sorts = new Dictionary<string, string> { { orderField, orderFieldType } };
             IEnumerable<BsonDocument> result = filesWrap.GetPageList(pageIndex, pageSize, new BsonDocument("Delete", true), timeStart, timeEnd, sorts, filter, new List<string>() { "_id", "FileName", "From", "FileType" }, new List<string>() { }, out count, userName);
             return new ResponseModel<IEnumerable<BsonDocument>>(ErrorCode.success, result, count);
         }
@@ -195,6 +197,18 @@ namespace FileService.Web.Controllers
             }
             return File(file["File"].AsByteArray, "application/octet-stream");
         }
+        public ActionResult GetFileIconBig(string id)
+        {
+            BsonDocument file = filePreviewBig.FindOne(ObjectId.Parse(id.Split('.')[0]));
+            if (file == null)
+            {
+                return new ResponseModel<string>(ErrorCode.record_not_exist, "");
+            }
+            else
+            {
+                return new ResponseModel<BsonDocument>(ErrorCode.success, file);
+            }
+        }
         public ActionResult GetAllShared(string fileId)
         {
             return new ResponseModel<IEnumerable<BsonDocument>>(ErrorCode.success, shared.GetShared(ObjectId.Parse(fileId)));
@@ -238,8 +252,9 @@ namespace FileService.Web.Controllers
         public ActionResult GetThumbnailMetadata(string id)
         {
             ObjectId fileWrapId = ObjectId.Parse(id);
-            IEnumerable<ObjectId> thumbnailIds = filesWrap.FindOne(fileWrapId)["Thumbnail"].AsBsonArray.Select(s => s["_id"].AsObjectId);
-            IEnumerable<BsonDocument> thumbs = thumbnail.FindByIds(thumbnailIds);
+            BsonDocument fileWrap = filesWrap.FindOne(fileWrapId);
+            IEnumerable<ObjectId> thumbnailIds = fileWrap["Thumbnail"].AsBsonArray.Select(s => s["_id"].AsObjectId);
+            IEnumerable<BsonDocument> thumbs = thumbnail.FindByIds(fileWrap["From"].ToString(), thumbnailIds);
             return new ResponseModel<IEnumerable<BsonDocument>>(ErrorCode.success, thumbs);
         }
         public ActionResult GetM3u8Metadata(string id)
@@ -286,6 +301,7 @@ namespace FileService.Web.Controllers
             }
             ViewBag.FileName = fileName;
             ViewBag.template = System.IO.File.ReadAllText(AppDomain.CurrentDomain.BaseDirectory + "/pdfview/template.html");
+            ViewBag.AppPath = Request.ApplicationPath;
             return View();
         }
         public ActionResult PreviewConvert(string id, string fileName)
@@ -296,6 +312,7 @@ namespace FileService.Web.Controllers
             ViewBag.fileType = fileType;
             ViewBag.FileName = fileName;
             ViewBag.template = System.IO.File.ReadAllText(AppDomain.CurrentDomain.BaseDirectory + "pdfview/template.html");
+            ViewBag.AppPath = Request.ApplicationPath;
             return View("Preview");
         }
         public ActionResult GetCountRecentMonth(int month)
@@ -825,11 +842,12 @@ namespace FileService.Web.Controllers
             return new ResponseModel<string>(ErrorCode.success, "");
         }
         [Authorize(Roles = "admin")]
+        [AppAuthorizeDefault]
         public ActionResult DeleteM3u8(string fileId, string m3u8Id)
         {
             ObjectId fId = ObjectId.Parse(fileId);
             ObjectId mId = ObjectId.Parse(m3u8Id);
-            ts.DeleteBySourceId(mId);
+            ts.DeleteBySourceId(Request.Headers["AppName"], mId);
             m3u8.DeleteOne(mId);
             task.DeleteByOutputId(mId);
             filesWrap.DeleteM3u8(fId, mId);
@@ -863,6 +881,15 @@ namespace FileService.Web.Controllers
             return new ResponseModel<string>(ErrorCode.success, "");
         }
         [Authorize(Roles = "admin")]
+        public ActionResult RestoreFiles(IEnumerable<string> ids)
+        {
+            IEnumerable<ObjectId> idsObject = ids.Select(s => ObjectId.Parse(s));
+            task.RestoreByFileIds(idsObject);
+            filesWrap.RestoreFiles(idsObject);
+            foreach(string id in ids) Log(id, "RestoreFile");
+            return new ResponseModel<string>(ErrorCode.success, "");
+        }
+        [Authorize(Roles = "admin")]
         public ActionResult Delete(string id)
         {
             if (DeleteFile(id))
@@ -875,7 +902,18 @@ namespace FileService.Web.Controllers
                 return new ResponseModel<string>(ErrorCode.server_exception, "");
             }
         }
-
+        [Authorize(Roles = "admin")]
+        public ActionResult DeleteFiles(IEnumerable<string> ids)
+        {
+            foreach(string id in ids)
+            {
+                if (DeleteFile(id))
+                {
+                    Log(id, "DeleteFile");
+                }
+            }
+            return new ResponseModel<string>(ErrorCode.success, "");
+        }
         [AllowAnonymous]
         public ActionResult Test()
         {
@@ -890,12 +928,6 @@ namespace FileService.Web.Controllers
                 key2,
                 iv,
             }, JsonRequestBehavior.AllowGet);
-        }
-        [AllowAnonymous]
-        public ActionResult Test1()
-        {
-            BsonDocument status = config.RsStatus();
-            return new ResponseModel<BsonDocument>(ErrorCode.success, status);
         }
     }
 }

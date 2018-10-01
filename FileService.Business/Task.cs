@@ -70,6 +70,10 @@ namespace FileService.Business
         {
             return mongoData.RestoreByFileId(fileId);
         }
+        public bool RestoreByFileIds(IEnumerable<ObjectId> fileIds)
+        {
+            return mongoData.RestoreByFileIds(fileIds);
+        }
         public bool DeleteByFileId(ObjectId fileId)
         {
             return mongoData.DeleteByFileId(fileId);
@@ -89,6 +93,10 @@ namespace FileService.Business
         public IEnumerable<BsonDocument> FindCacheFiles()
         {
             return mongoData.FindCacheFiles();
+        }
+        public IEnumerable<BsonDocument> FindCacheFiles(ObjectId fileId)
+        {
+            return mongoData.FindCacheFiles(fileId);
         }
         public IEnumerable<BsonDocument> GetCountByAppName(DateTime startDateTime)
         {
