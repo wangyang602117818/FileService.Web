@@ -35,7 +35,9 @@ namespace FileService.Web.Controllers
                     { "OS",hostInfo["os"]["type"].AsString+hostInfo["os"]["version"].AsString},
                     {"MemoryTotal",Math.Round(hostInfo["system"]["memSizeMB"].AsInt32*1.0/1024)+"GB" },
                     {"Data",ServerState.GetFileConvertSize(Convert.ToInt64(stats["dataSize"])) },
-                    {"Type","mongodb" }
+                    {"Type","mongodb" },
+                    {"UpTime",serverStatus["uptime"] },
+                    {"Health",1 }
                 });
             }
             //BsonDocument bson = stats["raw"].AsBsonDocument;
