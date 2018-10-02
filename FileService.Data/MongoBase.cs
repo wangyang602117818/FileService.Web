@@ -26,6 +26,10 @@ namespace FileService.Data
         {
             return MongoDatabase.RunCommand<BsonDocument>(new BsonDocument("dbStats", 1));
         }
+        public BsonDocument HostInfo()
+        {
+            return MongoDatabase.RunCommand<BsonDocument>(new BsonDocument("hostInfo", 1));
+        }
         public void Insert(BsonDocument document)
         {
             MongoCollection.InsertOne(document);

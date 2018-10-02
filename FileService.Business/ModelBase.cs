@@ -22,6 +22,10 @@ namespace FileService.Business
         {
             return mongoData.DbStats();
         }
+        public BsonDocument HostInfo()
+        {
+            return mongoData.HostInfo();
+        }
         public void Insert(BsonDocument document)
         {
             mongoData.Insert(document);

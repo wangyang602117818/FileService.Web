@@ -1,6 +1,7 @@
 ﻿using FileService.Util;
 using FileService.Web.Models;
 using MongoDB.Bson;
+using System;
 using System.Web.Mvc;
 
 namespace FileService.Web.Controllers
@@ -14,9 +15,28 @@ namespace FileService.Web.Controllers
             string Type = "single";
             BsonDocument stats = application.DbStats();
             BsonDocument serverStatus = application.ServerStatus();
+            BsonDocument result = new BsonDocument();
             if (stats.Contains("raw"))
             {
                 Type = "sharding";
+            }
+            else
+            {
+                Type = serverStatus["metrics"].AsBsonDocument["repl"].AsBsonDocument.Contains("hosts") ? "replset" : "single";
+            }
+            result.Add("Type", Type);
+            result.Add("WebServer", new ServerState().GetServerState().ToBsonDocument());
+            if (Type == "single")
+            {
+                BsonDocument hostInfo = application.HostInfo();
+                result.Add("DataServer", new BsonDocument() {
+                    { "ServerName",serverStatus["host"]},
+                    { "Version",serverStatus["version"]},
+                    { "OS",hostInfo["os"]["type"].AsString+hostInfo["os"]["version"].AsString},
+                    {"MemoryTotal",Math.Round(hostInfo["system"]["memSizeMB"].AsInt32*1.0/1024)+"GB" },
+                    {"Data",ServerState.GetFileConvertSize(Convert.ToInt64(stats["dataSize"])) },
+                    {"Type","mongodb" }
+                });
             }
             //BsonDocument bson = stats["raw"].AsBsonDocument;
             //foreach (var item in bson)
@@ -26,7 +46,7 @@ namespace FileService.Web.Controllers
             //    return new ResponseModel<string>(ErrorCode.success, conn);
             //}
 
-            return new ResponseModel<ServerState>(ErrorCode.success, new ServerState().GetServerState());
+            return new ResponseModel<BsonDocument>(ErrorCode.success, result);
         }
         public ActionResult DbStats()
         {

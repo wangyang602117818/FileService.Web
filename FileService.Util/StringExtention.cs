@@ -34,5 +34,6 @@ namespace FileService.Util
             stream.Read(bytes, 0, bytes.Length);
             return bytes;
         }
+        
     }
 }
