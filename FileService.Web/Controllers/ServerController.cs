@@ -24,7 +24,14 @@ namespace FileService.Web.Controllers
             }
             else
             {
-                Type = serverStatus["repl"].AsBsonDocument.Contains("hosts") ? "replset" : "single";
+                if (serverStatus.Contains("repl"))
+                {
+                    Type = serverStatus["repl"].AsBsonDocument.Contains("hosts") ? "replset" : "single";
+                }
+                else
+                {
+                    Type = "single";
+                }
             }
             result.Add("Type", Type);
             result.Add("WebServer", new ServerState().GetServerState().ToBsonDocument());

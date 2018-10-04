@@ -331,8 +331,7 @@ class Servers extends React.Component {
                             </tr>
                         </tbody>
                     </table> : null}
-                {(this.state.type == "replset" || this.state.type == "sharding") ?
-                    <TitleTxt title={culture.data_server} /> : null}
+                    <TitleTxt title={culture.data_server} />
                 {this.state.type == "single" ?
                     <table className="table" style={{ width: "70%" }}>
                         <tbody>
@@ -342,8 +341,8 @@ class Servers extends React.Component {
                                 <td width="14%">{culture.version}</td>
                                 <td width="12%">{culture.data}</td>
                                 <td width="12%">{culture.type}</td>
-                                <td width="20%">{culture.upTime}</td>
-                                <td width="10%">{culture.state}</td>
+                                <td width="15%">{culture.upTime}</td>
+                                <td width="15%">{culture.state}</td>
                             </tr>
                             <tr>
                                 <td>{this.state.dataServer.ServerName}</td>
@@ -351,7 +350,7 @@ class Servers extends React.Component {
                                 <td>{this.state.dataServer.Version}</td>
                                 <td>{this.state.dataServer.Data}</td>
                                 <td>{this.state.dataServer.Type}</td>
-                                <td>{convertDay(this.state.mongosServer.UpTime)}</td>
+                                <td>{convertDay(this.state.dataServer.UpTime)}</td>
                                 <td>
                                     <span className={"state " + convertMongoServerState(this.state.dataServer.State, this.state.dataServer.Health)}></span>{'\u00A0'}
                                     {convertMongoServerState(this.state.dataServer.State, this.state.dataServer.Health)}
