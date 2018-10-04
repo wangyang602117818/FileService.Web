@@ -35,7 +35,7 @@ namespace FileService.Web.Controllers
             if (Type == "replset")
             {
                 BsonDocument replState = MongoDataSource.GetReplSetState();
-                result.Add("DataServer", replState);
+                result.Add("DataServer",new BsonArray() { replState } );
             }
             if (Type == "sharding")
             {
