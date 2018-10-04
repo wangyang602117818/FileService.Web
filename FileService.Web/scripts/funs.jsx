@@ -138,6 +138,7 @@ var urls = {
     getObjectIdUrl: appDomain + "data/getobjectid",
     getFileIconUrl: appDomain + "admin/getfileicon",
     getFileIconBigUrl: appDomain + "admin/getfileiconbig",
+    serverStateUrl: appDomain + "server/serverstatus",
     overview: {
         recentUrl: appDomain + "admin/getcountrecentmonth",
         totalUrl: appDomain + "admin/gettotalcount",
@@ -309,7 +310,7 @@ function convertTime(seconds) {
 function formatMonth(month) {
     return month.toString().length == 1 ? "0" + month : month;
 }
-function ConvertHandlerState(value) {
+function convertHandlerState(value) {
     switch (value) {
         case 0:
             return "idle";
@@ -321,6 +322,28 @@ function ConvertHandlerState(value) {
             return "offline";
             break;
     }
+}
+function convertMongoServerType(state) {
+    switch (state) {
+        case 0:
+        case 5:
+            return "startup";
+        case 1:
+            return "primary";
+        case 2:
+            return "secondary";
+        case 7:
+            return "arbiter";
+        case 8:
+            return "down";
+        default:
+            return "unknown";
+    }
+}
+function convertMongoServerState(state, health) {
+    if (state == 0 || state == 5) return "startup";
+    if (health == 1) return "running";
+    if (health == 0) return "offline";
 }
 function getQueryString(name) {
     var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i");

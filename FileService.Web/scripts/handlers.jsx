@@ -60,8 +60,8 @@ class HandlerItem extends React.Component {
                 <td dangerouslySetInnerHTML={{ __html: this.props.handler.MachineName }}></td>
                 <td>{this.props.handler.Total}</td>
                 <td>
-                    <span className={"state " + ConvertHandlerState(this.props.handler.State)}></span>{'\u00A0'}
-                    {ConvertHandlerState(this.props.handler.State)}
+                    <span className={"state " + convertHandlerState(this.props.handler.State)}></span>{'\u00A0'}
+                    {convertHandlerState(this.props.handler.State)}
                 </td>
                 <td>{parseBsonTime(this.props.handler.StartTime)}</td>
                 <td>{parseBsonTime(this.props.handler.EndTime)}</td>

@@ -13,12 +13,13 @@ ai开源项目 http://scikit-learn.org/stable/
 
 Keras
 
+mongodb://127.0.0.1:27017,127.0.0.1:27018/admin
 
 db.stats()
 	如果有 raw 字段 -》分片集群
 	没有没有 raw 字段 -》
 		db.serverStatus
-			repl 中 有hosts吗？如果有 就是副本集，没有就是一般的单台服务器
+			repl 中 有 hosts 吗？如果有 就是副本集，没有就是一般的单台服务器
 
 			
 {

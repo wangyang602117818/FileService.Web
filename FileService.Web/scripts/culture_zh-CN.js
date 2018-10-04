@@ -214,5 +214,9 @@ var culture = {
     port: "端口",
     version: "版本",
     data_server: "数据服务器",
-    data: "数据"
+    data: "数据",
+    available: "可用",
+    upTime: "运行时间",
+    startup: "启动中",
+    
 }

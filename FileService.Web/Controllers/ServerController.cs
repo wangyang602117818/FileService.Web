@@ -1,7 +1,9 @@
-﻿using FileService.Util;
+﻿using FileService.Data;
+using FileService.Util;
 using FileService.Web.Models;
 using MongoDB.Bson;
 using System;
+using System.Collections.Generic;
 using System.Web.Mvc;
 
 namespace FileService.Web.Controllers
@@ -22,43 +24,35 @@ namespace FileService.Web.Controllers
             }
             else
             {
-                Type = serverStatus["metrics"].AsBsonDocument["repl"].AsBsonDocument.Contains("hosts") ? "replset" : "single";
+                Type = serverStatus["repl"].AsBsonDocument.Contains("hosts") ? "replset" : "single";
             }
             result.Add("Type", Type);
             result.Add("WebServer", new ServerState().GetServerState().ToBsonDocument());
             if (Type == "single")
             {
-                BsonDocument hostInfo = application.HostInfo();
-                result.Add("DataServer", new BsonDocument() {
-                    { "ServerName",serverStatus["host"]},
-                    { "Version",serverStatus["version"]},
-                    { "OS",hostInfo["os"]["type"].AsString+hostInfo["os"]["version"].AsString},
-                    {"MemoryTotal",Math.Round(hostInfo["system"]["memSizeMB"].AsInt32*1.0/1024)+"GB" },
-                    {"Data",ServerState.GetFileConvertSize(Convert.ToInt64(stats["dataSize"])) },
-                    {"Type","mongodb" },
-                    {"UpTime",serverStatus["uptime"] },
-                    {"Health",1 }
-                });
+                result.Add("DataServer", MongoDataSource.GetSingleState(null,"mongo"));
             }
-            //BsonDocument bson = stats["raw"].AsBsonDocument;
-            //foreach (var item in bson)
-            //{
-            //    string connsr = item.Name.Split('/')[1];
-            //    string conn = MongoDataSource.GetConnectionString(connsr.Split(','));
-            //    return new ResponseModel<string>(ErrorCode.success, conn);
-            //}
+            if (Type == "replset")
+            {
+                BsonDocument replState = MongoDataSource.GetReplSetState();
+                result.Add("DataServer", replState);
+            }
+            if (Type == "sharding")
+            {
+                List<BsonDocument> rsState = new List<BsonDocument>();
+                BsonDocument raw = stats["raw"].AsBsonDocument;
+                foreach (var item in raw)
+                {
+                    var address = item.Name.Split('/')[1].Split(',');
+                    rsState.Add(MongoDataSource.GetReplSetState(address));
+                }
+                var addressConfig = serverStatus["sharding"]["configsvrConnectionString"].ToString().Split('/')[1].Split(',');
+                rsState.Add(MongoDataSource.GetReplSetState(addressConfig));
+                result.Add("MongosServer", MongoDataSource.GetSingleState(null,"mongos"));
+                result.Add("DataServer", new BsonArray(rsState));
 
+            }
             return new ResponseModel<BsonDocument>(ErrorCode.success, result);
-        }
-        public ActionResult DbStats()
-        {
-            BsonDocument dbStats = application.DbStats();
-            return new ResponseModel<BsonDocument>(ErrorCode.success, dbStats);
-        }
-        public ActionResult RsStatus()
-        {
-            BsonDocument status = admin.RsStatus();
-            return new ResponseModel<BsonDocument>(ErrorCode.success, status);
         }
     }
 }

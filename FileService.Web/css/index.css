@@ -387,6 +387,10 @@ h1 {
     background-color: #E0301E;
 }
 
+.startup {
+    background-color: #FED52C;
+}
+
 .wait, .updated {
     background-color: #444;
 }

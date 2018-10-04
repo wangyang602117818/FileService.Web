@@ -179,10 +179,6 @@
                 <br />
                 <div className="echart_main_con">
                     <div className="echart_app_resource" id="echart_app_resource"></div>
-                    {/*
-                     <div className="echart_app_task"></div>
-                    <div className="echart_app_download"></div>
-                     */}
                 </div>
             </div>
         );
@@ -264,144 +260,148 @@ class CountTotal extends React.Component {
 class Servers extends React.Component {
     constructor(props) {
         super(props);
+        this.state = {
+            type: "",
+            webServer: {},
+            mongosServer: {},
+            dataServer: []
+        };
+    }
+    componentDidMount() {
+        this.getData();
+    }
+    getData() {
+        http.get(urls.serverStateUrl, function (data) {
+            if (data.code == 0) {
+                this.setState({
+                    type: data.result.Type,
+                    webServer: data.result.WebServer,
+                    mongosServer: data.result.MongosServer,
+                    dataServer: data.result.DataServer,
+                });
+            }
+        }.bind(this))
     }
     render() {
         return (
             <div className={this.props.show ? "server_con show" : "server_con hidden"}>
                 <TitleTxt title={culture.web_server} />
-                <table className="table" >
+                <table className="table">
                     <tbody>
                         <tr>
                             <td width="20%">{culture.server_name}</td>
                             <td width="25%">{culture.os}</td>
                             <td width="10%">{culture.memory}</td>
-                            <td width="19%">{culture.disk}</td>
+                            <td width="19%">{culture.disk + "(" + culture.available + "/" + culture.total + ")"}</td>
                             <td width="13%">{culture.cacheFiles}</td>
                             <td width="13%">{culture.logFiles}</td>
                         </tr>
                         <tr>
-                            <td >AFOFD-608200745</td>
-                            <td >Microsoft Windows NT 10.0.17134.0</td>
-                            <td >8G</td>
-                            <td >C:104G/143G,D:22G/80G</td>
-                            <td >200M/26</td>
-                            <td >100M/24</td>
+                            <td >{this.state.webServer.ServerName}</td>
+                            <td >{this.state.webServer.OS}</td>
+                            <td >{this.state.webServer.MemoryTotal}G</td>
+                            <td >{this.state.webServer.Disk}</td>
+                            <td >{this.state.webServer.CacheFiles}</td>
+                            <td >{this.state.webServer.LogFiles}</td>
                         </tr>
                     </tbody>
                 </table>
-                <TitleTxt title={culture.route_server + "(mongos)"} />
-                <table className="table" style={{ width:"80%" }}>
-                    <tbody>
-                        <tr>
-                            <td width="20%">{culture.server_name}</td>
-                            <td width="10%">{culture.port}</td>
-                            <td width="10%">{culture.version}</td>
-                            <td width="30%">{culture.os}</td>
-                            <td width="10%">{culture.memory}</td>
-                            <td width="10%">{culture.type}</td>
-                            <td width="10%">{culture.state}</td>
-                        </tr>
-                        <tr>
-                            <td>AFOFD-608200745</td>
-                            <td>27017</td>
-                            <td>4.0.2</td>
-                            <td>Microsoft Windows NT 10.0.17134.0</td>
-                            <td>8G</td>
-                            <td>mongos</td>
-                            <td>running</td>
-                        </tr>
-                    </tbody>
-                </table>
-                <TitleTxt title={culture.data_server} />
-                <table className="table" style={{ width: "80%" }}>
-                    <thead>
-                        <tr>
-                            <td colSpan="10">sharA</td>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td width="20%">{culture.server_name}</td>
-                            <td width="10%">{culture.port}</td>
-                            <td width="8%">{culture.version}</td>
-                            <td width="30%">{culture.os}</td>
-                            <td width="8%">{culture.memory}</td>
-                            <td width="8%">{culture.data}</td>
-                            <td width="8%">{culture.type}</td>
-                            <td width="8%">{culture.state}</td>
-                        </tr>
-                        <tr>
-                            <td>AFOFD-608200745</td>
-                            <td>27017</td>
-                            <td>4.0.2</td>
-                            <td>Microsoft Windows NT 10.0.17134.0</td>
-                            <td>8G</td>
-                            <td>560M</td>
-                            <td>mongos</td>
-                            <td>running</td>
-                        </tr>
-                    </tbody>
-                </table>
-                <table className="table" style={{ width: "80%" }}>
-                    <thead>
-                        <tr>
-                            <td colSpan="10">sharB</td>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td width="20%">{culture.server_name}</td>
-                            <td width="10%">{culture.port}</td>
-                            <td width="8%">{culture.version}</td>
-                            <td width="30%">{culture.os}</td>
-                            <td width="8%">{culture.memory}</td>
-                            <td width="8%">{culture.data}</td>
-                            <td width="8%">{culture.type}</td>
-                            <td width="8%">{culture.state}</td>
-                        </tr>
-                        <tr>
-                            <td>AFOFD-608200745</td>
-                            <td>27017</td>
-                            <td>4.0.2</td>
-                            <td>Microsoft Windows NT 10.0.17134.0</td>
-                            <td>8G</td>
-                            <td>560M</td>
-                            <td>mongos</td>
-                            <td>running</td>
-                        </tr>
-                    </tbody>
-                </table>
-                <table className="table" style={{ width: "80%" }}>
-                    <thead>
-                        <tr>
-                            <td colSpan="10">config</td>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td width="20%">{culture.server_name}</td>
-                            <td width="10%">{culture.port}</td>
-                            <td width="8%">{culture.version}</td>
-                            <td width="30%">{culture.os}</td>
-                            <td width="8%">{culture.memory}</td>
-                            <td width="8%">{culture.data}</td>
-                            <td width="8%">{culture.type}</td>
-                            <td width="8%">{culture.state}</td>
-                        </tr>
-                        <tr>
-                            <td>AFOFD-608200745</td>
-                            <td>27017</td>
-                            <td>4.0.2</td>
-                            <td>Microsoft Windows NT 10.0.17134.0</td>
-                            <td>8G</td>
-                            <td>560M</td>
-                            <td>mongos</td>
-                            <td>running</td>
-                        </tr>
-                    </tbody>
-                </table>
+                {this.state.type == "sharding" ?
+                    <TitleTxt title={culture.route_server + "(mongos)"} /> : null}
+                {this.state.type == "sharding" ?
+                    <table className="table" style={{ width: "80%" }}>
+                        <tbody>
+                            <tr>
+                                <td width="18%">{culture.server_name}</td>
+                                <td width="14%">{culture.port}</td>
+                                <td width="14%">{culture.version}</td>
+                                <td width="12%">{culture.data}</td>
+                                <td width="12%">{culture.type}</td>
+                                <td width="15%">{culture.upTime}</td>
+                                <td width="15%">{culture.state}</td>
+                            </tr>
+                            <tr>
+                                <td>{this.state.mongosServer.ServerName}</td>
+                                <td>{this.state.mongosServer.Port}</td>
+                                <td>{this.state.mongosServer.Version}</td>
+                                <td>{this.state.mongosServer.Data}</td>
+                                <td>{this.state.mongosServer.Type}</td>
+                                <td>{convertTime(this.state.mongosServer.UpTime)}</td>
+                                <td><span className="state running"></span>{'\u00A0'}running</td>
+                            </tr>
+                        </tbody>
+                    </table> : null}
+                {(this.state.type == "replset" || this.state.type == "sharding") ?
+                    <TitleTxt title={culture.data_server} /> : null}
+                {this.state.type == "single" ?
+                    <table className="table" style={{ width: "70%" }}>
+                        <tbody>
+                            <tr>
+                                <td width="18%">{culture.server_name}</td>
+                                <td width="14%">{culture.port}</td>
+                                <td width="14%">{culture.version}</td>
+                                <td width="12%">{culture.data}</td>
+                                <td width="12%">{culture.type}</td>
+                                <td width="20%">{culture.upTime}</td>
+                                <td width="10%">{culture.state}</td>
+                            </tr>
+                            <tr>
+                                <td>{this.state.dataServer.ServerName}</td>
+                                <td>{this.state.dataServer.Port}</td>
+                                <td>{this.state.dataServer.Version}</td>
+                                <td>{this.state.dataServer.Data}</td>
+                                <td>{this.state.dataServer.Type}</td>
+                                <td>{convertTime(this.state.mongosServer.UpTime)}</td>
+                                <td>
+                                    <span className={"state " + convertMongoServerState(this.state.dataServer.State, this.state.dataServer.Health)}></span>{'\u00A0'}
+                                    {convertMongoServerState(this.state.dataServer.State, this.state.dataServer.Health)}
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table> :
+                    <React.Fragment>
+                        {this.state.dataServer.map(function (item, key) {
+                            return (
+                                <table className="table" style={{ width: "70%" }} key={key}>
+                                    <thead>
+                                        <tr>
+                                            <td colSpan="10">{item.ReplSetName}</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td width="18%">{culture.server_name}</td>
+                                            <td width="14%">{culture.port}</td>
+                                            <td width="14%">{culture.version}</td>
+                                            <td width="12%">{culture.data}</td>
+                                            <td width="12%">{culture.type}</td>
+                                            <td width="15%">{culture.upTime}</td>
+                                            <td width="15%">{culture.state}</td>
+                                        </tr>
+                                        {item.Servers.map(function (server, index) {
+                                            return (
+                                                <tr key={index}>
+                                                    <td>{server.ServerName}{'\u00A0'}{server.State == 1 ? <i className="iconfont icon-star" style={{ cursor: "default", color:"#484848" }} /> : ""}</td>
+                                                    <td>{server.Port}</td>
+                                                    <td>{server.Version}</td>
+                                                    <td>{server.Data}</td>
+                                                    <td>{convertMongoServerType(server.State)}</td>
+                                                    <td>{convertTime(server.UpTime)}</td>
+                                                    <td>
+                                                        <span className={"state " + convertMongoServerState(server.State, server.Health)}></span>{'\u00A0'}
+                                                        {convertMongoServerState(server.State, server.Health)}
+                                                    </td>
+                                                </tr>
+                                            )
+                                        }.bind(this))}
+                                    </tbody>
+                                </table>
+                            )
+                        }.bind(this))}
+                    </React.Fragment>
+                }
             </div>
-        );
+        )
     }
 }
 class Overview extends React.Component {
@@ -431,6 +431,7 @@ class Overview extends React.Component {
             this.interval = window.setInterval(function () {
                 that.refs.overViewTotal.getData();
                 that.refs.countTotal.getData();
+                that.refs.serverState.getData();
                 localStorage.update_time = getCurrentDateTime();
             }
                 , numb * 1000);
@@ -484,7 +485,8 @@ class Overview extends React.Component {
                 <TitleArrow title={culture.servers}
                     show={this.state.serverShow}
                     onShowChange={this.onServerShow.bind(this)} />
-                <Servers show={this.state.serverShow} />
+                <Servers ref="serverState"
+                    show={this.state.serverShow} />
             </div>
         )
     }

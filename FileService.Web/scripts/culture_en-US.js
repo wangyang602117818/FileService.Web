@@ -214,5 +214,8 @@ var culture = {
     port: "Port",
     version: "Version",
     data_server: "DataServer",
-    data:"Data"
+    data: "Data",
+    available: "Available",
+    upTime: "UpTime",
+
 }
