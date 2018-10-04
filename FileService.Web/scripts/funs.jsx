@@ -307,6 +307,13 @@ function convertTime(seconds) {
         return formatMonth(h) + ":" + formatMonth(minuts) + ":" + formatMonth(seconds);
     }
 }
+function convertDay(seconds) {
+    if (seconds > 86400) {
+        return parseInt(seconds / 86400) + "d " + convertTime(seconds - 86400);
+    } else {
+        return "0d " + convertTime(seconds);
+    }
+}
 function formatMonth(month) {
     return month.toString().length == 1 ? "0" + month : month;
 }

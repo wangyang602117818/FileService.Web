@@ -326,7 +326,7 @@ class Servers extends React.Component {
                                 <td>{this.state.mongosServer.Version}</td>
                                 <td>{this.state.mongosServer.Data}</td>
                                 <td>{this.state.mongosServer.Type}</td>
-                                <td>{convertTime(this.state.mongosServer.UpTime)}</td>
+                                <td>{convertDay(this.state.mongosServer.UpTime)}</td>
                                 <td><span className="state running"></span>{'\u00A0'}running</td>
                             </tr>
                         </tbody>
@@ -351,7 +351,7 @@ class Servers extends React.Component {
                                 <td>{this.state.dataServer.Version}</td>
                                 <td>{this.state.dataServer.Data}</td>
                                 <td>{this.state.dataServer.Type}</td>
-                                <td>{convertTime(this.state.mongosServer.UpTime)}</td>
+                                <td>{convertDay(this.state.mongosServer.UpTime)}</td>
                                 <td>
                                     <span className={"state " + convertMongoServerState(this.state.dataServer.State, this.state.dataServer.Health)}></span>{'\u00A0'}
                                     {convertMongoServerState(this.state.dataServer.State, this.state.dataServer.Health)}
@@ -386,7 +386,7 @@ class Servers extends React.Component {
                                                     <td>{server.Version}</td>
                                                     <td>{server.Data}</td>
                                                     <td>{convertMongoServerType(server.State)}</td>
-                                                    <td>{convertTime(server.UpTime)}</td>
+                                                    <td>{convertDay(server.UpTime)}</td>
                                                     <td>
                                                         <span className={"state " + convertMongoServerState(server.State, server.Health)}></span>{'\u00A0'}
                                                         {convertMongoServerState(server.State, server.Health)}
