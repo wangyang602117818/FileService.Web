@@ -390,6 +390,12 @@ function getIconNameByFileName(filename) {
             return "icon-pdf";
         case ".txt":
             return "icon-text";
+        case ".odg":
+        case ".ods":
+        case ".odp":
+        case ".odf":
+        case ".odt":
+            return "icon-libreoffice";
         default:
             return "icon-attachment";
     }

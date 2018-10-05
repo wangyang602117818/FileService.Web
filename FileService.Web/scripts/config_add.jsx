@@ -5,32 +5,29 @@
             extension: "",
             type: "",
             action: "allow",
+            description: "",
             message: ""
         };
-    }
-    extensionChanged(e) {
-        this.setState({ extension: e.target.value });
-    }
-    typeChanged(e) {
-        this.setState({ type: e.target.value });
-    }
-    actionChanged(e) {
-        this.setState({ action: e.target.value });
     }
     addConfig(e) {
         var that = this;
         if (this.state.extension && this.state.type && this.state.action) {
             this.props.addConfig(this.state, function (data) {
                 if (data.code == 0) {
-                    that.setState({ extension: "", type: "", message: "" });
+                    that.setState({ extension: "", type: "", description: "", message: "" });
                 } else {
                     that.setState({ message: data.message });
                 }
             });
         }
     }
-    onIdClick(extension, type, action) {
-        this.setState({ extension: extension, type: type, action: action });
+    onIdClick(extension, type, description, action) {
+        this.setState({
+            extension: extension,
+            type: type,
+            description: description,
+            action: action
+        });
     }
     render() {
         return (
@@ -39,9 +36,10 @@
                     <tbody>
                         <tr>
                             <td>{culture.extension}:</td>
-                            <td><input type="text" name="extension"
+                            <td colSpan="3"><input type="text"
+                                name="extension"
                                 value={this.state.extension}
-                                onChange={this.extensionChanged.bind(this)} />
+                                onChange={e => this.setState({ extension: e.target.value })} />
                                 <font color="red">*</font>
                             </td>
                         </tr>
@@ -50,7 +48,7 @@
                             <td>
                                 <select name="type"
                                     value={this.state.type}
-                                    onChange={this.typeChanged.bind(this)}>
+                                    onChange={e => this.setState({ type: e.target.value })}>
                                     <option value=""></option>
                                     <option value="image">image</option>
                                     <option value="video">video</option>
@@ -60,24 +58,32 @@
                                     <option value="attachment">attachment</option>
                                 </select><font color="red">*</font>
                             </td>
+                            <td>{culture.description}:</td>
+                            <td>
+                                <input type="text"
+                                    size="15"
+                                    name="description"
+                                    onChange={e => this.setState({ description: e.target.value })}
+                                    value={this.state.description} />
+                            </td>
                         </tr>
                         <tr>
                             <td>{culture.action}:</td>
-                            <td>
+                            <td colSpan="3">
                                 <select name="action"
                                     value={this.state.action}
-                                    onChange={this.actionChanged.bind(this)}>
+                                    onChange={e => this.setState({ action: e.target.value })}>
                                     <option value="allow">allow</option>
                                     <option value="block">block</option>
                                 </select>
                             </td>
                         </tr>
                         <tr>
-                            <td colSpan="2">
+                            <td colSpan="4">
                                 <input type="button" value={culture.add}
                                     className="button"
                                     onClick={this.addConfig.bind(this)} />
-                                    <font color="red">{" " + this.state.message}</font>
+                                <font color="red">{" " + this.state.message}</font>
                             </td>
                         </tr>
                     </tbody>

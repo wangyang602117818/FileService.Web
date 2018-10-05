@@ -41,9 +41,9 @@ namespace FileService.Business
             if (document == null) return "";
             return document["Type"].AsString;
         }
-        public bool UpdateConfig(string extension, string type, string action)
+        public bool UpdateConfig(string extension, string type, string description, string action)
         {
-            return mongoData.UpdateConfig(extension, type, action);
+            return mongoData.UpdateConfig(extension, type, description, action);
         }
         public bool DeleteConfig(string extension)
         {

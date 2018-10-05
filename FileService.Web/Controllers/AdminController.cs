@@ -190,7 +190,9 @@ namespace FileService.Web.Controllers
                             return File(System.IO.File.ReadAllBytes(imagePath + "excel.png"), "application/octet-stream");
                         if (ext == ".ppt" || ext == ".pptx")
                             return File(System.IO.File.ReadAllBytes(imagePath + "ppt.png"), "application/octet-stream");
-                        break;
+                        if (new string[] { ".odg", ".ods", ".odp", ".odf", ".odt" }.Contains(ext))
+                            return File(System.IO.File.ReadAllBytes(imagePath + "libreoffice.png"), "application/octet-stream");
+                        return File(System.IO.File.ReadAllBytes(imagePath + "attachment.png"), "application/octet-stream");
                     default:
                         return File(System.IO.File.ReadAllBytes(imagePath + "attachment.png"), "application/octet-stream");
                 }
@@ -406,7 +408,7 @@ namespace FileService.Web.Controllers
             long count = 0;
             DateTime.TryParse(startTime, out DateTime timeStart);
             DateTime.TryParse(endTime, out DateTime timeEnd);
-            IEnumerable<BsonDocument> result = config.GetPageList(pageIndex, pageSize, null, timeStart, timeEnd, null, filter, new List<string>() { "_id", "Extension", "Type", "Action" }, new List<string>() { }, out count);
+            IEnumerable<BsonDocument> result = config.GetPageList(pageIndex, pageSize, null, timeStart, timeEnd, null, filter, new List<string>() { "_id", "Extension", "Description", "Type", "Action" }, new List<string>() { }, out count);
             return new ResponseModel<IEnumerable<BsonDocument>>(ErrorCode.success, result, count);
         }
         [Authorize(Roles = "admin,management")]
@@ -418,7 +420,7 @@ namespace FileService.Web.Controllers
         [HttpPost]
         public ActionResult UpdateConfig(AddConfigModel updateConfigModel)
         {
-            if (config.UpdateConfig(updateConfigModel.Extension, updateConfigModel.Type, updateConfigModel.Action))
+            if (config.UpdateConfig(updateConfigModel.Extension, updateConfigModel.Type, updateConfigModel.Description, updateConfigModel.Action))
             {
                 Log("-", "UpdateConfig");
                 return new ResponseModel<string>(ErrorCode.success, "");
@@ -886,7 +888,7 @@ namespace FileService.Web.Controllers
             IEnumerable<ObjectId> idsObject = ids.Select(s => ObjectId.Parse(s));
             task.RestoreByFileIds(idsObject);
             filesWrap.RestoreFiles(idsObject);
-            foreach(string id in ids) Log(id, "RestoreFile");
+            foreach (string id in ids) Log(id, "RestoreFile");
             return new ResponseModel<string>(ErrorCode.success, "");
         }
         [Authorize(Roles = "admin")]
@@ -905,7 +907,7 @@ namespace FileService.Web.Controllers
         [Authorize(Roles = "admin")]
         public ActionResult DeleteFiles(IEnumerable<string> ids)
         {
-            foreach(string id in ids)
+            foreach (string id in ids)
             {
                 if (DeleteFile(id))
                 {

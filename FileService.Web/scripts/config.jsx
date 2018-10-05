@@ -8,9 +8,10 @@
                 <thead>
                     <tr>
                         <th width="25%">{culture.id}</th>
-                        <th width="15%">{culture.extension}</th>
-                        <th width="20%">{culture.type}</th>
+                        <th width="10%">{culture.extension}</th>
+                        <th width="10%">{culture.type}</th>
                         <th width="10%">{culture.action}</th>
+                        <th width="15%">{culture.description}</th>
                         <th width="30%">{culture.createTime}</th>
                     </tr>
                 </thead>
@@ -58,7 +59,7 @@ class ConfigItem extends React.Component {
         return (
             <tr>
                 <td>
-                    <b  className="link"
+                    <b className="link"
                         onClick={this.props.onIdClick}
                         id={this.props.config._id.$oid.removeHTML()}
                         dangerouslySetInnerHTML={{ __html: this.props.config._id.$oid }}></b>
@@ -66,7 +67,9 @@ class ConfigItem extends React.Component {
                 <td dangerouslySetInnerHTML={{ __html: this.props.config.Extension }}>
                 </td>
                 <td dangerouslySetInnerHTML={{ __html: this.props.config.Type }}></td>
+                
                 <td dangerouslySetInnerHTML={{ __html: this.props.config.Action }}></td>
+                <td dangerouslySetInnerHTML={{ __html: this.props.config.Description }}></td>
                 <td>{parseBsonTime(this.props.config.CreateTime)}</td>
             </tr>
         )
@@ -160,7 +163,7 @@ class Config extends React.Component {
         if (e.target.nodeName.toLowerCase() == "span") id = e.target.parentElement.id;
         http.get(urls.config.getConfigUrl + "/" + id, function (data) {
             if (data.code == 0) {
-                this.refs.addconfig.onIdClick(data.result.Extension, data.result.Type, data.result.Action);
+                this.refs.addconfig.onIdClick(data.result.Extension, data.result.Type, data.result.Description||"", data.result.Action);
                 this.setState({ deleteShow: true, deleteId: data.result._id.$oid, deleteName: data.result.Extension });
             }
         }.bind(this));

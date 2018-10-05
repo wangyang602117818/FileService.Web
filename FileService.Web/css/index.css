@@ -512,4 +512,14 @@ h1 {
         color: #484848;
         margin-left: 0;
     }
+
+.table .icon-libreoffice {
+    color: #484848;
+    cursor: default;
+}
+
+    .table .icon-libreoffice:hover {
+        color: #484848;
+        margin-left: 0;
+    }
 /*******************文件小图标******************/

@@ -10,6 +10,7 @@ var culture = {
     login_fault: "登陆失败",
     user: "用户",
     login_out: "退出",
+    description:"描述",
 
     overview: "概况统计",
     handlers: "处理器",

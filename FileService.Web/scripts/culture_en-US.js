@@ -10,6 +10,7 @@ var culture = {
     login_fault: "Login Fault",
     user: "User",
     login_out: "LogOut",
+    description: "Description",
 
     overview: "Overview",
     handlers: "Handlers",

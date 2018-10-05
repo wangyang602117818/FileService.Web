@@ -227,6 +227,7 @@
     <Content Include="image\department.svg" />
     <Content Include="image\excel.png" />
     <Content Include="image\image.png" />
+    <Content Include="image\libreoffice.png" />
     <Content Include="image\logo.png" />
     <Content Include="image\pdf.png" />
     <Content Include="image\ppt.png" />

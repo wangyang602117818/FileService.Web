@@ -16,10 +16,10 @@ namespace FileService.Data
             var filter = FilterBuilder.Eq("Extension", extension);
             return MongoCollection.Find(filter).FirstOrDefault();
         }
-        public bool UpdateConfig(string extension, string value, string action)
+        public bool UpdateConfig(string extension, string value,string description, string action)
         {
             var filter = FilterBuilder.Eq("Extension", extension);
-            return MongoCollection.UpdateOne(filter, Builders<BsonDocument>.Update.Set("Type", value).Set("Action", action).Set("CreateTime", DateTime.Now), new UpdateOptions() { IsUpsert = true }).IsAcknowledged;
+            return MongoCollection.UpdateOne(filter, Builders<BsonDocument>.Update.Set("Type", value).Set("Action", action).Set("Description", description).Set("CreateTime", DateTime.Now), new UpdateOptions() { IsUpsert = true }).IsAcknowledged;
         }
         public bool DeleteConfig(string extension)
         {
