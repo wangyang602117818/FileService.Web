@@ -61,7 +61,7 @@
                             <td>{culture.description}:</td>
                             <td>
                                 <input type="text"
-                                    size="15"
+                                    size="10"
                                     name="description"
                                     onChange={e => this.setState({ description: e.target.value })}
                                     value={this.state.description} />
