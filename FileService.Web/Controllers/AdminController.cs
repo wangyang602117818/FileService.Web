@@ -192,6 +192,8 @@ namespace FileService.Web.Controllers
                             return File(System.IO.File.ReadAllBytes(imagePath + "ppt.png"), "application/octet-stream");
                         if (new string[] { ".odg", ".ods", ".odp", ".odf", ".odt" }.Contains(ext))
                             return File(System.IO.File.ReadAllBytes(imagePath + "libreoffice.png"), "application/octet-stream");
+                        if (new string[] { ".wps", ".dps", ".et" }.Contains(ext))
+                            return File(System.IO.File.ReadAllBytes(imagePath + "wps.png"), "application/octet-stream");
                         return File(System.IO.File.ReadAllBytes(imagePath + "attachment.png"), "application/octet-stream");
                     default:
                         return File(System.IO.File.ReadAllBytes(imagePath + "attachment.png"), "application/octet-stream");

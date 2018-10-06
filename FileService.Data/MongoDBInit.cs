@@ -59,6 +59,9 @@ namespace FileService.Data
                     new BsonDocument(){{"Extension", ".odp" },{"Type", "office" }, { "Action","allow"}, { "Description", "libreoffice" }, { "CreateTime", DateTime.Now }},
                     new BsonDocument(){{"Extension", ".odf" },{"Type", "office" }, { "Action","allow"}, { "Description", "libreoffice" }, { "CreateTime", DateTime.Now }},
                     new BsonDocument(){{"Extension", ".odt" },{"Type", "office" }, { "Action","allow"}, { "Description", "libreoffice" }, { "CreateTime", DateTime.Now }},
+                    new BsonDocument(){{"Extension", ".wps" },{"Type", "office" }, { "Action","allow"}, { "Description", "wpsoffice" }, { "CreateTime", DateTime.Now }},
+                    new BsonDocument(){{"Extension", ".et" },{"Type", "office" }, { "Action","allow"}, { "Description", "wpsoffice" }, { "CreateTime", DateTime.Now }},
+                    new BsonDocument(){{"Extension", ".dps" },{"Type", "office" }, { "Action","allow"}, { "Description", "wpsoffice" }, { "CreateTime", DateTime.Now }},
                 };
                 database.GetCollection<BsonDocument>("Config").InsertMany(list);
             }

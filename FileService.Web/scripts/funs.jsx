@@ -396,6 +396,10 @@ function getIconNameByFileName(filename) {
         case ".odf":
         case ".odt":
             return "icon-libreoffice";
+        case ".wps":
+        case ".dps":
+        case ".et":
+            return "icon-wps";
         default:
             return "icon-attachment";
     }

@@ -522,4 +522,13 @@ h1 {
         color: #484848;
         margin-left: 0;
     }
+.table .icon-wps {
+    color: #79BFC0;
+    cursor: default;
+}
+
+    .table .icon-wps:hover {
+        color: #79BFC0;
+        margin-left: 0;
+    }
 /*******************文件小图标******************/

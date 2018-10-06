@@ -235,6 +235,7 @@
     <Content Include="image\user.svg" />
     <Content Include="image\video.png" />
     <Content Include="image\word.png" />
+    <Content Include="image\wps.png" />
     <Content Include="pdfview\images\annotation-check.svg" />
     <Content Include="pdfview\images\annotation-comment.svg" />
     <Content Include="pdfview\images\annotation-help.svg" />
