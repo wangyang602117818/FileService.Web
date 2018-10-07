@@ -1,12 +1,11 @@
 导出
 转换任务，图模式
 处理器图模式
-金山办公系统的添加
-获取cpu使用率
 
+获取cpu使用率
+预览文档的链接
 加密ts
-w:36
-h:43
+
 ffmpeg.exe -i Wildlife.mp4 -hls_time 2 -hls_list_size 0 -hls_allow_cache 0 -hls_enc 1 -hls_enc_key N74kEdQDwUgiR5QNyMQ9fg== -hls_enc_key_url http://localhost:2431/admin/key -hls_enc_iv EjRWeJCrze8= out.m3u8
 
 
