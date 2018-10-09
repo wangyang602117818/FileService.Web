@@ -569,74 +569,198 @@ namespace FileService.Client
         /// <summary>
         /// 下载文件，只能下载上传的源文件（缩略图、转换之后的视频、视频截图文件 无法通过该方法获取）
         /// </summary>
-        /// <param name="fileId">文件id</param>
+        /// <param name="fileId">源文件id</param>
         /// <returns></returns>
         public DownloadFileItem DownloadFile(string fileId)
+        {
+            return DownloadFile(fileId, null);
+        }
+        /// <summary>
+        /// 下载文件,只能下载上传的源文件（缩略图、转换之后的视频、视频截图文件 无法通过该方法获取）
+        /// </summary>
+        /// <param name="fileId">源文件id</param>
+        /// <param name="userData">用户信息</param>
+        /// <returns></returns>
+        public DownloadFileItem DownloadFile(string fileId, UserData userData)
         {
             Dictionary<string, string> headers = new Dictionary<string, string>();
             headers.Add("AuthCode", AuthCode);
             headers.Add("FromApi", "true");
+            if (userData != null)
+            {
+                if (!string.IsNullOrEmpty(userData.UserName)) headers.Add("UserName", userData.UserName);
+                if (!string.IsNullOrEmpty(userData.UserAgent)) headers.Add("UserAgent", userData.UserAgent);
+                if (!string.IsNullOrEmpty(userData.UserIp)) headers.Add("UserIp", userData.UserIp);
+            }
             return new HttpRequestHelper().GetFile(RemoteUrl + "/download/get/" + fileId, headers);
         }
         /// <summary>
         /// 下载缩略图
         /// </summary>
-        /// <param name="fileId">缩略图id</param>
+        /// <param name="thumbId">缩略图id</param>
         /// <returns></returns>
-        public DownloadFileItem DownloadThumbnail(string fileId)
+        public DownloadFileItem DownloadThumbnail(string thumbId)
+        {
+            return DownloadThumbnail(thumbId, null);
+        }
+        /// <summary>
+        /// 下载缩略图
+        /// </summary>
+        /// <param name="thumbId">缩略图id</param>
+        /// <param name="userData">用户信息</param>
+        /// <returns></returns>
+        public DownloadFileItem DownloadThumbnail(string thumbId, UserData userData)
         {
             Dictionary<string, string> headers = new Dictionary<string, string>();
             headers.Add("AuthCode", AuthCode);
             headers.Add("FromApi", "true");
-            return new HttpRequestHelper().GetFile(RemoteUrl + "/download/thumbnail/" + fileId, headers);
+            if (userData != null)
+            {
+                if (!string.IsNullOrEmpty(userData.UserName)) headers.Add("UserName", userData.UserName);
+                if (!string.IsNullOrEmpty(userData.UserAgent)) headers.Add("UserAgent", userData.UserAgent);
+                if (!string.IsNullOrEmpty(userData.UserIp)) headers.Add("UserIp", userData.UserIp);
+            }
+            return new HttpRequestHelper().GetFile(RemoteUrl + "/download/thumbnail/" + thumbId, headers);
+        }
+        /// <summary>
+        /// 通过源文件id获取缩略图信息
+        /// </summary>
+        /// <param name="fileId">源文件id</param>
+        /// <returns></returns>
+        public DownloadFileItem DownloadThumbnailFromSourceId(string fileId)
+        {
+            return DownloadThumbnailFromSourceId(fileId, null);
+        }
+        /// <summary>
+        /// 通过源文件id获取缩略图信息
+        /// </summary>
+        /// <param name="fileId">源文件id</param>
+        /// <param name="userData">用户信息</param>
+        /// <returns></returns>
+        public DownloadFileItem DownloadThumbnailFromSourceId(string fileId, UserData userData)
+        {
+            Dictionary<string, string> headers = new Dictionary<string, string>();
+            headers.Add("AuthCode", AuthCode);
+            headers.Add("FromApi", "true");
+            if (userData != null)
+            {
+                if (!string.IsNullOrEmpty(userData.UserName)) headers.Add("UserName", userData.UserName);
+                if (!string.IsNullOrEmpty(userData.UserAgent)) headers.Add("UserAgent", userData.UserAgent);
+                if (!string.IsNullOrEmpty(userData.UserIp)) headers.Add("UserIp", userData.UserIp);
+            }
+            return new HttpRequestHelper().GetFile(RemoteUrl + "/download/getthumbnail/" + fileId, headers);
         }
         /// <summary>
         /// 下载m3u8视频切片列表
         /// </summary>
-        /// <param name="fileId">m3u8文件id</param>
+        /// <param name="m3u8FileId">m3u8文件id</param>
         /// <returns></returns>
-        public DownloadFileItem DownloadM3u8(string fileId)
+        public DownloadFileItem DownloadM3u8(string m3u8FileId)
+        {
+            return DownloadM3u8(m3u8FileId, null);
+        }
+        /// <summary>
+        /// 下载m3u8视频切片列表
+        /// </summary>
+        /// <param name="m3u8FileId">m3u8文件id</param>
+        /// <param name="userData">用户信息</param>
+        /// <returns></returns>
+        public DownloadFileItem DownloadM3u8(string m3u8FileId, UserData userData)
         {
             Dictionary<string, string> headers = new Dictionary<string, string>();
             headers.Add("AuthCode", AuthCode);
             headers.Add("FromApi", "true");
-            return new HttpRequestHelper().GetFile(RemoteUrl + "/download/m3u8/" + fileId, headers);
+            if (userData != null)
+            {
+                if (!string.IsNullOrEmpty(userData.UserName)) headers.Add("UserName", userData.UserName);
+                if (!string.IsNullOrEmpty(userData.UserAgent)) headers.Add("UserAgent", userData.UserAgent);
+                if (!string.IsNullOrEmpty(userData.UserIp)) headers.Add("UserIp", userData.UserIp);
+            }
+            return new HttpRequestHelper().GetFile(RemoteUrl + "/download/m3u8/" + m3u8FileId, headers);
         }
         /// <summary>
         /// 下载自适应的m3u8视频切片列表
         /// </summary>
-        /// <param name="fileId">视频源文件</param>
+        /// <param name="fileId">视频源文件id</param>
         /// <returns></returns>
         public DownloadFileItem DownloadM3u8MultiStream(string fileId)
+        {
+            return DownloadM3u8MultiStream(fileId, null);
+        }
+        /// <summary>
+        /// 下载自适应的m3u8视频切片列表
+        /// </summary>
+        /// <param name="fileId">视频源文件id</param>
+        /// <param name="userData">用户信息</param>
+        /// <returns></returns>
+        public DownloadFileItem DownloadM3u8MultiStream(string fileId, UserData userData)
         {
             Dictionary<string, string> headers = new Dictionary<string, string>();
             headers.Add("AuthCode", AuthCode);
             headers.Add("FromApi", "true");
+            if (userData != null)
+            {
+                if (!string.IsNullOrEmpty(userData.UserName)) headers.Add("UserName", userData.UserName);
+                if (!string.IsNullOrEmpty(userData.UserAgent)) headers.Add("UserAgent", userData.UserAgent);
+                if (!string.IsNullOrEmpty(userData.UserIp)) headers.Add("UserIp", userData.UserIp);
+            }
             return new HttpRequestHelper().GetFile(RemoteUrl + "/download/m3u8multistream/" + fileId, headers);
         }
         /// <summary>
         /// 下载视频切片
         /// </summary>
-        /// <param name="fileId">视频切片id</param>
+        /// <param name="tsId">视频切片id</param>
         /// <returns></returns>
-        public DownloadFileItem DownloadTs(string fileId)
+        public DownloadFileItem DownloadTs(string tsId)
+        {
+            return DownloadTs(tsId, null);
+        }
+        /// <summary>
+        /// 下载视频切片
+        /// </summary>
+        /// <param name="tsId">视频切片id</param>
+        /// <param name="userData">用户信息</param>
+        /// <returns></returns>
+        public DownloadFileItem DownloadTs(string tsId, UserData userData)
         {
             Dictionary<string, string> headers = new Dictionary<string, string>();
             headers.Add("AuthCode", AuthCode);
             headers.Add("FromApi", "true");
-            return new HttpRequestHelper().GetFile(RemoteUrl + "/download/ts/" + fileId, headers);
+            if (userData != null)
+            {
+                if (!string.IsNullOrEmpty(userData.UserName)) headers.Add("UserName", userData.UserName);
+                if (!string.IsNullOrEmpty(userData.UserAgent)) headers.Add("UserAgent", userData.UserAgent);
+                if (!string.IsNullOrEmpty(userData.UserIp)) headers.Add("UserIp", userData.UserIp);
+            }
+            return new HttpRequestHelper().GetFile(RemoteUrl + "/download/ts/" + tsId, headers);
         }
         /// <summary>
         /// 下载视频截图文件
         /// </summary>
-        /// <param name="fileId">视频截图文件id</param>
+        /// <param name="videoCpId">视频截图文件id</param>
         /// <returns></returns>
-        public DownloadFileItem DownloadVideoCapture(string fileId)
+        public DownloadFileItem DownloadVideoCapture(string videoCpId)
+        {
+            return DownloadVideoCapture(videoCpId, null);
+        }
+        /// <summary>
+        /// 下载视频截图文件
+        /// </summary>
+        /// <param name="videoCpId">视频截图文件id</param>
+        /// <param name="userData">用户信息</param>
+        /// <returns></returns>
+        public DownloadFileItem DownloadVideoCapture(string videoCpId, UserData userData)
         {
             Dictionary<string, string> headers = new Dictionary<string, string>();
             headers.Add("AuthCode", AuthCode);
             headers.Add("FromApi", "true");
-            return new HttpRequestHelper().GetFile(RemoteUrl + "/download/videocapture/" + fileId, headers);
+            if (userData != null)
+            {
+                if (!string.IsNullOrEmpty(userData.UserName)) headers.Add("UserName", userData.UserName);
+                if (!string.IsNullOrEmpty(userData.UserAgent)) headers.Add("UserAgent", userData.UserAgent);
+                if (!string.IsNullOrEmpty(userData.UserIp)) headers.Add("UserIp", userData.UserIp);
+            }
+            return new HttpRequestHelper().GetFile(RemoteUrl + "/download/videocapture/" + videoCpId, headers);
         }
     }
 }

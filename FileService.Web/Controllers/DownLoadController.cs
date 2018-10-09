@@ -32,7 +32,10 @@ namespace FileService.Web.Controllers
             if (fileWrap == null) return File(new MemoryStream(), "application/octet-stream");
             if (!download.AddedInOneMinute(Request.Headers["AppName"], fileWrapId, Request.Headers["UserName"] ?? User.Identity.Name))
             {
-                download.AddDownload(fileWrapId, Request.Headers["AppName"], Request.Headers["UserName"] ?? User.Identity.Name);
+                download.AddDownload(fileWrapId, Request.Headers["AppName"], 
+                    Request.Headers["UserName"] ?? User.Identity.Name,
+                    Request.Headers["UserIp"] ?? Request.UserHostAddress, 
+                    Request.Headers["UserAgent"] ?? Request.UserAgent);
                 filesWrap.AddDownloads(fileWrapId);
             }
             ObjectId fileId = fileWrap["FileId"].AsObjectId;
@@ -57,7 +60,10 @@ namespace FileService.Web.Controllers
             if (!download.AddedInOneMinute(Request.Headers["AppName"], fileWrapId, Request.Headers["UserName"] ?? User.Identity.Name))
             {
                 filesWrap.AddDownloads(fileWrapId);
-                download.AddDownload(fileWrapId, Request.Headers["AppName"], Request.Headers["UserName"] ?? User.Identity.Name);
+                download.AddDownload(fileWrapId, Request.Headers["AppName"], 
+                    Request.Headers["UserName"] ?? User.Identity.Name,
+                    Request.Headers["UserIp"] ?? Request.UserHostAddress,
+                    Request.Headers["UserAgent"] ?? Request.UserAgent);
             }
             return File(stream, stream.FileInfo.Metadata["ContentType"].AsString, stream.FileInfo.Filename);
         }
@@ -81,6 +87,18 @@ namespace FileService.Web.Controllers
         {
             BsonDocument thumb = thumbnail.FindOne(ObjectId.Parse(id));
             return File(thumb["File"].AsByteArray, ImageExtention.GetContentType(thumb["FileName"].AsString), thumb["FileName"].AsString);
+        }
+        /// <summary>
+        /// 通过源文件id获取缩略图，如果没有缩略图，返回源文件
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public ActionResult GetThumbnail(string id)
+        {
+            BsonDocument fileWrap = filesWrap.FindOne(ObjectId.Parse(id));
+            BsonDocument thumbnail = fileWrap.Contains("Thumbnail") ? fileWrap["Thumbnail"].AsBsonArray.FirstOrDefault().AsBsonDocument : null;
+            if (thumbnail == null) return Get(id);
+            return Thumbnail(thumbnail["_id"].ToString());
         }
         public ActionResult M3u8Pure(string id)
         {

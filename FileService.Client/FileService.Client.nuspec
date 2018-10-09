@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>WangXYang.FileService.Client</id>
-    <version>1.5.5</version>
+    <version>1.5.6</version>
     <title>FileService.Client</title>
     <authors>Wang Yang</authors>
     <owners>Wang Yang</owners>
@@ -10,7 +10,7 @@
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>该程序集必须配合指定的后台服务程序使用，方便用户管理文件（上传，获取，转换）</description>
     <releaseNotes>
-      添加 DownloadM3u8MultiStream 多种流自适应
+      下载方法，添加用户信息，添加了通过源文件id获取缩略图的方法
     </releaseNotes>
     <copyright>Copyright 2017-10-09</copyright>
     <tags>FileService.Client FileService.Api FileService</tags>
