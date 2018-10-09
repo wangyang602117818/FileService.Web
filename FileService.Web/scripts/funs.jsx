@@ -309,7 +309,8 @@ function convertTime(seconds) {
 }
 function convertDay(seconds) {
     if (seconds > 86400) {
-        return parseInt(seconds / 86400) + "d " + convertTime(seconds - 86400);
+        var day = parseInt(seconds / 86400);
+        return day + "d " + convertTime(seconds - 86400 * day);
     } else {
         return "0d " + convertTime(seconds);
     }
