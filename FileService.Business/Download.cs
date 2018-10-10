@@ -14,8 +14,8 @@ namespace FileService.Business
                 {"FileId",fileId },
                 {"From",from },
                 {"User",user },
-                {"Ip",ip },
-                {"Agent",agent },
+                {"Ip",ip??"" },
+                {"Agent",agent??"" },
                 {"CreateTime",DateTime.Now },
             };
             mongoData.Insert(bson);

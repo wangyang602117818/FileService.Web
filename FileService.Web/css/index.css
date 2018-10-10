@@ -219,8 +219,17 @@ h1 {
         text-align: center;
     }
 
+    .table_grid .file_icon {
+        width: 80px;
+        height: 80px;
+        background-position: center;
+        background-repeat: no-repeat;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+    }
+
     .table_grid .file_icon_preview {
-        position: absolute;
         height: 50px;
         width: 50px;
         display: flex;
@@ -522,6 +531,7 @@ h1 {
         color: #484848;
         margin-left: 0;
     }
+
 .table .icon-wps {
     color: #79BFC0;
     cursor: default;
