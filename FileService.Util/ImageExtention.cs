@@ -92,15 +92,17 @@ namespace FileService.Util
             bool isGif = Path.GetExtension(fileName).ToLower() == ".gif" ? true : false;
             using (Image image = Image.FromStream(stream))
             {
+                //原图比较宽
                 if (image.Width >= image.Height)
                 {
-                    width = fileHW;
-                    height = image.Height * fileHW / image.Width;
+                    width = image.Width > fileHW ? fileHW : image.Width;  //原图比指定的宽度要宽，就是用指定的宽度，否则使用原图宽
+                    height = image.Height * width / image.Width;
                 }
+                //原图比较高
                 if (image.Width < image.Height)
                 {
-                    height = fileHW;
-                    width = image.Width * fileHW / image.Height;
+                    height = image.Height > fileHW ? fileHW : image.Height; //原图比指定的高度要高，就是用指定的高度，否则使用原图高
+                    width = image.Width * height / image.Height;
                 }
                 return isGif ? ConvertImageGif(image, 0, 0, width, height, false) : ConvertImage(image, outputFormat, 0, 0, width, height, false);
             }
