@@ -303,8 +303,8 @@ namespace FileService.Web.Controllers
                 BsonDocument bson = filesWrap.FindOne(ObjectId.Parse(id));
                 ViewBag.id = bson.Contains("Files") ? bson["Files"].AsBsonArray[0]["_id"].ToString() : ObjectId.Empty.ToString();
             }
+            ViewBag.template = System.IO.File.ReadAllText(AppDomain.CurrentDomain.BaseDirectory + "pdfview/template.html");
             ViewBag.FileName = fileName;
-            ViewBag.template = System.IO.File.ReadAllText(AppDomain.CurrentDomain.BaseDirectory + "/pdfview/template.html");
             ViewBag.AppPath = Request.ApplicationPath;
             return View();
         }
