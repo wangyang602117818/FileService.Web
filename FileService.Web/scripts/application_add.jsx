@@ -18,15 +18,6 @@
             }
         }.bind(this));
     }
-    nameChanged(e) {
-        this.setState({ applicationName: e.target.value });
-    }
-    codeChanged(e) {
-        this.setState({ authCode: e.target.value });
-    }
-    actionChanged(e) {
-        this.setState({ action: e.target.value });
-    }
     addApplication(e) {
         var that = this;
         if (this.state.applicationName && this.state.authCode && this.state.action) {
@@ -39,8 +30,76 @@
             });
         }
     }
+    render() {
+        return (
+            <div className={this.props.show ? "show" : "hidden"}>
+                <table className="table" style={{ width: "35%" }}>
+                    <tbody>
+                        <tr>
+                            <td>{culture.applicationName}:</td>
+                            <td><input type="text"
+                                name="applicationName"
+                                value={this.state.applicationName}
+                                onChange={e => this.setState({ applicationName: e.target.value })} /><font color="red">*</font></td>
+                        </tr>
+                        <tr>
+                            <td>{culture.auth_code}:</td>
+                            <td><input type="text" name="authCode"
+                                value={this.state.authCode}
+                                onChange={e => this.setState({ authCode: e.target.value })}
+                                size="15" />
+                                <font color="red">*</font>&nbsp;
+                                <i className="iconfont icon-get"
+                                    onClick={this.getHexCode.bind(this)}></i>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>{culture.action}:</td>
+                            <td>
+                                <select name="action" value={this.state.action} onChange={e => this.setState({ action: e.target.value})}>
+                                    <option value="allow">allow</option>
+                                    <option value="block">block</option>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colSpan="2"><input type="button"
+                                value={culture.add}
+                                className="button"
+                                onClick={this.addApplication.bind(this)} /><font color="red">{" " + this.state.message}</font></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        );
+    }
+}
+class UpdateApplication extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            applicationName: "",
+            authCode: "",
+            action: "allow",
+            message: ""
+        };
+    }
+    getHexCode() {
+        http.get(urls.getHexCodeUrl + "/12", function (data) {
+            if (data.code == 0) {
+                this.setState({ authCode: data.result });
+            }
+        }.bind(this));
+    }
     onIdClick(appName, authCode, action) {
         this.setState({ applicationName: appName, authCode: authCode, action: action });
+    }
+    updateApplication() {
+        if (this.state.applicationName && this.state.authCode && this.state.action) {
+            this.props.updateApplication(this.state, function (data) {
+                if (data.code != 0) this.setState({ message: data.message });
+            }.bind(this));
+        }
     }
     render() {
         return (
@@ -52,23 +111,23 @@
                             <td><input type="text"
                                 name="applicationName"
                                 value={this.state.applicationName}
-                                onChange={this.nameChanged.bind(this)} /><font color="red">*</font></td>
+                                onChange={e => this.setState({ applicationName: e.target.value })} /><font color="red">*</font></td>
                         </tr>
                         <tr>
                             <td>{culture.auth_code}:</td>
                             <td><input type="text" name="authCode"
                                 value={this.state.authCode}
-                                onChange={this.codeChanged.bind(this)}
+                                onChange={e => this.setState({ authCode: e.target.value })}
                                 size="15" />
                                 <font color="red">*</font>&nbsp;
-                                <i className="iconfont icon-get" 
+                                <i className="iconfont icon-get"
                                     onClick={this.getHexCode.bind(this)}></i>
                             </td>
                         </tr>
                         <tr>
                             <td>{culture.action}:</td>
                             <td>
-                                <select name="action" value={this.state.action} onChange={this.actionChanged.bind(this)}>
+                                <select name="action" value={this.state.action} onChange={e => this.setState({ action: e.target.value })}>
                                     <option value="allow">allow</option>
                                     <option value="block">block</option>
                                 </select>
@@ -76,9 +135,9 @@
                         </tr>
                         <tr>
                             <td colSpan="2"><input type="button"
-                                value={culture.add}
+                                value={culture.update}
                                 className="button"
-                                onClick={this.addApplication.bind(this)} /><font color="red">{" " + this.state.message}</font></td>
+                                onClick={this.updateApplication.bind(this)} /><font color="red">{" " + this.state.message}</font></td>
                         </tr>
                     </tbody>
                 </table>

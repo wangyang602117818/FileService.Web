@@ -186,7 +186,8 @@ var urls = {
     config: {
         getUrl: appDomain + "admin/getconfigs",
         getConfigUrl: appDomain + "admin/getconfig",
-        updateUrl: appDomain + "admin/updateconfig",
+        addConfigUrl: appDomain + "admin/addconfig",
+        updateConfigUrl: appDomain + "admin/updateconfig",
         deleteUrl: appDomain + "admin/deleteconfig",
         getExtensionsUrl: appDomain + "admin/getextensions"
     },
@@ -194,6 +195,7 @@ var urls = {
         getUrl: appDomain + "admin/getapplications",
         getapplicationUrl: appDomain + "admin/getapplication",
         getApplicationByAuthCodeUrl: appDomain + "admin/getapplicationbyauthcode",
+        addUrl: appDomain + "admin/addapplication",
         updateUrl: appDomain + "admin/updateapplication",
         deleteUrl: appDomain + "admin/deleteapplication"
     },

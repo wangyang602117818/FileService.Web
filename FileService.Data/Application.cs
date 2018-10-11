@@ -16,6 +16,11 @@ namespace FileService.Data
             var filter = FilterBuilder.Eq("AuthCode", authCode);
             return MongoCollection.Find(filter).FirstOrDefault();
         }
+        public BsonDocument FindByAppName(string appName)
+        {
+            var filter = FilterBuilder.Eq("ApplicationName", appName);
+            return MongoCollection.Find(filter).FirstOrDefault();
+        }
         public bool UpdateApplication(string name, string code, string action)
         {
             var filter = FilterBuilder.Eq("ApplicationName", name);

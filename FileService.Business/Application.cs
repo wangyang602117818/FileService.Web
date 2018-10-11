@@ -14,6 +14,10 @@ namespace FileService.Business
         {
             return mongoData.FindByAuthCode(authCode);
         }
+        public BsonDocument FindByAppName(string appName)
+        {
+            return mongoData.FindByAppName(appName);
+        }
         public bool UpdateApplication(string name, string authCode, string action)
         {
             return mongoData.UpdateApplication(name, authCode, action);

@@ -32,6 +32,10 @@
         task_not_completed = 204,
         invalid_password = 205,
         /// <summary>
+        /// 已存在
+        /// </summary>
+        record_exist=400,
+        /// <summary>
         /// 任务未完成
         /// </summary>
         task_not_complete = 300,

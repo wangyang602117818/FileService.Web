@@ -18,4 +18,18 @@ namespace FileService.Web.Models
         [Required]
         public string Action { get; set; }
     }
+    public class UpdateConfigModel
+    {
+        [Required]
+        [BsonIgnore]
+        public string Id { get; set; }
+        [Required]
+        public string Extension { get; set; }
+        [Required]
+        public string Type { get; set; }
+        [BsonIgnoreIfDefault]
+        public string Description { get; set; }
+        [Required]
+        public string Action { get; set; }
+    }
 }

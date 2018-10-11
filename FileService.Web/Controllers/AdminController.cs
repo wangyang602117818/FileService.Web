@@ -420,9 +420,25 @@ namespace FileService.Web.Controllers
         }
         [Authorize(Roles = "admin,management")]
         [HttpPost]
-        public ActionResult UpdateConfig(AddConfigModel updateConfigModel)
+        public ActionResult AddConfig(AddConfigModel addConfig)
         {
-            if (config.UpdateConfig(updateConfigModel.Extension, updateConfigModel.Type, updateConfigModel.Description, updateConfigModel.Action))
+            BsonDocument configBson = config.GetByExtension(addConfig.Extension.ToLower());
+            if (configBson != null) return new ResponseModel<string>(ErrorCode.record_exist, "");
+            if (config.UpdateConfig(addConfig.Extension, addConfig.Type, addConfig.Description, addConfig.Action))
+            {
+                Log("-", "AddConfig");
+                return new ResponseModel<string>(ErrorCode.success, "");
+            }
+            return new ResponseModel<string>(ErrorCode.server_exception, "");
+        }
+        [Authorize(Roles = "admin,management")]
+        [HttpPost]
+        public ActionResult UpdateConfig(UpdateConfigModel updateConfig)
+        {
+            BsonDocument bson = updateConfig.ToBsonDocument();
+            BsonDocument configBson = config.GetByExtension(updateConfig.Extension.ToLower());
+            if (configBson != null && configBson["_id"].ToString() != updateConfig.Id) return new ResponseModel<string>(ErrorCode.record_exist, "");
+            if (config.Update(ObjectId.Parse(updateConfig.Id), bson))
             {
                 Log("-", "UpdateConfig");
                 return new ResponseModel<string>(ErrorCode.success, "");
@@ -459,9 +475,24 @@ namespace FileService.Web.Controllers
             return new ResponseModel<BsonDocument>(ErrorCode.success, application.FindByAuthCode(id));
         }
         [Authorize(Roles = "admin,management")]
-        public ActionResult UpdateApplication(UpdateApplicationModel updateApplicationModel)
+        public ActionResult AddApplication(AddApplicationModel addApplication)
         {
-            if (application.UpdateApplication(updateApplicationModel.ApplicationName, updateApplicationModel.AuthCode, updateApplicationModel.Action))
+            BsonDocument appBson = application.FindByAppName(addApplication.ApplicationName);
+            if (appBson != null) return new ResponseModel<string>(ErrorCode.record_exist, "");
+            if (application.UpdateApplication(addApplication.ApplicationName, addApplication.AuthCode, addApplication.Action))
+            {
+                Log("-", "AddApplication");
+                return new ResponseModel<string>(ErrorCode.success, "");
+            }
+            return new ResponseModel<string>(ErrorCode.server_exception, "");
+        }
+        [Authorize(Roles = "admin,management")]
+        public ActionResult UpdateApplication(UpdateApplicationModel updateApplication)
+        {
+            BsonDocument bson = updateApplication.ToBsonDocument();
+            BsonDocument appBson = application.FindByAppName(updateApplication.ApplicationName);
+            if (appBson != null && appBson["_id"].ToString() != updateApplication.Id) return new ResponseModel<string>(ErrorCode.record_exist, "");
+            if (application.Update(ObjectId.Parse(updateApplication.Id), bson))
             {
                 Log("-", "UpdateApplication");
                 return new ResponseModel<string>(ErrorCode.success, "");

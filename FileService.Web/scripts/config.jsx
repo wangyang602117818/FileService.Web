@@ -67,7 +67,7 @@ class ConfigItem extends React.Component {
                 <td dangerouslySetInnerHTML={{ __html: this.props.config.Extension }}>
                 </td>
                 <td dangerouslySetInnerHTML={{ __html: this.props.config.Type }}></td>
-                
+
                 <td dangerouslySetInnerHTML={{ __html: this.props.config.Action }}></td>
                 <td dangerouslySetInnerHTML={{ __html: this.props.config.Description }}></td>
                 <td>{parseBsonTime(this.props.config.CreateTime)}</td>
@@ -108,6 +108,8 @@ class Config extends React.Component {
             deleteToggle: false,
             deleteName: "",
             deleteId: "",
+            updateShow: false,
+            updateToggle: true,
             pageIndex: 1,
             pageSize: localStorage.config_pageSize || 10,
             pageCount: 1,
@@ -131,10 +133,20 @@ class Config extends React.Component {
     }
     addConfig(obj, success) {
         var that = this;
-        http.post(urls.config.updateUrl, obj, function (data) {
+        http.postJson(urls.config.addConfigUrl, obj, function (data) {
             if (data.code == 0) that.getData();
             success(data);
         });
+    }
+    updateConfig(obj,success) {
+        obj.id = this.state.deleteId;
+        http.postJson(urls.config.updateConfigUrl, obj, function (data) {
+            if (data.code == 0) {
+                this.getData();
+                this.setState({ deleteShow: false, updateShow: false });
+            }
+            success(data);
+        }.bind(this));
     }
     deleteItem(e) {
         var id = this.state.deleteId;
@@ -143,7 +155,7 @@ class Config extends React.Component {
             http.get(urls.config.deleteUrl + "/" + id, function (data) {
                 if (data.code == 0) {
                     that.getData();
-                    that.setState({ deleteShow: false });
+                    that.setState({ deleteShow: false, updateShow: false  });
                 }
                 else {
                     alert(data.message);
@@ -163,8 +175,14 @@ class Config extends React.Component {
         if (e.target.nodeName.toLowerCase() == "span") id = e.target.parentElement.id;
         http.get(urls.config.getConfigUrl + "/" + id, function (data) {
             if (data.code == 0) {
-                this.refs.addconfig.onIdClick(data.result.Extension, data.result.Type, data.result.Description||"", data.result.Action);
-                this.setState({ deleteShow: true, deleteId: data.result._id.$oid, deleteName: data.result.Extension });
+                this.setState({
+                    deleteShow: true,
+                    updateShow: true,
+                    deleteId: data.result._id.$oid,
+                    deleteName: data.result.Extension
+                }, function () {
+                        this.refs.updateconfig.onIdClick(data.result.Extension, data.result.Type, data.result.Description || "", data.result.Action);
+                }.bind(this));
             }
         }.bind(this));
     }
@@ -191,13 +209,24 @@ class Config extends React.Component {
                     nextPage={this.nextPage.bind(this)} />
                 <ConfigData data={this.state.data.result}
                     onIdClick={this.onIdClick.bind(this)} />
-                <TitleArrow title={culture.update + culture.extension}
+                <TitleArrow title={culture.add + culture.extension}
                     show={this.state.configShow}
                     onShowChange={this.onConfigShow.bind(this)} />
                 <AddConfig
                     show={this.state.configShow}
                     addConfig={this.addConfig.bind(this)}
                     ref="addconfig" />
+                {this.state.updateShow ?
+                    <TitleArrow title={culture.update + culture.extension + "(" + this.state.deleteName + ")"}
+                        show={this.state.updateToggle}
+                        onShowChange={e => this.setState({ updateToggle: !this.state.updateToggle })} /> : null
+                }
+                {this.state.updateShow ?
+                    <UpdateConfig
+                        show={this.state.updateToggle}
+                        updateConfig={this.updateConfig.bind(this)}
+                        ref="updateconfig" /> : null
+                }
                 {this.state.deleteShow ?
                     <TitleArrow
                         title={culture.delete + culture.extension + "(" + this.state.deleteName + ")"}

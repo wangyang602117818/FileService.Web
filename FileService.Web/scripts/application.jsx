@@ -58,7 +58,7 @@ class ApplicationItem extends React.Component {
         return (
             <tr>
                 <td>
-                    <b  className="link"
+                    <b className="link"
                         id={this.props.application._id.$oid.removeHTML()}
                         onClick={this.props.onIdClick}
                         dangerouslySetInnerHTML={{ __html: this.props.application._id.$oid }}></b>
@@ -106,6 +106,8 @@ class Application extends React.Component {
             deleteToggle: false,
             deleteName: "",
             deleteId: "",
+            updateShow: false,
+            updateToggle: true,
             pageIndex: 1,
             pageSize: localStorage.application_pageSize || 10,
             pageCount: 1,
@@ -129,10 +131,20 @@ class Application extends React.Component {
     }
     addApplication(obj, success) {
         var that = this;
-        http.post(urls.application.updateUrl, obj, function (data) {
+        http.postJson(urls.application.addUrl, obj, function (data) {
             if (data.code == 0) that.getData();
             success(data);
         });
+    }
+    updateApplication(obj, success) {
+        obj.id = this.state.deleteId;
+        http.postJson(urls.application.updateUrl, obj, function (data) {
+            if (data.code == 0) {
+                this.getData();
+                this.setState({ deleteShow: false, updateShow: false });
+            } 
+            success(data);
+        }.bind(this))
     }
     deleteItem(e) {
         var id = this.state.deleteId;
@@ -141,7 +153,7 @@ class Application extends React.Component {
             http.get(urls.application.deleteUrl + "/" + id, function (data) {
                 if (data.code == 0) {
                     that.getData();
-                    that.setState({ deleteShow: false });
+                    that.setState({ deleteShow: false, updateShow: false });
                 }
                 else {
                     alert(data.message);
@@ -160,8 +172,9 @@ class Application extends React.Component {
         var id = e.target.id || e.target.parentElement.id;
         http.get(urls.application.getapplicationUrl + "?id=" + id, function (data) {
             if (data.code == 0) {
-                this.refs.addApplication.onIdClick(data.result.ApplicationName, data.result.AuthCode, data.result.Action);
-                this.setState({ deleteShow: true, deleteId: data.result._id.$oid, deleteName: data.result.ApplicationName });
+                this.setState({ deleteShow: true, updateShow: true, deleteId: data.result._id.$oid, deleteName: data.result.ApplicationName }, function () {
+                    this.refs.updateApplication.onIdClick(data.result.ApplicationName, data.result.AuthCode, data.result.Action);
+                }.bind(this));
             }
         }.bind(this));
     }
@@ -195,6 +208,15 @@ class Application extends React.Component {
                     ref="addApplication"
                     addApplication={this.addApplication.bind(this)}
                 />
+                {this.state.updateShow ?
+                    <TitleArrow
+                        title={culture.update + culture.application + "(" + this.state.deleteName + ")"}
+                        show={this.state.updateToggle}
+                        onShowChange={this.onDeleteShow.bind(this)} /> : null}
+                {this.state.updateShow ?
+                    <UpdateApplication show={this.state.updateToggle}
+                        ref="updateApplication"
+                        updateApplication={this.updateApplication.bind(this)} /> : null}
                 {this.state.deleteShow ?
                     <TitleArrow
                         title={culture.delete + culture.application + "(" + this.state.deleteName + ")"}
