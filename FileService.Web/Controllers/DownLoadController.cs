@@ -1,5 +1,4 @@
-﻿using FileService.Business;
-using FileService.Util;
+﻿using FileService.Util;
 using FileService.Web.Filters;
 using MongoDB.Bson;
 using MongoDB.Driver.GridFS;
@@ -13,16 +12,8 @@ using System.Web.Mvc;
 namespace FileService.Web.Controllers
 {
     [AllowAnonymous]
-    public class DownLoadController : Controller
+    public class DownLoadController : BaseController
     {
-        MongoFile mongoFile = new MongoFile();
-        MongoFileConvert mongoFileConvert = new MongoFileConvert();
-        M3u8 m3u8 = new M3u8();
-        Ts ts = new Ts();
-        Thumbnail thumbnail = new Thumbnail();
-        VideoCapture videoCapture = new VideoCapture();
-        FilesWrap filesWrap = new FilesWrap();
-        Download download = new Download();
         static string m3u8Template = System.IO.File.ReadAllText(AppDomain.CurrentDomain.BaseDirectory + "scripts\\template.m3u8");
         [AppAuthorizeDefault]
         public ActionResult Get(string id)
@@ -30,14 +21,7 @@ namespace FileService.Web.Controllers
             ObjectId fileWrapId = ObjectId.Parse(id);
             BsonDocument fileWrap = filesWrap.FindOne(fileWrapId);
             if (fileWrap == null) return File(new MemoryStream(), "application/octet-stream");
-            if (!download.AddedInOneMinute(Request.Headers["AppName"], fileWrapId, Request.Headers["UserName"] ?? User.Identity.Name))
-            {
-                download.AddDownload(fileWrapId, Request.Headers["AppName"], 
-                    Request.Headers["UserName"] ?? User.Identity.Name,
-                    Request.Headers["UserIp"] ?? Request.UserHostAddress, 
-                    Request.Headers["UserAgent"] ?? Request.UserAgent);
-                filesWrap.AddDownloads(fileWrapId);
-            }
+            AddDownload(fileWrapId);
             ObjectId fileId = fileWrap["FileId"].AsObjectId;
             string fileName = fileWrap["FileName"].AsString;
             if (fileId == ObjectId.Empty)
@@ -57,14 +41,7 @@ namespace FileService.Web.Controllers
         {
             GridFSDownloadStream stream = mongoFileConvert.DownLoad(ObjectId.Parse(id));
             ObjectId fileWrapId = stream.FileInfo.Metadata["SourceId"].AsObjectId;
-            if (!download.AddedInOneMinute(Request.Headers["AppName"], fileWrapId, Request.Headers["UserName"] ?? User.Identity.Name))
-            {
-                filesWrap.AddDownloads(fileWrapId);
-                download.AddDownload(fileWrapId, Request.Headers["AppName"], 
-                    Request.Headers["UserName"] ?? User.Identity.Name,
-                    Request.Headers["UserIp"] ?? Request.UserHostAddress,
-                    Request.Headers["UserAgent"] ?? Request.UserAgent);
-            }
+            AddDownload(fileWrapId);
             return File(stream, stream.FileInfo.Metadata["ContentType"].AsString, stream.FileInfo.Filename);
         }
         public ActionResult GetZipInnerFile(string id, string fileName)
@@ -93,12 +70,28 @@ namespace FileService.Web.Controllers
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
+        [AppAuthorizeDefault]
         public ActionResult GetThumbnail(string id)
         {
-            BsonDocument fileWrap = filesWrap.FindOne(ObjectId.Parse(id));
-            BsonDocument thumbnail = fileWrap.Contains("Thumbnail") ? fileWrap["Thumbnail"].AsBsonArray.FirstOrDefault().AsBsonDocument : null;
-            if (thumbnail == null) return Get(id);
-            return Thumbnail(thumbnail["_id"].ToString());
+            ObjectId fileWrapId = ObjectId.Parse(id);
+            BsonDocument fileWrap = filesWrap.FindOne(fileWrapId);
+            if (fileWrap == null) return File(new MemoryStream(), "application/octet-stream");
+            BsonDocument thumbnail = null;
+            if (fileWrap.Contains("Thumbnail") && fileWrap["Thumbnail"].AsBsonArray.FirstOrDefault() != null)
+            {
+                thumbnail = fileWrap["Thumbnail"].AsBsonArray.FirstOrDefault().AsBsonDocument;
+            }
+            //没有缩略图
+            if (thumbnail == null)
+            {
+                AddDownload(fileWrapId);
+                GridFSDownloadStream stream = mongoFile.DownLoad(fileWrap["FileId"].AsObjectId);
+                return File(stream, fileWrap["ContentType"].AsString, fileWrap["FileName"].AsString);
+            }
+            else
+            {
+                return Thumbnail(thumbnail["_id"].ToString());
+            }
         }
         public ActionResult M3u8Pure(string id)
         {

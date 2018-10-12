@@ -29,6 +29,7 @@ namespace FileService.Web.Controllers
         protected FilePreview filePreview = new FilePreview();
         protected FilePreviewBig filePreviewBig = new FilePreviewBig();
         protected Shared shared = new Shared();
+        protected Download download = new Download();
         protected void Log(string fileId, string content)
         {
             var authCode = Request.Headers["AuthCode"];
@@ -58,6 +59,17 @@ namespace FileService.Web.Controllers
                 userName,
                 Request.Headers["UserIp"] ?? Request.UserHostAddress,
                 Request.Headers["UserAgent"] ?? Request.UserAgent);
+        }
+        protected void AddDownload(ObjectId fileWrapId)
+        {
+            if (!download.AddedInOneMinute(Request.Headers["AppName"], fileWrapId, Request.Headers["UserName"] ?? User.Identity.Name))
+            {
+                download.AddDownload(fileWrapId, Request.Headers["AppName"],
+                    Request.Headers["UserName"] ?? User.Identity.Name,
+                    Request.Headers["UserIp"] ?? Request.UserHostAddress,
+                    Request.Headers["UserAgent"] ?? Request.UserAgent);
+                filesWrap.AddDownloads(fileWrapId);
+            }
         }
         protected void InsertTask(string handlerId, ObjectId fileId, string fileName, string type, string from, BsonDocument outPut, BsonArray access, string owner)
         {

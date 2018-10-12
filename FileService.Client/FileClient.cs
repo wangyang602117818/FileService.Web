@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.IO;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace FileService.Client
@@ -761,6 +762,16 @@ namespace FileService.Client
                 if (!string.IsNullOrEmpty(userData.UserIp)) headers.Add("UserIp", userData.UserIp);
             }
             return new HttpRequestHelper().GetFile(RemoteUrl + "/download/videocapture/" + videoCpId, headers);
+        }
+        /// <summary>
+        /// 判断是否移动端
+        /// </summary>
+        /// <param name="userAgent">userAgent</param>
+        /// <returns></returns>
+        public bool IsMobile(string userAgent)
+        {
+            Regex reg = new Regex("Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini", RegexOptions.IgnoreCase);
+            return reg.IsMatch(userAgent);
         }
     }
 }
