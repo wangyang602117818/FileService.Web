@@ -173,15 +173,11 @@ namespace FileService.Web.Controllers
                 switch (type)
                 {
                     case "text":
-                        return File(System.IO.File.ReadAllBytes(imagePath + "text.png"), "application/octet-stream");
                     case "video":
-                        return File(System.IO.File.ReadAllBytes(imagePath + "video.png"), "application/octet-stream");
                     case "image":
-                        return File(System.IO.File.ReadAllBytes(imagePath + "image.png"), "application/octet-stream");
                     case "attachment":
-                        return File(System.IO.File.ReadAllBytes(imagePath + "attachment.png"), "application/octet-stream");
                     case "pdf":
-                        return File(System.IO.File.ReadAllBytes(imagePath + "pdf.png"), "application/octet-stream");
+                        return File(System.IO.File.ReadAllBytes(imagePath + type + ".png"), "application/octet-stream");
                     case "office":
                         if (ext == ".doc" || ext == ".docx")
                             return File(System.IO.File.ReadAllBytes(imagePath + "word.png"), "application/octet-stream");
