@@ -782,5 +782,6 @@ String.prototype.getFileName = function (length) {
 }
 String.prototype.getFileExtension = function () {
     var dot = this.lastIndexOf(".");
+    if (dot == -1) return ".unknown";
     return this.substring(dot, this.length).toLowerCase();
 }

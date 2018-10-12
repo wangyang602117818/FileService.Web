@@ -20,7 +20,6 @@ namespace FileService.Web.Controllers
         Config config = new Config();
         Application application = new Application();
         User user = new User();
-        Download download = new Download();
         public ActionResult Index()
         {
             ViewBag.Name = User.Identity.Name;
@@ -296,7 +295,7 @@ namespace FileService.Web.Controllers
             string fileType = config.GetTypeByExtension(Path.GetExtension(fileName).ToLower()).ToLower();
             ViewBag.id = id;
             ViewBag.convert = "false";
-            ViewBag.fileType = fileType;
+            ViewBag.fileType = fileType == "" ? "text" : fileType;
             if (fileType == "office")
             {
                 ViewBag.Convert = "true";
@@ -313,7 +312,7 @@ namespace FileService.Web.Controllers
             string fileType = config.GetTypeByExtension(Path.GetExtension(fileName).ToLower()).ToLower();
             ViewBag.id = id;
             ViewBag.convert = "true";
-            ViewBag.fileType = fileType;
+            ViewBag.fileType = fileType == "" ? "text" : fileType;
             ViewBag.FileName = fileName;
             ViewBag.template = System.IO.File.ReadAllText(AppDomain.CurrentDomain.BaseDirectory + "pdfview/template.html");
             ViewBag.AppPath = Request.ApplicationPath;

@@ -21,7 +21,7 @@ namespace FileService.Util
 
         public static bool connectState(string path, string userName, string passWord)
         {
-            if (sharedUserName == "none" && sharedUserPwd == "none") return true;
+            if (sharedUserName == "" && sharedUserPwd == "") return true;
             bool Flag = false;
             Process proc = new Process();
             try
