@@ -136,6 +136,7 @@ class ResourcesDataPic extends React.Component {
                 {this.props.data.map(function (item, i) {
                     return (<ResourcesDataPicItem
                         canPreview={this.props.canPreview}
+                        selectedIds={this.props.selectedIds}
                         onResourceSelected={this.props.onResourceSelected}
                         resource={item}
                         key={i} />)
@@ -164,10 +165,10 @@ class ResourcesDataPicItem extends React.Component {
         var fileName = this.props.resource.FileName.removeHTML();
         var fileType = this.props.resource.FileType.removeHTML();
         var owner = this.props.resource.Owner.removeHTML();
-        var select = this.props.resource.selected;
+        //var select = this.props.resource.selected;
         var className = "table_grid_item_wrap ";
         className += this.props.resource.FileId.$oid.removeHTML() == "000000000000000000000000" ? "doing " : "done ";
-        className += select ? "selected" : "";
+        className += this.props.selectedIds.indexOf(fileId) > -1 ? "selected" : "";
         return (
             <div className={className}
                 onClick={this.preView.bind(this)}
@@ -555,13 +556,13 @@ class Resources extends React.Component {
             this.setState({ listType: "list" });
             localStorage.resourse_list_type = "list";
         }
+        this.setState({ subFileShow: false, accessFileShow: false, sharedFileShow: false, selectedList: [] });
     }
     onResourceSelected(e) {
         var id = e.target.getAttribute("data-fileid");
         for (var i = 0; i < this.state.data.result.length; i++) {
             if (this.state.data.result[i]._id.$oid == id) {
-                this.state.data.result[i].selected = !this.state.data.result[i].selected;
-                if (this.state.data.result[i].selected) {
+                if (this.state.selectedList.indexOf(id) == -1) {
                     this.state.selectedList.push(id);
                 } else {
                     this.state.selectedList.remove(id);
@@ -668,6 +669,7 @@ class Resources extends React.Component {
                         onIdClick={this.onIdClick.bind(this)} /> :
                     <ResourcesDataPic data={this.state.data.result}
                         canPreview={true}
+                        selectedIds={this.state.selectedList}
                         onResourceSelected={this.onResourceSelected.bind(this)} />
                 }
                 <TitleArrow title={culture.add + culture.image}

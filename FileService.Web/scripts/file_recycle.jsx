@@ -147,8 +147,7 @@ class FileRecycle extends React.Component {
         var id = e.target.getAttribute("data-fileid");
         for (var i = 0; i < this.state.data.result.length; i++) {
             if (this.state.data.result[i]._id.$oid == id) {
-                this.state.data.result[i].selected = !this.state.data.result[i].selected;
-                if (this.state.data.result[i].selected) {
+                if (this.state.selectedList.indexOf(id) == -1) {
                     this.state.selectedList.push(id);
                 } else {
                     this.state.selectedList.remove(id);
@@ -194,6 +193,7 @@ class FileRecycle extends React.Component {
                     /> :
                     <ResourcesDataPic data={this.state.data.result}
                         canPreview={false}
+                        selectedIds={this.state.selectedList}
                         onResourceSelected={this.onResourceSelected.bind(this)} />
                 }
             </div>
