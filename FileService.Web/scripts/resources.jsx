@@ -363,7 +363,7 @@ class Resources extends React.Component {
         var departments = this.getAllCompany();
         this.getSharedUrl();
         this.getSharedList(fileId);
-        if (owner == userName || trim(this.state.owner) == "") {
+        if (owner == userName || trim(owner) == "") {
             this.setState({ accessFileShow: true, sharedFileShow: true });
         } else {
             this.setState({ accessFileShow: false, sharedFileShow: false });

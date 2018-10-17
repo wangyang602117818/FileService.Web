@@ -12,7 +12,7 @@ namespace FileService.Web
             filters.Add(new MyAuthorizeAttribute()); 
             //filters.Add(new AppAuthorizeAttribute());   
             filters.Add(new MyHandleErrorAttribute());
-            filters.Add(new CheckParamsForNullAttribute());
+            //filters.Add(new CheckParamsForNullAttribute());
             filters.Add(new ValidateModelStateAttribute());
         }
     }
