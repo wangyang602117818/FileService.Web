@@ -29,7 +29,6 @@ class UserList extends React.Component {
     constructor(props) {
         super(props);
     }
-
     render() {
         if (this.props.data.length == 0) {
             return (
@@ -108,6 +107,9 @@ class User extends React.Component {
             userShow: localStorage.user_add ? eval(localStorage.user_add) : true,
             deleteShow: false,
             deleteToggle: false,
+            updateShow: false,
+            updateToggle: true,
+            updateId: "",
             deleteName: "",
             pageIndex: 1,
             pageSize: localStorage.user_pageSize || 10,
@@ -142,17 +144,32 @@ class User extends React.Component {
         if (e.target.nodeName.toLowerCase() == "span") id = e.target.parentElement.id;
         http.get(urls.user.getUserUrl + "/" + id, function (data) {
             if (data.code == 0) {
-                this.refs.add_user.changeState(data.result.UserName, data.result.Role, data.result.Company, data.result.CompanyDisplay, data.result.Department, data.result.DepartmentDisplay);
-                this.setState({ deleteShow: true, deleteName: data.result.UserName });
+                this.setState({ deleteShow: true, updateShow: true, deleteName: data.result.UserName, updateId: id }, function () {
+                    this.refs.update_user.changeState(data.result.UserName,
+                        data.result.Role,
+                        data.result.Company,
+                        data.result.CompanyDisplay,
+                        data.result.Department,
+                        data.result.DepartmentDisplay);
+                }.bind(this));
             }
         }.bind(this));
     }
-    addUser(obj, success) {
-        var that = this;
-        http.postJson(urls.user.addUserUrl, obj, function (data) {
-            if (data.code == 0) that.getData();
+    updateUser(obj, success) {
+        obj.id = this.state.updateId;
+        http.postJson(urls.user.updateUserUrl, obj, function (data) {
+            if (data.code == 0) {
+                this.getData();
+                this.setState({ deleteShow: false, updateShow: false });
+            }
             success(data);
-        });
+        }.bind(this));
+    }
+    addUser(obj, success) {
+        http.postJson(urls.user.addUserUrl, obj, function (data) {
+            if (data.code == 0) this.getData();
+            success(data);
+        }.bind(this));
     }
     deleteUser(e) {
         var that = this;
@@ -160,7 +177,7 @@ class User extends React.Component {
             http.get(urls.user.deleteUserUrl + "?userName=" + this.state.deleteName, function (data) {
                 if (data.code == 0) {
                     that.getData();
-                    that.setState({ deleteShow: false });
+                    that.setState({ deleteShow: false, updateShow: false });
                 }
             })
         }
@@ -194,6 +211,16 @@ class User extends React.Component {
                 <AddUser show={this.state.userShow}
                     addUser={this.addUser.bind(this)}
                     ref="add_user" />
+                {this.state.updateShow ?
+                    <TitleArrow title={culture.update + culture.user + "(" + this.state.deleteName + ")"}
+                        show={this.state.updateToggle}
+                        onShowChange={e => this.setState({ updateToggle: !this.state.updateToggle })} /> : null
+                }
+                {this.state.updateShow ?
+                    <UpdateUser show={this.state.updateToggle}
+                        updateUser={this.updateUser.bind(this)}
+                        ref="update_user" /> : null
+                }
                 {this.state.deleteShow ?
                     <TitleArrow title={culture.delete + culture.user + "(" + this.state.deleteName + ")"}
                         show={this.state.deleteToggle}

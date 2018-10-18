@@ -26,6 +26,27 @@ namespace FileService.Web.Models
         public DateTime? LastLoginDate { get; set; }
         public bool Modified { get; set; }
     }
+    public class UpdateUser
+    {
+        [BsonIgnore]
+        public string Id { get; set; }
+        [Required]
+        public string UserName { get; set; }
+        [Required]
+        public string PassWord { get; set; }
+        [Required]
+        public string Company { get; set; }
+        [Required]
+        public string CompanyDisplay { get; set; }
+        public List<string> Department { get; set; }
+        public List<string> DepartmentDisplay { get; set; }
+        public string Role { get; set; }
+        [BsonIgnoreIfNull]
+        public DateTime? CreateTime { get; set; }
+        [BsonIgnoreIfNull]
+        public DateTime? LastLoginDate { get; set; }
+        public bool Modified { get; set; }
+    }
     public class UserLogin
     {
         [Required]

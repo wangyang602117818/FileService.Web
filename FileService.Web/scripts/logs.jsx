@@ -9,7 +9,7 @@
                     <tr>
                         <td width="15%">{culture.id}</td>
                         <td width="10%">{culture.from}</td>
-                        <td width="18%">{culture.fileId}/{culture.taskId}</td>
+                        <td width="18%">{culture.fileId}/{culture.taskId}/{culture.id}</td>
                         <td width="12%">{culture.content}</td>
                         <td width="9%">{culture.user}</td>
                         <td width="10%">Ip</td>

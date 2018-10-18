@@ -435,7 +435,7 @@ namespace FileService.Web.Controllers
             if (configBson != null && configBson["_id"].ToString() != updateConfig.Id) return new ResponseModel<string>(ErrorCode.record_exist, "");
             if (config.Update(ObjectId.Parse(updateConfig.Id), bson))
             {
-                Log("-", "UpdateConfig");
+                Log(updateConfig.Id, "UpdateConfig");
                 return new ResponseModel<string>(ErrorCode.success, "");
             }
             return new ResponseModel<string>(ErrorCode.server_exception, "");
@@ -445,7 +445,7 @@ namespace FileService.Web.Controllers
         {
             if (config.DeleteOne(ObjectId.Parse(id)))
             {
-                Log("-", "DeleteConfig");
+                Log(id, "DeleteConfig");
                 return new ResponseModel<string>(ErrorCode.success, "");
             }
             return new ResponseModel<string>(ErrorCode.server_exception, "");
@@ -489,7 +489,7 @@ namespace FileService.Web.Controllers
             if (appBson != null && appBson["_id"].ToString() != updateApplication.Id) return new ResponseModel<string>(ErrorCode.record_exist, "");
             if (application.Update(ObjectId.Parse(updateApplication.Id), bson))
             {
-                Log("-", "UpdateApplication");
+                Log(updateApplication.Id, "UpdateApplication");
                 return new ResponseModel<string>(ErrorCode.success, "");
             }
             return new ResponseModel<string>(ErrorCode.server_exception, "");
@@ -499,7 +499,7 @@ namespace FileService.Web.Controllers
         {
             if (application.DeleteOne(ObjectId.Parse(id)))
             {
-                Log("-", "DeleteApplication");
+                Log(id, "DeleteApplication");
                 return new ResponseModel<string>(ErrorCode.success, "");
             }
             return new ResponseModel<string>(ErrorCode.server_exception, "");
@@ -748,30 +748,33 @@ namespace FileService.Web.Controllers
         public ActionResult AddUser(AddUser addUser)
         {
             BsonDocument bsonUser = user.GetUser(addUser.UserName);
-            if (bsonUser == null)
-            {
-                addUser.CreateTime = DateTime.Now;
-            }
-            else
-            {
-                addUser.Modified = true;
-            }
+            if (bsonUser != null) return new ResponseModel<string>(ErrorCode.record_exist, "");
+            addUser.CreateTime = DateTime.Now;
             if (addUser.Department == null) addUser.Department = new List<string>();
             if (addUser.DepartmentDisplay == null) addUser.DepartmentDisplay = new List<string>();
             if (string.IsNullOrEmpty(addUser.Role)) addUser.Role = "none";
             addUser.PassWord = addUser.PassWord.ToMD5();
             BsonDocument document = addUser.ToBsonDocument();
-            if (bsonUser == null)
-            {
-                user.Insert(document);
-                Log("-", "InsertUser(" + addUser.UserName + ")");
-            }
-            else
-            {
-                Log("-", "UpdateUser(" + addUser.UserName + ")");
-                user.UpdateUser(addUser.UserName, addUser.ToBsonDocument());
-            }
+            user.Insert(document);
+            Log("-", "InsertUser(" + addUser.UserName + ")");
             return new ResponseModel<string>(ErrorCode.success, "");
+        }
+        public ActionResult UpdateUser(UpdateUser updateUser)
+        {
+            BsonDocument userBson = user.GetUser(updateUser.UserName);
+            updateUser.Modified = true;
+            updateUser.PassWord = updateUser.PassWord.ToMD5();
+            if (updateUser.Department == null) updateUser.Department = new List<string>();
+            if (updateUser.DepartmentDisplay == null) updateUser.DepartmentDisplay = new List<string>();
+            if (string.IsNullOrEmpty(updateUser.Role)) updateUser.Role = "none";
+            BsonDocument bson = updateUser.ToBsonDocument();
+            if (userBson != null && userBson["_id"].ToString() != updateUser.Id) return new ResponseModel<string>(ErrorCode.record_exist, "");
+            if (user.Update(ObjectId.Parse(updateUser.Id), bson))
+            {
+                Log(updateUser.Id, "UpdateUser");
+                return new ResponseModel<string>(ErrorCode.success, "");
+            }
+            return new ResponseModel<string>(ErrorCode.server_exception, "");
         }
         [Authorize(Roles = "admin")]
         public ActionResult GetUser(string id)
@@ -856,7 +859,7 @@ namespace FileService.Web.Controllers
         {
             if (department.DeleteOne(ObjectId.Parse(id)))
             {
-                Log("-", "DeleteDepartment");
+                Log(id, "DeleteDepartment");
                 return new ResponseModel<string>(ErrorCode.success, "");
             }
             return new ResponseModel<string>(ErrorCode.server_exception, "");
