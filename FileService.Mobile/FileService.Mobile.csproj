@@ -116,6 +116,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="css\bui.css" />
+    <Content Include="css\bui_my.css" />
     <Content Include="font\iconfont.svg" />
     <Content Include="Global.asax" />
     <Content Include="font\iconfont.eot" />
