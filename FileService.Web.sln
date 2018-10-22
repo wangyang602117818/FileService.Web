@@ -7,8 +7,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileService.Web", "FileServ
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileService.Business", "FileService.Business\FileService.Business.csproj", "{9BCFDDD4-438B-43D1-ABC7-CB3AEEED2AC8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileService.Client", "FileService.Client\FileService.Client.csproj", "{97D8EE39-7920-4F61-A8F0-2EE8F30AEC53}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileService.Converter", "FileService.Converter\FileService.Converter.csproj", "{20FDCB36-873C-4500-AB51-631B4AE38A47}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileService.Converter.Test", "FileService.Converter.Test\FileService.Converter.Test.csproj", "{6702E240-E14C-4B94-9B16-C2BA745B4B88}"
@@ -18,8 +16,6 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileService.Model", "FileService.Model\FileService.Model.csproj", "{195DF8C3-96B6-4398-ACC0-D065E830A2BB}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileService.Util", "FileService.Util\FileService.Util.csproj", "{8A43E57B-7CBF-49DD-B163-77084C742726}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileService.Mobile", "FileService.Mobile\FileService.Mobile.csproj", "{6F21DA13-085F-4A67-9717-AAFD4CA76376}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -35,10 +31,6 @@ Global
 		{9BCFDDD4-438B-43D1-ABC7-CB3AEEED2AC8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9BCFDDD4-438B-43D1-ABC7-CB3AEEED2AC8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9BCFDDD4-438B-43D1-ABC7-CB3AEEED2AC8}.Release|Any CPU.Build.0 = Release|Any CPU
-		{97D8EE39-7920-4F61-A8F0-2EE8F30AEC53}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{97D8EE39-7920-4F61-A8F0-2EE8F30AEC53}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{97D8EE39-7920-4F61-A8F0-2EE8F30AEC53}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{97D8EE39-7920-4F61-A8F0-2EE8F30AEC53}.Release|Any CPU.Build.0 = Release|Any CPU
 		{20FDCB36-873C-4500-AB51-631B4AE38A47}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{20FDCB36-873C-4500-AB51-631B4AE38A47}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{20FDCB36-873C-4500-AB51-631B4AE38A47}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -59,10 +51,6 @@ Global
 		{8A43E57B-7CBF-49DD-B163-77084C742726}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8A43E57B-7CBF-49DD-B163-77084C742726}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8A43E57B-7CBF-49DD-B163-77084C742726}.Release|Any CPU.Build.0 = Release|Any CPU
-		{6F21DA13-085F-4A67-9717-AAFD4CA76376}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{6F21DA13-085F-4A67-9717-AAFD4CA76376}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{6F21DA13-085F-4A67-9717-AAFD4CA76376}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{6F21DA13-085F-4A67-9717-AAFD4CA76376}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

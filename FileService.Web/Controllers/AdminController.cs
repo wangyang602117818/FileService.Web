@@ -787,7 +787,7 @@ namespace FileService.Web.Controllers
         {
             if (user.DeleteUser(userName))
             {
-                Log("-", "DeleteUser");
+                Log("-", "DeleteUser(" + userName + ")");
                 return new ResponseModel<string>(ErrorCode.success, "");
             }
             return new ResponseModel<string>(ErrorCode.server_exception, "");
