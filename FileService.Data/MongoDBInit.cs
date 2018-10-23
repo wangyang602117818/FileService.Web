@@ -130,6 +130,18 @@ namespace FileService.Data
                 var c = new CreateIndexModel<BsonDocument>(new BsonDocument() { { "From", 1 }, { "CreateTime", 1 } });  //shared key
                 database.GetCollection<BsonDocument>("Thumbnail").Indexes.CreateOne(c);
             }
+            if (!databases.Contains("Task"))
+            {
+                database.CreateCollection("Task");
+                var c = new CreateIndexModel<BsonDocument>(new BsonDocument() { { "FileId", 1 } });  //index
+                database.GetCollection<BsonDocument>("Task").Indexes.CreateOne(c);
+            }
+            if (!databases.Contains("fs.files"))
+            {
+                database.CreateCollection("fs.files");
+                var c = new CreateIndexModel<BsonDocument>(new BsonDocument() { { "md5", 1 } });  //index
+                database.GetCollection<BsonDocument>("fs.files").Indexes.CreateOne(c);
+            }
         }
     }
 }

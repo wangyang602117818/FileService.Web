@@ -48,7 +48,7 @@ namespace FileService.Business
         public string GetHandlerId()
         {
             IEnumerable<BsonDocument> all = mongoData.FindAll().OrderBy(o => o["Total"]);
-            if (all.Count() == 0) return "no handlerId";
+            if (all.Count() == 0) return "unknown";
             if (all.Count() == 1) return all.First()["HandlerId"].AsString;
             IEnumerable<BsonDocument> run = all.Where(sel => sel["State"].AsInt32 >= 0).OrderBy(o => o["State"]).OrderBy(o => o["State"]);
             if (run.Count() == 0)

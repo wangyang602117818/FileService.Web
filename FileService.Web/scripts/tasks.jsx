@@ -9,8 +9,8 @@
                     <tr>
                         <th width="15%">{culture.fileId}</th>
                         <th width="20%">{culture.fileName}</th>
-                        <th width="6%">{culture.handler}</th>
-                        <th width="10%">{culture.state}</th>
+                        <th width="8%">{culture.handler}</th>
+                        <th width="8%">{culture.state}</th>
                         <th width="5%">{culture.percent}</th>
                         <td width="6%">{culture.process_count}</td>
                         <th width="15%">{culture.createTime}</th>
