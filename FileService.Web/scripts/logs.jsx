@@ -9,10 +9,10 @@
                     <tr>
                         <td width="15%">{culture.id}</td>
                         <td width="10%">{culture.from}</td>
+                        <td width="8%">Api</td>
                         <td width="18%">{culture.fileId}/{culture.taskId}/{culture.id}</td>
                         <td width="12%">{culture.content}</td>
                         <td width="6%">{culture.user}</td>
-                        <td width="8%">Api</td>
                         <td width="8%">Ip</td>
                         <td width="7%">{culture.user_agent}</td>
                         <td width="16%">{culture.createTime}</td>
@@ -61,10 +61,10 @@ class LogItem extends React.Component {
                 <td dangerouslySetInnerHTML={{ __html: this.props.log.From }}
                     id={this.props.log.From.removeHTML()}>
                 </td>
+                <td>{this.props.log.ApiType || ""}</td>
                 <td dangerouslySetInnerHTML={{ __html: this.props.log.FileId }}></td>
                 <td dangerouslySetInnerHTML={{ __html: this.props.log.Content }}></td>
                 <td>{this.props.log.UserName}</td>
-                <td>{this.props.log.ApiType||""}</td>
                 <td>{this.props.log.UserIp}</td>
                 <td>{getAgent(this.props.UserAgent)}</td>
                 <td>{parseBsonTime(this.props.log.CreateTime)}</td>
