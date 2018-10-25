@@ -219,6 +219,7 @@
     <Content Include="css\org_chart.css" />
     <Content Include="css\page.css" />
     <Content Include="css\preview.css" />
+    <Content Include="file-service-api-1.0.js" />
     <Content Include="Global.asax" />
     <Content Include="hlsplayer\flowplayer.controls.swf" />
     <Content Include="hlsplayer\flowplayer.swf" />
@@ -391,6 +392,7 @@
     <Content Include="scripts\tasks_update.jsx" />
     <Content Include="scripts\user.jsx" />
     <Content Include="scripts\user_add.jsx" />
+    <Content Include="test.html" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
     </Content>

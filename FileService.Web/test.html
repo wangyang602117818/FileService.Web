@@ -1,0 +1,35 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+
+    <script src="file-service-api-1.0.js"></script>
+
+</head>
+<body>
+    <input type="file" name="file" id="f1" />
+</body>
+</html>
+
+<script>
+    var f = document.getElementById("f1");
+    var fileClient = new FileClient("3c9deb1f8f6e", "http://localhost/FileService.Web/");
+    f.onchange = function () {
+        var file = this.files;
+        fileClient.uploadImage(file,
+            { userName: "zhang", userIp: "1", userAgent: window.navigator.userAgent },
+            [{ flag: "mobile", format: 0, model: 0, width: 300, height: 300 }, { flag: "pad", format: 0, model: 0, width: 600, height: 600 }],
+            [{ company: "11cb5a5e23cf", departmentCodes: ["92bfaeb9fd2d"], accessUsers: ["li"] }],
+            function (data) {
+                console.log(data);
+            },
+            function (precent) {
+                console.log(precent);
+            },
+            function (error) {
+                console.log(error);
+            }
+        );
+    };
+</script>
