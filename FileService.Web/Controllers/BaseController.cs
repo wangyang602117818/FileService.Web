@@ -42,6 +42,7 @@ namespace FileService.Web.Controllers
                 fileId,
                 content,
                 Request.Headers["UserName"] ?? User.Identity.Name,
+                Request.Headers["ApiType"] ?? "",
                 Request.Headers["UserIp"] ?? Request.UserHostAddress,
                 Request.Headers["UserAgent"] ?? Request.UserAgent);
         }
@@ -57,6 +58,7 @@ namespace FileService.Web.Controllers
                 "-",
                 content,
                 userName,
+                Request.Headers["ApiType"] ?? "",
                 Request.Headers["UserIp"] ?? Request.UserHostAddress,
                 Request.Headers["UserAgent"] ?? Request.UserAgent);
         }

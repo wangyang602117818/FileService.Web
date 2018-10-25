@@ -1,4 +1,5 @@
-﻿var authCode = "3c9deb1f8f6e";
+﻿var authCode = "3c9deb1f8f6e",
+    apiType = "web";
 var keywords = [
     "_id.$oid",
     "FileId.$oid",
@@ -51,6 +52,7 @@ var http = {
         }
         xhr.open('post', url);
         xhr.setRequestHeader("AuthCode", authCode);
+        xhr.setRequestHeader("ApiType", apiType);
         xhr.send(formData);
     },
     postJson: function (url, data, success) {
@@ -58,6 +60,7 @@ var http = {
         xhr.open("post", url, true);
         xhr.setRequestHeader("Content-type", "application/json");
         xhr.setRequestHeader("AuthCode", authCode);
+        xhr.setRequestHeader("ApiType", apiType);
         xhr.onreadystatechange = function () {
             if (xhr.readyState == 4 && xhr.status == 200) {
                 var json = JSON.parse(xhr.responseText);
@@ -77,6 +80,7 @@ var http = {
         url = assemblyUrl(url);
         xhr.open('get', url);
         xhr.setRequestHeader("AuthCode", authCode);
+        xhr.setRequestHeader("ApiType", apiType);
         xhr.send();
     },
     getSync: function (url, success, error) {
@@ -89,6 +93,7 @@ var http = {
         url = assemblyUrl(url);
         xhr.open('get', url, false);
         xhr.setRequestHeader("AuthCode", authCode);
+        xhr.setRequestHeader("ApiType", apiType);
         xhr.send();
     },
     getFile: function (url, success, error) {
@@ -101,6 +106,7 @@ var http = {
         url = assemblyUrl(url);
         xhr.open('get', url);
         xhr.setRequestHeader("AuthCode", authCode);
+        xhr.setRequestHeader("ApiType", apiType);
         xhr.send();
     },
 };

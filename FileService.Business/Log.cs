@@ -6,7 +6,7 @@ namespace FileService.Business
     public class Log : ModelBase<Data.Log>
     {
         public Log() : base(new Data.Log()) { }
-        public void Insert(string from, string fileId, string content, string userName, string userIp, string userAgent)
+        public void Insert(string from, string fileId, string content, string userName, string apiType, string userIp, string userAgent)
         {
             BsonDocument document = new BsonDocument()
             {
@@ -14,6 +14,7 @@ namespace FileService.Business
                 {"FileId",fileId },
                 {"Content",content },
                 {"UserName",userName },
+                {"ApiType",apiType },
                 {"UserIp",userIp },
                 {"UserAgent",userAgent??"" },
                 {"CreateTime",DateTime.Now }
