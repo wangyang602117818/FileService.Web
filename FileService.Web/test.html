@@ -5,31 +5,36 @@
     <title></title>
 
     <script src="file-service-api-1.0.js"></script>
-
+    <script src="scripts/jquery-3.3.1.min.js"></script>
+    <script src="hlsplayer/hlsplayer.min.js" script-auto-init="false"></script>
 </head>
 <body>
-    <input type="file" name="file" id="f1" />
+    <video controls="controls" width="500" height="300" id="v1" class="hlsplayer">
+        <source src="" />
+    </video>
 </body>
 </html>
 
 <script>
     var f = document.getElementById("f1");
     var fileClient = new FileClient("3c9deb1f8f6e", "http://localhost/FileService.Web/");
-    f.onchange = function () {
-        var file = this.files;
-        fileClient.uploadImage(file,
-            { userName: "zhang", userIp: "1", userAgent: window.navigator.userAgent },
-            [{ flag: "mobile", format: 0, model: 0, width: 300, height: 300 }, { flag: "pad", format: 0, model: 0, width: 600, height: 600 }],
-            [{ company: "11cb5a5e23cf", departmentCodes: ["92bfaeb9fd2d"], accessUsers: ["li"] }],
-            function (data) {
-                console.log(data);
-            },
-            function (precent) {
-                console.log(precent);
-            },
-            function (error) {
-                console.log(error);
-            }
-        );
-    };
+    var m3u8Url = fileClient.getM3u8MultiStreamUrl("5bd28331dae7aa72145b6379");
+    $(".hlsplayer").find("source").attr("src", m3u8Url);
+    hlsplayer();
+    //f.onchange = function () {
+    //    var file = this.files;
+    //    fileClient.getVideoCaptureIds("5bd28331dae7aa72145b6379",
+            
+    //        function (data) {
+    //            console.log(data);
+    //        },
+    //        function (precent) {
+    //            console.log(precent);
+    //        },
+    //        function (error) {
+    //            console.log(error);
+    //        },
+    //        "zhang",
+    //    );
+    //};
 </script>
