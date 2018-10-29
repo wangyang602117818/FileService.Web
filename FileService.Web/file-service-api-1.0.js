@@ -4,7 +4,7 @@
     this.fromApi = true;
     this.apiType = "javascript";
 
-    this.uploadImage = function (file, imageConvert, userAccesses, success, progress, error, userName) {
+    this.uploadImage = function (file, imageConvert, userAccess, success, progress, error, userName) {
         var xhr = new XMLHttpRequest();
         xhr.upload.onprogress = function (event) {
             var precent = ((event.loaded / event.total) * 100).toFixed();
@@ -17,12 +17,12 @@
         xhr.onerror = function (event) {
             if (error) error(event);
         }
-        var formData = this.getFormData("images", file, imageConvert, userAccesses);
+        var formData = this.getFormData("images", file, imageConvert, userAccess);
         xhr.open('post', this.remoteUrl + "/upload/image");
         this.setXhrHeaders(xhr, userName);
         xhr.send(formData);
     };
-    this.uploadVideo = function (file, videoConvert, userAccesses, success, progress, error, userName) {
+    this.uploadVideo = function (file, videoConvert, userAccess, success, progress, error, userName) {
         var xhr = new XMLHttpRequest();
         xhr.upload.onprogress = function (event) {
             var precent = ((event.loaded / event.total) * 100).toFixed();
@@ -35,12 +35,12 @@
         xhr.onerror = function (event) {
             if (error) error(event);
         }
-        var formData = this.getFormData("videos", file, videoConvert, userAccesses);
+        var formData = this.getFormData("videos", file, videoConvert, userAccess);
         xhr.open('post', this.remoteUrl + "/upload/video");
         this.setXhrHeaders(xhr, userName);
         xhr.send(formData);
     };
-    this.uploadAttachment = function (file, userAccesses, success, progress, error, userName) {
+    this.uploadAttachment = function (file, userAccess, success, progress, error, userName) {
         var xhr = new XMLHttpRequest();
         xhr.upload.onprogress = function (event) {
             var precent = ((event.loaded / event.total) * 100).toFixed();
@@ -53,7 +53,7 @@
         xhr.onerror = function (event) {
             if (error) error(event);
         }
-        var formData = this.getFormData("attachments", file, null, userAccesses);
+        var formData = this.getFormData("attachments", file, null, userAccess);
         xhr.open('post', this.remoteUrl + "/upload/attachment");
         this.setXhrHeaders(xhr, userName);
         xhr.send(formData);
@@ -73,7 +73,11 @@
         }
         var formData = this.getFormData("videocps", file, null, null);
         formData.append("fileId", fileId);
-        xhr.open('post', this.remoteUrl + "/upload/videocapturestream");
+        if (typeof file == "string") {
+            xhr.open('post', this.remoteUrl + "/upload/videocapture");
+        } else {
+            xhr.open('post', this.remoteUrl + "/upload/videocapturestream");
+        }
         this.setXhrHeaders(xhr, userName);
         xhr.send(formData);
     };
@@ -107,7 +111,7 @@
         return this.remoteUrl + "/download/thumbnail/" + thumbId;
     };
     this.getThumbnailFromSourceIdUrl = function (fileId) {
-       return this.remoteUrl + "/download/getthumbnail/" + fileId;
+        return this.remoteUrl + "/download/getthumbnail/" + fileId;
     };
     this.getTsUrl = function (tsId) {
         return this.remoteUrl + "/download/ts/" + tsId;
@@ -155,6 +159,8 @@
             for (var i = 0; i < file.length; i++) formData.append(name, file[i]);
         } else if (file instanceof File) {
             formData.append(name, file);
+        } else if (typeof file == "string") {
+            formData.append("FileBase64", file);
         } else {
             console.log("not a file...");
             return;
