@@ -209,7 +209,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="App_Data\FileServiceTempFiles\readme.txt" />
-    <Content Include="App_Data\Log\2018-10-12\2018-10-12 14.txt" />
     <Content Include="css\datepicker-orange.css" />
     <Content Include="css\datepicker-orange.min.css" />
     <Content Include="css\iconfont.css" />
@@ -404,7 +403,9 @@
     </Content>
     <Content Include="Views\Web.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="App_Data\Log\" />
+  </ItemGroup>
   <ItemGroup>
     <Content Include="css\iconfont.eot" />
     <Content Include="css\iconfont.ttf" />
