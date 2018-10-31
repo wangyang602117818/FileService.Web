@@ -398,6 +398,9 @@ function getIconNameByFileName(filename) {
         case ".pdf":
             return "icon-pdf";
         case ".txt":
+        case ".html":
+        case ".htm":
+        case ".css":
             return "icon-text";
         case ".odg":
         case ".ods":
