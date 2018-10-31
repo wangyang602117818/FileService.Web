@@ -153,8 +153,6 @@
                     for (var j = 0; j < series.length; j++) {
                         if (data.result[i]._id.from == series[j].name) {
                             series[j].data.push([data.result[i]._id.date, data.result[i].count]);
-                        } else {
-                            series[j].data.push([data.result[i]._id.date, 0]);
                         }
                     }
                 }
