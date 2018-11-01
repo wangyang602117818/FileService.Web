@@ -84,6 +84,7 @@
     <Compile Include="Queue.cs" />
     <Compile Include="Thumbnail.cs" />
     <Compile Include="Ts.cs" />
+    <Compile Include="TsTime.cs" />
     <Compile Include="User.cs" />
     <Compile Include="VideoCapture.cs" />
   </ItemGroup>

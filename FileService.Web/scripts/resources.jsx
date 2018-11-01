@@ -623,6 +623,7 @@ class Resources extends React.Component {
             http.post(urls.removeFilesUrl, { ids: this.state.selectedList }, function (data) {
                 if (data.code == 0) {
                     this.getData();
+                    this.setState({ selectedList: [] });
                 }
                 else {
                     alert(data.message);
