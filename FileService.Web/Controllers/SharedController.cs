@@ -2,10 +2,7 @@
 using FileService.Web.Models;
 using MongoDB.Bson;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Security.Cryptography;
 using System.Web;
 using System.Web.Mvc;
 
@@ -61,6 +58,7 @@ namespace FileService.Web.Controllers
             ViewBag.fileId = fileId;
             ViewBag.fileName = fileName;
             ViewBag.convert = "false";
+            ViewBag.deleted = "false";
             ViewBag.fileType = fileType;
             if (fileType == "office")
             {
