@@ -98,8 +98,8 @@ var culture = {
     bad: "差",
 
     size: "大小",
-    uploadDate: "上传时间",
-    deleteDate: "删除时间",
+    uploadTime: "上传时间",
+    deleteTime: "删除时间",
     from: "来源",
     owner: "所有者",
     fileType: "文件类型",

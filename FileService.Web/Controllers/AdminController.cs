@@ -286,16 +286,17 @@ namespace FileService.Web.Controllers
             }
             return new ResponseModel<List<BsonDocument>>(ErrorCode.success, result);
         }
-        public ActionResult Preview(string id, string fileName)
+        public ActionResult Preview(string id, string fileName, bool deleted = false)
         {
             string fileType = config.GetTypeByExtension(Path.GetExtension(fileName).ToLower()).ToLower();
             ViewBag.id = id;
             ViewBag.convert = "false";
+            ViewBag.deleted = deleted.ToString().ToLower();
             ViewBag.fileType = fileType == "" ? "text" : fileType;
             if (fileType == "office")
             {
                 ViewBag.Convert = "true";
-                BsonDocument bson = filesWrap.FindOne(ObjectId.Parse(id));
+                BsonDocument bson = deleted ? filesWrap.FindOne(ObjectId.Parse(id)) : filesWrap.FindOneNotDelete(ObjectId.Parse(id));
                 ViewBag.id = bson.Contains("Files") ? bson["Files"].AsBsonArray[0]["_id"].ToString() : ObjectId.Empty.ToString();
             }
             ViewBag.template = System.IO.File.ReadAllText(AppDomain.CurrentDomain.BaseDirectory + "pdfview/template.html");

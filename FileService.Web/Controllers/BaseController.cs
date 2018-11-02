@@ -107,7 +107,7 @@ namespace FileService.Web.Controllers
         protected bool DeleteFile(string id)
         {
             ObjectId fileWrapId = ObjectId.Parse(id);
-            BsonDocument fileWrap = filesWrap.FindDelete(fileWrapId);
+            BsonDocument fileWrap = filesWrap.FindOne(fileWrapId);
             if (fileWrap == null) return false;
             //删除 thumbnail
             if (fileWrap["FileType"] == "image")

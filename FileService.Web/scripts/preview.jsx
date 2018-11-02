@@ -57,10 +57,16 @@ class PreviewTitleItem extends React.Component {
     }
     render() {
         if (this.props.selected) {
-            return (<div className="title_item current" title={this.props.id} id={this.props.id} onClick={this.props.onItemClick}>{this.props.tag}</div>);
+            return (<div className="title_item current"
+                title={this.props.id}
+                id={this.props.id}
+                onClick={this.props.onItemClick}>{this.props.tag}</div>);
         } else {
             return (
-                <div className="title_item" title={this.props.id} id={this.props.id} onClick={this.props.onItemClick}>{this.props.tag}</div>);
+                <div className="title_item"
+                    title={this.props.id}
+                    id={this.props.id}
+                    onClick={this.props.onItemClick}>{this.props.tag}</div>);
         }
     }
 }

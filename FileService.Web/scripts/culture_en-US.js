@@ -98,8 +98,8 @@ var culture = {
     bad: "Bad",
 
     size: "Size",
-    uploadDate: "UploadDate",
-    deleteDate: "deleteDate",
+    uploadTime: "UploadTime",
+    deleteTime: "DeleteTime",
     from: "From",
     owner: "Owner",
     fileType: "FileType",

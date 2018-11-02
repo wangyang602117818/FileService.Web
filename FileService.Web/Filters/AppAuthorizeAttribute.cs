@@ -11,6 +11,7 @@ namespace FileService.Web.Filters
 {
     /// <summary>
     /// 验证从第三方请求过来的headers里面是否带有authCode
+    /// 并验证authCode是否正确，如果不正确直接阻止提交
     /// </summary>
     public class AppAuthorizeAttribute : ActionFilterAttribute
     {
@@ -40,6 +41,10 @@ namespace FileService.Web.Filters
             }
         }
     }
+    /// <summary>
+    /// 验证从第三方请求过来的headers里面是否带有authCode
+    /// 并验证authCode是否正确，如果不正确则设置默认值
+    /// </summary>
     public class AppAuthorizeDefaultAttribute : ActionFilterAttribute
     {
         public override void OnActionExecuting(ActionExecutingContext filterContext)

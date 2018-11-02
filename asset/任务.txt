@@ -6,9 +6,8 @@
 预览文档的链接
 加密ts
 
-记录视频播放的进度，下次点击进来直接跳到播放进度
+download 权限问题
 FileServer.Client.dll 的多版本
-预览回收站的文件
 
 ffmpeg.exe -i Wildlife.mp4 -hls_time 2 -hls_list_size 0 -hls_allow_cache 0 -hls_enc 1 -hls_enc_key N74kEdQDwUgiR5QNyMQ9fg== -hls_enc_key_url http://localhost:2431/admin/key -hls_enc_iv EjRWeJCrze8= out.m3u8
 

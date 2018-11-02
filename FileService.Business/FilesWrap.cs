@@ -102,10 +102,6 @@ namespace FileService.Business
         {
             return mongoData.RestoreFiles(ids);
         }
-        public BsonDocument FindDelete(ObjectId id)
-        {
-            return mongoData.FindDelete(id);
-        }
         public IEnumerable<BsonDocument> GetCountByRecentMonth(DateTime startDateTime)
         {
             return mongoData.GetCountByRecentMonth(startDateTime);

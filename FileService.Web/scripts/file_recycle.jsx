@@ -10,7 +10,7 @@
                         <th width="18%">{culture.fileId}</th>
                         <th width="25%">{culture.fileName}</th>
                         <th width="10%">{culture.size}</th>
-                        <th width="15%">{culture.deleteDate}</th>
+                        <th width="15%">{culture.deleteTime}</th>
                         <th width="10%">{culture.from}</th>
                         <th width="5%">{culture.owner}</th>
                         <th width="5%">{culture.downloads}</th>
@@ -42,13 +42,21 @@ class FileRecycleItem extends React.Component {
     constructor(props) {
         super(props);
     }
+    preView(e) {
+        var id = e.target.id;
+        window.open(urls.preview + "?" + id, "_blank");
+    }
     render() {
         return (
             <tr>
                 <td dangerouslySetInnerHTML={{ __html: this.props.resource._id.$oid }}></td>
                 <td title={this.props.resource.FileName.removeHTML()}>
                     <i className={"iconfont " + getIconNameByFileName(this.props.resource.FileName.removeHTML())}></i>&nbsp;
-                    <span dangerouslySetInnerHTML={{ __html: this.props.resource.FileName.getFileName(15) }}></span>
+                    <span
+                        className="link"
+                        dangerouslySetInnerHTML={{ __html: this.props.resource.FileName.getFileName(15) }}
+                        onClick={this.preView.bind(this)}
+                        id={"id=" + this.props.resource._id.$oid.removeHTML() + "&filename=" + this.props.resource.FileName.removeHTML() + "&deleted=true"}></span>
                 </td>
                 <td>{convertFileSize(this.props.resource.Length)}</td>
                 <td>{parseBsonTime(this.props.resource.DeleteTime)}</td>
@@ -74,6 +82,8 @@ class FileRecycle extends React.Component {
             pageIndex: 1,
             pageSize: localStorage.recycle_pageSize || 15,
             pageCount: 1,
+            orderField: "DeleteTime",
+            orderFieldType: "desc",
             selectedList: [],
             filter: "",
             startTime: "",
@@ -157,6 +167,17 @@ class FileRecycle extends React.Component {
         this.setState({ data: this.state.data, selectedList: this.state.selectedList });
         e.stopPropagation();
     }
+    onOrderChanged(e) {
+        var order = e.target.getAttribute("order");
+        if (order) {
+            this.setState({
+                orderField: order,
+                orderFieldType: this.state.orderFieldType == "desc" ? "asc" : "desc"
+            }, function () {
+                this.getData();
+            }.bind(this));
+        }
+    }
     render() {
         return (
             <div className="main">
@@ -170,6 +191,8 @@ class FileRecycle extends React.Component {
                     listType={this.state.listType}
                     delShow={this.state.selectedList.length > 0 ? true : false}
                     removeByIds={this.deleteFiles.bind(this)}
+                    orderField={this.state.orderField}
+                    onOrderChanged={this.onOrderChanged.bind(this)}
                     onTipsClick={this.onTipsClick.bind(this)}
                     restoreFiles={this.restoreFiles.bind(this)}
                     onShowChange={this.onPageShow.bind(this)} />
@@ -192,7 +215,7 @@ class FileRecycle extends React.Component {
                         restoreFile={this.restoreFile.bind(this)}
                     /> :
                     <ResourcesDataPic data={this.state.data.result}
-                        canPreview={false}
+                        deleted={true}
                         selectedIds={this.state.selectedList}
                         onResourceSelected={this.onResourceSelected.bind(this)} />
                 }

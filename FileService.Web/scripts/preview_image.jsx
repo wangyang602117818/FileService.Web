@@ -4,10 +4,12 @@
     }
     render() {
         if (this.props.fileId) {
+            var url = (this.props.convert ? urls.downloadConvertUrl : urls.downloadUrl) + "/" + this.props.fileId;
+            if (this.props.deleted) url = url + "?deleted=true";
             return (
                 <div className="background">
                     {this.props.isOrigin ?
-                        <img src={(this.props.convert ? urls.downloadConvertUrl : urls.downloadUrl) + "/" + this.props.fileId} />
+                        <img src={url} />
                         :
                         <img src={urls.thumbnailUrl + "/" + this.props.fileId} />
                     }
@@ -26,13 +28,15 @@ class Preview extends React.Component {
             tabs: [],
             fileId: "",
             convert: false,
+            deleted: false,
             isOrigin: false
         }
     }
     componentDidMount() {
         var fileId = document.getElementById("fileId").value;
         var convert = document.getElementById("convert").value == "true" ? true : false;
-        this.setState({ convert: convert });
+        var deleted = document.getElementById("deleted").value == "true" ? true : false;
+        this.setState({ convert: convert, deleted: deleted });
         var that = this;
         http.get(urls.imageListUrl + "/" + fileId, function (data) {
             if (data.code == 0) that.dataSetChange(data.result);
@@ -46,6 +50,7 @@ class Preview extends React.Component {
                     onItemClick={this.onItemClick.bind(this)} />
                 <PreviewBody fileId={this.state.fileId}
                     isOrigin={this.state.isOrigin}
+                    deleted={this.state.deleted}
                     convert={this.state.convert} />
             </div>
         );

@@ -9,26 +9,6 @@ namespace FileService.Data
     public class FilesWrap : MongoBase
     {
         public FilesWrap() : base("FilesWrap") { }
-        public override IEnumerable<BsonDocument> Find(BsonDocument document)
-        {
-            document.Add("Delete", false);
-            return MongoCollection.Find(document).ToEnumerable();
-        }
-        public override BsonDocument FindOne(ObjectId id)
-        {
-            var filter = FilterBuilder.Eq("_id", id) & FilterBuilder.Eq("Delete", false);
-            return MongoCollection.Find(filter).FirstOrDefault();
-        }
-        public BsonDocument FindDelete(ObjectId id)
-        {
-            var filter = FilterBuilder.Eq("_id", id) & FilterBuilder.Eq("Delete", true);
-            return MongoCollection.Find(filter).FirstOrDefault();
-        }
-        public override IEnumerable<BsonDocument> FindAll()
-        {
-            var filter = FilterBuilder.Eq("Delete", false);
-            return MongoCollection.Find(filter).ToEnumerable();
-        }
         public override long Count()
         {
             var filter = FilterBuilder.Eq("Delete", false);

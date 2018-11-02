@@ -18,10 +18,10 @@ namespace FileService.Web.Controllers
         static string m3u8Template = System.IO.File.ReadAllText(AppDomain.CurrentDomain.BaseDirectory + "scripts\\template.m3u8");
         protected TsTime tsTime = new TsTime();
         [AppAuthorizeDefault]
-        public ActionResult Get(string id)
+        public ActionResult Get(string id, bool deleted = false)
         {
             ObjectId fileWrapId = ObjectId.Parse(id);
-            BsonDocument fileWrap = filesWrap.FindOne(fileWrapId);
+            BsonDocument fileWrap = deleted ? filesWrap.FindOne(fileWrapId) : filesWrap.FindOneNotDelete(fileWrapId);
             if (fileWrap == null) return File(new MemoryStream(), "application/octet-stream");
             AddDownload(fileWrapId);
             ObjectId fileId = fileWrap["FileId"].AsObjectId;
@@ -114,7 +114,7 @@ namespace FileService.Web.Controllers
             string userName = Request.Headers["UserName"] ?? User.Identity.Name;
             if (!string.IsNullOrEmpty(userName))
             {
-                tsLastTime = tsTime.GetTsTime(m3u8Id, userName);
+                tsLastTime = tsTime.GetTsTime(document["From"].AsString, m3u8Id, userName);
             }
             document["File"] = Regex.Replace(document["File"].AsString, "(\\w+).ts", (match) =>
              {
@@ -145,7 +145,7 @@ namespace FileService.Web.Controllers
             int currTsTime = string.IsNullOrEmpty(tstime) ? 0 : int.Parse(tstime);
             if (currTsTime > 0 && !string.IsNullOrEmpty(userName))
             {
-                tsTime.UpdateByUserName(document["SourceId"].AsObjectId, userName, currTsTime);
+                tsTime.UpdateByUserName(document["From"].AsString, document["SourceId"].AsObjectId, document["SourceName"].AsString, userName, currTsTime);
             }
             return File(document["File"].AsByteArray, "video/vnd.dlna.mpeg-tts", document["_id"].ToString() + ".ts");
         }

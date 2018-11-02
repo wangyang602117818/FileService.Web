@@ -20,7 +20,7 @@ namespace FileService.Data
         }
         public BsonDocument ServerStatus()
         {
-           return MongoDatabase.RunCommand<BsonDocument>(new BsonDocument("serverStatus", 1));
+            return MongoDatabase.RunCommand<BsonDocument>(new BsonDocument("serverStatus", 1));
         }
         public BsonDocument DbStats()
         {
@@ -54,15 +54,25 @@ namespace FileService.Data
         {
             return MongoCollection.DeleteMany(FilterBuilder.In("_id", ids)).IsAcknowledged;
         }
-        public virtual IEnumerable<BsonDocument> Find(BsonDocument document)
+        public IEnumerable<BsonDocument> Find(BsonDocument document)
         {
             return MongoCollection.Find(document).ToEnumerable();
         }
-        public virtual BsonDocument FindOne(ObjectId id)
+        public IEnumerable<BsonDocument> FindNotDelete(BsonDocument document)
+        {
+            document.Add("Delete", false);
+            return MongoCollection.Find(document).ToEnumerable();
+        }
+        public BsonDocument FindOne(ObjectId id)
         {
             return MongoCollection.Find(new BsonDocument("_id", id)).FirstOrDefault();
         }
-        public virtual IEnumerable<BsonDocument> FindAll()
+        public BsonDocument FindOneNotDelete(ObjectId id)
+        {
+            var filter = FilterBuilder.Eq("_id", id) & FilterBuilder.Eq("Delete", false);
+            return MongoCollection.Find(filter).FirstOrDefault();
+        }
+        public IEnumerable<BsonDocument> FindAll()
         {
             return MongoCollection.Find(new BsonDocument()).ToEnumerable();
         }

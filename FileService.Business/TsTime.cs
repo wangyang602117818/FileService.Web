@@ -1,18 +1,17 @@
 ﻿using MongoDB.Bson;
-using System;
 
 namespace FileService.Business
 {
     public class TsTime : ModelBase<Data.TsTime>
     {
         public TsTime() : base(new Data.TsTime()) { }
-        public bool UpdateByUserName(ObjectId sourceId, string userName, int currentTime)
+        public bool UpdateByUserName(string from, ObjectId sourceId, string sourceName, string userName, int currentTime)
         {
-            return mongoData.UpdateByUserName(userName, sourceId,currentTime);
+            return mongoData.UpdateByUserName(from, sourceId, sourceName, userName, currentTime);
         }
-        public int GetTsTime(ObjectId sourceId, string userName)
+        public int GetTsTime(string from, ObjectId sourceId, string userName)
         {
-            BsonDocument tsTime = mongoData.GetTsTime(sourceId, userName);
+            BsonDocument tsTime = mongoData.GetTsTime(from, sourceId, userName);
             if (tsTime == null) return 0;
             return tsTime["TsTime"].AsInt32;
         }

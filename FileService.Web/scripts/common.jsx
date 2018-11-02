@@ -106,15 +106,18 @@ class TitleArrowComponent extends React.Component {
                     <i className={this.props.show ? "iconfont icon-down" : "iconfont icon-right"}></i>{this.props.title} {this.props.count > 0 ? "(" + this.props.count + ")" : ""}
                 </span>
                 <div className="right_component" onMouseLeave={this.orderNone.bind(this)}>
-                    {this.props.type == "file" ?
-                        <div className="order_list"
-                            style={{ display: this.state.orderDisp ? "inline-block" : "none" }}
-                            onClick={this.props.onOrderChanged}>
-                            <span order="FileName">{culture.fileName} {this.props.orderField == "FileName" ? "✔" : ""}</span>
-                            <span order="Length">{culture.size} {this.props.orderField == "Length" ? "✔" : ""}</span>
-                            <span order="CreateTime">{culture.createTime} {this.props.orderField == "CreateTime" ? "✔" : ""}</span>
-                        </div> : null
-                    }
+
+                    <div className="order_list"
+                        style={{ display: this.state.orderDisp ? "inline-block" : "none" }}
+                        onClick={this.props.onOrderChanged}>
+                        <span order="FileName">{culture.fileName} {this.props.orderField == "FileName" ? "✔" : ""}</span>
+                        <span order="Length">{culture.size} {this.props.orderField == "Length" ? "✔" : ""}</span>
+                        {this.props.type == "file" ?
+                            <span order="CreateTime">{culture.createTime} {this.props.orderField == "CreateTime" ? "✔" : ""}</span> :
+                            <span order="DeleteTime">{culture.deleteTime} {this.props.orderField == "DeleteTime" ? "✔" : ""}</span>
+                        }
+                    </div>
+
                     {this.props.type == "file" ?
                         <i className="iconfont icon-download" title={this.props.type == "file" ? culture.download : culture.permanent_del}
                             onClick={this.props.downloadByIds}

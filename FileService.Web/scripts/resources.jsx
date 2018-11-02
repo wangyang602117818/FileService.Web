@@ -27,7 +27,7 @@
                             <th width="18%">{culture.fileId}</th>
                             <th width="25%">{culture.fileName}</th>
                             <th width="7%">{culture.size}</th>
-                            <th width="14%">{culture.uploadDate}</th>
+                            <th width="14%">{culture.uploadTime}</th>
                             <th width="10%">{culture.from}</th>
                             <th width="5%">{culture.owner}</th>
                             <th width="5%">{culture.downloads}</th>
@@ -135,7 +135,7 @@ class ResourcesDataPic extends React.Component {
             <div className="table_grid">
                 {this.props.data.map(function (item, i) {
                     return (<ResourcesDataPicItem
-                        canPreview={this.props.canPreview}
+                        deleted={this.props.deleted}
                         selectedIds={this.props.selectedIds}
                         onResourceSelected={this.props.onResourceSelected}
                         resource={item}
@@ -150,15 +150,11 @@ class ResourcesDataPicItem extends React.Component {
         super(props);
     }
     preView(e) {
-        if (this.props.canPreview) {
-            var target = e.target;
-            while (target.nodeName == "path" || target.nodeName == "svg" || target.className.indexOf("table_grid_item_wrap") == -1) {
-                target = target.parentElement;
-            }
-            window.open(urls.preview + "?" + target.id, "_blank");
-        } else {
-            this.props.onResourceSelected(e);
+        var target = e.target;
+        while (target.nodeName == "path" || target.nodeName == "svg" || target.className.indexOf("table_grid_item_wrap") == -1) {
+            target = target.parentElement;
         }
+        window.open(urls.preview + "?" + target.id, "_blank");
     }
     render() {
         var fileId = this.props.resource._id.$oid.removeHTML();
@@ -169,11 +165,13 @@ class ResourcesDataPicItem extends React.Component {
         var className = "table_grid_item_wrap ";
         className += this.props.resource.FileId.$oid.removeHTML() == "000000000000000000000000" ? "doing " : "done ";
         className += this.props.selectedIds.indexOf(fileId) > -1 ? "selected" : "";
+        var preId = "id=" + fileId + "&filename=" + fileName;
+        if (this.props.deleted) preId = preId + "&deleted=true";
         return (
             <div className={className}
                 onClick={this.preView.bind(this)}
                 data-fileid={fileId}
-                id={"id=" + fileId + "&filename=" + fileName}>
+                id={preId}>
                 <div className="table_grid_item">
                     <i className="iconfont icon-ok"
                         onClick={this.props.onResourceSelected}
@@ -669,7 +667,7 @@ class Resources extends React.Component {
                         removeItem={this.removeItem.bind(this)}
                         onIdClick={this.onIdClick.bind(this)} /> :
                     <ResourcesDataPic data={this.state.data.result}
-                        canPreview={true}
+                        deleted={false}
                         selectedIds={this.state.selectedList}
                         onResourceSelected={this.onResourceSelected.bind(this)} />
                 }

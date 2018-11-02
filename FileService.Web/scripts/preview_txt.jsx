@@ -17,16 +17,20 @@ class Preview extends React.Component {
             tabs: [],
             fileId: "",
             text: "",
-            isOrigin: false
+            isOrigin: false,
+            deleted: false,
         }
     }
     componentDidMount() {
         var fileId = document.getElementById("fileId").value;
         var convert = document.getElementById("convert").value == "true" ? true : false;
+        var deleted = document.getElementById("deleted").value == "true" ? true : false;
         var array = [];
         array.push({ _id: fileId, tag: "origin", current: false });
         this.dataSetChange(array);
-        http.getFile((convert ? urls.downloadConvertUrl : urls.downloadUrl) + "/" + fileId, function (data) {
+        var url = (convert ? urls.downloadConvertUrl : urls.downloadUrl) + "/" + fileId;
+        if (deleted) url = url + "?deleted=true";
+        http.getFile(url, function (data) {
             this.setState({ text: data });
         }.bind(this));
     }

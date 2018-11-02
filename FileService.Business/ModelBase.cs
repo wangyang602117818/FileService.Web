@@ -26,7 +26,6 @@ namespace FileService.Business
         {
             return mongoData.HostInfo();
         }
-
         public void Insert(BsonDocument document)
         {
             mongoData.Insert(document);
@@ -58,6 +57,10 @@ namespace FileService.Business
         public BsonDocument FindOne(ObjectId id)
         {
             return mongoData.FindOne(id);
+        }
+        public BsonDocument FindOneNotDelete(ObjectId id)
+        {
+            return mongoData.FindOneNotDelete(id);
         }
         public IEnumerable<BsonDocument> FindAll()
         {

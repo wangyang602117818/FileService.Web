@@ -59,18 +59,22 @@ class VideoOrigin extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            convert: false
+            convert: false,
+            deleted: false,
         }
     }
     componentDidMount() {
         var convert = document.getElementById("convert").value == "true" ? true : false;
-        this.setState({ convert: convert })
+        var deleted = document.getElementById("deleted").value == "true" ? true : false;
+        this.setState({ convert: convert, deleted: deleted })
     }
     render() {
+        var url = (this.props.convert ? urls.downloadConvertUrl : urls.downloadUrl) + "/" + this.props.fileId;
+        if (this.state.deleted) url = url + "?deleted=true";
         return (
             <video controls="controls" width="900" height="600">
                 {this.props.fileId ?
-                    <source src={(this.state.convert ? urls.downloadConvertUrl : urls.downloadUrl) + "/" + this.props.fileId} />
+                    <source src={url} />
                     :
                     null
                 }
