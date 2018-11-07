@@ -15,7 +15,12 @@ namespace FileService.Util
         public static string sharedFolder = ConfigurationManager.AppSettings["sharedFolder"];
         public static string sharedUserName = ConfigurationManager.AppSettings["sharedUserName"];
         public static string sharedUserPwd = ConfigurationManager.AppSettings["sharedUserPwd"];
-
+        /// <summary>
+        /// 本web页面的权限配置
+        /// </summary>
+        public static string appName = ConfigurationManager.AppSettings["appName"];
+        public static string authCode = ConfigurationManager.AppSettings["authCode"];
+        public static string apiType = ConfigurationManager.AppSettings["apiType"];
         //public static PerformanceCounter cpuCounter = new PerformanceCounter("Processor", "% Processor Time", "_Total");
         //public static PerformanceCounter ramCounter = new PerformanceCounter("Memory", "Available MBytes");
 

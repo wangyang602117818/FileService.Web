@@ -1,10 +1,7 @@
 ﻿using FileService.Business;
+using FileService.Util;
 using FileService.Web.Models;
 using MongoDB.Bson;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
 using System.Web.Mvc;
 
 namespace FileService.Web.Filters
@@ -53,16 +50,16 @@ namespace FileService.Web.Filters
             string authCode = filterContext.HttpContext.Request.Headers["AuthCode"];
             if (string.IsNullOrEmpty(authCode))
             {
-                filterContext.HttpContext.Request.Headers.Add("AuthCode", "3c9deb1f8f6e");
-                filterContext.HttpContext.Request.Headers.Add("AppName", "FileServiceApi");
+                filterContext.HttpContext.Request.Headers.Add("AuthCode", AppSettings.authCode);
+                filterContext.HttpContext.Request.Headers.Add("AppName", AppSettings.appName);
             }
             else
             {
                 BsonDocument application = new Application().FindByAuthCode(authCode);
                 if (application == null)
                 {
-                    filterContext.HttpContext.Request.Headers.Add("AuthCode", "3c9deb1f8f6e");
-                    filterContext.HttpContext.Request.Headers.Add("AppName", "FileServiceApi");
+                    filterContext.HttpContext.Request.Headers.Add("AuthCode", AppSettings.authCode);
+                    filterContext.HttpContext.Request.Headers.Add("AppName", AppSettings.appName);
                 }
                 else
                 {

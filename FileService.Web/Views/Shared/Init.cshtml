@@ -26,11 +26,20 @@
 </head>
 <body>
     <div id="shared_init"></div>
+
+    <input type="hidden" name="userName" id="userName" value="@ViewBag.Name" />
+    <input type="hidden" name="role" id="role" value="@ViewBag.Role" />
+
     <input type="hidden" name="id" id="id" value="@ViewBag.id" />
+
     <input type="hidden" name="hasPassword" id="hasPassword" value="@ViewBag.hasPassword.ToString()" />
     <input type="hidden" name="expired" id="expired" value="@ViewBag.expired.ToString()" />
     <input type="hidden" name="disabled" id="disabled" value="@ViewBag.disabled.ToString()" />
-    <input type="hidden" name="appPath" id="appPath" value="@ViewBag.AppPath" />
+
+    <input type="hidden" name="appPath" id="appPath" value="@ViewBag.appPath" />
+    <input type="hidden" name="appName" id="appName" value="@ViewBag.appName" />
+    <input type="hidden" name="authCode" id="authCode" value="@ViewBag.authCode" />
+    <input type="hidden" name="apiType" id="apiType" value="@ViewBag.apiType" />
     @Scripts.Render("~/scripts/preview")
     @Scripts.Render("~/scripts/shared_init")
 </body>

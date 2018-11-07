@@ -36,7 +36,6 @@ namespace FileService.Web.Controllers
                 }
             }
             ViewBag.Role = User.Identity.Name == "local" ? "admin" : bsonUser["Role"].AsString;
-            ViewBag.AppPath = Request.ApplicationPath;
             return View();
         }
         [AllowAnonymous]
@@ -301,7 +300,6 @@ namespace FileService.Web.Controllers
             }
             ViewBag.template = System.IO.File.ReadAllText(AppDomain.CurrentDomain.BaseDirectory + "pdfview/template.html");
             ViewBag.FileName = fileName;
-            ViewBag.AppPath = Request.ApplicationPath;
             return View();
         }
         public ActionResult PreviewConvert(string id, string fileName)
@@ -312,7 +310,6 @@ namespace FileService.Web.Controllers
             ViewBag.fileType = fileType == "" ? "text" : fileType;
             ViewBag.FileName = fileName;
             ViewBag.template = System.IO.File.ReadAllText(AppDomain.CurrentDomain.BaseDirectory + "pdfview/template.html");
-            ViewBag.AppPath = Request.ApplicationPath;
             return View("Preview");
         }
         public ActionResult GetCountRecentMonth(int month)
