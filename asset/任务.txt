@@ -5,7 +5,7 @@
 获取cpu使用率
 预览文档的链接
 加密ts
-
+展示视频的播放记录
 
 download 权限问题
 FileServer.Client.dll 的多版本
