@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Web;
 using System.Web.Mvc;
 
 namespace FileService.Web.Controllers
@@ -30,6 +31,14 @@ namespace FileService.Web.Controllers
         protected FilePreviewBig filePreviewBig = new FilePreviewBig();
         protected Shared shared = new Shared();
         protected Download download = new Download();
+        
+        public BaseController()
+        {
+            ViewBag.appName = AppSettings.appName;
+            ViewBag.authCode = AppSettings.authCode;
+            ViewBag.apiType = AppSettings.apiType;
+            ViewBag.appPath = System.Web.HttpContext.Current.Request.ApplicationPath;
+        }
         protected void Log(string fileId, string content)
         {
             var authCode = Request.Headers["AuthCode"];

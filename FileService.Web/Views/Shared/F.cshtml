@@ -26,13 +26,20 @@
 </head>
 <body tabindex="1" class="loadingInProgress">
     <div id="shared"></div>
+    <input type="hidden" name="userName" id="userName" value="@ViewBag.Name" />
+    <input type="hidden" name="role" id="role" value="@ViewBag.Role" />
+
     <input type="hidden" name="id" id="id" value="@ViewBag.id" />
     <input type="hidden" name="fileId" id="fileId" value="@ViewBag.fileId" />
     <input type="hidden" name="fileName" id="fileName" value="@ViewBag.fileName" />
     <input type="hidden" name="fileType" id="fileType" value="@ViewBag.fileType" />
     <input type="hidden" name="convert" id="convert" value="@ViewBag.convert" />
     <input type="hidden" name="deleted" id="deleted" value="@ViewBag.deleted" />
-    <input type="hidden" name="appPath" id="appPath" value="@ViewBag.AppPath" />
+
+    <input type="hidden" name="appPath" id="appPath" value="@ViewBag.appPath" />
+    <input type="hidden" name="appName" id="appName" value="@ViewBag.appName" />
+    <input type="hidden" name="authCode" id="authCode" value="@ViewBag.authCode" />
+    <input type="hidden" name="apiType" id="apiType" value="@ViewBag.apiType" />
     @Scripts.Render("~/scripts/preview")
     @if (ViewBag.fileType == "video")
     {

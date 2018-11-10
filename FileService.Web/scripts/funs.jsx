@@ -1,5 +1,9 @@
-﻿var authCode = "3c9deb1f8f6e",
-    apiType = "web";
+﻿var userName = document.getElementById("userName").value;
+var role = document.getElementById("role").value;
+var appPath = document.getElementById("appPath").value;
+var authCode = document.getElementById("authCode").value;
+var appName = document.getElementById("appName").value;
+var apiType = document.getElementById("apiType").value;
 var keywords = [
     "_id.$oid",
     "FileId.$oid",
@@ -111,7 +115,6 @@ var http = {
     },
 };
 var colorList = ["#C35C00", "#E1301E", "#968c6d", "#ffb600", "#602020", "#6d6e71", "#db536a", "#dc6900"];
-var appPath = document.getElementById("appPath").value;
 var appDomain = appPath == "/" ? "/" : appPath + "/";
 var baseUrl = window.location.protocol + "//" + window.location.host + appDomain;
 var urls = {

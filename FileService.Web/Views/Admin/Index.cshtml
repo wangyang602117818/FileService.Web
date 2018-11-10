@@ -27,8 +27,11 @@
 <body>
     <div id="index"></div>
     <input type="hidden" name="userName" id="userName" value="@ViewBag.Name" />
-    <input type="hidden" name="role" id="role" value="@ViewBag.Role" /> 
-    <input type="hidden" name="appPath" id="appPath" value="@ViewBag.AppPath" />
+    <input type="hidden" name="role" id="role" value="@ViewBag.Role" />
+    <input type="hidden" name="appPath" id="appPath" value="@ViewBag.appPath" />  <!--子站点名称-->
+    <input type="hidden" name="appName" id="appName" value="@ViewBag.appName" />
+    <input type="hidden" name="authCode" id="authCode" value="@ViewBag.authCode" />
+    <input type="hidden" name="apiType" id="apiType" value="@ViewBag.apiType" />
 </body>
 </html>
 @Scripts.Render("~/scripts/index-head-jsx")

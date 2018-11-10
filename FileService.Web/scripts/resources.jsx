@@ -476,7 +476,7 @@ class Resources extends React.Component {
             }.bind(this))
     }
     emptyAccess(e) {
-        http.postJson(urls.resources.updateAccessUrl, { fileId: this.state.fileId, access: [] }, function (data) {
+        http.postJson(urls.resources.updateAccessUrl, { fileIds: [this.state.fileId], access: [] }, function (data) {
             if (data.code == 0) {
                 this.setState({ access: [] });
             } else {
