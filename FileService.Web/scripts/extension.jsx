@@ -125,10 +125,10 @@ class Extension extends React.Component {
     onExtensionShow() {
         if (this.state.cextensionShow) {
             this.setState({ extensionShow: false });
-            localStorage.cextension_add = false;
+            localStorage.extension_add = false;
         } else {
             this.setState({ extensionShow: true });
-            localStorage.cextension_add = true;
+            localStorage.extension_add = true;
         }
     }
     addExtension(obj, success) {
@@ -183,7 +183,7 @@ class Extension extends React.Component {
         return (
             <div className="main">
                 <h1>{culture.extension}</h1>
-                <ExtensionToolBar section={this.props.section}
+                <ConfigToolBar section={this.props.section}
                     onSectionChange={this.props.onSectionChange} />
                 <TitleArrow title={culture.all + culture.extension}
                     show={this.state.extensionShow}
@@ -217,7 +217,7 @@ class Extension extends React.Component {
                 {this.state.updateShow ?
                     <UpdateExtension
                         show={this.state.updateToggle}
-                        updateCExtension={this.updateExtension.bind(this)}
+                        updateExtension={this.updateExtension.bind(this)}
                         ref="updateextension" /> : null
                 }
                 {this.state.deleteShow ?
@@ -235,20 +235,20 @@ class Extension extends React.Component {
 }
 for (var item in CommonUsePagination) Extension.prototype[item] = CommonUsePagination[item];
 
-class ExtensionToolBar extends React.Component {
+class ConfigToolBar extends React.Component {
     constructor(props) {
         super(props);
     }
     render() {
         return (
-            <div className="extension_toolbar">
+            <div className="config_toolbar">
                 <div className={this.props.section == "application" ? "config_info select" : "config_info"} onClick={this.props.onSectionChange} id="application">{culture.application}</div>
-                <div className={this.props.section == "extension" ? "config_info select" : "config_info"} onClick={this.props.onSectionChange} id="config">{culture.extension}</div>
+                <div className={this.props.section == "extension" ? "config_info select" : "config_info"} onClick={this.props.onSectionChange} id="extension">{culture.extension}</div>
             </div>
         )
     }
 }
-class ExtensionContainer extends React.Component {
+class ConfigContainer extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -265,12 +265,12 @@ class ExtensionContainer extends React.Component {
     }
     render() {
         if (this.state.section == "extension") {
-            return <Extension ref="extension"
+            return <Extension ref="config"
                 refresh={this.props.refresh}
                 section={this.state.section}
                 onSectionChange={this.onSectionChange.bind(this)} />
         } else {
-            return <Application ref="extension"
+            return <Application ref="config"
                 refresh={this.props.refresh}
                 section={this.state.section}
                 onSectionChange={this.onSectionChange.bind(this)} />

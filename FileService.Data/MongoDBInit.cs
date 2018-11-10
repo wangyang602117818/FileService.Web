@@ -26,9 +26,9 @@ namespace FileService.Data
                     {"createTime",DateTime.Now }
                 });
             }
-            if (!databases.Contains("Config"))
+            if (!databases.Contains("Extension"))
             {
-                database.CreateCollection("Config");
+                database.CreateCollection("Extension");
                 List<BsonDocument> list = new List<BsonDocument>()
                 {
                     new BsonDocument(){{"Extension",".jpg"},{"Type","image"},{"Action","allow"},{"Description","image"},
@@ -62,8 +62,9 @@ namespace FileService.Data
                     new BsonDocument(){{"Extension", ".wps" },{"Type", "office" }, { "Action","allow"}, { "Description", "wpsoffice" }, { "CreateTime", DateTime.Now }},
                     new BsonDocument(){{"Extension", ".et" },{"Type", "office" }, { "Action","allow"}, { "Description", "wpsoffice" }, { "CreateTime", DateTime.Now }},
                     new BsonDocument(){{"Extension", ".dps" },{"Type", "office" }, { "Action","allow"}, { "Description", "wpsoffice" }, { "CreateTime", DateTime.Now }},
+                     new BsonDocument(){{"Extension", ".exe" },{"Type", "attachment" }, { "Action","block"}, { "Description", "executable file" }, { "CreateTime", DateTime.Now }}
                 };
-                database.GetCollection<BsonDocument>("Config").InsertMany(list);
+                database.GetCollection<BsonDocument>("Extension").InsertMany(list);
             }
             if (!databases.Contains("Application"))
             {

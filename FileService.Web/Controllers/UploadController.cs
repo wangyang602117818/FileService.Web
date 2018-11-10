@@ -20,7 +20,7 @@ namespace FileService.Web.Controllers
     {
         string tempFileDirectory = AppDomain.CurrentDomain.BaseDirectory + AppSettings.tempFileDir + DateTime.Now.ToString("yyyyMMdd") + "\\";
         Application application = new Application();
-        Extension config = new Extension();
+        Extension extension = new Extension();
         [HttpPost]
         public ActionResult Image(UploadImgModel uploadImgModel)
         {
@@ -42,7 +42,7 @@ namespace FileService.Web.Controllers
             foreach (HttpPostedFileBase file in uploadImgModel.Images)
             {
                 //过滤不正确的格式
-                if (!config.CheckFileExtensionImage(Path.GetExtension(file.FileName).ToLower()))
+                if (!extension.CheckFileExtensionImage(Path.GetExtension(file.FileName).ToLower()))
                 {
                     response.Add(new ImageItemResponse()
                     {
@@ -116,7 +116,7 @@ namespace FileService.Web.Controllers
             foreach (HttpPostedFileBase file in uploadVideo.Videos)
             {
                 //过滤不正确的格式
-                if (!config.CheckFileExtensionVideo(Path.GetExtension(file.FileName).ToLower()))
+                if (!extension.CheckFileExtensionVideo(Path.GetExtension(file.FileName).ToLower()))
                 {
                     response.Add(new VideoItemResponse()
                     {
@@ -187,7 +187,7 @@ namespace FileService.Web.Controllers
             {
                 string fileExt = Path.GetExtension(file.FileName).ToLower();
                 //过滤不正确的格式
-                if (!config.CheckFileExtension(fileExt))
+                if (!extension.CheckFileExtension(fileExt))
                 {
                     response.Add(new AttachmentResponse()
                     {
@@ -197,7 +197,7 @@ namespace FileService.Web.Controllers
                     continue;
                 }
                 BsonArray files = new BsonArray();
-                string fileType = config.GetTypeByExtension(fileExt);
+                string fileType = extension.GetTypeByExtension(fileExt);
                 //office
                 if (fileType.ToLower() == "office")
                 {
@@ -294,7 +294,7 @@ namespace FileService.Web.Controllers
             foreach (HttpPostedFileBase file in uploadVideoCPStreamModel.VideoCPs)
             {
                 //过滤不正确的格式
-                if (!config.CheckFileExtension(Path.GetExtension(file.FileName)))
+                if (!extension.CheckFileExtension(Path.GetExtension(file.FileName)))
                 {
                     response.Add(ObjectId.Empty.ToString());
                     continue;

@@ -383,7 +383,7 @@ namespace FileService.Web.Controllers
         {
             return new ResponseModel<string>(ErrorCode.success, new Random().RandomCodeHex(id));
         }
-        public ActionResult GetExtensions(string type)
+        public ActionResult GetExtensionsByType(string type)
         {
             IEnumerable<string> result = extension.FindByType(type).Select(s => s["Extension"].ToString());
             return new ResponseModel<IEnumerable<string>>(ErrorCode.success, result);
@@ -442,7 +442,7 @@ namespace FileService.Web.Controllers
             return new ResponseModel<string>(ErrorCode.server_exception, "");
         }
         [Authorize(Roles = "admin,management")]
-        public ActionResult DeletExtension(string id)
+        public ActionResult DeleteExtension(string id)
         {
             if (extension.DeleteOne(ObjectId.Parse(id)))
             {

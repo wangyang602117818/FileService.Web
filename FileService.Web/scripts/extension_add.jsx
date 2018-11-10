@@ -11,7 +11,7 @@
     }
     updateExtension(e) {
         if (this.state.extension && this.state.type && this.state.action) {
-            this.props.updateConfig(this.state, function (data) {
+            this.props.updateExtension(this.state, function (data) {
                 if (data.code != 0) this.setState({ message: data.message });
             }.bind(this));
         }
@@ -77,7 +77,7 @@
                             <td colSpan="4">
                                 <input type="button" value={culture.update}
                                     className="button"
-                                    onClick={this.updateConfig.bind(this)} />
+                                    onClick={this.updateExtension.bind(this)} />
                                 <font color="red">{" " + this.state.message}</font>
                             </td>
                         </tr>
@@ -163,7 +163,7 @@ class AddExtension extends React.Component {
                             <td colSpan="4">
                                 <input type="button" value={culture.add}
                                     className="button"
-                                    onClick={this.addConfig.bind(this)} />
+                                    onClick={this.addExtension.bind(this)} />
                                 <font color="red">{" " + this.state.message}</font>
                             </td>
                         </tr>

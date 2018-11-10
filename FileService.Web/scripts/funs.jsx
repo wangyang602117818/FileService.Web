@@ -197,8 +197,7 @@ var urls = {
         getExtensionUrl: appDomain + "admin/getextension",
         addExtensionUrl: appDomain + "admin/addextension",
         updateExtensionUrl: appDomain + "admin/updateextension",
-        deleteUrl: appDomain + "admin/deleteextension",
-        getExtensionsUrl: appDomain + "admin/getextensions"
+        deleteUrl: appDomain + "admin/deleteextension"
     },
     application: {
         getUrl: appDomain + "admin/getapplications",

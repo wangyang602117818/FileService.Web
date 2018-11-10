@@ -10,9 +10,9 @@ namespace FileService.Converter
 {
     public class Processor
     {
-        Business.Task task = new Business.Task();
+        Task task = new Task();
         Business.Converter converter = new Business.Converter();
-        Extension config = new Extension();
+        Extension extension = new Extension();
         public bool StartMonitor(string handlerId)
         {
             bool result = AppSettings.connectState(AppSettings.sharedFolder.TrimEnd('\\'), AppSettings.sharedUserName, AppSettings.sharedUserPwd);
@@ -82,7 +82,7 @@ namespace FileService.Converter
                         {
                             result = new RarConverter().Convert(item);
                         }
-                        else if (config.GetTypeByExtension(fileExt) == "office")
+                        else if (extension.GetTypeByExtension(fileExt) == "office")
                         {
                             result = new OfficeConverter().Convert(item);
                         }
