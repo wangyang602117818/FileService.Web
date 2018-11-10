@@ -105,7 +105,7 @@ class Extension extends React.Component {
             pageShow: localStorage.extension ? eval(localStorage.extension) : true,
             extensionShow: localStorage.extension_add ? eval(localStorage.extension_add) : true,
             deleteShow: false,
-            deleteToggle: false,
+            deleteToggle: true,
             deleteName: "",
             deleteId: "",
             updateShow: false,
