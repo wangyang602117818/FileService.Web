@@ -189,12 +189,12 @@ var urls = {
         deleteThumbnailUrl: appDomain + "admin/deletethumbnail",
         deleteM3u8Url: appDomain + "admin/deletem3u8"
     },
-    config: {
-        getUrl: appDomain + "admin/getconfigs",
-        getConfigUrl: appDomain + "admin/getconfig",
-        addConfigUrl: appDomain + "admin/addconfig",
-        updateConfigUrl: appDomain + "admin/updateconfig",
-        deleteUrl: appDomain + "admin/deleteconfig",
+    extension: {
+        getUrl: appDomain + "admin/getextensions",
+        getExtensionUrl: appDomain + "admin/getextension",
+        addExtensionUrl: appDomain + "admin/addextension",
+        updateExtensionUrl: appDomain + "admin/updateextension",
+        deleteUrl: appDomain + "admin/deleteextension",
         getExtensionsUrl: appDomain + "admin/getextensions"
     },
     application: {

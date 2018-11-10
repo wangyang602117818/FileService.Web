@@ -20,7 +20,7 @@ namespace FileService.Web.Controllers
     {
         string tempFileDirectory = AppDomain.CurrentDomain.BaseDirectory + AppSettings.tempFileDir + DateTime.Now.ToString("yyyyMMdd") + "\\";
         Application application = new Application();
-        Config config = new Config();
+        Extension config = new Extension();
         [HttpPost]
         public ActionResult Image(UploadImgModel uploadImgModel)
         {

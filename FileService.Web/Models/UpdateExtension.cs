@@ -7,7 +7,7 @@ using System.Web;
 
 namespace FileService.Web.Models
 {
-    public class AddConfigModel
+    public class AddExtensionModel
     {
         [Required]
         public string Extension { get; set; }
@@ -18,7 +18,7 @@ namespace FileService.Web.Models
         [Required]
         public string Action { get; set; }
     }
-    public class UpdateConfigModel
+    public class UpdateExtensionModel
     {
         [Required]
         [BsonIgnore]

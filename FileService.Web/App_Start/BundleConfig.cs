@@ -64,8 +64,8 @@ namespace FileService.Web
             bundles.Add(new BabelBundle("~/scripts/management")
                .Include("~/scripts/application.jsx")
                .Include("~/scripts/application_add.jsx")
-               .Include("~/scripts/config.jsx")
-               .Include("~/scripts/config_add.jsx")
+               .Include("~/scripts/extension.jsx")
+               .Include("~/scripts/extension_add.jsx")
             );
             //admin
             bundles.Add(new BabelBundle("~/scripts/admin")

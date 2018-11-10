@@ -17,7 +17,7 @@ namespace FileService.Converter
         Files files = new Files();
         FilesWrap filesWrap = new FilesWrap();
         FilesConvert filesConvert = new FilesConvert();
-        Config config = new Config();
+        Extension config = new Extension();
         Business.Task task = new Business.Task();
         MongoFile mongoFile = new MongoFile();
         MongoFileConvert mongoFileConvert = new MongoFileConvert();

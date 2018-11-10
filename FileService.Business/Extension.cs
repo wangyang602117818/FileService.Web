@@ -9,9 +9,9 @@ using System.Threading.Tasks;
 
 namespace FileService.Business
 {
-    public partial class Config : ModelBase<Data.Config>
+    public partial class Extension : ModelBase<Data.Extension>
     {
-        public Config() : base(new Data.Config()) { }
+        public Extension() : base(new Data.Extension()) { }
         public bool CheckFileExtension(string extension)
         {
             BsonDocument document = mongoData.FindByExtension(extension);
@@ -45,13 +45,13 @@ namespace FileService.Business
         {
             return mongoData.FindByExtension(extension);
         }
-        public bool UpdateConfig(string extension, string type, string description, string action)
+        public bool UpdateExtension(string extension, string type, string description, string action)
         {
-            return mongoData.UpdateConfig(extension, type, description, action);
+            return mongoData.UpdateExtension(extension, type, description, action);
         }
-        public bool DeleteConfig(string extension)
+        public bool DeleteExtension(string extension)
         {
-            return mongoData.DeleteConfig(extension);
+            return mongoData.DeleteExtension(extension);
         }
         public IEnumerable<BsonDocument> FindByType(string type)
         {

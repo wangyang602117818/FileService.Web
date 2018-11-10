@@ -67,7 +67,7 @@
   <ItemGroup>
     <Compile Include="Admin.cs" />
     <Compile Include="Application.cs" />
-    <Compile Include="Config.cs" />
+    <Compile Include="Extension.cs" />
     <Compile Include="Converter.cs" />
     <Compile Include="Department.cs" />
     <Compile Include="Download.cs" />

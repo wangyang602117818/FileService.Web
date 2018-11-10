@@ -200,7 +200,7 @@
     <Compile Include="Models\SharedModel.cs" />
     <Compile Include="Models\UpdateAccess.cs" />
     <Compile Include="Models\UpdateApplication.cs" />
-    <Compile Include="Models\UpdateConfig.cs" />
+    <Compile Include="Models\UpdateExtension.cs" />
     <Compile Include="Models\UpdateTask.cs" />
     <Compile Include="Models\UploadFileModel.cs" />
     <Compile Include="Models\UploadResponse.cs" />
@@ -340,8 +340,8 @@
     <Content Include="scripts\application.jsx" />
     <Content Include="scripts\application_add.jsx" />
     <Content Include="scripts\common.jsx" />
-    <Content Include="scripts\config.jsx" />
-    <Content Include="scripts\config_add.jsx" />
+    <Content Include="scripts\extension.jsx" />
+    <Content Include="scripts\extension_add.jsx" />
     <Content Include="scripts\culture_en-US.js" />
     <Content Include="scripts\culture_zh-CN.js" />
     <Content Include="scripts\datepicker-template.html" />

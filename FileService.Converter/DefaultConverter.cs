@@ -12,7 +12,7 @@ namespace FileService.Converter
         MongoFile mongoFile = new MongoFile();
         FilesWrap filesWrap = new FilesWrap();
         VideoCapture videoCapture = new VideoCapture();
-        Config config = new Config();
+        Extension extension = new Extension();
         FilePreview filePreview = new FilePreview();
         FilePreviewBig filePreviewBig = new FilePreviewBig();
         public override bool Convert(FileItem taskItem)
@@ -20,7 +20,7 @@ namespace FileService.Converter
             ObjectId fileWrapId = taskItem.Message["FileId"].AsObjectId;
             string from = taskItem.Message["From"].AsString;
             string fileName = taskItem.Message["FileName"].AsString;
-            string fileType = config.GetTypeByExtension(Path.GetExtension(fileName).ToLower()).ToLower();
+            string fileType = extension.GetTypeByExtension(Path.GetExtension(fileName).ToLower()).ToLower();
             int processCount = System.Convert.ToInt32(taskItem.Message["ProcessCount"]);
             string fullPath = taskItem.Message["TempFolder"].AsString + fileName;
             //第一次转换，文件肯定在共享文件夹

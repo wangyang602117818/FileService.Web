@@ -1,4 +1,4 @@
-﻿class ConfigData extends React.Component {
+﻿class ExtensionData extends React.Component {
     constructor(props) {
         super(props);
     }
@@ -15,14 +15,14 @@
                         <th width="30%">{culture.createTime}</th>
                     </tr>
                 </thead>
-                <ConfigList data={this.props.data}
+                <ExtensionList data={this.props.data}
                     onIdClick={this.props.onIdClick}
                     deleteItem={this.props.deleteItem} />
             </table>
         );
     }
 }
-class ConfigList extends React.Component {
+class ExtensionList extends React.Component {
     constructor(props) {
         super(props);
     }
@@ -41,7 +41,7 @@ class ConfigList extends React.Component {
                 <tbody>
                     {this.props.data.map(function (item, i) {
                         return (
-                            <ConfigItem config={item} key={i}
+                            <ExtensionItem extension={item} key={i}
                                 onIdClick={this.props.onIdClick}
                                 deleteItem={that.props.deleteItem} />
                         )
@@ -51,7 +51,7 @@ class ConfigList extends React.Component {
         }
     }
 }
-class ConfigItem extends React.Component {
+class ExtensionItem extends React.Component {
     constructor(props) {
         super(props);
     }
@@ -61,21 +61,21 @@ class ConfigItem extends React.Component {
                 <td>
                     <b className="link"
                         onClick={this.props.onIdClick}
-                        id={this.props.config._id.$oid.removeHTML()}
-                        dangerouslySetInnerHTML={{ __html: this.props.config._id.$oid }}></b>
+                        id={this.props.extension._id.$oid.removeHTML()}
+                        dangerouslySetInnerHTML={{ __html: this.props.extension._id.$oid }}></b>
                 </td>
-                <td dangerouslySetInnerHTML={{ __html: this.props.config.Extension }}>
+                <td dangerouslySetInnerHTML={{ __html: this.props.extension.Extension }}>
                 </td>
-                <td dangerouslySetInnerHTML={{ __html: this.props.config.Type }}></td>
+                <td dangerouslySetInnerHTML={{ __html: this.props.extension.Type }}></td>
 
-                <td dangerouslySetInnerHTML={{ __html: this.props.config.Action }}></td>
-                <td dangerouslySetInnerHTML={{ __html: this.props.config.Description }}></td>
-                <td>{parseBsonTime(this.props.config.CreateTime)}</td>
+                <td dangerouslySetInnerHTML={{ __html: this.props.extension.Action }}></td>
+                <td dangerouslySetInnerHTML={{ __html: this.props.extension.Description }}></td>
+                <td>{parseBsonTime(this.props.extension.CreateTime)}</td>
             </tr>
         )
     }
 }
-class DeleteConfig extends React.Component {
+class DeleteExtension extends React.Component {
     constructor(props) {
         super(props);
     }
@@ -89,7 +89,7 @@ class DeleteConfig extends React.Component {
                                 <input type="button"
                                     value={culture.delete}
                                     className="button"
-                                    onClick={this.props.deleteConfig.bind(this)} />
+                                    onClick={this.props.deleteExtension.bind(this)} />
                             </td>
                         </tr>
                     </tbody>
@@ -98,12 +98,12 @@ class DeleteConfig extends React.Component {
         )
     }
 }
-class Config extends React.Component {
+class Extension extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            pageShow: localStorage.config ? eval(localStorage.config) : true,
-            configShow: localStorage.config_add ? eval(localStorage.config_add) : true,
+            pageShow: localStorage.extension ? eval(localStorage.extension) : true,
+            extensionShow: localStorage.extension_add ? eval(localStorage.extension_add) : true,
             deleteShow: false,
             deleteToggle: false,
             deleteName: "",
@@ -111,36 +111,36 @@ class Config extends React.Component {
             updateShow: false,
             updateToggle: true,
             pageIndex: 1,
-            pageSize: localStorage.config_pageSize || 10,
+            pageSize: localStorage.extension_pageSize || 10,
             pageCount: 1,
             filter: "",
             startTime: "",
             endTime: "",
             data: { code: 0, message: "", count: 0, result: [] },
         }
-        this.url = urls.config.getUrl;
-        this.storagePageShowKey = "config";
-        this.storagePageSizeKey = "config_pageSize";
+        this.url = urls.extension.getUrl;
+        this.storagePageShowKey = "extension";
+        this.storagePageSizeKey = "extension_pageSize";
     }
-    onConfigShow() {
-        if (this.state.configShow) {
-            this.setState({ configShow: false });
-            localStorage.config_add = false;
+    onExtensionShow() {
+        if (this.state.cextensionShow) {
+            this.setState({ extensionShow: false });
+            localStorage.cextension_add = false;
         } else {
-            this.setState({ configShow: true });
-            localStorage.config_add = true;
+            this.setState({ extensionShow: true });
+            localStorage.cextension_add = true;
         }
     }
-    addConfig(obj, success) {
+    addExtension(obj, success) {
         var that = this;
-        http.postJson(urls.config.addConfigUrl, obj, function (data) {
+        http.postJson(urls.extension.addExtensionUrl, obj, function (data) {
             if (data.code == 0) that.getData();
             success(data);
         });
     }
-    updateConfig(obj,success) {
+    updateExtension(obj,success) {
         obj.id = this.state.deleteId;
-        http.postJson(urls.config.updateConfigUrl, obj, function (data) {
+        http.postJson(urls.extension.updateExtensionUrl, obj, function (data) {
             if (data.code == 0) {
                 this.getData();
                 this.setState({ deleteShow: false, updateShow: false });
@@ -152,7 +152,7 @@ class Config extends React.Component {
         var id = this.state.deleteId;
         if (window.confirm(" " + culture.delete + " ?")) {
             var that = this;
-            http.get(urls.config.deleteUrl + "/" + id, function (data) {
+            http.get(urls.extension.deleteUrl + "/" + id, function (data) {
                 if (data.code == 0) {
                     that.getData();
                     that.setState({ deleteShow: false, updateShow: false  });
@@ -163,17 +163,10 @@ class Config extends React.Component {
             });
         }
     }
-    onDeleteShow(e) {
-        if (this.state.deleteToggle) {
-            this.setState({ deleteToggle: false });
-        } else {
-            this.setState({ deleteToggle: true });
-        }
-    }
     onIdClick(e) {
         var id = e.target.id;
         if (e.target.nodeName.toLowerCase() == "span") id = e.target.parentElement.id;
-        http.get(urls.config.getConfigUrl + "/" + id, function (data) {
+        http.get(urls.extension.getExtensionUrl + "/" + id, function (data) {
             if (data.code == 0) {
                 this.setState({
                     deleteShow: true,
@@ -181,7 +174,7 @@ class Config extends React.Component {
                     deleteId: data.result._id.$oid,
                     deleteName: data.result.Extension
                 }, function () {
-                        this.refs.updateconfig.onIdClick(data.result.Extension, data.result.Type, data.result.Description || "", data.result.Action);
+                        this.refs.updateextension.onIdClick(data.result.Extension, data.result.Type, data.result.Description || "", data.result.Action);
                 }.bind(this));
             }
         }.bind(this));
@@ -190,10 +183,10 @@ class Config extends React.Component {
         return (
             <div className="main">
                 <h1>{culture.extension}</h1>
-                <ConfigToolBar section={this.props.section}
+                <ExtensionToolBar section={this.props.section}
                     onSectionChange={this.props.onSectionChange} />
                 <TitleArrow title={culture.all + culture.extension}
-                    show={this.state.configShow}
+                    show={this.state.extensionShow}
                     count={this.state.data.count}
                     onShowChange={this.onPageShow.bind(this)} />
                 <Pagination show={this.state.pageShow}
@@ -207,77 +200,77 @@ class Config extends React.Component {
                     onKeyPress={this.onKeyPress.bind(this)}
                     lastPage={this.lastPage.bind(this)}
                     nextPage={this.nextPage.bind(this)} />
-                <ConfigData data={this.state.data.result}
+                <ExtensionData data={this.state.data.result}
                     onIdClick={this.onIdClick.bind(this)} />
                 <TitleArrow title={culture.add + culture.extension}
-                    show={this.state.configShow}
-                    onShowChange={this.onConfigShow.bind(this)} />
-                <AddConfig
-                    show={this.state.configShow}
-                    addConfig={this.addConfig.bind(this)}
-                    ref="addconfig" />
+                    show={this.state.extensionShow}
+                    onShowChange={this.onExtensionShow.bind(this)} />
+                <AddExtension
+                    show={this.state.extensionShow}
+                    addExtension={this.addExtension.bind(this)}
+                    ref="addextension" />
                 {this.state.updateShow ?
                     <TitleArrow title={culture.update + culture.extension + "(" + this.state.deleteName + ")"}
                         show={this.state.updateToggle}
                         onShowChange={e => this.setState({ updateToggle: !this.state.updateToggle })} /> : null
                 }
                 {this.state.updateShow ?
-                    <UpdateConfig
+                    <UpdateExtension
                         show={this.state.updateToggle}
-                        updateConfig={this.updateConfig.bind(this)}
-                        ref="updateconfig" /> : null
+                        updateCExtension={this.updateExtension.bind(this)}
+                        ref="updateextension" /> : null
                 }
                 {this.state.deleteShow ?
                     <TitleArrow
                         title={culture.delete + culture.extension + "(" + this.state.deleteName + ")"}
                         show={this.state.deleteToggle}
-                        onShowChange={this.onDeleteShow.bind(this)} /> : null}
+                        onShowChange={e => this.setState({ deleteToggle: !this.state.deleteToggle })} /> : null}
                 {this.state.deleteShow ?
-                    <DeleteConfig
+                    <DeleteExtension
                         show={this.state.deleteToggle}
-                        deleteConfig={this.deleteItem.bind(this)} /> : null}
+                        deleteExtension={this.deleteItem.bind(this)} /> : null}
             </div>
         );
     }
 }
-for (var item in CommonUsePagination) Config.prototype[item] = CommonUsePagination[item];
+for (var item in CommonUsePagination) Extension.prototype[item] = CommonUsePagination[item];
 
-class ConfigToolBar extends React.Component {
+class ExtensionToolBar extends React.Component {
     constructor(props) {
         super(props);
     }
     render() {
         return (
-            <div className="config_toolbar">
+            <div className="extension_toolbar">
                 <div className={this.props.section == "application" ? "config_info select" : "config_info"} onClick={this.props.onSectionChange} id="application">{culture.application}</div>
-                <div className={this.props.section == "config" ? "config_info select" : "config_info"} onClick={this.props.onSectionChange} id="config">{culture.extension}</div>
+                <div className={this.props.section == "extension" ? "config_info select" : "config_info"} onClick={this.props.onSectionChange} id="config">{culture.extension}</div>
             </div>
         )
     }
 }
-class ConfigContainer extends React.Component {
+class ExtensionContainer extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            section: localStorage.storageConfigSection || "config"
+            section: localStorage.storageExtensionSection || "extension"
         }
     }
     onSectionChange(e) {
         var value = e.target.id.toLowerCase();
-        localStorage.storageConfigSection = value;
+        localStorage.storageExtensionSection = value;
         this.setState({ section: value });
     }
     onRefreshChange(value) {
-        this.refs.config.onRefreshChange(value);
+        this.refs.extension.onRefreshChange(value);
     }
     render() {
-        if (this.state.section == "config") {
-            return <Config ref="config"
+        if (this.state.section == "extension") {
+            return <Extension ref="extension"
                 refresh={this.props.refresh}
                 section={this.state.section}
                 onSectionChange={this.onSectionChange.bind(this)} />
         } else {
-            return <Application ref="config"
+            return <Application ref="extension"
                 refresh={this.props.refresh}
                 section={this.state.section}
                 onSectionChange={this.onSectionChange.bind(this)} />

@@ -12,7 +12,7 @@ namespace FileService.Web.Controllers
     public class SharedController : Controller
     {
         Shared shared = new Shared();
-        Config config = new Config();
+        Extension extension = new Extension();
         FilesWrap filesWrap = new FilesWrap();
         public ActionResult Init(string id)
         {
@@ -53,7 +53,7 @@ namespace FileService.Web.Controllers
 
             string fileId = bson["FileId"].ToString();
             string fileName = bson["FileName"].ToString();
-            string fileType = config.GetTypeByExtension(Path.GetExtension(fileName).ToLower()).ToLower();
+            string fileType = extension.GetTypeByExtension(Path.GetExtension(fileName).ToLower()).ToLower();
             ViewBag.id = id;
             ViewBag.fileId = fileId;
             ViewBag.fileName = fileName;

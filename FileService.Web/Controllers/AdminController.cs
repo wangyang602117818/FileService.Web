@@ -17,7 +17,7 @@ namespace FileService.Web.Controllers
 {
     public class AdminController : BaseController
     {
-        Config config = new Config();
+        Extension extension = new Extension();
         Application application = new Application();
         User user = new User();
         public ActionResult Index()
@@ -169,7 +169,7 @@ namespace FileService.Web.Controllers
             string ext = "." + id.Split('.')[1].TrimEnd('/');
             if (file == null)
             {
-                string type = config.GetTypeByExtension(ext).ToLower();
+                string type = extension.GetTypeByExtension(ext).ToLower();
                 switch (type)
                 {
                     case "text":
@@ -288,7 +288,7 @@ namespace FileService.Web.Controllers
         }
         public ActionResult Preview(string id, string fileName, bool deleted = false)
         {
-            string fileType = config.GetTypeByExtension(Path.GetExtension(fileName).ToLower()).ToLower();
+            string fileType = extension.GetTypeByExtension(Path.GetExtension(fileName).ToLower()).ToLower();
             ViewBag.id = id;
             ViewBag.convert = "false";
             ViewBag.deleted = deleted.ToString().ToLower();
@@ -306,7 +306,7 @@ namespace FileService.Web.Controllers
         }
         public ActionResult PreviewConvert(string id, string fileName)
         {
-            string fileType = config.GetTypeByExtension(Path.GetExtension(fileName).ToLower()).ToLower();
+            string fileType = extension.GetTypeByExtension(Path.GetExtension(fileName).ToLower()).ToLower();
             ViewBag.id = id;
             ViewBag.convert = "true";
             ViewBag.fileType = fileType == "" ? "text" : fileType;
@@ -388,7 +388,7 @@ namespace FileService.Web.Controllers
         }
         public ActionResult GetExtensions(string type)
         {
-            IEnumerable<string> result = config.FindByType(type).Select(s => s["Extension"].ToString());
+            IEnumerable<string> result = extension.FindByType(type).Select(s => s["Extension"].ToString());
             return new ResponseModel<IEnumerable<string>>(ErrorCode.success, result);
         }
         public ActionResult GetLogs(int pageIndex = 1, int pageSize = 10, string filter = "", string startTime = null, string endTime = null)
@@ -401,52 +401,55 @@ namespace FileService.Web.Controllers
             return new ResponseModel<IEnumerable<BsonDocument>>(ErrorCode.success, result, count);
         }
         [Authorize(Roles = "admin,management")]
-        public ActionResult GetConfigs(int pageIndex = 1, int pageSize = 10, string filter = "", string startTime = null, string endTime = null)
+        public ActionResult GetExtensions(int pageIndex = 1, int pageSize = 10, string filter = "", string startTime = null, string endTime = null)
         {
             long count = 0;
             DateTime.TryParse(startTime, out DateTime timeStart);
             DateTime.TryParse(endTime, out DateTime timeEnd);
-            IEnumerable<BsonDocument> result = config.GetPageList(pageIndex, pageSize, null, timeStart, timeEnd, null, filter, new List<string>() { "_id", "Extension", "Description", "Type", "Action" }, new List<string>() { }, out count);
+            IEnumerable<BsonDocument> result = extension.GetPageList(pageIndex, pageSize, null, timeStart, timeEnd, null, filter, new List<string>() { "_id", "Extension", "Description", "Type", "Action" }, new List<string>() { }, out count);
             return new ResponseModel<IEnumerable<BsonDocument>>(ErrorCode.success, result, count);
         }
         [Authorize(Roles = "admin,management")]
-        public ActionResult GetConfig(string id)
+        public ActionResult GetExtension(string id)
         {
-            return new ResponseModel<BsonDocument>(ErrorCode.success, config.FindOne(ObjectId.Parse(id)));
+            return new ResponseModel<BsonDocument>(ErrorCode.success, extension.FindOne(ObjectId.Parse(id)));
         }
         [Authorize(Roles = "admin,management")]
         [HttpPost]
-        public ActionResult AddConfig(AddConfigModel addConfig)
+        public ActionResult AddExtension(AddExtensionModel addExtension)
         {
-            BsonDocument configBson = config.GetByExtension(addConfig.Extension.ToLower());
-            if (configBson != null) return new ResponseModel<string>(ErrorCode.record_exist, "");
-            if (config.UpdateConfig(addConfig.Extension, addConfig.Type, addConfig.Description, addConfig.Action))
+            BsonDocument extensionBson = extension.GetByExtension(addExtension.Extension.ToLower());
+            if (extensionBson != null) return new ResponseModel<string>(ErrorCode.record_exist, "");
+            if (extension.UpdateExtension(addExtension.Extension, 
+                addExtension.Type, 
+                addExtension.Description, 
+                addExtension.Action))
             {
-                Log("-", "AddConfig");
+                Log("-", "AddExtension");
                 return new ResponseModel<string>(ErrorCode.success, "");
             }
             return new ResponseModel<string>(ErrorCode.server_exception, "");
         }
         [Authorize(Roles = "admin,management")]
         [HttpPost]
-        public ActionResult UpdateConfig(UpdateConfigModel updateConfig)
+        public ActionResult UpdateExtension(UpdateExtensionModel updateextension)
         {
-            BsonDocument bson = updateConfig.ToBsonDocument();
-            BsonDocument configBson = config.GetByExtension(updateConfig.Extension.ToLower());
-            if (configBson != null && configBson["_id"].ToString() != updateConfig.Id) return new ResponseModel<string>(ErrorCode.record_exist, "");
-            if (config.Update(ObjectId.Parse(updateConfig.Id), bson))
+            BsonDocument bson = updateextension.ToBsonDocument();
+            BsonDocument extensionBson = extension.GetByExtension(updateextension.Extension.ToLower());
+            if (extensionBson != null && extensionBson["_id"].ToString() != updateextension.Id) return new ResponseModel<string>(ErrorCode.record_exist, "");
+            if (extension.Update(ObjectId.Parse(updateextension.Id), bson))
             {
-                Log(updateConfig.Id, "UpdateConfig");
+                Log(updateextension.Id, "UpdateExtension");
                 return new ResponseModel<string>(ErrorCode.success, "");
             }
             return new ResponseModel<string>(ErrorCode.server_exception, "");
         }
         [Authorize(Roles = "admin,management")]
-        public ActionResult DeleteConfig(string id)
+        public ActionResult DeletExtension(string id)
         {
-            if (config.DeleteOne(ObjectId.Parse(id)))
+            if (extension.DeleteOne(ObjectId.Parse(id)))
             {
-                Log(id, "DeleteConfig");
+                Log(id, "DeleteExtension");
                 return new ResponseModel<string>(ErrorCode.success, "");
             }
             return new ResponseModel<string>(ErrorCode.server_exception, "");

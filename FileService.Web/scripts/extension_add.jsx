@@ -1,4 +1,4 @@
-﻿class UpdateConfig extends React.Component {
+﻿class UpdateExtension extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -9,7 +9,7 @@
             message: ""
         };
     }
-    updateConfig(e) {
+    updateExtension(e) {
         if (this.state.extension && this.state.type && this.state.action) {
             this.props.updateConfig(this.state, function (data) {
                 if (data.code != 0) this.setState({ message: data.message });
@@ -87,7 +87,7 @@
         );
     }
 }
-class AddConfig extends React.Component {
+class AddExtension extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -98,10 +98,10 @@ class AddConfig extends React.Component {
             message: ""
         };
     }
-    addConfig(e) {
+    addExtension(e) {
         var that = this;
         if (this.state.extension && this.state.type && this.state.action) {
-            this.props.addConfig(this.state, function (data) {
+            this.props.addExtension(this.state, function (data) {
                 if (data.code == 0) {
                     that.setState({ extension: "", type: "", description: "", message: "" });
                 } else {

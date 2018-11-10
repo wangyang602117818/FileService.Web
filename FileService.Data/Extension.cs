@@ -8,20 +8,20 @@ using System.Threading.Tasks;
 
 namespace FileService.Data
 {
-    public class Config : MongoBase
+    public class Extension : MongoBase
     {
-        public Config() : base("Config") { }
+        public Extension() : base("Extension") { }
         public BsonDocument FindByExtension(string extension)
         {
             var filter = FilterBuilder.Eq("Extension", extension);
             return MongoCollection.Find(filter).FirstOrDefault();
         }
-        public bool UpdateConfig(string extension, string value,string description, string action)
+        public bool UpdateExtension(string extension, string value,string description, string action)
         {
             var filter = FilterBuilder.Eq("Extension", extension);
             return MongoCollection.UpdateOne(filter, Builders<BsonDocument>.Update.Set("Type", value).Set("Action", action).Set("Description", description).Set("CreateTime", DateTime.Now), new UpdateOptions() { IsUpsert = true }).IsAcknowledged;
         }
-        public bool DeleteConfig(string extension)
+        public bool DeleteExtension(string extension)
         {
             var filter = FilterBuilder.Eq("Extension", extension);
             return MongoCollection.DeleteOne(filter).IsAcknowledged;

@@ -12,7 +12,7 @@ namespace FileService.Converter
     {
         Business.Task task = new Business.Task();
         Business.Converter converter = new Business.Converter();
-        Config config = new Config();
+        Extension config = new Extension();
         public bool StartMonitor(string handlerId)
         {
             bool result = AppSettings.connectState(AppSettings.sharedFolder.TrimEnd('\\'), AppSettings.sharedUserName, AppSettings.sharedUserPwd);

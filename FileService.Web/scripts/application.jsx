@@ -103,7 +103,7 @@ class Application extends React.Component {
             pageShow: eval(localStorage.application) ? true : false,
             applicationShow: eval(localStorage.application_add) ? true : false,
             deleteShow: false,
-            deleteToggle: false,
+            deleteToggle: true,
             deleteName: "",
             deleteId: "",
             updateShow: false,
@@ -142,7 +142,7 @@ class Application extends React.Component {
             if (data.code == 0) {
                 this.getData();
                 this.setState({ deleteShow: false, updateShow: false });
-            } 
+            }
             success(data);
         }.bind(this))
     }
@@ -159,13 +159,6 @@ class Application extends React.Component {
                     alert(data.message);
                 }
             });
-        }
-    }
-    onDeleteShow(e) {
-        if (this.state.deleteToggle) {
-            this.setState({ deleteToggle: false });
-        } else {
-            this.setState({ deleteToggle: true });
         }
     }
     onIdClick(e) {
@@ -212,7 +205,7 @@ class Application extends React.Component {
                     <TitleArrow
                         title={culture.update + culture.application + "(" + this.state.deleteName + ")"}
                         show={this.state.updateToggle}
-                        onShowChange={this.onDeleteShow.bind(this)} /> : null}
+                        onShowChange={e => this.setState({ updateToggle: !this.state.updateToggle })} /> : null}
                 {this.state.updateShow ?
                     <UpdateApplication show={this.state.updateToggle}
                         ref="updateApplication"
@@ -221,7 +214,7 @@ class Application extends React.Component {
                     <TitleArrow
                         title={culture.delete + culture.application + "(" + this.state.deleteName + ")"}
                         show={this.state.deleteToggle}
-                        onShowChange={this.onDeleteShow.bind(this)} /> : null}
+                        onShowChange={e => { this.setState({ deleteToggle: !this.state.deleteToggle}) }} /> : null}
                 {this.state.deleteShow ?
                     <DeleteApplication
                         show={this.state.deleteToggle}
