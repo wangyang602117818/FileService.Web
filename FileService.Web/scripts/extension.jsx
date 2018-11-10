@@ -123,7 +123,7 @@ class Extension extends React.Component {
         this.storagePageSizeKey = "extension_pageSize";
     }
     onExtensionShow() {
-        if (this.state.cextensionShow) {
+        if (this.state.extensionShow) {
             this.setState({ extensionShow: false });
             localStorage.extension_add = false;
         } else {
@@ -186,7 +186,7 @@ class Extension extends React.Component {
                 <ConfigToolBar section={this.props.section}
                     onSectionChange={this.props.onSectionChange} />
                 <TitleArrow title={culture.all + culture.extension}
-                    show={this.state.extensionShow}
+                    show={this.state.pageShow}
                     count={this.state.data.count}
                     onShowChange={this.onPageShow.bind(this)} />
                 <Pagination show={this.state.pageShow}

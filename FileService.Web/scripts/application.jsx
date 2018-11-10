@@ -175,9 +175,10 @@ class Application extends React.Component {
         return (
             <div className="main">
                 <h1>{culture.application}</h1>
-                <ConfigToolBar section={this.props.section} onSectionChange={this.props.onSectionChange} />
+                <ConfigToolBar section={this.props.section}
+                    onSectionChange={this.props.onSectionChange} />
                 <TitleArrow title={culture.all + culture.application}
-                    show={this.state.applicationShow}
+                    show={this.state.pageShow}
                     count={this.state.data.count}
                     onShowChange={this.onPageShow.bind(this)} />
                 <Pagination show={this.state.pageShow}
