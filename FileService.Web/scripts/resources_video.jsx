@@ -2,33 +2,54 @@
     constructor(props) {
         super(props);
         this.state = {
-            format: 0,
-            quality: 0,
-            flag: "",
+            convert: {
+                format: 0,
+                quality: 0,
+                flag: ""
+            },
+            convertDisplay: {
+                format: "m3u8",
+                quality: culture.original,
+                flag: ""
+            },
             button_disabled: true
         }
     }
     qualityChange(e) {
+        var qualityId = e.target.value;
+        var qualityName = "";
+        for (var i = 0; i < e.target.length; i++) {
+            if (qualityId == e.target[i].value) {
+                qualityName = e.target[i].text;
+                break;
+            }
+        }
+        this.state.convert.quality = qualityId;
+        this.state.convertDisplay.quality = qualityName;
         this.setState({
-            quality: e.target.value
+            convert: this.state.convert,
+            convertDisplay: this.state.convertDisplay
         });
     }
     flagChange(e) {
-        this.setState({ flag: e.target.value });
+        this.state.convert.flag = e.target.value;
+        this.state.convertDisplay.flag = e.target.value;
         if (e.target.value.length > 0) {
-            this.setState({ button_disabled: false });
+            this.setState({
+                convert: this.state.convert,
+                convertDisplay: this.state.convertDisplay,
+                button_disabled: false
+            });
         } else {
-            this.setState({ button_disabled: true });
+            this.setState({ convert: this.state.convert, button_disabled: true });
         }
     }
     Ok(e) {
-        if (this.state.flag) {
-            this.props.videoOk(this.state);
+        if (this.state.convert.flag) {
+            this.props.videoOk(this.state.convert, this.state.convertDisplay);
             this.setState({
-                format: 0,
-                flag: "",
                 button_disabled: true
-            });
+            })
         }
     }
     render() {
@@ -38,7 +59,9 @@
                     <tr>
                         <td width="30%">{culture.outputFormat}:</td>
                         <td width="70%">
-                            <select name="format" value={this.state.format}>
+                            <select name="format"
+                                value={this.state.convert.format}
+                                onChange={e => { }}>
                                 <option value="0">M3u8</option>
                             </select>
                         </td>
@@ -46,7 +69,9 @@
                     <tr>
                         <td>{culture.quality}:</td>
                         <td>
-                            <select name="quality" value={this.state.quality} onChange={this.qualityChange.bind(this)}>
+                            <select name="quality"
+                                value={this.state.convert.quality}
+                                onChange={this.qualityChange.bind(this)}>
                                 <option value="0">{culture.original}</option>
                                 <option value="1">{culture.lower}</option>
                                 <option value="2">{culture.medium}</option>
@@ -57,7 +82,9 @@
                     <tr>
                         <td>{culture.flag}:</td>
                         <td>
-                            <input type="text" name="flag" value={this.state.flag} onChange={this.flagChange.bind(this)} /><font color="red">*</font>
+                            <input type="text" name="flag"
+                                value={this.state.convert.flag}
+                                onChange={this.flagChange.bind(this)} /><font color="red">*</font>
                         </td>
                     </tr>
                     <tr>
@@ -84,6 +111,7 @@ class AddVideo extends React.Component {
             buttonValue: culture.upload,
             buttonDisabled: false,
             videos: [],
+            videosDisplay: [],
             accesses: []
         }
     }
@@ -96,8 +124,10 @@ class AddVideo extends React.Component {
     delVideo(e) {
         var id = e.target.parentElement.id;
         this.state.videos.splice(id, 1);
+        this.state.videosDisplay.splice(id, 1);
         this.setState({
-            videos: this.state.videos
+            videos: this.state.videos,
+            videosDisplay: this.state.videosDisplay
         });
     }
     delAccess(e) {
@@ -151,9 +181,18 @@ class AddVideo extends React.Component {
             });
         }
     }
-    videoOk(obj) {
-        this.state.videos.push(obj);
-        this.setState({ videos: this.state.videos});
+    videoOk(convert, convertDisplay) {
+        this.state.videos.push({
+            format: convert.format,
+            quality: convert.quality,
+            flag: convert.flag
+        });
+        this.state.videosDisplay.push({
+            format: convertDisplay.format,
+            quality: convertDisplay.quality,
+            flag: convertDisplay.flag
+        });
+        this.setState({ videos: this.state.videos, videosDisplay: this.state.videosDisplay });
     }
     accessOk(companyCode, companyName, authority, codeArray, nameArray, realCodes, userArray, success) {
         this.state.accesses.push({ companyCode, companyName, authority, codeArray, nameArray, realCodes, userArray });
@@ -174,7 +213,7 @@ class AddVideo extends React.Component {
                                 {
                                     this.state.videos.map(function (item, i) {
                                         return (
-                                            <span className="convert_flag" title={JSON.stringify(item)} key={i} id={i}>
+                                            <span className="convert_flag" title={JSON.stringify(this.state.videosDisplay[i])} key={i} id={i}>
                                                 <span className="flag_txt">{item.flag}</span>
                                                 <span className="flag_txt flag_del" onClick={this.delVideo.bind(this)}>×</span>
                                             </span>

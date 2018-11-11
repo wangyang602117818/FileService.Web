@@ -472,8 +472,10 @@ class AddImage extends React.Component {
     delImage(e) {
         var id = e.target.parentElement.id;
         this.state.thumbnails.splice(id, 1);
+        this.state.thumbnailsDisplay.splice(id, 1);
         this.setState({
-            thumbnails: this.state.thumbnails
+            thumbnails: this.state.thumbnails,
+            thumbnailsDisplay: this.state.thumbnailsDisplay
         });
     }
     delAccess(e) {

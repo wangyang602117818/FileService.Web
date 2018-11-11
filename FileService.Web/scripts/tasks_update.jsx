@@ -213,7 +213,7 @@ class VideoUpdate extends React.Component {
                             </td>
                             <td width="20%">{culture.outputFormat}:</td>
                             <td width="40%">
-                                <select name="format" value={this.state.format}>
+                                <select name="format" value={this.state.format} onChange={e => { }}>
                                     <option value="0">M3u8</option>
                                 </select>
                             </td>

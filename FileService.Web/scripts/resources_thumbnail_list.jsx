@@ -95,9 +95,9 @@ class AddThumbnail extends React.Component {
 
         }
     }
-    imageOk(obj) {
-        obj.fileId = this.props.fileId;
-        http.postJson(urls.tasks.addThumbnailTaskUrl, obj, function (data) {
+    imageOk(convert) {
+        convert.fileId = this.props.fileId;
+        http.postJson(urls.tasks.addThumbnailTaskUrl, convert, function (data) {
             if (data.code == 0) {
 
             } else {
