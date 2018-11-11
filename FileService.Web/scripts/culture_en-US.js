@@ -84,6 +84,7 @@ var culture = {
     default: "Default",
     flag: "flag",
     model: "Model",
+    convertModel:"ConvertModel",
     scale: "Scale",
     cut: "Cut",
     by_width: "By Width",

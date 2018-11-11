@@ -49,32 +49,32 @@
     }
     checkAvailable() {
         if (this.state.flag.length > 0) {
-            if (this.state.model == "0") {
+            if (this.state.model == "0") {  //缩放
+                if (this.state.width > 0 && this.state.height > 0) {
+                    this.setState({ button_disabled: false, x: 0, y: 0 });
+                } else {
+                    this.setState({ button_disabled: true, x: 0, y: 0 });
+                }
+            }
+            if (this.state.model == "1") {  //剪切
                 if (this.state.width > 0 && this.state.height > 0) {
                     this.setState({ button_disabled: false });
                 } else {
                     this.setState({ button_disabled: true });
                 }
             }
-            if (this.state.model == "1") {
-                if (this.state.width > 0 && this.state.height > 0) {
-                    this.setState({ button_disabled: false });
-                } else {
-                    this.setState({ button_disabled: true });
-                }
-            }
-            if (this.state.model == "2") {
+            if (this.state.model == "2") {  //按宽度
                 if (this.state.width > 0) {
-                    this.setState({ button_disabled: false });
+                    this.setState({ button_disabled: false, x: 0, y: 0, height:0 });
                 } else {
-                    this.setState({ button_disabled: true });
+                    this.setState({ button_disabled: true, x: 0, y: 0, height: 0 });
                 }
             }
-            if (this.state.model == "3") {
+            if (this.state.model == "3") {  //按高度
                 if (this.state.height > 0) {
-                    this.setState({ button_disabled: false });
+                    this.setState({ button_disabled: false, x: 0, y: 0, width: 0 });
                 } else {
-                    this.setState({ button_disabled: true });
+                    this.setState({ button_disabled: true, x: 0, y: 0, width: 0 });
                 }
             }
         } else {
@@ -113,7 +113,7 @@
                             </td>
                         </tr>
                         <tr>
-                            <td>{culture.model}:</td>
+                            <td>{culture.convertModel}:</td>
                             <td>
                                 <select name="model" value={this.state.model} onChange={this.modelChange.bind(this)}>
                                     <option value="0">{culture.scale}</option>
@@ -123,14 +123,14 @@
                                 </select>
                             </td>
                             <td colSpan="2">
-                                top:<input type="text"
+                                x:<input type="text"
                                     name="x"
                                     style={{ width: "35px" }}
-                                    value={this.state.model == "1" ? this.state.x : "0"}
+                                    value={this.state.x}
                                     disabled={this.state.model == "1" ? false : true}
                                     onChange={this.xChange.bind(this)} />px{'\u00A0'}
-                                left:<input type="text" name="y" style={{ width: "35px" }}
-                                    value={this.state.model == "1" ? this.state.y : "0"}
+                                y:<input type="text" name="y" style={{ width: "35px" }}
+                                    value={this.state.y}
                                     disabled={this.state.model == "1" ? false : true}
                                     onChange={this.yChange.bind(this)} />px
                         </td>

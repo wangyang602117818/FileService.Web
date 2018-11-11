@@ -2,75 +2,7 @@
     constructor(props) {
         super(props);
         this.state = {
-            format: 0,
-            flag: "",
-            model: 0,
-            x: 0,
-            y: 0,
-            width: 0,
-            height: 0,
-            button_disabled: true
-        }
-    }
-    formatChange(e) {
-        this.setState({ format: e.target.value }, function () { this.checkAvailable(); });
-    }
-    flagChange(e) {
-        this.setState({ flag: e.target.value }, function () { this.checkAvailable(); });
-    }
-    modelChange(e) {
-        this.setState({ model: e.target.value }, function () { this.checkAvailable(); });
-    }
-    xChange(e) {
-        this.setState({ x: e.target.value }, function () { this.checkAvailable(); });
-    }
-    yChange(e) {
-        this.setState({ y: e.target.value }, function () { this.checkAvailable(); });
-    }
-    widthChange(e) {
-        this.setState({ width: e.target.value }, function () { this.checkAvailable(); });
-    }
-    heightChange(e) {
-        this.setState({ height: e.target.value }, function () { this.checkAvailable(); });
-    }
-    checkAvailable() {
-        if (this.state.flag.length > 0) {
-            if (this.state.model == "0") {
-                if (this.state.width > 0 && this.state.height > 0) {
-                    this.setState({ button_disabled: false });
-                } else {
-                    this.setState({ button_disabled: true });
-                }
-            }
-            if (this.state.model == "1") {
-                if (this.state.width > 0 && this.state.height > 0) {
-                    this.setState({ button_disabled: false });
-                } else {
-                    this.setState({ button_disabled: true });
-                }
-            }
-            if (this.state.model == "2") {
-                if (this.state.width > 0) {
-                    this.setState({ button_disabled: false });
-                } else {
-                    this.setState({ button_disabled: true });
-                }
-            }
-            if (this.state.model == "3") {
-                if (this.state.height > 0) {
-                    this.setState({ button_disabled: false });
-                } else {
-                    this.setState({ button_disabled: true });
-                }
-            }
-        } else {
-            this.setState({ button_disabled: true });
-        }
-    }
-    Ok(e) {
-        if (this.state.flag && (this.state.width || this.state.height)) {
-            this.props.imageOk(this.state);
-            this.setState({
+            convert: {
                 format: 0,
                 flag: "",
                 model: 0,
@@ -78,8 +10,159 @@
                 y: 0,
                 width: 0,
                 height: 0,
+            },
+            convertTitle: {
+                formatName: culture.default,
+                flag: "",
+                modelName: culture.scale,
+                x: 0,
+                y: 0,
+                width: 0,
+                height: 0,
+            },
+            button_disabled: true
+        }
+    }
+    formatChange(e) {
+        var formatId = e.target.value;
+        var formatName = "";
+        for (var i = 0; i < e.target.length; i++) {
+            if (formatId == e.target[i].value) {
+                formatName = e.target[i].text;
+                break;
+            }
+        }
+        this.state.convert.format = formatId;
+        this.state.convertTitle.formatName = formatName;
+        this.setState({
+            convert: this.state.convert,
+            convertTitle: this.state.convertTitle
+        }, function () { this.checkAvailable(); });
+    }
+    flagChange(e) {
+        this.state.convert.flag = e.target.value;
+        this.state.convertTitle.flag = e.target.value;
+        this.setState({
+            convert: this.state.convert,
+            convertTitle: this.state.convertTitle
+        }, function () { this.checkAvailable(); });
+    }
+    modelChange(e) {
+        var modelId = e.target.value;
+        var modelName = "";
+        for (var i = 0; i < e.target.length; i++) {
+            if (modelId == e.target[i].value) {
+                modelName = e.target[i].text;
+                break;
+            }
+        }
+        this.state.convert.model = modelId;
+        this.state.convertTitle.modelName = modelName;
+        this.setState({
+            convert: this.state.convert,
+            convertTitle: this.state.convertTitle
+        }, function () { this.checkAvailable(); });
+    }
+    xChange(e) {
+        this.state.convert.x = e.target.value;
+        this.state.convertTitle.x = e.target.value;
+        this.setState({
+            convert: this.state.convert,
+            convertTitle: this.state.convertTitle
+        }, function () { this.checkAvailable(); });
+    }
+    yChange(e) {
+        this.state.convert.y = e.target.value;
+        this.state.convertTitle.y = e.target.value;
+        this.setState({
+            convert: this.state.convert,
+            convertTitle: this.state.convertTitle
+        }, function () { this.checkAvailable(); });
+    }
+    widthChange(e) {
+        this.state.convert.width = e.target.value;
+        this.state.convertTitle.width = e.target.value;
+        this.setState({
+            convert: this.state.convert,
+            convertTitle: this.state.convertTitle
+        }, function () { this.checkAvailable(); });
+    }
+    heightChange(e) {
+        this.state.convert.height = e.target.value;
+        this.state.convertTitle.height = e.target.value;
+        this.setState({
+            convert: this.state.convert,
+            convertTitle: this.state.convertTitle
+        }, function () { this.checkAvailable(); });
+    }
+    checkAvailable() {
+        if (this.state.convert.flag.length > 0) {
+            if (this.state.convert.model == "0") { //缩放
+                this.state.convert.x = 0;
+                this.state.convert.y = 0;
+                this.state.convertTitle.x = 0;
+                this.state.convertTitle.y = 0;
+                if (this.state.convert.width > 0 && this.state.convert.height > 0) {
+                    this.setState({ button_disabled: false });
+                } else {
+                    this.setState({ button_disabled: true });
+                }
+                this.setState({
+                    convert: this.state.convert,
+                    convertTitle: this.state.convertTitle
+                });
+            }
+            if (this.state.convert.model == "1") {  //剪切
+                if (this.state.convert.width > 0 && this.state.convert.height > 0) {
+                    this.setState({ button_disabled: false });
+                } else {
+                    this.setState({ button_disabled: true });
+                }
+            }
+            if (this.state.convert.model == "2") { //按宽度
+                this.state.convert.x = 0;
+                this.state.convert.y = 0;
+                this.state.convertTitle.x = 0;
+                this.state.convertTitle.y = 0;
+                this.state.convert.height = 0;
+                this.state.convertTitle.height = 0;
+                if (this.state.convert.width > 0) {
+                    this.setState({ button_disabled: false });
+                } else {
+                    this.setState({ button_disabled: true });
+                }
+                this.setState({
+                    convert: this.state.convert,
+                    convertTitle: this.state.convertTitle
+                });
+            }
+            if (this.state.convert.model == "3") { //按高度
+                this.state.convert.x = 0;
+                this.state.convert.y = 0;
+                this.state.convertTitle.x = 0;
+                this.state.convertTitle.y = 0;
+                this.state.convert.width = 0;
+                this.state.convertTitle.width = 0;
+                if (this.state.convert.height > 0) {
+                    this.setState({ button_disabled: false });
+                } else {
+                    this.setState({ button_disabled: true });
+                }
+                this.setState({
+                    convert: this.state.convert,
+                    convertTitle: this.state.convertTitle
+                });
+            }
+        } else {
+            this.setState({ button_disabled: true });
+        }
+    }
+    Ok(e) {
+        if (this.state.convert.flag && (this.state.convert.width || this.state.convert.height)) {
+            this.props.imageOk(this.state.convert, this.state.convertTitle);
+            this.setState({
                 button_disabled: true
-            });
+            })
         }
     }
     render() {
@@ -89,7 +172,9 @@
                     <tr>
                         <td>{culture.outputFormat}:</td>
                         <td colSpan="3">
-                            <select name="format" value={this.state.format} onChange={this.formatChange.bind(this)}>
+                            <select name="format"
+                                value={this.state.convert.format}
+                                onChange={this.formatChange.bind(this)}>
                                 <option value="0">{culture.default}</option>
                                 <option value="1">Jpeg</option>
                                 <option value="2">Png</option>
@@ -104,15 +189,15 @@
                             <input type="text"
                                 name="flag"
                                 maxLength="20"
-                                value={this.state.flag}
+                                value={this.state.convert.flag}
                                 onChange={this.flagChange.bind(this)} /><font color="red">*</font>
                         </td>
                     </tr>
                     <tr>
-                        <td>{culture.model}:</td>
+                        <td>{culture.convertModel}:</td>
                         <td>
                             <select name="model"
-                                value={this.state.model}
+                                value={this.state.convert.model}
                                 onChange={this.modelChange.bind(this)}>
                                 <option value="0">{culture.scale}</option>
                                 <option value="1">{culture.cut}</option>
@@ -120,15 +205,15 @@
                                 <option value="3">{culture.by_height}</option>
                             </select>
                         </td>
-                        <td colSpan="2" ref="">
-                            top:<input type="text" name="x" style={{ width: "35px" }}
-                                value={this.state.model == "1" ? this.state.x : "0"}
-                                disabled={this.state.model == "1" ? false : true}
+                        <td colSpan="2">
+                            x:<input type="text" name="x" style={{ width: "35px" }}
+                                value={this.state.convert.x}
+                                disabled={this.state.convert.model == "1" ? false : true}
                                 onChange={this.xChange.bind(this)} />px
                             {'\u00A0'}
-                            left:<input type="text" name="y" style={{ width: "35px" }}
-                                value={this.state.model == "1" ? this.state.y : "0"}
-                                disabled={this.state.model == "1" ? false : true}
+                            y:<input type="text" name="y" style={{ width: "35px" }}
+                                value={this.state.convert.y}
+                                disabled={this.state.convert.model == "1" ? false : true}
                                 onChange={this.yChange.bind(this)} />px
                         </td>
                     </tr>
@@ -136,14 +221,14 @@
                         <td width="15%">{culture.width}:</td>
                         <td width="35%"><input type="text" name="width"
                             style={{ width: "60px" }}
-                            value={this.state.width}
-                            disabled={this.state.model == "3" ? true : false}
+                            value={this.state.convert.width}
+                            disabled={this.state.convert.model == "3" ? true : false}
                             onChange={this.widthChange.bind(this)} />px</td>
                         <td width="20%">{culture.height}:</td>
                         <td width="30%"><input type="text" name="height"
                             style={{ width: "60px" }}
-                            value={this.state.height}
-                            disabled={this.state.model == "2" ? true : false}
+                            value={this.state.convert.height}
+                            disabled={this.state.convert.model == "2" ? true : false}
                             onChange={this.heightChange.bind(this)} />px</td>
                     </tr>
                     <tr>
@@ -346,6 +431,7 @@ class AddImage extends React.Component {
             buttonValue: culture.upload,
             buttonDisabled: false,
             thumbnails: [],
+            thumbnailsDisplay: [],
             accesses: [],
         }
     }
@@ -355,9 +441,29 @@ class AddImage extends React.Component {
     showAccess(e) {
         this.state.accessShow ? this.setState({ accessShow: false }) : this.setState({ accessShow: true });
     }
-    imageOk(obj) {
-        this.state.thumbnails.push(obj);
-        this.setState({ thumbnails: this.state.thumbnails });
+    imageOk(convert, convertTitle) {
+        this.state.thumbnails.push({
+            format: convert.format,
+            flag: convert.flag,
+            model: convert.model,
+            x: convert.x,
+            y: convert.y,
+            width: convert.width,
+            height: convert.height,
+        });
+        this.state.thumbnailsDisplay.push({
+            format: convertTitle.formatName,
+            flag: convertTitle.flag,
+            model: convertTitle.modelName,
+            x: convertTitle.x,
+            y: convertTitle.y,
+            width: convertTitle.width,
+            height: convertTitle.height,
+        });
+        this.setState({
+            thumbnails: this.state.thumbnails,
+            thumbnailsDisplay: this.state.thumbnailsDisplay
+        });
     }
     accessOk(companyCode, companyName, authority, codeArray, nameArray, realCodes, userArray, success) {
         this.state.accesses.push({ companyCode, companyName, authority, codeArray, nameArray, realCodes, userArray });
@@ -444,7 +550,8 @@ class AddImage extends React.Component {
                                 {
                                     this.state.thumbnails.map(function (item, i) {
                                         return (
-                                            <span className="convert_flag" title={JSON.stringify(item)} key={i} id={i}>
+                                            <span className="convert_flag"
+                                                title={JSON.stringify(this.state.thumbnailsDisplay[i])} key={i} id={i}>
                                                 <span className="flag_txt">{item.flag}</span>
                                                 <span className="flag_txt flag_del"
                                                     onClick={this.delImage.bind(this)}>×</span>
@@ -453,7 +560,8 @@ class AddImage extends React.Component {
                                     }.bind(this))
                                 }
                             </td>
-                            <td width="10%" className="link"
+                            <td width="10%"
+                                className="link"
                                 onClick={this.showConvert.bind(this)}>
                                 {this.state.convertShow ?
                                     <i className="iconfont icon-delete"></i> :
@@ -463,7 +571,9 @@ class AddImage extends React.Component {
                         </tr>
                         <tr>
                             <td colSpan="4">
-                                {this.state.convertShow ? <ConvertImage imageOk={this.imageOk.bind(this)} /> : null}
+                                {this.state.convertShow ?
+                                    <ConvertImage imageOk={this.imageOk.bind(this)} />
+                                    : null}
                             </td>
                         </tr>
                         <tr style={{ height: "35px" }}>

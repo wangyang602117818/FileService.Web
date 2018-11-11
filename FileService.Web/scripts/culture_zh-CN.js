@@ -84,6 +84,7 @@ var culture = {
     default: "默认",
     flag: "标识",
     model: "模式",
+    convertModel: "转换模式",
     scale: "缩放",
     cut: "剪切",
     by_width: "按宽度",
