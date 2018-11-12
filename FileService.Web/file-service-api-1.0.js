@@ -153,6 +153,9 @@ function FileClient(authCode, remoteUrl) {
     this.getThumbnailFromSourceIdUrl = function (fileId) {
         return this.remoteUrl + "/download/getthumbnail/" + fileId;
     };
+    this.getThumbnailFromSourceIdFlagUrl = function (fileId, flag) {
+        return this.remoteUrl + "/download/getthumbnailbytag/" + fileId + "?flag=" + flag;
+    };
     this.getTsUrl = function (tsId) {
         return this.remoteUrl + "/download/ts/" + tsId;
     };
