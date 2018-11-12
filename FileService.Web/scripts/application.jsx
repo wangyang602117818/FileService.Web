@@ -7,11 +7,13 @@
             <table className="table">
                 <thead>
                     <tr>
-                        <td width="25%">{culture.id}</td>
-                        <th width="20%">{culture.applicationName}</th>
+                        <td width="20%">{culture.id}</td>
+                        <th width="15%">{culture.applicationName}</th>
                         <th width="15%">{culture.auth_code}</th>
-                        <th width="10%">{culture.action}</th>
-                        <th width="30%">{culture.createTime}</th>
+                        <th width="8%">{culture.action}</th>
+                        <th width="13%">{culture.image_convert}</th>
+                        <th width="13%">{culture.video_convert}</th>
+                        <th width="16%">{culture.createTime}</th>
                     </tr>
                 </thead>
                 <ApplicationList data={this.props.data}
@@ -63,10 +65,35 @@ class ApplicationItem extends React.Component {
                         onClick={this.props.onIdClick}
                         dangerouslySetInnerHTML={{ __html: this.props.application._id.$oid }}></b>
                 </td>
-                <td dangerouslySetInnerHTML={{ __html: this.props.application.ApplicationName }}>
-                </td>
+                <td dangerouslySetInnerHTML={{ __html: this.props.application.ApplicationName }}></td>
                 <td>{this.props.application.AuthCode}</td>
                 <td dangerouslySetInnerHTML={{ __html: this.props.application.Action }}></td>
+                <td>
+                    {
+                        this.props.application.ThumbnailsDisplay.map(function (item, i) {
+                            delete item._id;
+                            return (
+                                <span className="convert_flag"
+                                    title={JSON.stringify(item)} key={i} id={i}>
+                                    <span className="flag_txt">{item.flag || item.Flag}</span>
+                                </span>
+                            );
+                        }.bind(this))
+                    }
+                </td>
+                <td>
+                    {
+                        this.props.application.VideosDisplay.map(function (item, i) {
+                            delete item._id;
+                            return (
+                                <span className="convert_flag"
+                                    title={JSON.stringify(item)} key={i} id={i}>
+                                    <span className="flag_txt">{item.flag || item.Flag}</span>
+                                </span>
+                            );
+                        }.bind(this))
+                    }
+                </td>
                 <td>{parseBsonTime(this.props.application.CreateTime)}</td>
             </tr>
         )
@@ -165,8 +192,20 @@ class Application extends React.Component {
         var id = e.target.id || e.target.parentElement.id;
         http.get(urls.application.getapplicationUrl + "?id=" + id, function (data) {
             if (data.code == 0) {
-                this.setState({ deleteShow: true, updateShow: true, deleteId: data.result._id.$oid, deleteName: data.result.ApplicationName }, function () {
-                    this.refs.updateApplication.onIdClick(data.result.ApplicationName, data.result.AuthCode, data.result.Action);
+                this.setState({
+                    deleteShow: true,
+                    updateShow: true,
+                    deleteId: data.result._id.$oid,
+                    deleteName: data.result.ApplicationName
+                }, function () {
+                    this.refs.updateApplication.onIdClick(data.result.ApplicationName,
+                        data.result.AuthCode,
+                        data.result.Action,
+                        data.result.Thumbnails || [],
+                        data.result.ThumbnailsDisplay || [],
+                        data.result.Videos || [],
+                        data.result.VideosDisplay || []
+                    );
                 }.bind(this));
             }
         }.bind(this));
@@ -215,7 +254,7 @@ class Application extends React.Component {
                     <TitleArrow
                         title={culture.delete + culture.application + "(" + this.state.deleteName + ")"}
                         show={this.state.deleteToggle}
-                        onShowChange={e => { this.setState({ deleteToggle: !this.state.deleteToggle}) }} /> : null}
+                        onShowChange={e => { this.setState({ deleteToggle: !this.state.deleteToggle }) }} /> : null}
                 {this.state.deleteShow ?
                     <DeleteApplication
                         show={this.state.deleteToggle}

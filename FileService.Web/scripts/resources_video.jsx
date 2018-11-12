@@ -54,11 +54,11 @@
     }
     render() {
         return (
-            <table className="table_modify" style={{ width: "50%", marginTop: "0px", borderCollapse: "collapse" }}>
+            <table className="table_modify" style={{ width: "100%", marginTop: "0px", borderCollapse: "collapse" }}>
                 <tbody>
                     <tr>
-                        <td width="30%">{culture.outputFormat}:</td>
-                        <td width="70%">
+                        <td width="15%">{culture.outputFormat}:</td>
+                        <td width="85%">
                             <select name="format"
                                 value={this.state.convert.format}
                                 onChange={e => { }}>
@@ -138,7 +138,8 @@ class AddVideo extends React.Component {
         this.setState({
             accesses: this.state.accesses,
         }, function () {
-            this.refs.accessAuthority.addCompanyData(code, name);
+            if (this.refs.accessAuthority)
+                this.refs.accessAuthority.addCompanyData(code, name);
         }.bind(this));
         e.stopPropagation();
     }

@@ -2,11 +2,11 @@
 using FileService.Model;
 using FileService.Util;
 using MongoDB.Bson;
+using MongoDB.Bson.IO;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
-using System.Web;
 using System.Web.Mvc;
 
 namespace FileService.Web.Controllers
@@ -31,7 +31,7 @@ namespace FileService.Web.Controllers
         protected FilePreviewBig filePreviewBig = new FilePreviewBig();
         protected Shared shared = new Shared();
         protected Download download = new Download();
-        
+        protected Application application = new Application();
         public BaseController()
         {
             ViewBag.appName = AppSettings.appName;

@@ -121,7 +121,7 @@ class AddShared extends React.Component {
     }
     render() {
         return (
-            <table className="table_modify">
+            <table className="table_modify" style={{width:"70%"}}>
                 <tbody>
                     <tr>
                         <td>{culture.shared_link}:</td>

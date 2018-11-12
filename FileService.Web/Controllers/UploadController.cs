@@ -19,7 +19,6 @@ namespace FileService.Web.Controllers
     public class UploadController : BaseController
     {
         string tempFileDirectory = AppDomain.CurrentDomain.BaseDirectory + AppSettings.tempFileDir + DateTime.Now.ToString("yyyyMMdd") + "\\";
-        Application application = new Application();
         Extension extension = new Extension();
         [HttpPost]
         public ActionResult Image(UploadImgModel uploadImgModel)
@@ -27,10 +26,16 @@ namespace FileService.Web.Controllers
             List<ImageItemResponse> response = new List<ImageItemResponse>();
             List<ImageOutPut> output = new List<ImageOutPut>();
             List<AccessModel> accessList = new List<AccessModel>();
-
-            if (!string.IsNullOrEmpty(uploadImgModel.OutPut))
+            if (Request.Headers["DefaultConvert"] == "true")
             {
-                output = JsonConvert.DeserializeObject<List<ImageOutPut>>(uploadImgModel.OutPut);
+                output = JsonConvert.DeserializeObject<List<ImageOutPut>>(Request.Headers["Thumbnails"]);
+            }
+            else
+            {
+                if (!string.IsNullOrEmpty(uploadImgModel.OutPut))
+                {
+                    output = JsonConvert.DeserializeObject<List<ImageOutPut>>(uploadImgModel.OutPut);
+                }
             }
             if (!string.IsNullOrEmpty(uploadImgModel.Access))
             {
@@ -102,9 +107,16 @@ namespace FileService.Web.Controllers
             List<VideoItemResponse> response = new List<VideoItemResponse>();
             List<VideoOutPut> outputs = new List<VideoOutPut>();
             List<AccessModel> accessList = new List<AccessModel>();
-            if (!string.IsNullOrEmpty(uploadVideo.OutPut))
+            if (Request.Headers["DefaultConvert"] == "true")
             {
-                outputs = JsonConvert.DeserializeObject<List<VideoOutPut>>(uploadVideo.OutPut);
+                outputs = JsonConvert.DeserializeObject<List<VideoOutPut>>(Request.Headers["Videos"]);
+            }
+            else
+            {
+                if (!string.IsNullOrEmpty(uploadVideo.OutPut))
+                {
+                    outputs = JsonConvert.DeserializeObject<List<VideoOutPut>>(uploadVideo.OutPut);
+                }
             }
             if (!string.IsNullOrEmpty(uploadVideo.Access))
             {

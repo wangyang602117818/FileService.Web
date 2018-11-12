@@ -21,10 +21,6 @@ namespace FileService.Data
             var filter = FilterBuilder.Eq("ApplicationName", appName);
             return MongoCollection.Find(filter).FirstOrDefault();
         }
-        public bool UpdateApplication(string name, string code, string action)
-        {
-            var filter = FilterBuilder.Eq("ApplicationName", name);
-            return MongoCollection.UpdateOne(filter, Builders<BsonDocument>.Update.Set("AuthCode", code).Set("Action", action).Set("CreateTime", DateTime.Now), new UpdateOptions() { IsUpsert = true }).IsAcknowledged;
-        }
+        
     }
 }

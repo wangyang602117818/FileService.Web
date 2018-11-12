@@ -563,7 +563,7 @@ class AddImage extends React.Component {
                                 }
                             </td>
                             <td width="10%"
-                                className="link"
+                                className="link td"
                                 onClick={this.showConvert.bind(this)}>
                                 {this.state.convertShow ?
                                     <i className="iconfont icon-delete"></i> :

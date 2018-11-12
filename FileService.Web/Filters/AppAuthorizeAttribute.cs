@@ -2,6 +2,7 @@
 using FileService.Util;
 using FileService.Web.Models;
 using MongoDB.Bson;
+using MongoDB.Bson.IO;
 using System.Web.Mvc;
 
 namespace FileService.Web.Filters
@@ -34,6 +35,8 @@ namespace FileService.Web.Filters
                 else
                 {
                     filterContext.HttpContext.Request.Headers.Add("AppName", application["ApplicationName"].AsString);
+                    filterContext.HttpContext.Request.Headers.Add("Thumbnails", application["Thumbnails"].AsBsonArray.ToJson(new JsonWriterSettings() { OutputMode = JsonOutputMode.Strict }));
+                    filterContext.HttpContext.Request.Headers.Add("Videos", application["Videos"].AsBsonArray.ToJson(new JsonWriterSettings() { OutputMode = JsonOutputMode.Strict }));
                 }
             }
         }

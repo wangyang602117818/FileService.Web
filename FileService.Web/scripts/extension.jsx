@@ -261,7 +261,7 @@ class ConfigContainer extends React.Component {
         this.setState({ section: value });
     }
     onRefreshChange(value) {
-        this.refs.extension.onRefreshChange(value);
+        this.refs.config.onRefreshChange(value);
     }
     render() {
         if (this.state.section == "extension") {

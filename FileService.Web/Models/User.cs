@@ -28,6 +28,7 @@ namespace FileService.Web.Models
     }
     public class UpdateUser
     {
+        private DateTime? updateTime = DateTime.Now;
         [BsonIgnore]
         public string Id { get; set; }
         [Required]
@@ -42,10 +43,10 @@ namespace FileService.Web.Models
         public List<string> DepartmentDisplay { get; set; }
         public string Role { get; set; }
         [BsonIgnoreIfNull]
-        public DateTime? CreateTime { get; set; }
-        [BsonIgnoreIfNull]
         public DateTime? LastLoginDate { get; set; }
         public bool Modified { get; set; }
+        public DateTime? UpdateTime { get => updateTime; set => updateTime = value; }
+
     }
     public class UserLogin
     {

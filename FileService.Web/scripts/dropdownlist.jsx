@@ -359,7 +359,6 @@ class DepartmentDropDownListWrap extends React.Component {
                 </div>
                 {this.props.department_bar ?
                     <div className="department_bar">&nbsp;
-                    {culture.authority_type}:
                     <span className={this.props.department_authority == "0" ? "department_bar_item current" : "department_bar_item"} index="0"
                             onClick={this.departmentAuthorityChange.bind(this)}>{culture.only_current}</span>
                         <span className={this.props.department_authority == "1" ? "department_bar_item current" : "department_bar_item"} index="1"

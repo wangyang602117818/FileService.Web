@@ -1,9 +1,49 @@
-﻿function FileClient(authCode, remoteUrl) {
+﻿//////////////////////////////////////////////////////////////////////////////////////
+///version:1.6.4
+///author: wangyang
+/////////////////////////////////////////////////////////////////////////////////////
+function FileClient(authCode, remoteUrl) {
     this.authCode = authCode;
     this.remoteUrl = remoteUrl;
     this.fromApi = true;
     this.apiType = "javascript";
 
+    this.uploadImageDefaultConvert = function (file, userAccess, success, progress, error, userName) {
+        var xhr = new XMLHttpRequest();
+        xhr.upload.onprogress = function (event) {
+            var precent = ((event.loaded / event.total) * 100).toFixed();
+            if (progress) progress(precent);
+        }
+        xhr.onload = function (event) {
+            var target = event.srcElement || event.target;
+            if (success) success(JSON.parse(target.responseText));
+        }
+        xhr.onerror = function (event) {
+            if (error) error(event);
+        }
+        var formData = this.getFormData("images", file, null, userAccess);
+        xhr.open('post', this.remoteUrl + "/upload/image");
+        this.setXhrHeaders(xhr, userName, "true");
+        xhr.send(formData);
+    };
+    this.uploadVideoDefaultConvert = function (file, userAccess, success, progress, error, userName) {
+        var xhr = new XMLHttpRequest();
+        xhr.upload.onprogress = function (event) {
+            var precent = ((event.loaded / event.total) * 100).toFixed();
+            if (progress) progress(precent);
+        }
+        xhr.onload = function (event) {
+            var target = event.srcElement || event.target;
+            if (success) success(JSON.parse(target.responseText));
+        }
+        xhr.onerror = function (event) {
+            if (error) error(event);
+        }
+        var formData = this.getFormData("videos", file, null, userAccess);
+        xhr.open('post', this.remoteUrl + "/upload/video");
+        this.setXhrHeaders(xhr, userName, "true");
+        xhr.send(formData);
+    };
     this.uploadImage = function (file, imageConvert, userAccess, success, progress, error, userName) {
         var xhr = new XMLHttpRequest();
         xhr.upload.onprogress = function (event) {
@@ -19,7 +59,7 @@
         }
         var formData = this.getFormData("images", file, imageConvert, userAccess);
         xhr.open('post', this.remoteUrl + "/upload/image");
-        this.setXhrHeaders(xhr, userName);
+        this.setXhrHeaders(xhr, userName, "false");
         xhr.send(formData);
     };
     this.uploadVideo = function (file, videoConvert, userAccess, success, progress, error, userName) {
@@ -37,7 +77,7 @@
         }
         var formData = this.getFormData("videos", file, videoConvert, userAccess);
         xhr.open('post', this.remoteUrl + "/upload/video");
-        this.setXhrHeaders(xhr, userName);
+        this.setXhrHeaders(xhr, userName, "false");
         xhr.send(formData);
     };
     this.uploadAttachment = function (file, userAccess, success, progress, error, userName) {
@@ -55,7 +95,7 @@
         }
         var formData = this.getFormData("attachments", file, null, userAccess);
         xhr.open('post', this.remoteUrl + "/upload/attachment");
-        this.setXhrHeaders(xhr, userName);
+        this.setXhrHeaders(xhr, userName, "false");
         xhr.send(formData);
     };
     this.uploadVideoCapture = function (fileId, file, success, progress, error, userName) {
@@ -181,10 +221,11 @@
         }
         return formData;
     };
-    this.setXhrHeaders = function (xhr, userName) {
+    this.setXhrHeaders = function (xhr, userName, defaultConvert) {
         xhr.setRequestHeader("AuthCode", this.authCode);
         xhr.setRequestHeader("FromApi", true);
         xhr.setRequestHeader("ApiType", this.apiType);
+        if (defaultConvert) xhr.setRequestHeader("DefaultConvert", defaultConvert);
         if (userName) xhr.setRequestHeader("UserName", userName);
     }
 }

@@ -84,7 +84,7 @@ var culture = {
     default: "Default",
     flag: "flag",
     model: "Model",
-    convertModel:"ConvertModel",
+    convertModel: "ConvertModel",
     scale: "Scale",
     cut: "Cut",
     by_width: "By Width",
@@ -219,5 +219,7 @@ var culture = {
     data: "Data",
     available: "Available",
     upTime: "UpTime",
+    image_convert: "ImageConvert",
+    video_convert: "VideoConvert"
 
 }

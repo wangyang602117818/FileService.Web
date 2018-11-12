@@ -18,9 +18,10 @@ namespace FileService.Business
         {
             return mongoData.FindByAppName(appName);
         }
-        public bool UpdateApplication(string name, string authCode, string action)
+        public void AddApplication(BsonDocument application)
         {
-            return mongoData.UpdateApplication(name, authCode, action);
+            application.Add("CreateTime", DateTime.Now);
+            mongoData.Insert(application);
         }
     }
 }

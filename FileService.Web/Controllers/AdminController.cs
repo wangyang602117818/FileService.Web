@@ -417,9 +417,9 @@ namespace FileService.Web.Controllers
         {
             BsonDocument extensionBson = extension.GetByExtension(addExtension.Extension.ToLower());
             if (extensionBson != null) return new ResponseModel<string>(ErrorCode.record_exist, "");
-            if (extension.UpdateExtension(addExtension.Extension, 
-                addExtension.Type, 
-                addExtension.Description, 
+            if (extension.UpdateExtension(addExtension.Extension,
+                addExtension.Type,
+                addExtension.Description,
                 addExtension.Action))
             {
                 Log("-", "AddExtension");
@@ -475,17 +475,15 @@ namespace FileService.Web.Controllers
         {
             BsonDocument appBson = application.FindByAppName(addApplication.ApplicationName);
             if (appBson != null) return new ResponseModel<string>(ErrorCode.record_exist, "");
-            if (application.UpdateApplication(addApplication.ApplicationName, addApplication.AuthCode, addApplication.Action))
-            {
-                Log("-", "AddApplication");
-                return new ResponseModel<string>(ErrorCode.success, "");
-            }
-            return new ResponseModel<string>(ErrorCode.server_exception, "");
+            application.AddApplication(addApplication.ToBsonDocument());
+            Log("-", "AddApplication");
+            return new ResponseModel<string>(ErrorCode.success, "");
         }
         [Authorize(Roles = "admin,management")]
         public ActionResult UpdateApplication(UpdateApplicationModel updateApplication)
         {
             BsonDocument bson = updateApplication.ToBsonDocument();
+            bson.Add("UpdateTime", DateTime.Now);
             BsonDocument appBson = application.FindByAppName(updateApplication.ApplicationName);
             if (appBson != null && appBson["_id"].ToString() != updateApplication.Id) return new ResponseModel<string>(ErrorCode.record_exist, "");
             if (application.Update(ObjectId.Parse(updateApplication.Id), bson))

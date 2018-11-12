@@ -158,11 +158,11 @@ class User extends React.Component {
     updateUser(obj, success) {
         obj.id = this.state.updateId;
         http.postJson(urls.user.updateUserUrl, obj, function (data) {
+            success(data);
             if (data.code == 0) {
                 this.getData();
                 this.setState({ deleteShow: false, updateShow: false });
             }
-            success(data);
         }.bind(this));
     }
     addUser(obj, success) {
