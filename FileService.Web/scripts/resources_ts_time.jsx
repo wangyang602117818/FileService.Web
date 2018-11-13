@@ -8,7 +8,7 @@
                 <table className="table" style={{ width: "70%" }}>
                     <thead>
                         <tr>
-                            <th width="20%">{culture.id}</th>
+                            <th width="20%">{culture.m3u8Id}</th>
                             <th width="25%">{culture.fileName}</th>
                             <th width="10%">{culture.username}</th>
                             <th width="10%">{culture.playtime + "(" + culture.seconds + ")"}</th>

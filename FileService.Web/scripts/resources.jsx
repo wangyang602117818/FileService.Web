@@ -425,7 +425,7 @@ class Resources extends React.Component {
         }.bind(this));
     }
     getTsTime(ids) {
-        http.postJson(urls.tsTimeUrl, {ids:ids}, function (data) {
+        http.postJson(urls.tsTimeUrl, { ids: ids }, function (data) {
             if (data.code == 0) {
                 this.setState({ tsTime: data.result });
             }
@@ -613,6 +613,7 @@ class Resources extends React.Component {
                     if (owner == userName) selCount--;
                 }
             }
+            //选择的文件有不是自己传的
             if (selCount == 0) {
                 this.setState({
                     accessFileShow: true,
@@ -621,12 +622,18 @@ class Resources extends React.Component {
             } else {
                 this.setState({ accessFileShow: false });
             }
-            this.setState({ subFileShow: false, sharedFileShow: false }, function () {
+            this.setState({ subFileShow: false, sharedFileShow: false, tsTimeShow: false }, function () {
                 if (this.refs.updateAccess) { this.refs.updateAccess.getCompany(); }
             }.bind(this));
         }
         this.setState({ selectedList: this.state.selectedList });
-        if (this.state.selectedList.length == 0) this.setState({ subFileShow: false, accessFileShow: false });
+        if (this.state.selectedList.length == 0) {
+            this.setState({
+                subFileShow: false,
+                accessFileShow: false,
+                tsTimeShow: false
+            });
+        } 
         e.stopPropagation();
     }
     onOrderChanged(e) {
