@@ -148,6 +148,7 @@ var urls = {
     getFileIconUrl: appDomain + "admin/getfileicon",
     getFileIconBigUrl: appDomain + "admin/getfileiconbig",
     serverStateUrl: appDomain + "server/serverstatus",
+    tsTimeUrl: appDomain + "admin/gettstime",
     overview: {
         recentUrl: appDomain + "admin/getcountrecentmonth",
         totalUrl: appDomain + "admin/gettotalcount",
@@ -176,7 +177,6 @@ var urls = {
         addThumbnailTaskUrl: appDomain + "admin/addthumbnailtask",
         deleteCacheFileUrl: appDomain + "admin/deletecachefile",
         deleteAllCacheFileUrl: appDomain + "admin/deleteallcachefile",
-
     },
     resources: {
         getUrl: appDomain + "admin/getfiles",

@@ -221,6 +221,6 @@ var culture = {
     upTime: "运行时间",
     startup: "启动中",
     image_convert: "图片转换",
-    video_convert: "视频转换"
-    
+    video_convert: "视频转换",
+    playtime:"播放记录"
 }

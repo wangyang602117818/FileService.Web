@@ -198,6 +198,7 @@
     <Compile Include="Models\ErrorCode.cs" />
     <Compile Include="Models\ResponseModel.cs" />
     <Compile Include="Models\SharedModel.cs" />
+    <Compile Include="Models\TsTimeModel.cs" />
     <Compile Include="Models\UpdateAccess.cs" />
     <Compile Include="Models\UpdateApplication.cs" />
     <Compile Include="Models\UpdateExtension.cs" />
@@ -385,6 +386,7 @@
     <Content Include="scripts\resources_subfile_list.jsx" />
     <Content Include="scripts\resources_thumbnail_list.jsx" />
     <Content Include="scripts\resources_video.jsx" />
+    <Content Include="scripts\resources_ts_time.jsx" />
     <Content Include="scripts\shared.jsx" />
     <Content Include="scripts\shared_init.jsx" />
     <Content Include="scripts\tasks.jsx" />

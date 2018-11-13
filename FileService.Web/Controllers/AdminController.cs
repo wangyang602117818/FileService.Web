@@ -19,6 +19,7 @@ namespace FileService.Web.Controllers
     {
         Extension extension = new Extension();
         User user = new User();
+        TsTime tsTime = new TsTime();
         public ActionResult Index()
         {
             ViewBag.Name = User.Identity.Name;
@@ -395,6 +396,12 @@ namespace FileService.Web.Controllers
             DateTime.TryParse(endTime, out DateTime timeEnd);
             IEnumerable<BsonDocument> result = log.GetPageList(pageIndex, pageSize, null, timeStart, timeEnd, sorts, filter, new List<string>() { "_id", "AppName", "Content", "FileId" }, new List<string>() { }, out count);
             return new ResponseModel<IEnumerable<BsonDocument>>(ErrorCode.success, result, count);
+        }
+        public ActionResult GetTsTime(TsTimeModel tsTimeModel)
+        {
+            IEnumerable<ObjectId> oIds = tsTimeModel.Ids.Select(sel => ObjectId.Parse(sel));
+            IEnumerable<BsonDocument> result = tsTime.GetListLastMonth(oIds, tsTimeModel.Month);
+            return new ResponseModel<IEnumerable<BsonDocument>>(ErrorCode.success, result);
         }
         [Authorize(Roles = "admin,management")]
         public ActionResult GetExtensions(int pageIndex = 1, int pageSize = 10, string filter = "", string startTime = null, string endTime = null)

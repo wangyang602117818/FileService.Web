@@ -1,6 +1,7 @@
 ﻿using MongoDB.Bson;
 using MongoDB.Driver;
 using System;
+using System.Collections.Generic;
 
 namespace FileService.Data
 {
@@ -9,15 +10,20 @@ namespace FileService.Data
         public TsTime() : base("TsTime") { }
         public bool UpdateByUserName(string from, ObjectId sourceId, string sourceName, string userName, int currentTime)
         {
-            var filter = FilterBuilder.Eq("From", from) & FilterBuilder.Eq("UserName", userName) & FilterBuilder.Eq("SourceId", sourceId);
+            var filter = FilterBuilder.Eq("SourceId", sourceId) & FilterBuilder.Eq("From", from) & FilterBuilder.Eq("UserName", userName);
             return MongoCollection.UpdateOne(filter,
                 Builders<BsonDocument>.Update.Set("SourceName", sourceName).Set("TsTime", currentTime).Set("CreateTime", DateTime.Now),
                 new UpdateOptions() { IsUpsert = true }).IsAcknowledged;
         }
         public BsonDocument GetTsTime(string from, ObjectId sourceId, string userName)
         {
-            var filter = FilterBuilder.Eq("From", from) & FilterBuilder.Eq("UserName", userName) & FilterBuilder.Eq("SourceId", sourceId);
+            var filter = FilterBuilder.Eq("SourceId", sourceId) & FilterBuilder.Eq("From", from) & FilterBuilder.Eq("UserName", userName);
             return MongoCollection.Find(filter).SortByDescending(sort => sort["CreateTime"]).FirstOrDefault();
+        }
+        public IEnumerable<BsonDocument> GetListLastMonth(IEnumerable<ObjectId> sourceIds, int month)
+        {
+            var filter = FilterBuilder.In("SourceId", sourceIds) & FilterBuilder.Gte("CreateTime", DateTime.Now.AddMonths(-month));
+            return MongoCollection.Find(filter).ToEnumerable();
         }
     }
 }

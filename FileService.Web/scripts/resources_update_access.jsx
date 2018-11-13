@@ -16,6 +16,9 @@
 
             btn_msg: culture.save,
             btn_disabled: false,
+
+            btn_empty_msg: culture.empty_access,
+            btn_empty_disabled: false
         }
     }
     getCompany() {
@@ -118,10 +121,27 @@
                 this.state.realCodes,
                 this.state.userArray, function (data) {
                     if (data.code == 0) {
-                        this.setState({ btn_msg: culture.save_success, btn_disabled: true });
+                        this.setState({
+                            btn_msg: culture.save_success,
+                            btn_disabled: true,
+                            btn_empty_msg: culture.empty_access,
+                            btn_empty_disabled: false
+                        });
                     }
                 }.bind(this));
         }
+    }
+    emptyAccess(e) {
+        this.props.emptyAccess(e, function (data) {
+            if (data.code == 0) {
+                this.setState({
+                    btn_msg: culture.save,
+                    btn_disabled: false,
+                    btn_empty_msg: culture.save_success,
+                    btn_empty_disabled: true
+                });
+            }
+        }.bind(this));
     }
     render() {
         return (
@@ -189,8 +209,9 @@
                     disabled={this.state.btn_disabled}
                     onClick={this.onSaveAccess.bind(this)}
                     className="button" />{'\u00A0'}{'\u00A0'}
-                <input type="button" value={culture.empty_access}
-                    onClick={this.props.emptyAccess.bind(this)}
+                <input type="button" value={this.state.btn_empty_msg}
+                    onClick={this.emptyAccess.bind(this)}
+                    disabled={this.state.btn_empty_disabled}
                     className="button" />
             </div>
         )

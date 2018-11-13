@@ -1,4 +1,5 @@
 ﻿using MongoDB.Bson;
+using System.Collections.Generic;
 
 namespace FileService.Business
 {
@@ -14,6 +15,10 @@ namespace FileService.Business
             BsonDocument tsTime = mongoData.GetTsTime(from, sourceId, userName);
             if (tsTime == null) return 0;
             return tsTime["TsTime"].AsInt32;
+        }
+        public IEnumerable<BsonDocument> GetListLastMonth(IEnumerable<ObjectId> sourceIds,int month)
+        {
+            return mongoData.GetListLastMonth(sourceIds, month);
         }
     }
 }

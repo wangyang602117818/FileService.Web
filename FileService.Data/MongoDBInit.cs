@@ -131,6 +131,24 @@ namespace FileService.Data
                 var c = new CreateIndexModel<BsonDocument>(new BsonDocument() { { "From", 1 }, { "CreateTime", 1 } });  //shared key
                 database.GetCollection<BsonDocument>("Thumbnail").Indexes.CreateOne(c);
             }
+            if (!databases.Contains("M3u8"))
+            {
+                database.CreateCollection("M3u8");
+                var c = new CreateIndexModel<BsonDocument>(new BsonDocument() { { "SourceId", 1 } });  //index
+                database.GetCollection<BsonDocument>("M3u8").Indexes.CreateOne(c);
+            }
+            if (!databases.Contains("Shared"))
+            {
+                database.CreateCollection("Shared");
+                var c = new CreateIndexModel<BsonDocument>(new BsonDocument() { { "FileId", 1 } });  //index
+                database.GetCollection<BsonDocument>("Shared").Indexes.CreateOne(c);
+            }
+            if (!databases.Contains("TsTime"))
+            {
+                database.CreateCollection("TsTime");
+                var c = new CreateIndexModel<BsonDocument>(new BsonDocument() { { "SourceId", 1 } });  //index
+                database.GetCollection<BsonDocument>("TsTime").Indexes.CreateOne(c);
+            }
             if (!databases.Contains("Task"))
             {
                 database.CreateCollection("Task");

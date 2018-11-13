@@ -219,7 +219,8 @@ var culture = {
     data: "Data",
     available: "Available",
     upTime: "UpTime",
+    startup: "StartUp",
     image_convert: "ImageConvert",
-    video_convert: "VideoConvert"
-
+    video_convert: "VideoConvert",
+    playtime: "PlayTime"
 }

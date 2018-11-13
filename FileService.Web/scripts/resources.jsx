@@ -209,7 +209,10 @@ class Resources extends React.Component {
             ///////////
             subFileShow: false,
             subFileToggle: true,
+            tsTimeShow: false,
+            tsTimeToggle: true,
             subFileArray: [],
+            tsTime: [],
             fileId: "",
             fileName: "",
             innerFileName: "",
@@ -366,12 +369,18 @@ class Resources extends React.Component {
         } else {
             this.setState({ accessFileShow: false, sharedFileShow: false });
         }
+        if (fileType == "video") {
+            this.state.tsTimeShow = true;
+        } else {
+            this.state.tsTimeShow = false;
+        }
         this.setState({
             fileName: fileName,
             innerFileName: innerFileName,
             owner: owner,
             fileId: fileId,
             subFileShow: true,
+            tsTimeShow: this.state.tsTimeShow,
             subComponent: subComponent,
             access: access,
             departments: departments
@@ -397,15 +406,29 @@ class Resources extends React.Component {
     getThumbnail(fileId) {
         if (fileId.length != 24) return;
         http.get(urls.resources.getThumbnailMetadataUrl + "/" + fileId, function (data) {
-            if (data.code == 0) this.state.subFileArray = data.result;
-            this.setState({ subFileArray: this.state.subFileArray });
+            if (data.code == 0) {
+                this.setState({ subFileArray: data.result });
+            }
         }.bind(this));
     }
     getM3u8(fileId) {
         if (fileId.length != 24) return;
         http.get(urls.resources.getM3u8MetadataUrl + "/" + fileId, function (data) {
-            if (data.code == 0) this.state.subFileArray = data.result;
-            this.setState({ subFileArray: this.state.subFileArray });
+            if (data.code == 0) {
+                var m3u8Ids = [];
+                for (var i = 0; i < data.result.length; i++) {
+                    m3u8Ids.push(data.result[i]._id.$oid);
+                }
+                this.getTsTime(m3u8Ids);
+                this.setState({ subFileArray: data.result });
+            }
+        }.bind(this));
+    }
+    getTsTime(ids) {
+        http.postJson(urls.tsTimeUrl, {ids:ids}, function (data) {
+            if (data.code == 0) {
+                this.setState({ tsTime: data.result });
+            }
         }.bind(this));
     }
     getSubFile(fileId) {
@@ -475,13 +498,14 @@ class Resources extends React.Component {
                 if (success) success(data);
             }.bind(this))
     }
-    emptyAccess(e) {
+    emptyAccess(e, success) {
         http.postJson(urls.resources.updateAccessUrl, { fileIds: [this.state.fileId], access: [] }, function (data) {
             if (data.code == 0) {
                 this.setState({ access: [] });
             } else {
                 alert(data.message);
             }
+            if (success) success(data);
         }.bind(this));
     }
     delAccess(e) {
@@ -700,6 +724,16 @@ class Resources extends React.Component {
                         deleteThumbnail={this.deleteThumbnail.bind(this)}
                         deleteM3u8={this.deleteM3u8.bind(this)}
                     /> : null
+                }
+                {
+                    this.state.tsTimeShow ?
+                        <TitleArrow title={culture.playtime + "(" + this.state.innerFileName + ")"}
+                            show={this.state.tsTimeToggle}
+                            onShowChange={e => this.setState({ tsTimeToggle: !this.state.tsTimeToggle })} /> : null
+                }
+                {
+                    this.state.tsTimeShow ?
+                        <TsTime show={this.state.tsTimeToggle} data={this.state.tsTime} /> : null
                 }
                 {this.state.accessFileShow ?
                     <TitleArrow
