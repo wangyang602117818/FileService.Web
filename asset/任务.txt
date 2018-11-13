@@ -7,9 +7,7 @@
 加密ts
 展示视频的播放记录
 
-所有的请求验证 application
 替换文件
-download 权限问题
 FileServer.Client.dll 的多版本
 
 ffmpeg.exe -i Wildlife.mp4 -hls_time 2 -hls_list_size 0 -hls_allow_cache 0 -hls_enc 1 -hls_enc_key N74kEdQDwUgiR5QNyMQ9fg== -hls_enc_key_url http://localhost:2431/admin/key -hls_enc_iv EjRWeJCrze8= out.m3u8

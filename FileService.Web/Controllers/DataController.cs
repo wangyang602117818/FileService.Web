@@ -119,6 +119,7 @@ namespace FileService.Web.Controllers
                 {"FileName",list.First()["FileName"] }
             };
             BsonArray stateList = new BsonArray();
+            int percent = 0;
             foreach (BsonDocument item in list)
             {
                 stateList.Add(new BsonDocument()
@@ -130,7 +131,9 @@ namespace FileService.Web.Controllers
                     {"State", item["StateDesc"]},
                     {"Percent", item["Percent"]},
                 });
+                percent = percent + item["Percent"].AsInt32;
             }
+            result.Add("Percent",percent / list.Count());
             result.Add("StateList", stateList);
             return new ResponseModel<BsonDocument>(ErrorCode.success, result);
         }
