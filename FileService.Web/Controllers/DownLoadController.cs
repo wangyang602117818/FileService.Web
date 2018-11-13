@@ -67,12 +67,6 @@ namespace FileService.Web.Controllers
             BsonDocument thumb = thumbnail.FindOne(ObjectId.Parse(id));
             return File(thumb["File"].AsByteArray, ImageExtention.GetContentType(thumb["FileName"].AsString), thumb["FileName"].AsString);
         }
-        /// <summary>
-        /// 通过源文件id获取第一个缩略图，如果没有缩略图，返回源文件
-        /// </summary>
-        /// <param name="id">源文件id</param>
-        /// <returns></returns>
-        [AppAuthorizeDefault]
         public ActionResult GetThumbnail(string id)
         {
             ObjectId fileWrapId = ObjectId.Parse(id);
@@ -86,7 +80,6 @@ namespace FileService.Web.Controllers
             //没有缩略图
             if (thumbnail == null)
             {
-                AddDownload(fileWrapId);
                 GridFSDownloadStream stream = mongoFile.DownLoad(fileWrap["FileId"].AsObjectId);
                 return File(stream, fileWrap["ContentType"].AsString, fileWrap["FileName"].AsString);
             }
@@ -95,13 +88,6 @@ namespace FileService.Web.Controllers
                 return Thumbnail(thumbnail["_id"].ToString());
             }
         }
-        /// <summary>
-        /// 通过源文件id和tag获取缩略图，如果没有缩略图，返回源文件
-        /// </summary>
-        /// <param name="id">源文件id</param>
-        /// <param name="tag"></param>
-        /// <returns></returns>
-        [AppAuthorizeDefault]
         public ActionResult GetThumbnailByTag(string id, string flag)
         {
             ObjectId fileWrapId = ObjectId.Parse(id);
@@ -115,7 +101,6 @@ namespace FileService.Web.Controllers
             //没有缩略图
             if (thumbnail == null)
             {
-                AddDownload(fileWrapId);
                 GridFSDownloadStream stream = mongoFile.DownLoad(fileWrap["FileId"].AsObjectId);
                 return File(stream, fileWrap["ContentType"].AsString, fileWrap["FileName"].AsString);
             }

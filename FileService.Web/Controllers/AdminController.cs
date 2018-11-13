@@ -18,7 +18,6 @@ namespace FileService.Web.Controllers
     public class AdminController : BaseController
     {
         Extension extension = new Extension();
-        Application application = new Application();
         User user = new User();
         public ActionResult Index()
         {
