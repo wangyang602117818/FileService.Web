@@ -113,9 +113,22 @@ namespace FileService.Web.Controllers
         public ActionResult FileState(string id)
         {
             IEnumerable<BsonDocument> list = task.Find(new BsonDocument("FileId", ObjectId.Parse(id)));
+            if (list == null || list.Count() == 0) return new ResponseModel<string>(ErrorCode.record_not_exist, "");
+            BsonDocument result = GetState(list);
+            return new ResponseModel<BsonDocument>(ErrorCode.success, result);
+        }
+        public ActionResult SubFileState(string id)
+        {
+            IEnumerable<BsonDocument> list = task.Find(new BsonDocument("Output._id", ObjectId.Parse(id)));
+            if (list == null || list.Count() == 0) return new ResponseModel<string>(ErrorCode.record_not_exist, "");
+            BsonDocument result = GetState(list);
+            return new ResponseModel<BsonDocument>(ErrorCode.success, result);
+        }
+        private BsonDocument GetState(IEnumerable<BsonDocument> list)
+        {
             BsonDocument result = new BsonDocument()
             {
-                {"FileId",id },
+                {"FileId",list.First()["FileId"].ToString() },
                 {"FileName",list.First()["FileName"] }
             };
             BsonArray stateList = new BsonArray();
@@ -133,9 +146,9 @@ namespace FileService.Web.Controllers
                 });
                 percent = percent + item["Percent"].AsInt32;
             }
-            result.Add("Percent",percent / list.Count());
+            result.Add("Percent", percent / list.Count());
             result.Add("StateList", stateList);
-            return new ResponseModel<BsonDocument>(ErrorCode.success, result);
+            return result;
         }
         public ActionResult GetObjectId()
         {

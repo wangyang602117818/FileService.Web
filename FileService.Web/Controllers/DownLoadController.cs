@@ -65,7 +65,14 @@ namespace FileService.Web.Controllers
         public ActionResult Thumbnail(string id)
         {
             BsonDocument thumb = thumbnail.FindOne(ObjectId.Parse(id));
-            return File(thumb["File"].AsByteArray, ImageExtention.GetContentType(thumb["FileName"].AsString), thumb["FileName"].AsString);
+            if (thumb == null)
+            {
+                return File(new MemoryStream(), "application/octet-stream");
+            }
+            else
+            {
+                return File(thumb["File"].AsByteArray, ImageExtention.GetContentType(thumb["FileName"].AsString), thumb["FileName"].AsString);
+            }
         }
         public ActionResult GetThumbnail(string id)
         {
@@ -124,18 +131,25 @@ namespace FileService.Web.Controllers
             if (id.StartsWith("t")) return Ts(id.TrimStart('t'));
             ObjectId m3u8Id = ObjectId.Parse(id);
             BsonDocument document = m3u8.FindOne(m3u8Id);
-            int tsLastTime = 0;
-            string userName = Request.Headers["UserName"] ?? User.Identity.Name;
-            if (!string.IsNullOrEmpty(userName))
+            if (document == null)
             {
-                tsLastTime = tsTime.GetTsTime(document["From"].AsString, m3u8Id, userName);
+                return File(new MemoryStream(), "application/octet-stream");
             }
-            document["File"] = Regex.Replace(document["File"].AsString, "(\\w+).ts", (match) =>
-             {
-                 return "t" + match.Groups[1].Value;
-             });
-            Response.AddHeader("TsTime", tsLastTime.ToString());
-            return File(Encoding.UTF8.GetBytes(document["File"].AsString), "application/x-mpegURL", document["FileName"].AsString);
+            else
+            {
+                int tsLastTime = 0;
+                string userName = Request.Headers["UserName"] ?? User.Identity.Name;
+                if (!string.IsNullOrEmpty(userName))
+                {
+                    tsLastTime = tsTime.GetTsTime(document["From"].AsString, m3u8Id, userName);
+                }
+                document["File"] = Regex.Replace(document["File"].AsString, "(\\w+).ts", (match) =>
+                {
+                    return "t" + match.Groups[1].Value;
+                });
+                Response.AddHeader("TsTime", tsLastTime.ToString());
+                return File(Encoding.UTF8.GetBytes(document["File"].AsString), "application/x-mpegURL", document["FileName"].AsString);
+            }
         }
         public ActionResult M3u8MultiStream(string id)
         {
@@ -154,14 +168,21 @@ namespace FileService.Web.Controllers
         public ActionResult Ts(string id)
         {
             BsonDocument document = ts.FindOne(ObjectId.Parse(id));
-            string tstime = Request.Headers["TsTime"];
-            string userName = Request.Headers["UserName"] ?? User.Identity.Name;
-            int currTsTime = string.IsNullOrEmpty(tstime) ? 0 : int.Parse(tstime);
-            if (currTsTime > 0 && !string.IsNullOrEmpty(userName))
+            if (document == null)
             {
-                tsTime.UpdateByUserName(document["From"].AsString, document["SourceId"].AsObjectId, document["SourceName"].AsString, userName, currTsTime);
+                return File(new MemoryStream(), "application/octet-stream");
             }
-            return File(document["File"].AsByteArray, "video/vnd.dlna.mpeg-tts", document["_id"].ToString() + ".ts");
+            else
+            {
+                string tstime = Request.Headers["TsTime"];
+                string userName = Request.Headers["UserName"] ?? User.Identity.Name;
+                int currTsTime = string.IsNullOrEmpty(tstime) ? 0 : int.Parse(tstime);
+                if (currTsTime > 0 && !string.IsNullOrEmpty(userName))
+                {
+                    tsTime.UpdateByUserName(document["From"].AsString, document["SourceId"].AsObjectId, document["SourceName"].AsString, userName, currTsTime);
+                }
+                return File(document["File"].AsByteArray, "video/vnd.dlna.mpeg-tts", document["_id"].ToString() + ".ts");
+            }
         }
         public ActionResult VideoCapture(string id)
         {

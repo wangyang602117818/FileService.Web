@@ -154,6 +154,8 @@ namespace FileService.Data
                 database.CreateCollection("Task");
                 var c = new CreateIndexModel<BsonDocument>(new BsonDocument() { { "FileId", 1 } });  //index
                 database.GetCollection<BsonDocument>("Task").Indexes.CreateOne(c);
+                var c1= new CreateIndexModel<BsonDocument>(new BsonDocument() { { "Output._id", 1 } });  //index
+                database.GetCollection<BsonDocument>("Task").Indexes.CreateOne(c1);
             }
             if (!databases.Contains("fs.files"))
             {
