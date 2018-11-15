@@ -23,7 +23,7 @@ namespace FileService.Web.Controllers
         [HttpPost]
         public ActionResult Image(UploadImgModel uploadImgModel)
         {
-            List<ImageItemResponse> response = new List<ImageItemResponse>();
+            List<FileResponse> response = new List<FileResponse>();
             List<ImageOutPut> output = new List<ImageOutPut>();
             List<AccessModel> accessList = new List<AccessModel>();
             if (Request.Headers["DefaultConvert"] == "true")
@@ -49,11 +49,11 @@ namespace FileService.Web.Controllers
                 //过滤不正确的格式
                 if (!extension.CheckFileExtensionImage(Path.GetExtension(file.FileName).ToLower()))
                 {
-                    response.Add(new ImageItemResponse()
+                    response.Add(new FileResponse()
                     {
                         FileId = ObjectId.Empty.ToString(),
                         FileName = file.FileName,
-                        Thumbnail = new List<ThumbnailItem>()
+                        SubFiles = new List<SubFileItem>()
                     });
                     continue;
                 }
@@ -91,20 +91,20 @@ namespace FileService.Web.Controllers
                 }
                 //日志
                 Log(fileId.ToString(), "UploadImage");
-                response.Add(new ImageItemResponse()
+                response.Add(new FileResponse()
                 {
                     FileId = fileId.ToString(),
                     FileName = file.FileName,
                     FileSize = file.InputStream.Length,
-                    Thumbnail = thumbnail.Select(sel => new ThumbnailItem() { FileId = sel["_id"].ToString(), Flag = sel["Flag"].ToString() })
+                    SubFiles = thumbnail.Select(sel => new SubFileItem() { FileId = sel["_id"].ToString(), Flag = sel["Flag"].ToString() })
                 });
             }
-            return new ResponseModel<IEnumerable<ImageItemResponse>>(ErrorCode.success, response);
+            return new ResponseModel<IEnumerable<FileResponse>>(ErrorCode.success, response);
         }
         [HttpPost]
         public ActionResult Video(UploadVideoModel uploadVideo)
         {
-            List<VideoItemResponse> response = new List<VideoItemResponse>();
+            List<FileResponse> response = new List<FileResponse>();
             List<VideoOutPut> outputs = new List<VideoOutPut>();
             List<AccessModel> accessList = new List<AccessModel>();
             if (Request.Headers["DefaultConvert"] == "true")
@@ -130,11 +130,11 @@ namespace FileService.Web.Controllers
                 //过滤不正确的格式
                 if (!extension.CheckFileExtensionVideo(Path.GetExtension(file.FileName).ToLower()))
                 {
-                    response.Add(new VideoItemResponse()
+                    response.Add(new FileResponse()
                     {
                         FileId = ObjectId.Empty.ToString(),
                         FileName = file.FileName,
-                        Videos = new List<VideoItem>()
+                        SubFiles = new List<SubFileItem>()
                     });
                     continue;
                 }
@@ -173,20 +173,20 @@ namespace FileService.Web.Controllers
                 //日志
                 Log(fileId.ToString(), "UploadVideo");
 
-                response.Add(new VideoItemResponse()
+                response.Add(new FileResponse()
                 {
                     FileId = fileId.ToString(),
                     FileName = file.FileName,
                     FileSize = file.InputStream.Length,
-                    Videos = videos.Select(sel => new VideoItem() { FileId = sel["_id"].ToString(), Flag = sel["Flag"].AsString })
+                    SubFiles = videos.Select(sel => new SubFileItem() { FileId = sel["_id"].ToString(), Flag = sel["Flag"].AsString })
                 });
             }
-            return new ResponseModel<IEnumerable<VideoItemResponse>>(ErrorCode.success, response);
+            return new ResponseModel<IEnumerable<FileResponse>>(ErrorCode.success, response);
         }
         [HttpPost]
         public ActionResult Attachment(UploadAttachmentModel uploadAttachmentModel)
         {
-            List<AttachmentResponse> response = new List<AttachmentResponse>();
+            List<FileResponse> response = new List<FileResponse>();
             List<AccessModel> accessList = new List<AccessModel>();
             if (!string.IsNullOrEmpty(uploadAttachmentModel.Access))
             {
@@ -201,7 +201,7 @@ namespace FileService.Web.Controllers
                 //过滤不正确的格式
                 if (!extension.CheckFileExtension(fileExt))
                 {
-                    response.Add(new AttachmentResponse()
+                    response.Add(new FileResponse()
                     {
                         FileId = ObjectId.Empty.ToString(),
                         FileName = file.FileName
@@ -266,14 +266,14 @@ namespace FileService.Web.Controllers
                 }
                 //日志
                 Log(fileId.ToString(), "UploadAttachment");
-                response.Add(new AttachmentResponse()
+                response.Add(new FileResponse()
                 {
                     FileId = fileId.ToString(),
                     FileName = file.FileName,
                     FileSize = file.InputStream.Length,
                 });
             }
-            return new ResponseModel<IEnumerable<AttachmentResponse>>(ErrorCode.success, response);
+            return new ResponseModel<IEnumerable<FileResponse>>(ErrorCode.success, response);
         }
         [HttpPost]
         public ActionResult VideoCapture(UploadVideoCPModel uploadVideoCPModel)

@@ -5,34 +5,17 @@ using System.Web;
 
 namespace FileService.Web.Models
 {
-    public class ImageItemResponse
+    public class FileResponse
     {
+        private IEnumerable<SubFileItem> subFiles = new List<SubFileItem>();
         public string FileId { get; set; }
         public string FileName { get; set; }
         public long FileSize { get; set; }
-        public IEnumerable<ThumbnailItem> Thumbnail { get; set; }
+        public IEnumerable<SubFileItem> SubFiles { get => subFiles; set => subFiles = value; }
     }
-    public class ThumbnailItem
+    public class SubFileItem
     {
         public string FileId { get; set; }
         public string Flag { get; set; }
-    }
-    public class VideoItemResponse
-    {
-        public string FileId { get; set; }
-        public string FileName { get; set; }
-        public long FileSize { get; set; }
-        public IEnumerable<VideoItem> Videos { get; set; }
-    }
-    public class VideoItem
-    {
-        public string FileId { get; set; }
-        public string Flag { get; set; }
-    }
-    public class AttachmentResponse
-    {
-        public string FileId { get; set; }
-        public string FileName { get; set; }
-        public long FileSize { get; set; }
     }
 }
