@@ -223,6 +223,8 @@ class Resources extends React.Component {
             accessToggle: true,
             sharedFileShow: false,
             sharedToggle: true,
+            replaceFileShow: false,
+            replaceFileToggle: true,
             sharedUrl: "",
             sharedData: [],
             access: [],
@@ -365,9 +367,9 @@ class Resources extends React.Component {
         this.getSharedUrl();
         this.getSharedList(fileId);
         if (owner == userName || trim(owner) == "") {
-            this.setState({ accessFileShow: true, sharedFileShow: true });
+            this.setState({ accessFileShow: true, sharedFileShow: true, replaceFileShow: true });
         } else {
-            this.setState({ accessFileShow: false, sharedFileShow: false });
+            this.setState({ accessFileShow: false, sharedFileShow: false, replaceFileToggle: false });
         }
         if (fileType == "video") {
             this.state.tsTimeShow = true;
@@ -578,7 +580,13 @@ class Resources extends React.Component {
             this.setState({ listType: "list" });
             localStorage.resourse_list_type = "list";
         }
-        this.setState({ subFileShow: false, accessFileShow: false, sharedFileShow: false, selectedList: [] });
+        this.setState({
+            subFileShow: false,
+            accessFileShow: false,
+            sharedFileShow: false,
+            replaceFileShow: false,
+            selectedList: []
+        });
     }
     onResourceSelected(e) {
         var id = e.target.getAttribute("data-fileid");
@@ -622,7 +630,7 @@ class Resources extends React.Component {
             } else {
                 this.setState({ accessFileShow: false });
             }
-            this.setState({ subFileShow: false, sharedFileShow: false, tsTimeShow: false }, function () {
+            this.setState({ subFileShow: false, sharedFileShow: false, replaceFileShow: false, tsTimeShow: false }, function () {
                 if (this.refs.updateAccess) { this.refs.updateAccess.getCompany(); }
             }.bind(this));
         }
@@ -633,7 +641,7 @@ class Resources extends React.Component {
                 accessFileShow: false,
                 tsTimeShow: false
             });
-        } 
+        }
         e.stopPropagation();
     }
     onOrderChanged(e) {
@@ -775,6 +783,13 @@ class Resources extends React.Component {
                         disableShared={this.disableShared.bind(this)}
                         enableShared={this.enableShared.bind(this)}
                     /> : null
+                }
+                {
+                    this.state.replaceFileShow ?
+                        <TitleArrow
+                            title={culture.replace + culture.file + "(" + this.state.innerFileName + ")"}
+                            show={this.state.sharedToggle}
+                            onShowChange={e => this.setState({ sharedToggle: !this.state.sharedToggle })} /> : null
                 }
             </div>
         );

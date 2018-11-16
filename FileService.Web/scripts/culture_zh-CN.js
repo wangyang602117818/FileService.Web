@@ -10,7 +10,7 @@ var culture = {
     login_fault: "登陆失败",
     user: "用户",
     login_out: "退出",
-    description:"描述",
+    description: "描述",
 
     overview: "概况统计",
     handlers: "处理器",
@@ -77,7 +77,7 @@ var culture = {
     completedTime: "完成时间",
     view: "预览",
     reDo: "重做",
-    operation:"操作",
+    operation: "操作",
 
     outputFormat: "输出格式",
     format: "格式",
@@ -140,7 +140,7 @@ var culture = {
 
     role: "角色",
     password_not_match: "密码不匹配",
-    invalid_password:"密码不正确",
+    invalid_password: "密码不正确",
     confirm: "确认",
     auth_code: "认证编码",
 
@@ -222,5 +222,6 @@ var culture = {
     startup: "启动中",
     image_convert: "图片转换",
     video_convert: "视频转换",
-    playtime:"播放记录"
+    playtime: "播放记录",
+    replace: "替换"
 }

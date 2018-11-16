@@ -396,6 +396,11 @@ function getIconNameByFileName(filename) {
         case ".mp4":
         case ".avi":
         case ".wmv":
+        case ".mov":
+        case ".mkv":
+        case ".flv":
+        case ".rm":
+        case ".rmvb":
             return "icon-video";
         case ".pdf":
             return "icon-pdf";

@@ -222,5 +222,6 @@ var culture = {
     startup: "StartUp",
     image_convert: "ImageConvert",
     video_convert: "VideoConvert",
-    playtime: "PlayTime"
+    playtime: "PlayTime",
+    replace: "Replace"
 }

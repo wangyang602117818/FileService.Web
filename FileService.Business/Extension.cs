@@ -22,7 +22,7 @@ namespace FileService.Business
         public bool CheckFileExtensionVideo(string extension)
         {
             BsonDocument document = mongoData.FindByExtension(extension);
-            if (document == null) return true;
+            if (document == null) return false;
             if (document["Type"].AsString.ToLower() != "video") return false;
             if (document["Action"].AsString.ToLower() == "block") return false;
             return true;
@@ -30,7 +30,7 @@ namespace FileService.Business
         public bool CheckFileExtensionImage(string extension)
         {
             BsonDocument document = mongoData.FindByExtension(extension);
-            if (document == null) return true;
+            if (document == null) return false;
             if (document["Type"].AsString.ToLower() != "image") return false;
             if (document["Action"].AsString.ToLower() == "block") return false;
             return true;

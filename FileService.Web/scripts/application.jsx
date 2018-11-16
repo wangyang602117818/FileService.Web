@@ -7,13 +7,13 @@
             <table className="table">
                 <thead>
                     <tr>
-                        <td width="20%">{culture.id}</td>
-                        <th width="15%">{culture.applicationName}</th>
-                        <th width="15%">{culture.auth_code}</th>
+                        <td width="19%">{culture.id}</td>
+                        <th width="13%">{culture.applicationName}</th>
+                        <th width="13%">{culture.auth_code}</th>
                         <th width="8%">{culture.action}</th>
-                        <th width="13%">{culture.image_convert}</th>
-                        <th width="13%">{culture.video_convert}</th>
-                        <th width="16%">{culture.createTime}</th>
+                        <th width="16%">{culture.image_convert}</th>
+                        <th width="16%">{culture.video_convert}</th>
+                        <th width="15%">{culture.createTime}</th>
                     </tr>
                 </thead>
                 <ApplicationList data={this.props.data}

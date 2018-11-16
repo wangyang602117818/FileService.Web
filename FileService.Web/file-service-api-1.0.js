@@ -1,5 +1,5 @@
 ﻿//////////////////////////////////////////////////////////////////////////////////////
-///version:1.6.4
+///version:1.6.7
 ///author: wangyang
 /////////////////////////////////////////////////////////////////////////////////////
 function FileClient(authCode, remoteUrl) {
@@ -176,6 +176,23 @@ function FileClient(authCode, remoteUrl) {
             if (error) error(event);
         }
         xhr.open('get', this.remoteUrl + "/data/filestate/" + fileId);
+        this.setXhrHeaders(xhr, userName);
+        xhr.send();
+    };
+    this.getSubFileState = function (subFileId, success, progress, error, userName) {
+        var xhr = new XMLHttpRequest();
+        xhr.upload.onprogress = function (event) {
+            var precent = ((event.loaded / event.total) * 100).toFixed();
+            if (progress) progress(precent);
+        }
+        xhr.onload = function (event) {
+            var target = event.srcElement || event.target;
+            if (success) success(JSON.parse(target.responseText));
+        }
+        xhr.onerror = function (event) {
+            if (error) error(event);
+        }
+        xhr.open('get', this.remoteUrl + "/data/subfilestate/" + subFileId);
         this.setXhrHeaders(xhr, userName);
         xhr.send();
     };

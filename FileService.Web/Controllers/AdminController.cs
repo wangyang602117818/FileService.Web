@@ -463,7 +463,8 @@ namespace FileService.Web.Controllers
             long count = 0;
             DateTime.TryParse(startTime, out DateTime timeStart);
             DateTime.TryParse(endTime, out DateTime timeEnd);
-            IEnumerable<BsonDocument> result = application.GetPageList(pageIndex, pageSize, null, timeStart, timeEnd, null, filter, new List<string>() { "_id", "ApplicationName", "Action" }, new List<string>() { }, out count);
+            Dictionary<string, string> sorts = new Dictionary<string, string> { { "CreateTime", "desc" } };
+            IEnumerable<BsonDocument> result = application.GetPageList(pageIndex, pageSize, null, timeStart, timeEnd, sorts, filter, new List<string>() { "_id", "ApplicationName", "Action" }, new List<string>() { }, out count);
             return new ResponseModel<IEnumerable<BsonDocument>>(ErrorCode.success, result, count);
         }
         [Authorize(Roles = "admin,management")]

@@ -218,6 +218,7 @@
     }
 
 .convert_flag {
+    display:inline-block;
     margin-right: 10px;
     cursor: default;
 }

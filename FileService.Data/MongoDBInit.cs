@@ -39,6 +39,11 @@ namespace FileService.Data
                     new BsonDocument(){{"Extension",".mp4"},{"Type","video"},{"Action","allow"},{"Description","video"}, { "CreateTime", DateTime.Now }},
                     new BsonDocument(){{"Extension",".avi"},{"Type","video"},{"Action","allow"},{"Description", "video" }, { "CreateTime", DateTime.Now }},
                     new BsonDocument(){{"Extension",".wmv"},{"Type","video"},{"Action","allow"},{"Description", "video" }, { "CreateTime", DateTime.Now }},
+                    new BsonDocument(){{"Extension",".mov"},{"Type","video"},{"Action","allow"},{"Description", "video" }, { "CreateTime", DateTime.Now }},
+                    new BsonDocument(){{"Extension",".mkv"},{"Type","video"},{"Action","allow"},{"Description", "video" }, { "CreateTime", DateTime.Now }},
+                    new BsonDocument(){{"Extension", ".flv" },{"Type","video"},{"Action","allow"},{"Description", "video" }, { "CreateTime", DateTime.Now }},
+                    new BsonDocument(){{"Extension",".rm"},{"Type","video"},{"Action","allow"},{"Description", "video" }, { "CreateTime", DateTime.Now }},
+                    new BsonDocument(){{"Extension",".rmvb"},{"Type","video"},{"Action","allow"},{"Description", "video" }, { "CreateTime", DateTime.Now }},
                     new BsonDocument(){{"Extension",".m3u8" },{"Type","video"},{"Action","allow"},{"Description", "HTTP Live Streaming" }, { "CreateTime", DateTime.Now }},
                     new BsonDocument(){{"Extension",".doc" },{"Type","office"},{"Action","allow"},{"Description", "microsoft office" }, { "CreateTime", DateTime.Now }},
                     new BsonDocument(){{"Extension", ".docx" },{"Type", "office" }, { "Action","allow"}, { "Description", "microsoft office" }, { "CreateTime", DateTime.Now }},
@@ -154,7 +159,7 @@ namespace FileService.Data
                 database.CreateCollection("Task");
                 var c = new CreateIndexModel<BsonDocument>(new BsonDocument() { { "FileId", 1 } });  //index
                 database.GetCollection<BsonDocument>("Task").Indexes.CreateOne(c);
-                var c1= new CreateIndexModel<BsonDocument>(new BsonDocument() { { "Output._id", 1 } });  //index
+                var c1 = new CreateIndexModel<BsonDocument>(new BsonDocument() { { "Output._id", 1 } });  //index
                 database.GetCollection<BsonDocument>("Task").Indexes.CreateOne(c1);
             }
             if (!databases.Contains("fs.files"))
