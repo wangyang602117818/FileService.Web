@@ -197,6 +197,65 @@ class ResourcesDataPicItem extends React.Component {
         )
     }
 }
+class ReplaceFile extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            input: null,
+            button_message: culture.save,
+            message: "",
+            button_disabled: false
+        }
+    }
+    fileInputChange(e) {
+        if (e.target.files.length == 0) {
+            this.setState({ input: null, button_message: culture.save, message: "", button_disabled: false });
+        } else {
+            this.setState({ input: e.target, button_message: culture.save, message: "", button_disabled: false });
+        }
+    }
+    replaceFile(e, success) {
+        if (this.state.input == null) {
+            this.setState({ message: culture.no_file_select });
+        } else {
+            this.props.replaceFile(this.state.input, function (data) {
+                if (data.code == 0) {
+                    this.setState({ button_message: culture.save_success, button_disabled: true });
+                } else {
+                    this.setState({ message: data.message });
+                }
+                if (success) success(data);
+            }.bind(this));
+        }
+    }
+    render() {
+        return (
+            <div className={this.props.show ? "show" : "hidden"}>
+                <table className="table">
+                    <tbody>
+                        <tr>
+                            <td>{culture.file}:</td>
+                            <td><input type="file"
+                                name="replaceFile"
+                                accept={this.props.fileType == "attachment" ? "*" : this.props.fileType + "/*"}
+                                id="replaceFile" onChange={this.fileInputChange.bind(this)} /></td>
+                        </tr>
+                        <tr>
+                            <td colSpan="2">
+                                <input type="button" name="btnreplaceFile" className="button"
+                                    value={this.state.button_message}
+                                    onClick={this.replaceFile.bind(this)}
+                                    disabled={this.state.button_disabled}
+                                />
+                                <font color="red">{this.state.message}</font>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        )
+    }
+}
 class Resources extends React.Component {
     constructor(props) {
         super(props);
@@ -215,6 +274,7 @@ class Resources extends React.Component {
             tsTime: [],
             fileId: "",
             fileName: "",
+            fileType: "",
             innerFileName: "",
             owner: "",
             subComponent: null,
@@ -369,7 +429,7 @@ class Resources extends React.Component {
         if (owner == userName || trim(owner) == "") {
             this.setState({ accessFileShow: true, sharedFileShow: true, replaceFileShow: true });
         } else {
-            this.setState({ accessFileShow: false, sharedFileShow: false, replaceFileToggle: false });
+            this.setState({ accessFileShow: false, sharedFileShow: false, replaceFileShow: false });
         }
         if (fileType == "video") {
             this.state.tsTimeShow = true;
@@ -378,6 +438,7 @@ class Resources extends React.Component {
         }
         this.setState({
             fileName: fileName,
+            fileType: fileType,
             innerFileName: innerFileName,
             owner: owner,
             fileId: fileId,
@@ -674,6 +735,16 @@ class Resources extends React.Component {
             window.open(url);
         }
     }
+    replaceFile(input, success) {
+        http.post(urls.replaceFileUrl, {
+            file: input,
+            fileId: this.state.fileId,
+            fileType: this.state.fileType
+        }, function (data) {
+            success(data);
+            this.getData();
+        }.bind(this));
+    }
     render() {
         return (
             <div className="main">
@@ -769,7 +840,7 @@ class Resources extends React.Component {
                 }
                 {this.state.sharedFileShow ?
                     <TitleArrow
-                        title={culture.shared + "(" + this.state.innerFileName + ")"}
+                        title={culture.shared + culture.file + "(" + this.state.innerFileName + ")"}
                         show={this.state.sharedToggle}
                         onShowChange={e => this.setState({ sharedToggle: !this.state.sharedToggle })} /> : null
                 }
@@ -788,8 +859,15 @@ class Resources extends React.Component {
                     this.state.replaceFileShow ?
                         <TitleArrow
                             title={culture.replace + culture.file + "(" + this.state.innerFileName + ")"}
-                            show={this.state.sharedToggle}
-                            onShowChange={e => this.setState({ sharedToggle: !this.state.sharedToggle })} /> : null
+                            show={this.state.replaceFileToggle}
+                            onShowChange={e => this.setState({ replaceFileToggle: !this.state.replaceFileToggle })} /> : null
+                }
+                {
+                    this.state.replaceFileShow ?
+                        <ReplaceFile show={this.state.replaceFileToggle}
+                            fileType={this.state.fileType}
+                            replaceFile={this.replaceFile.bind(this)}
+                        /> : null
                 }
             </div>
         );

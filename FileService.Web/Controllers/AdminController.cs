@@ -515,12 +515,13 @@ namespace FileService.Web.Controllers
         {
             Log(id, "ReDo");
             BsonDocument document = task.FindOne(ObjectId.Parse(id));
+            string handlerId = converter.GetHandlerId();
             int state = Convert.ToInt32(document["State"]);
             if (state == 2 || state == 4 || state == -1)
             {
                 task.UpdateState(ObjectId.Parse(id), TaskStateEnum.wait, 0);
-                queue.Insert(document["HandlerId"].AsString, type, "Task", ObjectId.Parse(id), false, new BsonDocument());
-                converter.AddCount(document["HandlerId"].AsString, 1);
+                queue.Insert(handlerId, type, "Task", ObjectId.Parse(id), false, new BsonDocument());
+                converter.AddCount(handlerId, 1);
                 return new ResponseModel<string>(ErrorCode.success, "");
             }
             else

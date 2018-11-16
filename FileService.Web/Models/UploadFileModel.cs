@@ -43,13 +43,13 @@ namespace FileService.Web.Models
         [Required]
         public HttpPostedFileBase[] VideoCPs { get; set; }
     }
-    public class CheckMd5Model
+    public class ReplaceFileModel
     {
         [Required]
-        public string FileName { get; set; }
+        public string FileId { get; set; }
         [Required]
-        public string Md5 { get; set; }
-        public string OutPut { get; set; }
-        public string Access { get; set; }
+        public string FileType { get; set; }
+        [Required]
+        public HttpPostedFileBase File { get; set; }
     }
 }

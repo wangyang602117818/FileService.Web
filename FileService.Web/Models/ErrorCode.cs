@@ -5,7 +5,7 @@
         /// <summary>
         /// 成功
         /// </summary>
-        
+
         success = 0,
         /// <summary>
         /// 重定向
@@ -22,6 +22,7 @@
         invalid_params = 105,
         params_valid_fault = 106,
         owner_not_match = 107,
+        file_type_blocked = 108,
         /// <summary>
         /// 不存在
         /// </summary>
@@ -31,10 +32,11 @@
         login_fault = 203,
         task_not_completed = 204,
         invalid_password = 205,
+        file_type_not_match = 206,
         /// <summary>
         /// 已存在
         /// </summary>
-        record_exist=400,
+        record_exist = 400,
         /// <summary>
         /// 任务未完成
         /// </summary>

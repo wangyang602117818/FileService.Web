@@ -7,7 +7,8 @@
 加密ts
 
 替换文件
-FileServer.Client.dll 的多版本
+上传的文件类型和源文件一致则使用源文件的转换任务
+上传文件的类型和源文件不一致则仅仅上传文件，替换fileId
 
 ffmpeg.exe -i Wildlife.mp4 -hls_time 2 -hls_list_size 0 -hls_allow_cache 0 -hls_enc 1 -hls_enc_key N74kEdQDwUgiR5QNyMQ9fg== -hls_enc_key_url http://localhost:2431/admin/key -hls_enc_iv EjRWeJCrze8= out.m3u8
 

@@ -149,6 +149,7 @@ var urls = {
     getFileIconBigUrl: appDomain + "admin/getfileiconbig",
     serverStateUrl: appDomain + "server/serverstatus",
     tsTimeUrl: appDomain + "admin/gettstime",
+    replaceFileUrl: appDomain + "upload/replacefile",
     overview: {
         recentUrl: appDomain + "admin/getcountrecentmonth",
         totalUrl: appDomain + "admin/gettotalcount",

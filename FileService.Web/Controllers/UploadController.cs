@@ -330,6 +330,56 @@ namespace FileService.Web.Controllers
             }
             return new ResponseModel<List<string>>(ErrorCode.success, response, response.Count);
         }
-
+        [HttpPost]
+        public ActionResult ReplaceFile(ReplaceFileModel replaceFileModel)
+        {
+            Log(replaceFileModel.FileId, "ReplaceFile");
+            if (!Directory.Exists(tempFileDirectory))
+                Directory.CreateDirectory(tempFileDirectory);
+            ObjectId fileId = ObjectId.Parse(replaceFileModel.FileId);
+            string fileExt = Path.GetExtension(replaceFileModel.File.FileName).ToLower();
+            //过滤不正确的格式
+            if (!extension.CheckFileExtension(fileExt)) return new ResponseModel<string>(ErrorCode.file_type_blocked, "");
+            BsonDocument fileWrap = filesWrap.FindOne(fileId);
+            string handlerId = converter.GetHandlerId();
+            if (fileWrap["FileType"].AsString == replaceFileModel.FileType)
+            {
+                //删除文件的附加信息
+                DeleteSubFiles(fileWrap);
+                //保存上传的文件到共享目录
+                replaceFileModel.File.SaveAs(tempFileDirectory + replaceFileModel.File.FileName);
+                if (replaceFileModel.FileType == "video" || replaceFileModel.FileType == "image")
+                {
+                    filesWrap.Update(fileWrap["_id"].AsObjectId, new BsonDocument() {
+                        {"FileName", replaceFileModel.File.FileName },
+                        {"Length",replaceFileModel.File.InputStream.Length },
+                        {"Download",0 }
+                     });
+                }
+                else
+                {
+                    //更新fileWrap的文件名
+                    //filesWrap.Update(fileWrap["_id"].AsObjectId, new BsonDocument() {
+                    //    {"FileName", replaceFileModel.File.FileName },
+                    //    {"Length",replaceFileModel.File.InputStream.Length },
+                    //    {"Download",0 },
+                    //    {"Files",new BsonArray() },
+                    //    {"Thumbnail",new BsonArray() },
+                    //    {"Videos",new BsonArray() },
+                    //    {"VideoCpIds",new BsonArray() }
+                    // });
+                };
+                IEnumerable<BsonDocument> list = task.Find(new BsonDocument("FileId", fileId));
+                foreach (BsonDocument item in list)
+                {
+                    UpdateTask(item["_id"].AsObjectId, handlerId, replaceFileModel.File.FileName, item["Type"].AsString, 0, TaskStateEnum.wait);
+                }
+                return new ResponseModel<string>(ErrorCode.success, "");
+            }
+            else
+            {
+                return new ResponseModel<string>(ErrorCode.file_type_not_match, "");
+            }
+        }
     }
 }

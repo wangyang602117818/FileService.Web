@@ -2,7 +2,6 @@
 using FileService.Model;
 using FileService.Util;
 using MongoDB.Bson;
-using MongoDB.Bson.IO;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -92,6 +91,21 @@ namespace FileService.Web.Controllers
             //添加队列
             queue.Insert(handlerId, type, "Task", taskId, false, new BsonDocument());
         }
+        protected void UpdateTask(ObjectId id, string handlerId, string fileName, string type, int percent, TaskStateEnum state)
+        {
+            converter.AddCount(handlerId, 1);
+            BsonDocument item = new BsonDocument()
+            {
+                {"TempFolder",@"\\" + Environment.MachineName + "\\" + regex.Match(AppSettings.tempFileDir).Groups[1].Value + "\\" + DateTime.Now.ToString("yyyyMMdd") + "\\" },
+                {"FileName",fileName },
+                {"ProcessCount",0 },
+                {"State",state },
+                {"StateDesc",state.ToString() },
+                {"Percent",percent }
+            };
+            task.Update(id, item);
+            queue.Insert(handlerId, type, "Task", id, false, new BsonDocument());
+        }
         protected void ConvertAccess(List<AccessModel> accessList)
         {
             foreach (AccessModel accessModel in accessList)
@@ -149,11 +163,13 @@ namespace FileService.Web.Controllers
                     videoCapture.DeleteByIds(fileWrap["From"].AsString, fileWrap["VideoCpIds"].AsBsonArray.Select(s => s.AsObjectId));
                 }
             }
+            //如果源文件没有被引用，则删除
             if (filesWrap.CountByFileId(fileWrap["FileId"].AsObjectId) == 1 && fileWrap["FileId"].AsObjectId != ObjectId.Empty)
             {
                 ObjectId fId = fileWrap["FileId"].AsObjectId;
                 mongoFile.Delete(fId);
             }
+            //删除缓存文件
             IEnumerable<BsonDocument> tasks = task.FindCacheFiles(fileWrapId);
             foreach (BsonDocument task in tasks)
             {
@@ -161,12 +177,62 @@ namespace FileService.Web.Controllers
                 string fullPath = AppDomain.CurrentDomain.BaseDirectory + AppSettings.tempFileDir + temp + task["FileName"].ToString();
                 if (System.IO.File.Exists(fullPath)) System.IO.File.Delete(fullPath);
             }
+            //删除转换的小图标
             filePreview.DeleteOne(fileWrapId);
+            //删除转换的大图标
             filePreviewBig.DeleteOne(fileWrapId);
+            //删除共享信息
             shared.DeleteShared(fileWrapId);
             task.DeleteByFileId(fileWrapId);
             filesWrap.DeleteOne(fileWrapId);
             return true;
+        }
+        protected void DeleteSubFiles(BsonDocument fileWrap)
+        {
+            //删除 thumbnail
+            if (fileWrap["FileType"] == "image")
+            {
+                List<ObjectId> thumbnailIds = new List<ObjectId>();
+                foreach (BsonDocument d in fileWrap["Thumbnail"].AsBsonArray) thumbnailIds.Add(d["_id"].AsObjectId);
+                thumbnail.DeleteMany(thumbnailIds);
+            }
+            //删除 video 相关
+            if (fileWrap["FileType"] == "video")
+            {
+                List<ObjectId> m3u8Ids = new List<ObjectId>();
+                List<ObjectId> videoCpIds = new List<ObjectId>();
+                foreach (BsonDocument d in fileWrap["Videos"].AsBsonArray) m3u8Ids.Add(d["_id"].AsObjectId);
+                foreach (BsonObjectId oId in fileWrap["VideoCpIds"].AsBsonArray) videoCpIds.Add(oId.AsObjectId);
+                m3u8.DeleteMany(m3u8Ids);
+                ts.DeleteBySourceId(fileWrap["From"].AsString, m3u8Ids);
+                videoCapture.DeleteByIds(fileWrap["From"].AsString, videoCpIds);
+            }
+            // 删除 attachment 相关
+            if (fileWrap["FileType"] == "attachment")
+            {
+                foreach (BsonDocument bson in fileWrap["Files"].AsBsonArray)
+                {
+                    if (!bson.Contains("_id")) continue;
+                    if (filesConvert.FindOne(bson["_id"].AsObjectId) != null) mongoFileConvert.Delete(bson["_id"].AsObjectId);
+                }
+                if (fileWrap.Contains("VideoCpIds"))
+                {
+                    videoCapture.DeleteByIds(fileWrap["From"].AsString, fileWrap["VideoCpIds"].AsBsonArray.Select(s => s.AsObjectId));
+                }
+            }
+            //如果源文件没有被引用，则删除
+            if (filesWrap.CountByFileId(fileWrap["FileId"].AsObjectId) == 1 && fileWrap["FileId"].AsObjectId != ObjectId.Empty)
+            {
+                ObjectId fId = fileWrap["FileId"].AsObjectId;
+                mongoFile.Delete(fId);
+            }
+            //删除转换的小图标
+            filePreview.DeleteOne(fileWrap["_id"].AsObjectId);
+            //删除转换的大图标
+            filePreviewBig.DeleteOne(fileWrap["_id"].AsObjectId);
+            //删除共享信息
+            shared.DeleteShared(fileWrap["_id"].AsObjectId);
+
         }
     }
 }

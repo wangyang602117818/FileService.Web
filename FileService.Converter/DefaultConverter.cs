@@ -46,7 +46,17 @@ namespace FileService.Converter
                     }
                     fullPath = newPath;
                 }
-                ObjectId videoCpId = fileWrap["VideoCpIds"].AsBsonArray[0].AsObjectId;
+                BsonArray videoCp = fileWrap["VideoCpIds"].AsBsonArray;
+                ObjectId videoCpId;
+                if (videoCp.Count > 0)
+                {
+                    videoCpId = videoCp[0].AsObjectId;
+                }
+                else
+                {
+                    videoCpId = ObjectId.GenerateNewId();
+                    filesWrap.AddVideoCapture(fileWrapId, videoCpId);
+                }
                 new VideoConverter().ConvertVideoCp(videoCpId, from, fileWrapId, fullPath);
             }
             if (File.Exists(fullPath)) File.Delete(fullPath);
