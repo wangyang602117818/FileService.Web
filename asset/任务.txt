@@ -1,21 +1,18 @@
 导出
 转换任务，图模式
 处理器图模式
+预览其他项目的文件
 
-获取cpu使用率
-预览文档的链接
-加密ts
 
 替换文件
 只能替换相同类型的文件 
 image只能替换成image
 video只能替换成video
-office与zip，rar相同
+office只能替换成office
+rar、zip只能替换成rar，zip
+其他只替换文件就ok
 
-
-上传的文件类型和源文件一致则使用源文件的转换任务
-上传文件的类型和源文件不一致则仅仅上传文件，替换fileId
-
+加密ts
 ffmpeg.exe -i Wildlife.mp4 -hls_time 2 -hls_list_size 0 -hls_allow_cache 0 -hls_enc 1 -hls_enc_key N74kEdQDwUgiR5QNyMQ9fg== -hls_enc_key_url http://localhost:2431/admin/key -hls_enc_iv EjRWeJCrze8= out.m3u8
 
 
