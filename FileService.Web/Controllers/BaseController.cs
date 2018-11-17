@@ -230,8 +230,6 @@ namespace FileService.Web.Controllers
             filePreview.DeleteOne(fileWrap["_id"].AsObjectId);
             //删除转换的大图标
             filePreviewBig.DeleteOne(fileWrap["_id"].AsObjectId);
-            //删除共享信息
-            shared.DeleteShared(fileWrap["_id"].AsObjectId);
 
         }
     }

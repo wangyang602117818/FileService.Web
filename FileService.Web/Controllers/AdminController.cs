@@ -423,15 +423,9 @@ namespace FileService.Web.Controllers
         {
             BsonDocument extensionBson = extension.GetByExtension(addExtension.Extension.ToLower());
             if (extensionBson != null) return new ResponseModel<string>(ErrorCode.record_exist, "");
-            if (extension.UpdateExtension(addExtension.Extension,
-                addExtension.Type,
-                addExtension.Description,
-                addExtension.Action))
-            {
-                Log("-", "AddExtension");
-                return new ResponseModel<string>(ErrorCode.success, "");
-            }
-            return new ResponseModel<string>(ErrorCode.server_exception, "");
+            extension.AddExtension(addExtension.Extension, addExtension.Type, addExtension.Description, addExtension.Action);
+            Log("-", "AddExtension");
+            return new ResponseModel<string>(ErrorCode.success, "");
         }
         [Authorize(Roles = "admin,management")]
         [HttpPost]

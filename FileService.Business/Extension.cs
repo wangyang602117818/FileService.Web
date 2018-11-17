@@ -45,9 +45,17 @@ namespace FileService.Business
         {
             return mongoData.FindByExtension(extension);
         }
-        public bool UpdateExtension(string extension, string type, string description, string action)
+        public void AddExtension(string extension, string type, string description, string action)
         {
-            return mongoData.UpdateExtension(extension, type, description, action);
+            BsonDocument bson = new BsonDocument()
+            {
+                {"Extension",extension },
+                {"Type",type },
+                {"Action",action },
+                {"Description",description },
+                {"CreateTime",DateTime.Now },
+            };
+           mongoData.Insert(bson);
         }
         public bool DeleteExtension(string extension)
         {

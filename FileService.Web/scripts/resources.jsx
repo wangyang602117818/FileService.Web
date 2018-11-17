@@ -200,35 +200,58 @@ class ResourcesDataPicItem extends React.Component {
 class ReplaceFile extends React.Component {
     constructor(props) {
         super(props);
+        getOfficeExtensions();
         this.state = {
             input: null,
-            button_message: culture.save,
+            buttonValue: culture.save,
             message: "",
-            button_disabled: false
+            button_disabled: false,
         }
     }
     fileInputChange(e) {
         if (e.target.files.length == 0) {
-            this.setState({ input: null, button_message: culture.save, message: "", button_disabled: false });
+            this.setState({ input: null, message: "" });
         } else {
-            this.setState({ input: e.target, button_message: culture.save, message: "", button_disabled: false });
+            this.setState({ input: e.target, message: "" });
         }
     }
     replaceFile(e, success) {
         if (this.state.input == null) {
-            this.setState({ message: culture.no_file_select });
+            this.setState({ message: culture.no_file_select, });
         } else {
-            this.props.replaceFile(this.state.input, function (data) {
-                if (data.code == 0) {
-                    this.setState({ button_message: culture.save_success, button_disabled: true });
-                } else {
-                    this.setState({ message: data.message });
-                }
-                if (success) success(data);
-            }.bind(this));
+            this.setState({ button_disabled: true });
+            this.props.replaceFile(this.state.input,
+                function (data) {
+                    if (data.code == 0) {
+                        this.state.input.value = "";
+                        this.setState({ buttonValue: culture.save, button_disabled: false });
+                    } else {
+                        this.setState({ message: data.message, button_disabled: false });
+                    }
+                    if (success) success(data);
+                }.bind(this),
+                function (loaded, total) {
+                    var precent = ((loaded / total) * 100).toFixed() + "%";
+                    this.setState({ buttonValue: precent });
+                }.bind(this));
         }
     }
     render() {
+        var accept = "";
+        if (imageExtensions.indexOf(this.props.fileName.getFileExtension()) > -1) {
+            accept = "image/*";
+        }
+        if (videoExtensions.indexOf(this.props.fileName.getFileExtension()) > -1) {
+            accept = "video/*";
+        }
+        if (officeExtensions.indexOf(this.props.fileName.getFileExtension()) > -1) {
+            for (var i = 0; i < officeExtensions.length; i++) {
+                accept += officeExtensions[i] + ",";
+            }
+        }
+        if (compressExtensions.indexOf(this.props.fileName.getFileExtension()) > -1) {
+            accept = ".rar,.zip";
+        }
         return (
             <div className={this.props.show ? "show" : "hidden"}>
                 <table className="table">
@@ -237,16 +260,18 @@ class ReplaceFile extends React.Component {
                             <td>{culture.file}:</td>
                             <td><input type="file"
                                 name="replaceFile"
-                                accept={this.props.fileType == "attachment" ? "*" : this.props.fileType + "/*"}
+                                accept={accept}
                                 id="replaceFile" onChange={this.fileInputChange.bind(this)} /></td>
                         </tr>
                         <tr>
                             <td colSpan="2">
-                                <input type="button" name="btnreplaceFile" className="button"
-                                    value={this.state.button_message}
+                                <input type="button"
+                                    name="btnreplaceFile"
+                                    className="button"
+                                    value={this.state.buttonValue}
                                     onClick={this.replaceFile.bind(this)}
                                     disabled={this.state.button_disabled}
-                                />
+                                /> {'\u00A0'}
                                 <font color="red">{this.state.message}</font>
                             </td>
                         </tr>
@@ -735,7 +760,7 @@ class Resources extends React.Component {
             window.open(url);
         }
     }
-    replaceFile(input, success) {
+    replaceFile(input, success, progress) {
         http.post(urls.replaceFileUrl, {
             file: input,
             fileId: this.state.fileId,
@@ -743,7 +768,7 @@ class Resources extends React.Component {
         }, function (data) {
             success(data);
             this.getData();
-        }.bind(this));
+        }.bind(this), progress);
     }
     render() {
         return (
@@ -865,6 +890,7 @@ class Resources extends React.Component {
                 {
                     this.state.replaceFileShow ?
                         <ReplaceFile show={this.state.replaceFileToggle}
+                            fileName={this.state.innerFileName}
                             fileType={this.state.fileType}
                             replaceFile={this.replaceFile.bind(this)}
                         /> : null

@@ -348,27 +348,12 @@ namespace FileService.Web.Controllers
                 DeleteSubFiles(fileWrap);
                 //保存上传的文件到共享目录
                 replaceFileModel.File.SaveAs(tempFileDirectory + replaceFileModel.File.FileName);
-                if (replaceFileModel.FileType == "video" || replaceFileModel.FileType == "image")
-                {
-                    filesWrap.Update(fileWrap["_id"].AsObjectId, new BsonDocument() {
+
+                filesWrap.Update(fileWrap["_id"].AsObjectId, new BsonDocument() {
                         {"FileName", replaceFileModel.File.FileName },
                         {"Length",replaceFileModel.File.InputStream.Length },
                         {"Download",0 }
                      });
-                }
-                else
-                {
-                    //更新fileWrap的文件名
-                    //filesWrap.Update(fileWrap["_id"].AsObjectId, new BsonDocument() {
-                    //    {"FileName", replaceFileModel.File.FileName },
-                    //    {"Length",replaceFileModel.File.InputStream.Length },
-                    //    {"Download",0 },
-                    //    {"Files",new BsonArray() },
-                    //    {"Thumbnail",new BsonArray() },
-                    //    {"Videos",new BsonArray() },
-                    //    {"VideoCpIds",new BsonArray() }
-                    // });
-                };
                 IEnumerable<BsonDocument> list = task.Find(new BsonDocument("FileId", fileId));
                 foreach (BsonDocument item in list)
                 {

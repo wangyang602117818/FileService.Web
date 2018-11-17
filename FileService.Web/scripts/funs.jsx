@@ -4,6 +4,10 @@ var appPath = document.getElementById("appPath").value;
 var authCode = document.getElementById("authCode").value;
 var appName = document.getElementById("appName").value;
 var apiType = document.getElementById("apiType").value;
+var imageExtensions = [];
+var videoExtensions = [];
+var officeExtensions = [];
+var compressExtensions = [".rar", ".zip"];
 var keywords = [
     "_id.$oid",
     "FileId.$oid",
@@ -198,7 +202,8 @@ var urls = {
         getExtensionUrl: appDomain + "admin/getextension",
         addExtensionUrl: appDomain + "admin/addextension",
         updateExtensionUrl: appDomain + "admin/updateextension",
-        deleteUrl: appDomain + "admin/deleteextension"
+        deleteUrl: appDomain + "admin/deleteextension",
+        getExtensionsByTypeUrl: appDomain + "admin/getextensionsbytype"
     },
     application: {
         getUrl: appDomain + "admin/getapplications",
@@ -756,6 +761,17 @@ function getQuality(quality) {
         case 3:
             return culture.bad;
     }
+}
+function getOfficeExtensions() {
+    http.getSync(urls.extension.getExtensionsByTypeUrl + "?type=office", function (data) {
+        if (data.code == 0) officeExtensions = data.result;
+    });
+    http.getSync(urls.extension.getExtensionsByTypeUrl + "?type=video", function (data) {
+        if (data.code == 0) videoExtensions = data.result;
+    });
+    http.getSync(urls.extension.getExtensionsByTypeUrl + "?type=image", function (data) {
+        if (data.code == 0) imageExtensions = data.result;
+    });
 }
 Array.prototype.sortAndUnique = function () {
     this.sort(); //先排序

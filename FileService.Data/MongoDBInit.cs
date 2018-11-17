@@ -76,9 +76,13 @@ namespace FileService.Data
                 database.CreateCollection("Application");
                 database.GetCollection<BsonDocument>("Application").InsertOne(new BsonDocument()
                 {
-                    {"ApplicationName","FileServiceApi" },
+                    {"ApplicationName","FileServiceWeb" },
                     {"AuthCode","3c9deb1f8f6e" },
                     {"Action","allow" },
+                    {"Thumbnails",new BsonArray() },
+                    {"ThumbnailsDisplay",new BsonArray() },
+                    {"Videos",new BsonArray() },
+                    {"VideosDisplay",new BsonArray() },
                     {"CreateTime", DateTime.Now }
                 });
             }
