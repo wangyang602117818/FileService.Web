@@ -57,7 +57,7 @@ namespace FileService.Converter
             string destinationFullPath = MongoFileBase.AppDataDir + Path.GetFileNameWithoutExtension(fileName) + ".pdf";
             //转换office方法
             ObjectId outputId = ConvertOffice(fullPath, destinationFullPath, fileWrapId);
-            //更新 fs.files表
+            //更新 filesWrap 表
             filesWrap.UpdateSubFileId(fileWrapId, oldFileId, outputId);
             //更新 task 表
             task.UpdateOutPutId(taskItem.Message["_id"].AsObjectId, outputId);
@@ -65,7 +65,7 @@ namespace FileService.Converter
             if (File.Exists(fullPath)) File.Delete(fullPath);
             return true;
         }
-        public ObjectId ConvertOffice(string sourcePath, string destinationPath, ObjectId sourceFileId)
+        public ObjectId ConvertOffice(string sourcePath, string destinationPath, ObjectId fileWrapId)
         {
             if (!File.Exists(AppSettings.libreOffice))
             {
@@ -92,8 +92,8 @@ namespace FileService.Converter
                 {
                     return mongoFileConvert.Upload(Path.GetFileName(destinationPath), stream, new BsonDocument()
                         {
-                            {"From", "fs.files"},
-                            {"SourceId",sourceFileId },
+                            {"From", "FilesWrap"},
+                            {"Id",fileWrapId },
                             {"FileType","attachment"},
                             {"ContentType","application/pdf"}
                         });
