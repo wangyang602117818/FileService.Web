@@ -349,11 +349,14 @@ namespace FileService.Web.Controllers
                 //保存上传的文件到共享目录
                 replaceFileModel.File.SaveAs(tempFileDirectory + replaceFileModel.File.FileName);
 
-                filesWrap.Update(fileWrap["_id"].AsObjectId, new BsonDocument() {
+                if(filesWrap.Update(fileWrap["_id"].AsObjectId, new BsonDocument() {
                         {"FileName", replaceFileModel.File.FileName },
                         {"Length",replaceFileModel.File.InputStream.Length },
                         {"Download",0 }
-                     });
+                     }))
+                {
+                    filesWrap.AddHistory(fileWrap["_id"].AsObjectId, fileWrap["FileId"].AsObjectId);
+                }
                 IEnumerable<BsonDocument> list = task.Find(new BsonDocument("FileId", fileId));
                 foreach (BsonDocument item in list)
                 {

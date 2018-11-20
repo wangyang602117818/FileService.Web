@@ -46,6 +46,11 @@ namespace FileService.Web.Controllers
             AddDownload(fileWrapId);
             return File(stream, stream.FileInfo.Metadata["ContentType"].AsString, stream.FileInfo.Filename);
         }
+        public ActionResult GetHistory(string id)
+        {
+            GridFSDownloadStream stream = mongoFile.DownLoad(ObjectId.Parse(id));
+            return File(stream, "application/octet-stream", stream.FileInfo.Filename);
+        }
         public ActionResult GetZipInnerFile(string id, string fileName)
         {
             BsonDocument fileWrap = filesWrap.FindOne(ObjectId.Parse(id));

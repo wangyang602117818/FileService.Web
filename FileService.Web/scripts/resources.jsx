@@ -293,9 +293,11 @@ class Resources extends React.Component {
             ///////////
             subFileShow: false,
             subFileToggle: true,
+            historyToggle: true,
             tsTimeShow: false,
             tsTimeToggle: true,
             subFileArray: [],
+            historyFileArray: [],
             tsTime: [],
             fileId: "",
             fileName: "",
@@ -425,6 +427,7 @@ class Resources extends React.Component {
     getFileMetaData(fileId, fileName, fileType, owner) {
         var innerFileName = fileName, subComponent = null;
         this.state.subFileArray = [];
+        this.state.historyFileArray = [];
         switch (fileType) {
             case "image":
                 this.getThumbnail(fileId);
@@ -451,6 +454,7 @@ class Resources extends React.Component {
         var departments = this.getAllCompany();
         this.getSharedUrl();
         this.getSharedList(fileId);
+        this.getHistory(fileId);
         if (owner == userName || trim(owner) == "") {
             this.setState({ accessFileShow: true, sharedFileShow: true, replaceFileShow: true });
         } else {
@@ -526,6 +530,14 @@ class Resources extends React.Component {
                 this.state.subFileArray = data.result;
             }
             this.setState({ subFileArray: this.state.subFileArray });
+        }.bind(this));
+    }
+    getHistory(fileId) {
+        if (fileId.length != 24) return;
+        http.get(urls.getFileHistorysUrl + "/" + fileId, function (data) {
+            if (data.code == 0) {
+                this.setState({ historyFileArray: data.result });
+            }
         }.bind(this));
     }
     getSharedList(fileId) {
@@ -834,6 +846,17 @@ class Resources extends React.Component {
                         fileName={this.state.fileName}
                         deleteThumbnail={this.deleteThumbnail.bind(this)}
                         deleteM3u8={this.deleteM3u8.bind(this)}
+                    /> : null
+                }
+                {this.state.subFileShow ?
+                    <TitleArrow title={culture.history + "(" + this.state.innerFileName + ")"}
+                        show={this.state.historyToggle}
+                        onShowChange={e => this.setState({ historyToggle: !this.state.historyToggle })} /> : null
+                }
+                {this.state.subFileShow ?
+                    <ResourcesHistory
+                        show={this.state.historyToggle}
+                        data={this.state.historyFileArray}
                     /> : null
                 }
                 {

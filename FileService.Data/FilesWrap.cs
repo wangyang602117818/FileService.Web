@@ -81,6 +81,13 @@ namespace FileService.Data
         {
             return MongoCollection.UpdateOne(FilterBuilder.Eq("_id", id), Builders<BsonDocument>.Update.AddToSet("VideoCpIds", captureId)).IsAcknowledged;
         }
+        public bool AddHistory(ObjectId id, ObjectId fileId)
+        {
+            return MongoCollection.UpdateOne(FilterBuilder.Eq("_id", id), Builders<BsonDocument>.Update.AddToSet("History", new BsonDocument() {
+                { "FileId",fileId},
+                { "CreateTime",DateTime.Now }
+              })).IsAcknowledged;
+        }
         public bool DeleteVideoCapture(ObjectId id, ObjectId captureId)
         {
             return MongoCollection.UpdateOne(FilterBuilder.Eq("_id", id), Builders<BsonDocument>.Update.Pull("VideoCpIds", captureId)).IsAcknowledged;

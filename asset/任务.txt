@@ -3,6 +3,7 @@
 处理器图模式
 预览其他项目的文件
 
+让处理器能处理不同服务器上的共享文件
 
 替换文件
 只能替换相同类型的文件 
@@ -11,6 +12,8 @@ video只能替换成video
 office只能替换成office
 rar、zip只能替换成rar，zip
 其他只替换文件就ok
+
+文件版本
 
 加密ts
 ffmpeg.exe -i Wildlife.mp4 -hls_time 2 -hls_list_size 0 -hls_allow_cache 0 -hls_enc 1 -hls_enc_key N74kEdQDwUgiR5QNyMQ9fg== -hls_enc_key_url http://localhost:2431/admin/key -hls_enc_iv EjRWeJCrze8= out.m3u8

@@ -20,6 +20,7 @@ namespace FileService.Web.Controllers
         Extension extension = new Extension();
         User user = new User();
         TsTime tsTime = new TsTime();
+        Files files = new Files();
         public ActionResult Index()
         {
             ViewBag.Name = User.Identity.Name;
@@ -160,6 +161,19 @@ namespace FileService.Web.Controllers
             DateTime.TryParse(endTime, out DateTime timeEnd);
             IEnumerable<BsonDocument> result = filesConvert.GetPageList(pageIndex, pageSize, null, timeStart, timeEnd, sorts, filter, new List<string>() { "filename", "metadata.From", "metadata.FileType" }, new List<string>() { }, out count);
             return new ResponseModel<IEnumerable<BsonDocument>>(ErrorCode.success, result, count);
+        }
+        public ActionResult GetFileHistorys(string id)
+        {
+            BsonDocument fileWrap = filesWrap.FindOne(ObjectId.Parse(id));
+            if (fileWrap == null || !fileWrap.Contains("History") || fileWrap["History"].AsBsonArray.Count == 0) return new ResponseModel<IEnumerable<BsonDocument>>(ErrorCode.success, new List<BsonDocument>());
+            BsonArray historyArray = fileWrap["History"].AsBsonArray;
+            List<BsonDocument> history = files.GetByIds(historyArray.Select(s => s["FileId"].AsObjectId)).ToList();
+            foreach (BsonDocument bson in history)
+            {
+                ObjectId fileId = bson["_id"].AsObjectId;
+                bson.Add("ReplaceTime", historyArray.Where(s => s["FileId"].AsObjectId == fileId).First().AsBsonDocument["CreateTime"]);
+            }
+            return new ResponseModel<IEnumerable<BsonDocument>>(ErrorCode.success, history);
         }
         public ActionResult GetFileIcon(string id)
         {

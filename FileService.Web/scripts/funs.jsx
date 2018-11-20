@@ -135,6 +135,7 @@ var urls = {
     restoreFilesUrl: appDomain + "admin/restorefiles",
     downloadUrl: appDomain + "download/get",
     downloadConvertUrl: appDomain + "download/getconvert",
+    downloadHistoryUrl: appDomain + "download/gethistory",
     downloadZipInnerUrl: appDomain + "download/getzipinnerfile",
     downloadRarInnerUrl: appDomain + "download/getrarinnerfile",
     thumbnailUrl: appDomain + "download/thumbnail",
@@ -154,6 +155,7 @@ var urls = {
     serverStateUrl: appDomain + "server/serverstatus",
     tsTimeUrl: appDomain + "admin/gettstime",
     replaceFileUrl: appDomain + "upload/replacefile",
+    getFileHistorysUrl: appDomain + "admin/getfilehistorys",
     overview: {
         recentUrl: appDomain + "admin/getcountrecentmonth",
         totalUrl: appDomain + "admin/gettotalcount",

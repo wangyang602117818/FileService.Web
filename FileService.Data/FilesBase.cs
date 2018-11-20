@@ -18,6 +18,10 @@ namespace FileService.Data
             var filter = FilterBuilder.Eq("md5", md5);
             return MongoCollection.Find(filter).FirstOrDefault();
         }
+        public IEnumerable<BsonDocument> GetByIds(IEnumerable<ObjectId> ids)
+        {
+            return MongoCollection.Find(FilterBuilder.In("_id",ids)).ToEnumerable();
+        }
         //protected override FilterDefinition<BsonDocument> GetPageFilters(IEnumerable<string> fields, string filter)
         //{
         //    FilterDefinition<BsonDocument> filterBuilder = FilterBuilder.And(FilterBuilder.Not(FilterBuilder.Eq("metadata.From", "Convert")));

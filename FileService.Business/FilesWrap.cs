@@ -118,6 +118,10 @@ namespace FileService.Business
         {
             return mongoData.AddVideoCapture(id, captureId);
         }
+        public bool AddHistory(ObjectId id, ObjectId fileId)
+        {
+            return mongoData.AddHistory(id, fileId);
+        }
         public bool DeleteVideoCapture(ObjectId id, ObjectId captureId)
         {
             return mongoData.DeleteVideoCapture(id, captureId);

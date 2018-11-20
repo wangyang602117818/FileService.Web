@@ -223,5 +223,7 @@ var culture = {
     image_convert: "图片转换",
     video_convert: "视频转换",
     playtime: "播放记录",
-    replace: "替换"
+    replace: "替换",
+    history: "历史记录",
+    replaceTime: "替换时间",
 }

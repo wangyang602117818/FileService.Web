@@ -223,5 +223,7 @@ var culture = {
     image_convert: "ImageConvert",
     video_convert: "VideoConvert",
     playtime: "PlayTime",
-    replace: "Replace"
+    replace: "Replace",
+    history: "History",
+    replaceTime:"ReplaceTime",
 }

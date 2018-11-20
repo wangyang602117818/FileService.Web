@@ -57,6 +57,7 @@ namespace FileService.Web
                 .Include("~/scripts/resources_update_access.jsx")
                 .Include("~/scripts/resources_shared_file.jsx")
                 .Include("~/scripts/resources_ts_time.jsx")
+                .Include("~/scripts/resources_history.jsx")
                 .Include("~/scripts/resources.jsx")
                 .Include("~/scripts/logs.jsx")
                 .Include("~/scripts/file_recycle.jsx")

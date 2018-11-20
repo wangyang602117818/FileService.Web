@@ -221,11 +221,11 @@ namespace FileService.Web.Controllers
                 }
             }
             //如果源文件没有被引用，则删除
-            if (filesWrap.CountByFileId(fileWrap["FileId"].AsObjectId) == 1 && fileWrap["FileId"].AsObjectId != ObjectId.Empty)
-            {
-                ObjectId fId = fileWrap["FileId"].AsObjectId;
-                mongoFile.Delete(fId);
-            }
+            //if (filesWrap.CountByFileId(fileWrap["FileId"].AsObjectId) == 1 && fileWrap["FileId"].AsObjectId != ObjectId.Empty)
+            //{
+            //    ObjectId fId = fileWrap["FileId"].AsObjectId;
+            //    mongoFile.Delete(fId);
+            //}
             //删除转换的小图标
             filePreview.DeleteOne(fileWrap["_id"].AsObjectId);
             //删除转换的大图标

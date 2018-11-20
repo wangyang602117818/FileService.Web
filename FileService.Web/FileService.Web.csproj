@@ -377,6 +377,7 @@
     <Content Include="scripts\react.js" />
     <Content Include="scripts\react.min.js" />
     <Content Include="scripts\resources.jsx" />
+    <Content Include="scripts\resources_history.jsx" />
     <Content Include="scripts\resources_shared_file.jsx" />
     <Content Include="scripts\resources_update_access.jsx" />
     <Content Include="scripts\resources_zip_list.jsx" />
