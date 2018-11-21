@@ -225,5 +225,10 @@ var culture = {
     playtime: "PlayTime",
     replace: "Replace",
     history: "History",
-    replaceTime:"ReplaceTime",
+    replaceTime: "ReplaceTime",
+    monitorList: "MonitorList",
+    monitorPath: "MonitorPath",
+    monitorState: "MonitorState",
+    monitorTime: "MonitorTime",
+    monitorMachine: "monitorMachine",
 }

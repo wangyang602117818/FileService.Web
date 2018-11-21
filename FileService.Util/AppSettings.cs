@@ -12,9 +12,9 @@ namespace FileService.Util
         public static int taskCount = Convert.ToInt32(ConfigurationManager.AppSettings["taskCount"]);
         public static string libreOffice = ConfigurationManager.AppSettings["libreOffice"];
         public static string tempFileDir = ConfigurationManager.AppSettings["tempFileDir"];
-        public static string sharedFolder = ConfigurationManager.AppSettings["sharedFolder"];
-        public static string sharedUserName = ConfigurationManager.AppSettings["sharedUserName"];
-        public static string sharedUserPwd = ConfigurationManager.AppSettings["sharedUserPwd"];
+        public static string sharedFolders = ConfigurationManager.AppSettings["sharedFolders"];
+        public static string sharedUserNames = ConfigurationManager.AppSettings["sharedUserNames"];
+        public static string sharedUserPwds = ConfigurationManager.AppSettings["sharedUserPwds"];
         /// <summary>
         /// 本web页面的权限配置
         /// </summary>
@@ -24,9 +24,9 @@ namespace FileService.Util
         //public static PerformanceCounter cpuCounter = new PerformanceCounter("Processor", "% Processor Time", "_Total");
         //public static PerformanceCounter ramCounter = new PerformanceCounter("Memory", "Available MBytes");
 
-        public static bool connectState(string path, string userName, string passWord)
+        public static bool connectState(string path, string userName, string passWord, ref string message)
         {
-            if (sharedUserName == "" && sharedUserPwd == "") return true;
+            if (userName == "" && passWord == "") return true;
             bool Flag = false;
             Process proc = new Process();
             try
@@ -45,15 +45,15 @@ namespace FileService.Util
                 {
                     proc.WaitForExit(1000);
                 }
-                string errormsg = proc.StandardError.ReadToEnd();
+                message = proc.StandardError.ReadToEnd();
                 proc.StandardError.Close();
-                if (string.IsNullOrEmpty(errormsg))
+                if (string.IsNullOrEmpty(message))
                 {
                     Flag = true;
                 }
                 else
                 {
-                    Log4Net.ErrorLog(errormsg);
+                    Log4Net.ErrorLog(message);
                 }
             }
             catch (Exception ex)

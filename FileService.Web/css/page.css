@@ -137,10 +137,10 @@
 }
 
     .server_con .web_server_con {
-        width:60%;
-        margin-top:5px;
-        height:150px;
-        border:1px solid #ccc;
+        width: 60%;
+        margin-top: 5px;
+        height: 150px;
+        border: 1px solid #ccc;
     }
 
 .echart_main_con {
@@ -218,7 +218,7 @@
     }
 
 .convert_flag {
-    display:inline-block;
+    display: inline-block;
     margin-right: 10px;
     cursor: default;
 }
@@ -240,6 +240,23 @@
 .flag_del:hover {
     color: #000;
 }
+
+.flag_table {
+    display: inline-block;
+    margin-right: 10px;
+    cursor: default;
+}
+
+    .flag_table .flag_txt {
+        display: inline-block;
+        padding: 2px 5px;
+        background-color: #b6af99;
+        color: #fff;
+    }
+
+    .flag_table .error {
+        background-color: #e6594b;
+    }
 
 .table_user {
     width: 70%;

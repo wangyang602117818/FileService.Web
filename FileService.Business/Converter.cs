@@ -1,11 +1,8 @@
 ﻿using FileService.Model;
 using MongoDB.Bson;
-using MongoDB.Bson.Serialization.Attributes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace FileService.Business
 {
@@ -23,6 +20,10 @@ namespace FileService.Business
             {
                 return mongoData.UpdateByHanderId(HandlerId, this.ToBsonDocument());
             }
+        }
+        public bool UpdateStatesByHanderId(string handlerId, BsonArray array)
+        {
+            return mongoData.UpdateStatesByHanderId(handlerId, array);
         }
         public bool AddCount(string handlerId, int total)
         {
@@ -67,8 +68,15 @@ namespace FileService.Business
         public string MachineName { get; set; }
         public int Total { get; set; }
         public ConverterStateEnum State { get; set; }
+        public List<MonitorState> MonitorStateList { get; set; }
         public DateTime StartTime { get; set; }
         public DateTime? EndTime { get; set; }
         public DateTime CreateTime { get; set; }
+    }
+    public class MonitorState
+    {
+        public string MachinePath { get; set; }
+        public string Message { get; set; }
+        public DateTime MonitorTime { get; set; }
     }
 }

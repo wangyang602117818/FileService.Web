@@ -73,7 +73,7 @@ class ApplicationItem extends React.Component {
                         this.props.application.ThumbnailsDisplay.map(function (item, i) {
                             delete item._id;
                             return (
-                                <span className="convert_flag"
+                                <span className="flag_table"
                                     title={JSON.stringify(item)} key={i} id={i}>
                                     <span className="flag_txt">{item.flag || item.Flag}</span>
                                 </span>
@@ -86,7 +86,7 @@ class ApplicationItem extends React.Component {
                         this.props.application.VideosDisplay.map(function (item, i) {
                             delete item._id;
                             return (
-                                <span className="convert_flag"
+                                <span className="flag_table"
                                     title={JSON.stringify(item)} key={i} id={i}>
                                     <span className="flag_txt">{item.flag || item.Flag}</span>
                                 </span>

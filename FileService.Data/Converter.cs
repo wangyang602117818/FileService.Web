@@ -2,11 +2,7 @@
 using MongoDB.Bson;
 using MongoDB.Driver;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
 namespace FileService.Data
 {
@@ -28,6 +24,10 @@ namespace FileService.Data
         public bool UpdateByHanderId(string handlerId, BsonDocument document)
         {
             return MongoCollection.UpdateOne(FilterBuilder.Eq("HandlerId", handlerId), new BsonDocument("$set", document), new UpdateOptions() { IsUpsert = true }).IsAcknowledged;
+        }
+        public bool UpdateStatesByHanderId(string handlerId, BsonArray array)
+        {
+            return MongoCollection.UpdateOne(FilterBuilder.Eq("HandlerId", handlerId), Builders<BsonDocument>.Update.Set("MonitorStateList", array)).IsAcknowledged;
         }
         public bool AddCount(string handlerId, int total)
         {

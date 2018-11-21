@@ -226,4 +226,9 @@ var culture = {
     replace: "替换",
     history: "历史记录",
     replaceTime: "替换时间",
+    monitorList: "监视列表",
+    monitorPath: "监视路径",
+    monitorState: "监视状态",
+    monitorTime: "监视时间",
+    monitorMachine: "监视机器",
 }

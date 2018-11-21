@@ -775,6 +775,11 @@ function getOfficeExtensions() {
         if (data.code == 0) imageExtensions = data.result;
     });
 }
+function getMachineNameByPath(path) {
+    var regex = /\\\\(.+?)\\/i;
+    var result = path.match(regex);
+    return result[1];
+}
 Array.prototype.sortAndUnique = function () {
     this.sort(); //先排序
     var res = [this[0]];

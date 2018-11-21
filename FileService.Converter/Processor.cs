@@ -3,7 +3,9 @@ using FileService.Model;
 using FileService.Util;
 using MongoDB.Bson;
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading;
 
 namespace FileService.Converter
@@ -13,19 +15,38 @@ namespace FileService.Converter
         Task task = new Task();
         Business.Converter converter = new Business.Converter();
         Extension extension = new Extension();
-        public bool StartMonitor(string handlerId)
+        public void StartMonitor(string handlerId)
         {
-            bool result = AppSettings.connectState(AppSettings.sharedFolder.TrimEnd('\\'), AppSettings.sharedUserName, AppSettings.sharedUserPwd);
-            //用户名和密码可用
-            if (result)
+            List<MonitorState> MonitorStateList = new List<MonitorState>();
+            string[] sharedFolders = AppSettings.sharedFolders.Split(';');
+            string[] userNames = AppSettings.sharedUserNames.Split(';');
+            string[] passWords = AppSettings.sharedUserPwds.Split(';');
+            for (var i = 0; i < sharedFolders.Length; i++)
             {
-                new Queue().MonitorMessage(handlerId);
+                string sharedFolder = sharedFolders[i];
+                string userName = userNames[i];
+                string passWord = passWords[i];
+                string message = "";
+                bool result = AppSettings.connectState(sharedFolder, userName, passWord, ref message);
+                //用户名和密码可用
+                if (result)
+                {
+                    MonitorStateList.Add(new MonitorState() {
+                        MachinePath = sharedFolder,
+                        Message = "success",
+                        MonitorTime = DateTime.Now });
+                }
+                else
+                {
+                    MonitorStateList.Add(new MonitorState() {
+                        MachinePath = sharedFolder,
+                        Message = message.Replace("\n", "").Replace("\r", ""),
+                        MonitorTime = DateTime.Now
+                    });
+                }
             }
-            else
-            {
-                Log4Net.ErrorLog("shared folder username or password wrong");
-            }
-            return result;
+            converter.UpdateStatesByHanderId(handlerId, new BsonArray(MonitorStateList.Select(s => s.ToBsonDocument())));
+            new Queue().MonitorMessage(handlerId);
         }
         /// <summary>
         ///  获取一个任务，并且开启一个线程，
