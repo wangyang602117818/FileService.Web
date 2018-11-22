@@ -1,12 +1,8 @@
 ﻿using FileService.Business;
 using FileService.Util;
 using MongoDB.Bson;
-using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace FileService.Converter
 {
@@ -22,6 +18,12 @@ namespace FileService.Converter
         public virtual bool Convert(FileItem fileItem)
         {
             return false;
+        }
+        public string GetFilePath(BsonDocument task)
+        {
+            string machine = task["Machine"].AsString;
+            string tempPath = AppSettings.sharedFolders.Split(';').ToList().Where(w => w.Contains(machine)).FirstOrDefault();
+            return tempPath.TrimEnd('\\') + "\\" + task["Folder"].AsString + "\\" + task["FileName"];
         }
         public bool SaveFileFromSharedFolder(ObjectId filesWrapId, string fullPath)
         {

@@ -292,6 +292,16 @@ function parseBsonTime(value) {
     date.setMilliseconds(value);
     return date.getFullYear() + "-" + formatMonth((date.getMonth() + 1)) + "-" + formatMonth(date.getDate()) + " " + formatMonth(date.getHours()) + ":" + formatMonth(date.getMinutes()) + ":" + formatMonth(date.getSeconds());
 }
+function parseBsonTimeNoneSecond(value) {
+    if (!value) {
+        return "";
+    } else {
+        value = value.$date;
+    }
+    var date = new Date(0);
+    date.setMilliseconds(value);
+    return date.getFullYear() + "-" + formatMonth((date.getMonth() + 1)) + "-" + formatMonth(date.getDate()) + " " + formatMonth(date.getHours()) + ":" + formatMonth(date.getMinutes());
+}
 function dateAddDay(dateStr, day) {
     var date = new Date(dateStr);
     date.setDate(date.getDate() + day);

@@ -85,8 +85,7 @@ namespace FileService.Web.Controllers
         {
             converter.AddCount(handlerId, 1);
             ObjectId taskId = ObjectId.GenerateNewId();
-            task.Insert(taskId, fileId,
-                @"\\" + Environment.MachineName + "\\" + regex.Match(AppSettings.tempFileDir).Groups[1].Value + "\\" + DateTime.Now.ToString("yyyyMMdd") + "\\", fileName,
+            task.Insert(taskId, fileId, DateTime.Now.ToString("yyyyMMdd"), fileName,
                 type, from, outPut, access, owner, handlerId, 0, TaskStateEnum.wait, 0);
             //添加队列
             queue.Insert(handlerId, type, "Task", taskId, false, new BsonDocument());
@@ -96,7 +95,7 @@ namespace FileService.Web.Controllers
             converter.AddCount(handlerId, 1);
             BsonDocument item = new BsonDocument()
             {
-                {"TempFolder",@"\\" + Environment.MachineName + "\\" + regex.Match(AppSettings.tempFileDir).Groups[1].Value + "\\" + DateTime.Now.ToString("yyyyMMdd") + "\\" },
+                {"Folder",DateTime.Now.ToString("yyyyMMdd") },
                 {"FileName",fileName },
                 {"ProcessCount",0 },
                 {"State",state },
@@ -173,8 +172,7 @@ namespace FileService.Web.Controllers
             IEnumerable<BsonDocument> tasks = task.FindCacheFiles(fileWrapId);
             foreach (BsonDocument task in tasks)
             {
-                var temp = task["TempFolder"].ToString().Substring(task["TempFolder"].ToString().TrimEnd('\\').LastIndexOf(@"\") + 1);
-                string fullPath = AppDomain.CurrentDomain.BaseDirectory + AppSettings.tempFileDir + temp + task["FileName"].ToString();
+                string fullPath = AppDomain.CurrentDomain.BaseDirectory + AppSettings.tempFileDir + task["Folder"].ToString() + "\\" + task["FileName"].ToString();
                 if (System.IO.File.Exists(fullPath)) System.IO.File.Delete(fullPath);
             }
             //删除转换的小图标

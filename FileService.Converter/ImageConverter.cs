@@ -5,6 +5,7 @@ using MongoDB.Bson;
 using MongoDB.Bson.Serialization;
 using System.Drawing.Imaging;
 using System.IO;
+using System.Linq;
 
 namespace FileService.Converter
 {
@@ -30,7 +31,7 @@ namespace FileService.Converter
 
             int processCount = System.Convert.ToInt32(taskItem.Message["ProcessCount"]);
             Stream fileStream = null;
-            string fullPath = taskItem.Message["TempFolder"].AsString + fileName;
+            string fullPath = GetFilePath(taskItem.Message);
             //第一次转换，文件肯定在共享文件夹
             if (processCount == 0)
             {
@@ -60,7 +61,7 @@ namespace FileService.Converter
                 if (output.Id != ObjectId.Empty)
                 {
                     int twidth = output.Width, theight = output.Height;
-                    using (Stream stream = ImageExtention.GenerateThumbnail(fileName, fileStream, output.Model, format, output.X, output.Y,ref twidth, ref theight))
+                    using (Stream stream = ImageExtention.GenerateThumbnail(fileName, fileStream, output.Model, format, output.X, output.Y, ref twidth, ref theight))
                     {
                         thumbnail.Replace(output.Id, from, taskItem.Message["FileId"].AsObjectId, stream.Length, twidth, theight, Path.GetFileNameWithoutExtension(fileName) + outputExt, output.Flag, stream.ToBytes());
                     }

@@ -31,15 +31,18 @@ namespace FileService.Converter
                 //用户名和密码可用
                 if (result)
                 {
-                    MonitorStateList.Add(new MonitorState() {
-                        MachinePath = sharedFolder,
+                    MonitorStateList.Add(new MonitorState()
+                    {
+                        MachinePath = "\\\\" + sharedFolder.GetMachineName() + "\\$\\" + sharedFolder.GetRelationPath(),
                         Message = "success",
-                        MonitorTime = DateTime.Now });
+                        MonitorTime = DateTime.Now
+                    });
                 }
                 else
                 {
-                    MonitorStateList.Add(new MonitorState() {
-                        MachinePath = sharedFolder,
+                    MonitorStateList.Add(new MonitorState()
+                    {
+                        MachinePath = "\\\\" + sharedFolder.GetMachineName() + "\\$\\" + sharedFolder.GetRelationPath(),
                         Message = message.Replace("\n", "").Replace("\r", ""),
                         MonitorTime = DateTime.Now
                     });

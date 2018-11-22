@@ -27,7 +27,11 @@ namespace FileService.Web.Controllers
             BsonDocument bsonUser = user.GetUser(User.Identity.Name);
             if (User.Identity.Name != "local")
             {
-                if (bsonUser == null) return RedirectToAction("login", "admin");
+                if (bsonUser == null)
+                {
+                    FormsAuthentication.SignOut();
+                    return RedirectToAction("login", "admin");
+                }
                 if (bsonUser["Modified"].AsBoolean == true)
                 {
                     FormsAuthentication.SignOut();
@@ -52,7 +56,7 @@ namespace FileService.Web.Controllers
                 }
                 else
                 {
-                    return Redirect("/admin/index");
+                    return Redirect(Request.ApplicationPath + "/admin/index");
                 }
             }
             else
@@ -119,8 +123,7 @@ namespace FileService.Web.Controllers
             List<BsonDocument> result = task.GetPageList(pageIndex, pageSize, new BsonDocument("Delete", false), timeStart, timeEnd, sorts, filter, new List<string>() { "FileId", "FileName", "StateDesc", "HandlerId", "StateDesc", "Type" }, new List<string>() { }, out count, userName).ToList();
             foreach (BsonDocument bson in result)
             {
-                var temp = bson["TempFolder"].ToString().Substring(bson["TempFolder"].ToString().TrimEnd('\\').LastIndexOf(@"\") + 1);
-                string fullPath = AppDomain.CurrentDomain.BaseDirectory + AppSettings.tempFileDir + temp + bson["FileName"].ToString();
+                string fullPath = AppDomain.CurrentDomain.BaseDirectory + AppSettings.tempFileDir + bson["Folder"].ToString() + "\\" + bson["FileName"].ToString();
                 if (System.IO.File.Exists(fullPath))
                 {
                     bson.Add("FileExists", true);
@@ -129,7 +132,7 @@ namespace FileService.Web.Controllers
                 {
                     bson.Add("FileExists", false);
                 }
-                bson.Remove("TempFolder");
+                bson.Remove("Machine");
             }
             return new ResponseModel<IEnumerable<BsonDocument>>(ErrorCode.success, result, count);
         }
@@ -540,8 +543,7 @@ namespace FileService.Web.Controllers
         public ActionResult GetTaskById(string id)
         {
             BsonDocument document = task.FindOne(ObjectId.Parse(id));
-            var temp = document["TempFolder"].ToString().Substring(document["TempFolder"].ToString().TrimEnd('\\').LastIndexOf(@"\") + 1);
-            string fullPath = AppDomain.CurrentDomain.BaseDirectory + AppSettings.tempFileDir + temp + document["FileName"].ToString();
+            string fullPath = AppDomain.CurrentDomain.BaseDirectory + AppSettings.tempFileDir + document["Folder"].ToString() + "\\" + document["FileName"].ToString();
             if (System.IO.File.Exists(fullPath))
             {
                 document.Add("FileExists", true);
@@ -550,7 +552,7 @@ namespace FileService.Web.Controllers
             {
                 document.Add("FileExists", false);
             }
-            document.Add("RelativePath", "$\\" + AppSettings.tempFileDir + temp + document["FileName"].ToString());
+            document.Add("RelativePath", "$\\" + AppSettings.tempFileDir + document["Folder"].ToString() + "\\" + document["FileName"].ToString());
             return new ResponseModel<BsonDocument>(ErrorCode.success, document);
         }
         public ActionResult DeleteCacheFile(string id)
@@ -559,8 +561,7 @@ namespace FileService.Web.Controllers
             BsonDocument document = task.FindOne(ObjectId.Parse(id));
             if (Convert.ToInt32(document["State"]) == 2)
             {
-                var temp = document["TempFolder"].ToString().Substring(document["TempFolder"].ToString().TrimEnd('\\').LastIndexOf(@"\") + 1);
-                string fullPath = AppDomain.CurrentDomain.BaseDirectory + AppSettings.tempFileDir + temp + document["FileName"].ToString();
+                string fullPath = AppDomain.CurrentDomain.BaseDirectory + AppSettings.tempFileDir + document["Folder"].ToString() + "\\" + document["FileName"].ToString();
                 if (System.IO.File.Exists(fullPath))
                 {
                     System.IO.File.Delete(fullPath);
@@ -579,8 +580,7 @@ namespace FileService.Web.Controllers
             int count = 0;
             foreach (BsonDocument bson in list)
             {
-                var temp = bson["TempFolder"].ToString().Substring(bson["TempFolder"].ToString().TrimEnd('\\').LastIndexOf(@"\") + 1);
-                string fullPath = AppDomain.CurrentDomain.BaseDirectory + AppSettings.tempFileDir + temp + bson["FileName"].ToString();
+                string fullPath = AppDomain.CurrentDomain.BaseDirectory + AppSettings.tempFileDir + bson["Folder"].ToString() + "\\" + bson["FileName"].ToString();
                 if (System.IO.File.Exists(fullPath))
                 {
                     count++;

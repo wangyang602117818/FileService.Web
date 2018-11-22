@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
+﻿using System.IO;
 using System.Security.Cryptography;
 using System.Text;
-using System.Threading.Tasks;
+using System.Text.RegularExpressions;
 
 namespace FileService.Util
 {
@@ -34,6 +31,16 @@ namespace FileService.Util
             stream.Read(bytes, 0, bytes.Length);
             return bytes;
         }
-        
+        public static string GetMachineName(this string str)
+        {
+            Match match = Regex.Match(str, @"\\\\(.+?)\\");
+            return match.Groups[1].Value;
+        }
+        public static string GetRelationPath(this string str)
+        {
+            int index = str.IndexOf("App_Data");
+            return str.Substring(index);
+        }
+
     }
 }

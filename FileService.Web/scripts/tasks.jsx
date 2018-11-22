@@ -11,10 +11,10 @@
                         <th width="20%">{culture.fileName}</th>
                         <th width="8%">{culture.handler}</th>
                         <th width="8%">{culture.state}</th>
-                        <th width="5%">{culture.percent}</th>
+                        <th width="7%">{culture.percent}</th>
                         <td width="6%">{culture.process_count}</td>
-                        <th width="15%">{culture.createTime}</th>
-                        <th width="15%">{culture.completedTime}</th>
+                        <th width="14%">{culture.createTime}</th>
+                        <th width="14%">{culture.completedTime}</th>
                         <th width="4%">{culture.view}</th>
                         <th width="4%">{culture.reDo}</th>
                     </tr>
@@ -98,8 +98,8 @@ class TaskItem extends React.Component {
                 </td>
                 <td>{this.props.task.Percent}%</td>
                 <td>{this.props.task.ProcessCount}</td>
-                <td>{parseBsonTime(this.props.task.CreateTime)}</td>
-                <td>{parseBsonTime(this.props.task.CompletedTime)}</td>
+                <td title={parseBsonTime(this.props.task.CreateTime)}>{parseBsonTimeNoneSecond(this.props.task.CreateTime)}</td>
+                <td title={parseBsonTime(this.props.task.CompletedTime)}>{parseBsonTimeNoneSecond(this.props.task.CompletedTime)}</td>
                 <td>
                     <i className="iconfont icon-view" onClick={this.preView.bind(this)}
                         id={"id=" + this.props.task.FileId.$oid + "&filename=" + this.props.task.FileName.removeHTML() + "#" + (this.props.task.Output._id ? this.props.task.Output._id.$oid : "")}></i>

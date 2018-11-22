@@ -7,15 +7,14 @@
             <table className="table">
                 <thead>
                     <tr>
-                        <td width="15%">{culture.id}</td>
                         <td width="10%">{culture.from}</td>
                         <td width="8%">Api</td>
-                        <td width="18%">{culture.fileId}/{culture.taskId}/{culture.id}</td>
-                        <td width="12%">{culture.content}</td>
-                        <td width="6%">{culture.user}</td>
-                        <td width="8%">Ip</td>
-                        <td width="7%">{culture.user_agent}</td>
-                        <td width="16%">{culture.createTime}</td>
+                        <td width="20%">{culture.fileId}/{culture.taskId}/{culture.id}</td>
+                        <td width="18%">{culture.content}</td>
+                        <td width="10%">{culture.user}</td>
+                        <td width="10%">Ip</td>
+                        <td width="10%">{culture.user_agent}</td>
+                        <td width="14%">{culture.createTime}</td>
                     </tr>
                 </thead>
                 <LogList data={this.props.data} />
@@ -56,8 +55,6 @@ class LogItem extends React.Component {
     render() {
         return (
             <tr>
-                <td dangerouslySetInnerHTML={{ __html: this.props.log._id.$oid }}
-                ></td>
                 <td dangerouslySetInnerHTML={{ __html: this.props.log.From }}
                     id={this.props.log.From.removeHTML()}>
                 </td>
@@ -67,7 +64,7 @@ class LogItem extends React.Component {
                 <td>{this.props.log.UserName}</td>
                 <td>{this.props.log.UserIp}</td>
                 <td>{getAgent(this.props.UserAgent)}</td>
-                <td>{parseBsonTime(this.props.log.CreateTime)}</td>
+                <td title={parseBsonTime(this.props.log.CreateTime)}>{parseBsonTimeNoneSecond(this.props.log.CreateTime)}</td>
                 
             </tr>
         )

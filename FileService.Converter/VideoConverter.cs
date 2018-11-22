@@ -34,7 +34,7 @@ namespace FileService.Converter
             VideoOutPut output = BsonSerializer.Deserialize<VideoOutPut>(outputDocument);
 
             int processCount = System.Convert.ToInt32(taskItem.Message["ProcessCount"]);
-            string fullPath = taskItem.Message["TempFolder"].AsString + fileName; //数据库里面存的path
+            string fullPath = GetFilePath(taskItem.Message);
 
             //第一次转换，文件肯定在共享文件夹
             if (processCount == 0)

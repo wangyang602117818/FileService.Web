@@ -28,7 +28,7 @@ namespace FileService.Converter
             string fileName = taskItem.Message["FileName"].AsString;
 
             int processCount =System.Convert.ToInt32(taskItem.Message["ProcessCount"]);
-            string fullPath = taskItem.Message["TempFolder"].AsString + fileName;
+            string fullPath = GetFilePath(taskItem.Message);
             if (processCount == 0)
             {
                 if (File.Exists(fullPath))

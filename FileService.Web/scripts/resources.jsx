@@ -27,9 +27,9 @@
                             <th width="18%">{culture.fileId}</th>
                             <th width="25%">{culture.fileName}</th>
                             <th width="7%">{culture.size}</th>
-                            <th width="14%">{culture.uploadTime}</th>
+                            <th width="11%">{culture.uploadTime}</th>
                             <th width="10%">{culture.from}</th>
-                            <th width="5%">{culture.owner}</th>
+                            <th width="8%">{culture.owner}</th>
                             <th width="5%">{culture.downloads}</th>
                             <th width="5%">{culture.view}</th>
                             <th width="5%">{culture.dol}</th>
@@ -105,7 +105,7 @@ class ResourceItem extends React.Component {
                     </span>
                 </td>
                 <td>{convertFileSize(this.props.resource.Length)}</td>
-                <td>{parseBsonTime(this.props.resource.CreateTime)}</td>
+                <td title={parseBsonTime(this.props.resource.CreateTime)}>{parseBsonTimeNoneSecond(this.props.resource.CreateTime)}</td>
                 <td dangerouslySetInnerHTML={{ __html: this.props.resource.From || culture.unknow }}></td>
                 <td>{this.props.resource.Owner}</td>
                 <td>{this.props.resource.Download}</td>

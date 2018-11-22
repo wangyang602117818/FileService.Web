@@ -22,7 +22,7 @@ namespace FileService.Converter
             string fileName = taskItem.Message["FileName"].AsString;
 
             int processCount = System.Convert.ToInt32(taskItem.Message["ProcessCount"]);
-            string fullPath = taskItem.Message["TempFolder"].AsString + fileName;
+            string fullPath = GetFilePath(taskItem.Message);
             //判断文件处理次数，防止文件被多次提交到mongodb
             if (processCount == 0)
             {

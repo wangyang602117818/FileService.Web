@@ -8,11 +8,11 @@
                 <thead>
                     <tr>
                         <th width="18%">{culture.fileId}</th>
-                        <th width="25%">{culture.fileName}</th>
+                        <th>{culture.fileName}</th>
                         <th width="10%">{culture.size}</th>
-                        <th width="15%">{culture.deleteTime}</th>
+                        <th width="13%">{culture.deleteTime}</th>
                         <th width="10%">{culture.from}</th>
-                        <th width="5%">{culture.owner}</th>
+                        <th width="8%">{culture.owner}</th>
                         <th width="5%">{culture.downloads}</th>
                         <th width="6%">{culture.restore_file}</th>
                         <th width="6%">{culture.permanent_del}</th>
@@ -59,7 +59,7 @@ class FileRecycleItem extends React.Component {
                         id={"id=" + this.props.resource._id.$oid.removeHTML() + "&filename=" + this.props.resource.FileName.removeHTML() + "&deleted=true"}></span>
                 </td>
                 <td>{convertFileSize(this.props.resource.Length)}</td>
-                <td>{parseBsonTime(this.props.resource.DeleteTime)}</td>
+                <td title={parseBsonTime(this.props.resource.DeleteTime)}>{parseBsonTimeNoneSecond(this.props.resource.DeleteTime)}</td>
                 <td dangerouslySetInnerHTML={{ __html: this.props.resource.From || culture.unknow }}></td>
                 <td>{this.props.resource.Owner}</td>
                 <td>{this.props.resource.Download}</td>

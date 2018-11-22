@@ -4,6 +4,7 @@ using FileService.Util;
 using MongoDB.Bson;
 using System.Drawing.Imaging;
 using System.IO;
+using System.Linq;
 
 namespace FileService.Converter
 {
@@ -22,7 +23,7 @@ namespace FileService.Converter
             string fileName = taskItem.Message["FileName"].AsString;
             string fileType = extension.GetTypeByExtension(Path.GetExtension(fileName).ToLower()).ToLower();
             int processCount = System.Convert.ToInt32(taskItem.Message["ProcessCount"]);
-            string fullPath = taskItem.Message["TempFolder"].AsString + fileName;
+            string fullPath = GetFilePath(taskItem.Message);
             //第一次转换，文件肯定在共享文件夹
             if (processCount == 0)
             {

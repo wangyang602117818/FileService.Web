@@ -11,10 +11,10 @@
                         <th width="15%">{culture.machineName}</th>
                         <th width="10%">{culture.total_task_count}</th>
                         <th width="10%">{culture.state}</th>
-                        <th width="14%">{culture.monitorMachine}</th>
-                        <th width="12%">{culture.startTime}</th>
-                        <th width="12%">{culture.endTime}</th>
-                        <th width="12%">{culture.createTime}</th>
+                        <th width="17%">{culture.monitorMachine}</th>
+                        <th width="11%">{culture.startTime}</th>
+                        <th width="11%">{culture.endTime}</th>
+                        <th width="11%">{culture.createTime}</th>
                         <th width="5%">{culture.empty}</th>
                     </tr>
                 </thead>
@@ -83,9 +83,9 @@ class HandlerItem extends React.Component {
                         )
                     })}
                 </td>
-                <td>{parseBsonTime(this.props.handler.StartTime)}</td>
-                <td>{parseBsonTime(this.props.handler.EndTime)}</td>
-                <td>{parseBsonTime(this.props.handler.CreateTime)}</td>
+                <td title={parseBsonTime(this.props.handler.StartTime)}>{parseBsonTimeNoneSecond(this.props.handler.StartTime)}</td>
+                <td title={parseBsonTime(this.props.handler.EndTime)}>{parseBsonTimeNoneSecond(this.props.handler.EndTime)}</td>
+                <td title={parseBsonTime(this.props.handler.CreateTime)}>{parseBsonTimeNoneSecond(this.props.handler.CreateTime)}</td>
                 <td><i className="iconfont icon-empty" onClick={this.props.empty} id={this.props.handler.HandlerId}></i></td>
             </tr>
         )
