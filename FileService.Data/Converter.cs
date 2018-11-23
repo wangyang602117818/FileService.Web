@@ -2,6 +2,7 @@
 using MongoDB.Bson;
 using MongoDB.Driver;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace FileService.Data
@@ -9,6 +10,11 @@ namespace FileService.Data
     public class Converter : MongoBase
     {
         public Converter() : base("Converter") { }
+        public IEnumerable<BsonDocument> FindAllExistsMachine(string machine)
+        {
+            var filter = FilterBuilder.Eq("MonitorStateList.Machine", machine);
+            return MongoCollection.Find(filter).ToEnumerable();
+        }
         public BsonDocument FindByHandler(string handlerId)
         {
             return MongoCollection.Find(FilterBuilder.Eq("HandlerId", handlerId)).FirstOrDefault();

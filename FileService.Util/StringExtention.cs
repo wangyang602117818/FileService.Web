@@ -36,11 +36,6 @@ namespace FileService.Util
             Match match = Regex.Match(str, @"\\\\(.+?)\\");
             return match.Groups[1].Value;
         }
-        public static string GetRelationPath(this string str)
-        {
-            int index = str.IndexOf("App_Data");
-            return str.Substring(index);
-        }
 
     }
 }

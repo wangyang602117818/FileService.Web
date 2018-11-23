@@ -48,7 +48,8 @@ namespace FileService.Business
         }
         public string GetHandlerId()
         {
-            IEnumerable<BsonDocument> all = mongoData.FindAll().OrderBy(o => o["Total"]);
+            string machine = Environment.MachineName;
+            IEnumerable<BsonDocument> all = mongoData.FindAllExistsMachine(machine).OrderBy(o => o["Total"]);
             if (all.Count() == 0) return "unknown";
             if (all.Count() == 1) return all.First()["HandlerId"].AsString;
             IEnumerable<BsonDocument> run = all.Where(sel => sel["State"].AsInt32 >= 0).OrderBy(o => o["State"]).OrderBy(o => o["State"]);
@@ -75,7 +76,7 @@ namespace FileService.Business
     }
     public class MonitorState
     {
-        public string MachinePath { get; set; }
+        public string Machine { get; set; }
         public string Message { get; set; }
         public DateTime MonitorTime { get; set; }
     }

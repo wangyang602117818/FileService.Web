@@ -74,10 +74,10 @@ class HandlerItem extends React.Component {
                         var className = "flag_txt";
                         if (item.Message != "success") className += " error";
                         return (
-                            <span className="flag_table" key={i} title={getMachineNameByPath(item.MachinePath)}>
+                            <span className="flag_table" key={i} title={item.Machine}>
                                 <span className={className}
-                                    id={getMachineNameByPath(item.MachinePath)}>
-                                    {getMachineNameByPath(item.MachinePath).substring(0, 4) + "..."}
+                                    id={item.Machine}>
+                                    {item.Machine.substring(0, 4) + "..."}
                                 </span>
                             </span>
                         )
@@ -102,9 +102,9 @@ class MonitorData extends React.Component {
                     <thead>
                         <tr>
                             <th width="5%">{culture.id}</th>
-                            <th width="20%">{culture.monitorPath}</th>
+                            <th width="10%">{culture.machineName}</th>
                             <th width="15%">{culture.monitorTime}</th>
-                            <th width="60%">{culture.monitorState}</th>
+                            <th width="70%">{culture.monitorState}</th>
                         </tr>
                     </thead>
                     <MonitorList data={this.props.data} />
@@ -133,7 +133,7 @@ class MonitorList extends React.Component {
                         return (
                             <tr key={i}>
                                 <td>{i + 1}</td>
-                                <td>{item.MachinePath}</td>
+                                <td>{item.Machine}</td>
                                 <td>{parseBsonTime(item.MonitorTime)}</td>
                                 <td>{item.Message}</td>
                             </tr>

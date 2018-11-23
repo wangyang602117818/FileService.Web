@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
+using System.Text.RegularExpressions;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Security;
@@ -976,6 +977,10 @@ namespace FileService.Web.Controllers
                 key2,
                 iv,
             }, JsonRequestBehavior.AllowGet);
+        }
+        public ActionResult GetHandler()
+        {
+            return Content(converter.GetHandlerId());
         }
     }
 }

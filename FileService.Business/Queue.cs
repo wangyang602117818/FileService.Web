@@ -61,10 +61,6 @@ namespace FileService.Business
                     ObjectId collectionId = doc["collectionId"].AsObjectId;
                     BsonDocument taskItem = new MongoBase(collectionName).FindOne(collectionId);
                     if (taskItem == null) continue;
-                    //if (taskItem["Type"].AsString == "video" || taskItem["Type"].AsString == "attachment")
-                    //{
-                    //    if (!File.Exists(MongoFile.AppDataDir + taskItem["FileName"])) mongoFile.SaveTo(taskItem["FileId"].AsObjectId);
-                    //}
                     itemlist.Add(new FileItem()
                     {
                         QueueId = queueId,

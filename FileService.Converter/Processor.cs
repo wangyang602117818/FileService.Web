@@ -33,7 +33,7 @@ namespace FileService.Converter
                 {
                     MonitorStateList.Add(new MonitorState()
                     {
-                        MachinePath = "\\\\" + sharedFolder.GetMachineName() + "\\$\\" + sharedFolder.GetRelationPath(),
+                        Machine = sharedFolder.GetMachineName(),
                         Message = "success",
                         MonitorTime = DateTime.Now
                     });
@@ -42,7 +42,7 @@ namespace FileService.Converter
                 {
                     MonitorStateList.Add(new MonitorState()
                     {
-                        MachinePath = "\\\\" + sharedFolder.GetMachineName() + "\\$\\" + sharedFolder.GetRelationPath(),
+                        Machine = sharedFolder.GetMachineName(),
                         Message = message.Replace("\n", "").Replace("\r", ""),
                         MonitorTime = DateTime.Now
                     });
