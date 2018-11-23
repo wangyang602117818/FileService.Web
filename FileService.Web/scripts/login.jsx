@@ -104,11 +104,15 @@ class Login extends React.Component {
         if (e.key.toLowerCase() == "enter") { this.onClick(); }
     }
     onClick(e) {
-        if (!this.state.username) { this.setState({ message: culture.username_required }); return; }
-        if (!this.state.password) { this.setState({ message: culture.password_required }); return; }
-        var that = this;
+        if (!this.state.username) {
+            alert(culture.username_required);
+            return;
+        }
+        if (!this.state.password) {
+            alert(culture.password_required);
+            return;
+        }
         http.post(window.location.href, this.state, function (data) {
-            var url = "";
             switch (data.code) {
                 case 0:
                     window.location.href = urls.homeUrl;
@@ -117,7 +121,7 @@ class Login extends React.Component {
                     window.location.href = data.result;
                     break;
                 default:
-                    that.setState({ message: culture.login_fault });
+                    alert(culture.login_fault);
             }
         });
     }
