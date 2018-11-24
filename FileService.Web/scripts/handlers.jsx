@@ -102,9 +102,9 @@ class MonitorData extends React.Component {
                     <thead>
                         <tr>
                             <th width="5%">{culture.id}</th>
-                            <th width="10%">{culture.machineName}</th>
+                            <th width="20%">{culture.machineName}</th>
                             <th width="15%">{culture.monitorTime}</th>
-                            <th width="70%">{culture.monitorState}</th>
+                            <th width="60%">{culture.monitorState}</th>
                         </tr>
                     </thead>
                     <MonitorList data={this.props.data} />
