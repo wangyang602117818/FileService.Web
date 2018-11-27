@@ -72,7 +72,6 @@ namespace FileService.Web.Controllers
                 BsonArray access = new BsonArray(accessList.Select(a => a.ToBsonDocument()));
                 //上传到TempFiles
                 file.SaveAs(tempFileDirectory + file.FileName);
-
                 ObjectId fileId = ObjectId.GenerateNewId();
 
                 filesWrap.InsertImage(fileId, ObjectId.Empty, file.FileName, file.InputStream.Length, Request.Headers["AppName"], 0, ImageExtention.GetContentType(file.FileName), thumbnail, access, Request.Headers["UserName"] ?? User.Identity.Name);
@@ -98,6 +97,7 @@ namespace FileService.Web.Controllers
                     FileSize = file.InputStream.Length,
                     SubFiles = thumbnail.Select(sel => new SubFileItem() { FileId = sel["_id"].ToString(), Flag = sel["Flag"].ToString() })
                 });
+                file.InputStream.Dispose();
             }
             return new ResponseModel<IEnumerable<FileResponse>>(ErrorCode.success, response);
         }
@@ -180,6 +180,7 @@ namespace FileService.Web.Controllers
                     FileSize = file.InputStream.Length,
                     SubFiles = videos.Select(sel => new SubFileItem() { FileId = sel["_id"].ToString(), Flag = sel["Flag"].AsString })
                 });
+                file.InputStream.Dispose();
             }
             return new ResponseModel<IEnumerable<FileResponse>>(ErrorCode.success, response);
         }
@@ -272,6 +273,7 @@ namespace FileService.Web.Controllers
                     FileName = file.FileName,
                     FileSize = file.InputStream.Length,
                 });
+                file.InputStream.Dispose();
             }
             return new ResponseModel<IEnumerable<FileResponse>>(ErrorCode.success, response);
         }
@@ -327,6 +329,7 @@ namespace FileService.Web.Controllers
                 //日志
                 Log(id.ToString(), "UploadVideoCaptureStream");
                 response.Add(id.ToString());
+                file.InputStream.Dispose();
             }
             return new ResponseModel<List<string>>(ErrorCode.success, response, response.Count);
         }

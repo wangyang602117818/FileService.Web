@@ -41,6 +41,9 @@ namespace FileService.Converter
                     {
                         fileStream = new FileStream(fullPath, FileMode.Open, FileAccess.Read);
                         SaveFileFromSharedFolder(fileWrapId, fileName, fileStream);
+                        //生成文件缩略图
+                        GenerateFilePreview(fileWrapId, from, fileName, fileStream, format);
+                        fileStream.Position = 0;
                     }
                     else
                     {
@@ -66,22 +69,24 @@ namespace FileService.Converter
                         thumbnail.Replace(output.Id, from, taskItem.Message["FileId"].AsObjectId, stream.Length, twidth, theight, Path.GetFileNameWithoutExtension(fileName) + outputExt, output.Flag, stream.ToBytes());
                     }
                 }
-                fileStream.Position = 0;
-                int width = 0, height = 0;
-                using (Stream stream = ImageExtention.GenerateFilePreview(fileName, 80, fileStream, ImageModelEnum.scale, format, ref width, ref height))
-                {
-                    filePreview.Replace(fileWrapId, from, stream.Length, width, height, fileName, stream.ToBytes());
-                }
-                fileStream.Position = 0;
-                using (Stream stream = ImageExtention.GenerateFilePreview(fileName, 300, fileStream, ImageModelEnum.scale, format, ref width, ref height))
-                {
-                    filePreviewBig.Replace(fileWrapId, from, stream.Length, width, height, fileName, stream.ToBytes());
-                }
             }
             fileStream.Close();
             fileStream.Dispose();
             return true;
         }
-
+        public void GenerateFilePreview(ObjectId fileWrapId, string from, string fileName, Stream fileStream, ImageFormat format)
+        {
+            fileStream.Position = 0;
+            int width = 0, height = 0;
+            using (Stream stream = ImageExtention.GenerateFilePreview(fileName, 80, fileStream, ImageModelEnum.scale, format, ref width, ref height))
+            {
+                filePreview.Replace(fileWrapId, from, stream.Length, width, height, fileName, stream.ToBytes());
+            }
+            fileStream.Position = 0;
+            using (Stream stream = ImageExtention.GenerateFilePreview(fileName, 300, fileStream, ImageModelEnum.scale, format, ref width, ref height))
+            {
+                filePreviewBig.Replace(fileWrapId, from, stream.Length, width, height, fileName, stream.ToBytes());
+            }
+        }
     }
 }
