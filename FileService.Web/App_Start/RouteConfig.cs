@@ -24,7 +24,7 @@ namespace FileService.Web
                 url: "{controller}/{action}/{id}",
                 defaults: new { controller = "admin", action = "index", id = UrlParameter.Optional }
             );
-            
+
         }
     }
 }
