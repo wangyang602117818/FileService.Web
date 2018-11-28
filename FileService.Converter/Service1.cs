@@ -34,12 +34,20 @@ namespace FileService.Converter
             converter.UpdateByHanderId();
             processor.StartMonitor(AppSettings.handlerId);
             System.Threading.Tasks.Task.Factory.StartNew(processor.StartWork);
+            base.OnStart(args);
         }
 
         protected override void OnStop()
         {
             Log4Net.InfoLog("end...");
             converter.Offline();
+            base.OnStop();
+        }
+        protected override void OnShutdown()
+        {
+            Log4Net.InfoLog("Shutdown...");
+            converter.Offline();
+            base.OnShutdown();
         }
     }
 }

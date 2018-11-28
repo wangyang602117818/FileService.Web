@@ -9,7 +9,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
-using System.Text.RegularExpressions;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Security;
@@ -527,7 +526,7 @@ namespace FileService.Web.Controllers
         {
             Log(id, "ReDo");
             BsonDocument document = task.FindOne(ObjectId.Parse(id));
-            string handlerId = converter.GetHandlerId();
+            string handlerId = document["HandlerId"].AsString;
             int state = Convert.ToInt32(document["State"]);
             if (state == 2 || state == 4 || state == -1)
             {
