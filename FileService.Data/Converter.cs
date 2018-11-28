@@ -21,7 +21,7 @@ namespace FileService.Data
         }
         public bool Running(string handlerId)
         {
-            return MongoCollection.UpdateOne(FilterBuilder.Eq("HandlerId", handlerId), Builders<BsonDocument>.Update.Set("State", ConverterStateEnum.running)).IsAcknowledged;
+            return MongoCollection.UpdateOne(FilterBuilder.Eq("HandlerId", handlerId), Builders<BsonDocument>.Update.Set("State", ConverterStateEnum.running).Set("StartTime", DateTime.Now)).IsAcknowledged;
         }
         public bool Offline(string handlerId)
         {
