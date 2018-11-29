@@ -21,7 +21,7 @@ namespace FileService.Web.Controllers
         string tempFileDirectory = AppDomain.CurrentDomain.BaseDirectory + AppSettings.tempFileDir + DateTime.Now.ToString("yyyyMMdd") + "\\";
         Extension extension = new Extension();
         [HttpPost]
-        public ActionResult Image(UploadImgModel uploadImgModel)
+        public ActionResult Image(UploadImgModel uploadImgModel) 
         {
             List<FileResponse> response = new List<FileResponse>();
             List<ImageOutPut> output = new List<ImageOutPut>();
