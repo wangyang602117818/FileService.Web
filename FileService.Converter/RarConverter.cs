@@ -107,8 +107,8 @@ namespace FileService.Converter
                         {
                             ObjectId newFileId = mongoFileConvert.Upload(Path.GetFileName(reader.Entry.Key), reader.OpenEntryStream(), new BsonDocument()
                             {
-                                {"From","fs.files" },
-                                {"SourceId",fileWrapId },
+                                {"From","FilesWrap" },
+                                {"Id",fileWrapId },
                                 {"FileType","attachment" },
                                 {"ContentType","application/octet-stream" },
                             });
