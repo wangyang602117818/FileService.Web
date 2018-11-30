@@ -70,6 +70,12 @@ namespace FileService.Web.Controllers
                 Request.Headers["UserIp"] ?? Request.UserHostAddress,
                 Request.Headers["UserAgent"] ?? Request.UserAgent);
         }
+        protected ObjectId GetObjectIdFromId(string id)
+        {
+            ObjectId newId = ObjectId.Empty;
+            ObjectId.TryParse(id, out newId);
+            return newId;
+        }
         protected void AddDownload(ObjectId fileWrapId)
         {
             if (!download.AddedInOneMinute(Request.Headers["AppName"], fileWrapId, Request.Headers["UserName"] ?? User.Identity.Name))

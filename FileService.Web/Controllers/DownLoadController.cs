@@ -20,7 +20,8 @@ namespace FileService.Web.Controllers
         [AppAuthorizeDefault]
         public ActionResult Get(string id, bool deleted = false)
         {
-            ObjectId fileWrapId = ObjectId.Parse(id);
+            ObjectId fileWrapId = GetObjectIdFromId(id);
+            if (fileWrapId == ObjectId.Empty) return File(new MemoryStream(), "application/octet-stream");
             BsonDocument fileWrap = deleted ? filesWrap.FindOne(fileWrapId) : filesWrap.FindOneNotDelete(fileWrapId);
             if (fileWrap == null) return File(new MemoryStream(), "application/octet-stream");
             AddDownload(fileWrapId);
@@ -41,19 +42,25 @@ namespace FileService.Web.Controllers
         [AppAuthorizeDefault]
         public ActionResult GetConvert(string id)
         {
-            GridFSDownloadStream stream = mongoFileConvert.DownLoad(ObjectId.Parse(id));
+            ObjectId fId = GetObjectIdFromId(id);
+            if (fId == ObjectId.Empty) return File(new MemoryStream(), "application/octet-stream");
+            GridFSDownloadStream stream = mongoFileConvert.DownLoad(fId);
             ObjectId fileWrapId = stream.FileInfo.Metadata["Id"].AsObjectId;
             AddDownload(fileWrapId);
             return File(stream, stream.FileInfo.Metadata["ContentType"].AsString, stream.FileInfo.Filename);
         }
         public ActionResult GetHistory(string id)
         {
-            GridFSDownloadStream stream = mongoFile.DownLoad(ObjectId.Parse(id));
+            ObjectId fId = GetObjectIdFromId(id);
+            if (fId == ObjectId.Empty) return File(new MemoryStream(), "application/octet-stream");
+            GridFSDownloadStream stream = mongoFile.DownLoad(fId);
             return File(stream, "application/octet-stream", stream.FileInfo.Filename);
         }
         public ActionResult GetZipInnerFile(string id, string fileName)
         {
-            BsonDocument fileWrap = filesWrap.FindOne(ObjectId.Parse(id));
+            ObjectId fId = GetObjectIdFromId(id);
+            if (fId == ObjectId.Empty) return File(new MemoryStream(), "application/octet-stream");
+            BsonDocument fileWrap = filesWrap.FindOne(fId);
             ObjectId fileId = fileWrap["FileId"].AsObjectId;
             GridFSDownloadStream stream = mongoFile.DownLoadSeekable(fileId);
             Stream file = stream.GetFileInZip(fileName);
@@ -61,7 +68,9 @@ namespace FileService.Web.Controllers
         }
         public ActionResult GetRarInnerFile(string id, string fileName)
         {
-            BsonDocument fileWrap = filesWrap.FindOne(ObjectId.Parse(id));
+            ObjectId fId = GetObjectIdFromId(id);
+            if (fId == ObjectId.Empty) return File(new MemoryStream(), "application/octet-stream");
+            BsonDocument fileWrap = filesWrap.FindOne(fId);
             ObjectId fileId = fileWrap["FileId"].AsObjectId;
             GridFSDownloadStream stream = mongoFile.DownLoadSeekable(fileId);
             Stream file = stream.GetFileInRar(fileName);
@@ -69,7 +78,9 @@ namespace FileService.Web.Controllers
         }
         public ActionResult Thumbnail(string id)
         {
-            BsonDocument thumb = thumbnail.FindOne(ObjectId.Parse(id));
+            ObjectId thumbId = GetObjectIdFromId(id);
+            if (thumbId == ObjectId.Empty) return File(new MemoryStream(), "application/octet-stream");
+            BsonDocument thumb = thumbnail.FindOne(thumbId);
             if (thumb == null)
             {
                 return File(new MemoryStream(), "application/octet-stream");
@@ -81,7 +92,8 @@ namespace FileService.Web.Controllers
         }
         public ActionResult GetThumbnail(string id)
         {
-            ObjectId fileWrapId = ObjectId.Parse(id);
+            ObjectId fileWrapId = GetObjectIdFromId(id);
+            if (fileWrapId == ObjectId.Empty) return File(new MemoryStream(), "application/octet-stream");
             BsonDocument fileWrap = filesWrap.FindOne(fileWrapId);
             if (fileWrap == null) return File(new MemoryStream(), "application/octet-stream");
             BsonValue thumbnail = null;
@@ -102,7 +114,8 @@ namespace FileService.Web.Controllers
         }
         public ActionResult GetThumbnailByTag(string id, string flag)
         {
-            ObjectId fileWrapId = ObjectId.Parse(id);
+            ObjectId fileWrapId = GetObjectIdFromId(id);
+            if (fileWrapId == ObjectId.Empty) return File(new MemoryStream(), "application/octet-stream");
             BsonDocument fileWrap = filesWrap.FindOne(fileWrapId);
             if (fileWrap == null) return File(new MemoryStream(), "application/octet-stream");
             BsonValue thumbnail = null;
@@ -123,7 +136,9 @@ namespace FileService.Web.Controllers
         }
         public ActionResult M3u8Pure(string id)
         {
-            BsonDocument document = m3u8.FindOne(ObjectId.Parse(id));
+            ObjectId m3u8Id = GetObjectIdFromId(id);
+            if (m3u8Id == ObjectId.Empty) return File(new MemoryStream(), "application/octet-stream");
+            BsonDocument document = m3u8.FindOne(m3u8Id);
             string baseUrl = Request.Url.Scheme + "://" + Request.Url.Authority + Request.ApplicationPath;
             string fileStr = Regex.Replace(document["File"].AsString, "(\\w+).ts", (match) =>
             {
@@ -134,7 +149,8 @@ namespace FileService.Web.Controllers
         public ActionResult M3u8(string id)
         {
             if (id.StartsWith("t")) return Ts(id.TrimStart('t'));
-            ObjectId m3u8Id = ObjectId.Parse(id);
+            ObjectId m3u8Id = GetObjectIdFromId(id);
+            if (m3u8Id == ObjectId.Empty) return File(new MemoryStream(), "application/octet-stream");
             BsonDocument document = m3u8.FindOne(m3u8Id);
             if (document == null)
             {
@@ -161,7 +177,9 @@ namespace FileService.Web.Controllers
             if (id.StartsWith("m")) return M3u8(id.TrimStart('m'));
             if (id.StartsWith("t")) return Ts(id.TrimStart('t'));
             string m3u8File = m3u8Template;
-            var list = m3u8.FindBySourceIdAndSort(ObjectId.Parse(id)).ToList();
+            ObjectId newId = GetObjectIdFromId(id);
+            if (newId == ObjectId.Empty) return File(new MemoryStream(), "application/octet-stream");
+            var list = m3u8.FindBySourceIdAndSort(newId).ToList();
             for (var i = 0; i < 4; i++)
             {
                 var r = list.Where(s => s["Quality"].AsInt32 >= i).FirstOrDefault();
@@ -172,7 +190,9 @@ namespace FileService.Web.Controllers
         }
         public ActionResult Ts(string id)
         {
-            BsonDocument document = ts.FindOne(ObjectId.Parse(id));
+            ObjectId newId = GetObjectIdFromId(id);
+            if (newId == ObjectId.Empty) return File(new MemoryStream(), "application/octet-stream");
+            BsonDocument document = ts.FindOne(newId);
             if (document == null)
             {
                 return File(new MemoryStream(), "application/octet-stream");
@@ -191,7 +211,9 @@ namespace FileService.Web.Controllers
         }
         public ActionResult VideoCapture(string id)
         {
-            BsonDocument document = videoCapture.FindOne(ObjectId.Parse(id));
+            ObjectId newId = GetObjectIdFromId(id);
+            if (newId == ObjectId.Empty) return File(new MemoryStream(), "application/octet-stream");
+            BsonDocument document = videoCapture.FindOne(newId);
             return File(document["File"].AsByteArray, ImageExtention.GetContentType(document["FileName"].AsString), document["FileName"].AsString);
         }
     }

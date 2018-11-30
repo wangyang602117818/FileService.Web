@@ -1,11 +1,5 @@
 ﻿using MongoDB.Bson;
-using MongoDB.Bson.Serialization;
-using MongoDB.Bson.Serialization.Attributes;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace FileService.Business
 {
@@ -44,18 +38,6 @@ namespace FileService.Business
         public BsonDocument GetByExtension(string extension)
         {
             return mongoData.FindByExtension(extension);
-        }
-        public void AddExtension(string extension, string type, string description, string action)
-        {
-            BsonDocument bson = new BsonDocument()
-            {
-                {"Extension",extension },
-                {"Type",type },
-                {"Action",action },
-                {"Description",description },
-                {"CreateTime",DateTime.Now },
-            };
-           mongoData.Insert(bson);
         }
         public bool DeleteExtension(string extension)
         {

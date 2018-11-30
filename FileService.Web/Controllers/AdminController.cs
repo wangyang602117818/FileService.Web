@@ -440,7 +440,9 @@ namespace FileService.Web.Controllers
         {
             BsonDocument extensionBson = extension.GetByExtension(addExtension.Extension.ToLower());
             if (extensionBson != null) return new ResponseModel<string>(ErrorCode.record_exist, "");
-            extension.AddExtension(addExtension.Extension, addExtension.Type, addExtension.Description, addExtension.Action);
+            BsonDocument bson = addExtension.ToBsonDocument();
+            bson.Add("CreateTime", DateTime.Now);
+            extension.Insert(bson);
             Log("-", "AddExtension");
             return new ResponseModel<string>(ErrorCode.success, "");
         }
