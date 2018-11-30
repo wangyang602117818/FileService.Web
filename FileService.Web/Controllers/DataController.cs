@@ -135,12 +135,13 @@ namespace FileService.Web.Controllers
             int percent = 0;
             foreach (BsonDocument item in list)
             {
+                BsonDocument output = item["Output"].AsBsonDocument;
                 stateList.Add(new BsonDocument()
                 {
-                    {"FileId",item["Output"]["_id"].ToString() },
+                    {"FileId",output.Contains("_id")? output["_id"].ToString():ObjectId.Empty.ToString() },
                     {"Server",item["HandlerId"] },
                     {"TotalCount",converter.TaskCount(item["HandlerId"].AsString) },
-                    {"Flag", item["Output"]["Flag"]},
+                    {"Flag", output.Contains("Flag")?output["Flag"]:""},
                     {"State", item["StateDesc"]},
                     {"Percent", item["Percent"]},
                 });
