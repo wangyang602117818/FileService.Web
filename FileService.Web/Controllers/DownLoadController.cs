@@ -4,6 +4,7 @@ using FileService.Web.Filters;
 using MongoDB.Bson;
 using MongoDB.Driver.GridFS;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -27,6 +28,7 @@ namespace FileService.Web.Controllers
             AddDownload(fileWrapId);
             ObjectId fileId = fileWrap["FileId"].AsObjectId;
             string fileName = fileWrap["FileName"].AsString;
+            string fileType = fileWrap["FileType"].AsString;
             if (fileId == ObjectId.Empty)
             {
                 string tempFilePath = AppDomain.CurrentDomain.BaseDirectory + AppSettings.tempFileDir + fileWrap["CreateTime"].ToUniversalTime().ToString("yyyyMMdd") + "\\" + fileName;
@@ -35,8 +37,23 @@ namespace FileService.Web.Controllers
             }
             else
             {
-                GridFSDownloadStream stream = mongoFile.DownLoad(fileWrap["FileId"].AsObjectId);
-                return File(stream, fileWrap["ContentType"].AsString, fileName);
+                if (fileType == "video" && Path.GetExtension(fileName).ToLower() != ".mp4")
+                {
+                    IEnumerable<BsonValue> values = fileWrap["Videos"].AsBsonArray.Where(s => s.AsBsonDocument["Format"].AsInt32 == 1);
+                    if (values.Count() == 0)
+                    {
+                        return GetSourceFile(fileId, fileWrap["ContentType"].AsString);
+                    }
+                    else
+                    {
+                        ObjectId fileConvertId = values.FirstOrDefault().AsBsonDocument["_id"].AsObjectId;
+                        return GetConvertFile(fileConvertId);
+                    }
+                }
+                else
+                {
+                    return GetSourceFile(fileId, fileWrap["ContentType"].AsString);
+                }
             }
         }
         [AppAuthorizeDefault]
@@ -104,8 +121,7 @@ namespace FileService.Web.Controllers
             //没有缩略图
             if (thumbnail == null)
             {
-                GridFSDownloadStream stream = mongoFile.DownLoad(fileWrap["FileId"].AsObjectId);
-                return File(stream, fileWrap["ContentType"].AsString, fileWrap["FileName"].AsString);
+                return GetSourceFile(fileWrap["FileId"].AsObjectId, fileWrap["ContentType"].AsString);
             }
             else
             {
@@ -126,8 +142,7 @@ namespace FileService.Web.Controllers
             //没有缩略图
             if (thumbnail == null)
             {
-                GridFSDownloadStream stream = mongoFile.DownLoad(fileWrap["FileId"].AsObjectId);
-                return File(stream, fileWrap["ContentType"].AsString, fileWrap["FileName"].AsString);
+                return GetSourceFile(fileWrap["FileId"].AsObjectId, fileWrap["ContentType"].AsString);
             }
             else
             {

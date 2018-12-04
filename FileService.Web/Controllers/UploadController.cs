@@ -97,6 +97,7 @@ namespace FileService.Web.Controllers
                     FileSize = file.InputStream.Length,
                     SubFiles = thumbnail.Select(sel => new SubFileItem() { FileId = sel["_id"].ToString(), Flag = sel["Flag"].ToString() })
                 });
+                file.InputStream.Close();
                 file.InputStream.Dispose();
             }
             return new ResponseModel<IEnumerable<FileResponse>>(ErrorCode.success, response);
@@ -180,6 +181,7 @@ namespace FileService.Web.Controllers
                     FileSize = file.InputStream.Length,
                     SubFiles = videos.Select(sel => new SubFileItem() { FileId = sel["_id"].ToString(), Flag = sel["Flag"].AsString })
                 });
+                file.InputStream.Close();
                 file.InputStream.Dispose();
             }
             return new ResponseModel<IEnumerable<FileResponse>>(ErrorCode.success, response);
@@ -273,6 +275,7 @@ namespace FileService.Web.Controllers
                     FileName = file.FileName,
                     FileSize = file.InputStream.Length,
                 });
+                file.InputStream.Close();
                 file.InputStream.Dispose();
             }
             return new ResponseModel<IEnumerable<FileResponse>>(ErrorCode.success, response);
@@ -329,6 +332,7 @@ namespace FileService.Web.Controllers
                 //日志
                 Log(id.ToString(), "UploadVideoCaptureStream");
                 response.Add(id.ToString());
+                file.InputStream.Close();
                 file.InputStream.Dispose();
             }
             return new ResponseModel<List<string>>(ErrorCode.success, response, response.Count);

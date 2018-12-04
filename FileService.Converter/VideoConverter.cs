@@ -13,7 +13,6 @@ namespace FileService.Converter
 {
     public class VideoConverter : Converter
     {
-        public static string ExePath = AppDomain.CurrentDomain.BaseDirectory + "ffmpeg.exe";
         MongoFile mongoFile = new MongoFile();
         Files files = new Files();
         FilesWrap filesWrap = new FilesWrap();
@@ -29,13 +28,16 @@ namespace FileService.Converter
             BsonDocument outputDocument = taskItem.Message["Output"].AsBsonDocument;
             string from = taskItem.Message["From"].AsString;
             string fileName = taskItem.Message["FileName"].AsString;
-            ObjectId filesWrapId = taskItem.Message["FileId"].AsObjectId;
-            ObjectId videoCpId = filesWrap.FindOne(filesWrapId)["VideoCpIds"].AsBsonArray[0].AsObjectId;
+            string fileType = taskItem.Message["Type"].AsString;
+
+            ObjectId fileWrapId = taskItem.Message["FileId"].AsObjectId;
+            BsonDocument fileWrap = filesWrap.FindOne(fileWrapId);
+            ObjectId videoCpId = fileWrap["VideoCpIds"].AsBsonArray[0].AsObjectId;
             VideoOutPut output = BsonSerializer.Deserialize<VideoOutPut>(outputDocument);
 
             int processCount = System.Convert.ToInt32(taskItem.Message["ProcessCount"]);
-            string fullPath = GetFilePath(taskItem.Message);
-
+            string fullPath = AppSettings.GetFullPath(taskItem.Message);
+            string ext = Path.GetExtension(fullPath).ToLower();
             //第一次转换，文件肯定在共享文件夹
             if (processCount == 0)
             {
@@ -44,7 +46,11 @@ namespace FileService.Converter
                 {
                     if (File.Exists(fullPath))
                     {
-                        SaveFileFromSharedFolder(filesWrapId, fullPath);
+                        SaveFileFromSharedFolder(fileWrapId, fullPath, fileType);
+                        if (ext != ".mp4" && fileType == "video")
+                        {
+                            ConvertMp4(fileWrapId, fullPath, fileType);
+                        }
                         //第一次转换，先截一张图
                         ConvertVideoCp(videoCpId, from, taskItem.Message["FileId"].AsObjectId, fullPath);
                     }
@@ -54,7 +60,7 @@ namespace FileService.Converter
                         string newPath = MongoFileBase.AppDataDir + fileName;
                         if (!File.Exists(newPath))
                         {
-                            BsonDocument filesWrap = new FilesWrap().FindOne(filesWrapId);
+                            BsonDocument filesWrap = new FilesWrap().FindOne(fileWrapId);
                             mongoFile.SaveTo(filesWrap["FileId"].AsObjectId);
                         }
                         fullPath = newPath;
@@ -93,14 +99,14 @@ namespace FileService.Converter
         {
             string cpPath = MongoFileBase.AppDataDir + Path.GetFileNameWithoutExtension(fullPath) + ".jpg";
             string fileName = Path.GetFileName(cpPath);
-            string cmd = "\"" + ExePath + "\" -ss 00:00:01 -i \"" + fullPath + "\" -vframes 1 \"" + cpPath + "\"";
+            string cmd = "\"" + AppSettings.ExePath + "\" -ss 00:00:01 -i \"" + fullPath + "\" -vframes 1 \"" + cpPath + "\"";
             Process process = new Process()
             {
                 StartInfo = new ProcessStartInfo(cmd)
                 {
                     UseShellExecute = false,
                     CreateNoWindow = true,
-                    RedirectStandardError = true
+                    RedirectStandardError = false
                 }
             };
             process.Start();
@@ -133,6 +139,8 @@ namespace FileService.Converter
                 imageStream.Close();
                 imageStream.Dispose();
             }
+            process.Close();
+            process.Dispose();
             File.Delete(cpPath);
         }
         public void ConvertHls(string from, ObjectId id, string fileId, string fullPath, VideoOutPut output)
@@ -141,7 +149,7 @@ namespace FileService.Converter
             string outputPath = MongoFileBase.AppDataDir + output.Id.ToString() + "\\";
             if (!Directory.Exists(outputPath)) Directory.CreateDirectory(outputPath);
             int crf = 23 + (int)output.Quality * 6;
-            string cmd = "\"" + ExePath + "\"" + " -i " + "\"" + fullPath + "\"" + " -crf " + crf + " -f hls -hls_list_size 0 -hls_segment_filename " + "\"" + outputPath + sengmentFileName + "\" \"" + outputPath + Path.GetFileNameWithoutExtension(fullPath) + ".m3u8" + "\"";
+            string cmd = "\"" + AppSettings.ExePath + "\"" + " -i " + "\"" + fullPath + "\"" + " -crf " + crf + " -f hls -hls_list_size 0 -hls_segment_filename " + "\"" + outputPath + sengmentFileName + "\" \"" + outputPath + Path.GetFileNameWithoutExtension(fullPath) + ".m3u8" + "\"";
             Process process = new Process()
             {
                 StartInfo = new ProcessStartInfo(cmd)
@@ -169,6 +177,8 @@ namespace FileService.Converter
             }
             process.WaitForExit();
             HlsToMongo(from, outputPath, output.Id.ToString(), fileId, Path.GetFileNameWithoutExtension(fullPath) + ".m3u8", (int)output.Quality, totalDuration, output.Flag);
+            process.Close();
+            process.Dispose();
         }
         public void HlsToMongo(string from, string path, string m3u8FileId, string sourceFileId, string fileNameM3u8, int quality, int duration, string flag)
         {

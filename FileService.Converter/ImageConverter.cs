@@ -31,7 +31,7 @@ namespace FileService.Converter
 
             int processCount = System.Convert.ToInt32(taskItem.Message["ProcessCount"]);
             Stream fileStream = null;
-            string fullPath = GetFilePath(taskItem.Message);
+            string fullPath = AppSettings.GetFullPath(taskItem.Message);
             //第一次转换，文件肯定在共享文件夹
             if (processCount == 0)
             {

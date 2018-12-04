@@ -4,7 +4,6 @@ using FileService.Util;
 using MongoDB.Bson;
 using System.Drawing.Imaging;
 using System.IO;
-using System.Linq;
 
 namespace FileService.Converter
 {
@@ -23,11 +22,11 @@ namespace FileService.Converter
             string fileName = taskItem.Message["FileName"].AsString;
             string fileType = extension.GetTypeByExtension(Path.GetExtension(fileName).ToLower()).ToLower();
             int processCount = System.Convert.ToInt32(taskItem.Message["ProcessCount"]);
-            string fullPath = GetFilePath(taskItem.Message);
+            string fullPath = AppSettings.GetFullPath(taskItem.Message);
             //第一次转换，文件肯定在共享文件夹
             if (processCount == 0)
             {
-                if (File.Exists(fullPath)) SaveFileFromSharedFolder(fileWrapId, fullPath);
+                if (File.Exists(fullPath)) SaveFileFromSharedFolder(fileWrapId, fullPath, fileType);
             }
             //生成图片文件缩略图
             if (fileType == "image")

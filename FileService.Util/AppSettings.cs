@@ -1,6 +1,8 @@
-﻿using System;
+﻿using MongoDB.Bson;
+using System;
 using System.Configuration;
 using System.Diagnostics;
+using System.Linq;
 
 namespace FileService.Util
 {
@@ -21,9 +23,15 @@ namespace FileService.Util
         public static string appName = ConfigurationManager.AppSettings["appName"];
         public static string authCode = ConfigurationManager.AppSettings["authCode"];
         public static string apiType = ConfigurationManager.AppSettings["apiType"];
-        //public static PerformanceCounter cpuCounter = new PerformanceCounter("Processor", "% Processor Time", "_Total");
-        //public static PerformanceCounter ramCounter = new PerformanceCounter("Memory", "Available MBytes");
 
+        public static string ExePath = AppDomain.CurrentDomain.BaseDirectory + "ffmpeg.exe";
+
+        public static string GetFullPath(BsonDocument task)
+        {
+            string machine = task["Machine"].AsString;
+            string tempPath = AppSettings.sharedFolders.Split(';').ToList().Where(w => w.Contains(machine)).FirstOrDefault();
+            return tempPath.TrimEnd('\\') + "\\" + task["Folder"].AsString + "\\" + task["FileName"];
+        }
         public static bool connectState(string path, string userName, string passWord, ref string message)
         {
             if (userName == "" && passWord == "") return true;

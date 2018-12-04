@@ -168,6 +168,5 @@ namespace FileService.Data
         {
             return base.GetAccessFilterBase(userName);
         }
-
     }
 }

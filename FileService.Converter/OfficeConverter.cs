@@ -1,13 +1,8 @@
 ﻿using FileService.Business;
-using MongoDB.Bson;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using FileService.Util;
+using MongoDB.Bson;
 using System.Diagnostics;
+using System.IO;
 
 namespace FileService.Converter
 {
@@ -25,13 +20,15 @@ namespace FileService.Converter
             ObjectId fileWrapId = taskItem.Message["FileId"].AsObjectId;
             BsonDocument fileWrap = filesWrap.FindOne(fileWrapId);
             string fileName = taskItem.Message["FileName"].AsString;
-            int processCount =System.Convert.ToInt32(taskItem.Message["ProcessCount"]);
-            string fullPath = GetFilePath(taskItem.Message);
+            string fileType = taskItem.Message["Type"].AsString;
+
+            int processCount = System.Convert.ToInt32(taskItem.Message["ProcessCount"]);
+            string fullPath = AppSettings.GetFullPath(taskItem.Message);
             if (processCount == 0)
             {
                 if (File.Exists(fullPath))
                 {
-                    SaveFileFromSharedFolder(fileWrapId, fullPath);
+                    SaveFileFromSharedFolder(fileWrapId, fullPath, fileType);
                 }
             }
             else
@@ -53,7 +50,7 @@ namespace FileService.Converter
                 oldFileId = taskItem.Message["Output"]["_id"].AsObjectId;
                 if (oldFileId != ObjectId.Empty && filesConvert.FindOne(oldFileId) != null) mongoFileConvert.Delete(oldFileId);
             }
-            
+
             string destinationFullPath = MongoFileBase.AppDataDir + Path.GetFileNameWithoutExtension(fileName) + ".pdf";
             //转换office方法
             ObjectId outputId = ConvertOffice(fullPath, destinationFullPath, fileWrapId);
@@ -85,18 +82,14 @@ namespace FileService.Converter
                 };
                 process.Start();
                 process.WaitForExit();
+                process.Close();
+                process.Dispose();
             }
             if (File.Exists(destinationPath))
             {
                 using (FileStream stream = new FileStream(destinationPath, FileMode.Open))
                 {
-                    return mongoFileConvert.Upload(Path.GetFileName(destinationPath), stream, new BsonDocument()
-                        {
-                            {"From", "FilesWrap"},
-                            {"Id",fileWrapId },
-                            {"FileType","attachment"},
-                            {"ContentType","application/pdf"}
-                        });
+                    return mongoFileConvert.UploadFile(Path.GetFileName(destinationPath), stream, "FilesWrap", fileWrapId, "attachment", "application/pdf");
                 }
             }
             else

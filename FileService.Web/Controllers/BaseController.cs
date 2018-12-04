@@ -2,6 +2,7 @@
 using FileService.Model;
 using FileService.Util;
 using MongoDB.Bson;
+using MongoDB.Driver.GridFS;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -37,6 +38,16 @@ namespace FileService.Web.Controllers
             ViewBag.authCode = AppSettings.authCode;
             ViewBag.apiType = AppSettings.apiType;
             ViewBag.appPath = System.Web.HttpContext.Current.Request.ApplicationPath;
+        }
+        protected ActionResult GetSourceFile(ObjectId id, string contentType)
+        {
+            GridFSDownloadStream stream = mongoFile.DownLoad(id);
+            return File(stream, contentType, stream.FileInfo.Filename);
+        }
+        protected ActionResult GetConvertFile(ObjectId id)
+        {
+            GridFSDownloadStream stream = mongoFileConvert.DownLoad(id);
+            return File(stream, stream.FileInfo.Metadata["ContentType"].AsString, stream.FileInfo.Filename);
         }
         protected void Log(string fileId, string content)
         {
@@ -148,8 +159,20 @@ namespace FileService.Web.Controllers
             if (fileWrap["FileType"] == "video")
             {
                 List<ObjectId> m3u8Ids = new List<ObjectId>();
+                List<ObjectId> subVideos = new List<ObjectId>();
                 List<ObjectId> videoCpIds = new List<ObjectId>();
-                foreach (BsonDocument d in fileWrap["Videos"].AsBsonArray) m3u8Ids.Add(d["_id"].AsObjectId);
+                foreach (BsonDocument d in fileWrap["Videos"].AsBsonArray)
+                {
+                    ObjectId fileId = d["_id"].AsObjectId;
+                    if (d["Format"].AsInt32 == 0)
+                    {
+                        m3u8Ids.Add(fileId);
+                    }
+                    else
+                    {
+                        if (filesConvert.FindOne(fileId) != null) mongoFileConvert.Delete(fileId);
+                    }
+                };
                 foreach (BsonObjectId oId in fileWrap["VideoCpIds"].AsBsonArray) videoCpIds.Add(oId.AsObjectId);
                 m3u8.DeleteMany(m3u8Ids);
                 ts.DeleteBySourceId(fileWrap["From"].AsString, m3u8Ids);
@@ -204,9 +227,22 @@ namespace FileService.Web.Controllers
             if (fileWrap["FileType"] == "video")
             {
                 List<ObjectId> m3u8Ids = new List<ObjectId>();
+                List<ObjectId> subVideos = new List<ObjectId>();
                 List<ObjectId> videoCpIds = new List<ObjectId>();
-                foreach (BsonDocument d in fileWrap["Videos"].AsBsonArray) m3u8Ids.Add(d["_id"].AsObjectId);
+                foreach (BsonDocument d in fileWrap["Videos"].AsBsonArray)
+                {
+                    ObjectId fileId = d["_id"].AsObjectId;
+                    if (d["Format"].AsInt32 == 0)
+                    {
+                        m3u8Ids.Add(fileId);
+                    }
+                    else
+                    {
+                        if (filesConvert.FindOne(fileId) != null) mongoFileConvert.Delete(fileId);
+                    }
+                }
                 foreach (BsonObjectId oId in fileWrap["VideoCpIds"].AsBsonArray) videoCpIds.Add(oId.AsObjectId);
+
                 m3u8.DeleteMany(m3u8Ids);
                 ts.DeleteBySourceId(fileWrap["From"].AsString, m3u8Ids);
                 videoCapture.DeleteByIds(fileWrap["From"].AsString, videoCpIds);

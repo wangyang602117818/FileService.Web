@@ -1,18 +1,13 @@
 ﻿using FileService.Business;
-using FileService.Model;
+using FileService.Util;
 using MongoDB.Bson;
 using SharpCompress.Archives.Rar;
 using SharpCompress.Readers;
-using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace FileService.Converter
 {
-    public class RarConverter: Converter
+    public class RarConverter : Converter
     {
         Files files = new Files();
         FilesWrap filesWrap = new FilesWrap();
@@ -26,14 +21,15 @@ namespace FileService.Converter
             ObjectId fileWrapId = taskItem.Message["FileId"].AsObjectId;
             BsonDocument fileWrap = filesWrap.FindOne(fileWrapId);
             string fileName = taskItem.Message["FileName"].AsString;
+            string fileType = taskItem.Message["Type"].AsString;
 
-            int processCount =System.Convert.ToInt32(taskItem.Message["ProcessCount"]);
-            string fullPath = GetFilePath(taskItem.Message);
+            int processCount = System.Convert.ToInt32(taskItem.Message["ProcessCount"]);
+            string fullPath = AppSettings.GetFullPath(taskItem.Message);
             if (processCount == 0)
             {
                 if (File.Exists(fullPath))
                 {
-                    SaveFileFromSharedFolder(fileWrapId, fullPath);
+                    SaveFileFromSharedFolder(fileWrapId, fullPath, fileType);
                 }
             }
             else
@@ -60,7 +56,7 @@ namespace FileService.Converter
             }
             BsonArray subFiles = ConvertRar(fileWrapId, fullPath);
             //更新 fs.files表
-            if(filesWrap.ReplaceSubFiles(fileWrapId, subFiles))
+            if (filesWrap.ReplaceSubFiles(fileWrapId, subFiles))
             {
                 if (File.Exists(fullPath)) File.Delete(fullPath);
                 return true;
@@ -105,13 +101,7 @@ namespace FileService.Converter
                         }
                         else
                         {
-                            ObjectId newFileId = mongoFileConvert.Upload(Path.GetFileName(reader.Entry.Key), reader.OpenEntryStream(), new BsonDocument()
-                            {
-                                {"From","FilesWrap" },
-                                {"Id",fileWrapId },
-                                {"FileType","attachment" },
-                                {"ContentType","application/octet-stream" },
-                            });
+                            ObjectId newFileId = mongoFileConvert.UploadFile(Path.GetFileName(reader.Entry.Key), reader.OpenEntryStream(), "FilesWrap", fileWrapId, "attachment", "application/octet-stream");
                             //id列表
                             result.Add(new BsonDocument() {
                                 { "_id",newFileId},

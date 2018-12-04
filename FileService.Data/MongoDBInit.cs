@@ -172,6 +172,12 @@ namespace FileService.Data
                 var c = new CreateIndexModel<BsonDocument>(new BsonDocument() { { "md5", 1 } });  //index
                 database.GetCollection<BsonDocument>("fs.files").Indexes.CreateOne(c);
             }
+            if (!databases.Contains("convert.files"))
+            {
+                database.CreateCollection("convert.files");
+                var c = new CreateIndexModel<BsonDocument>(new BsonDocument() { { "md5", 1 } });  //index
+                database.GetCollection<BsonDocument>("convert.files").Indexes.CreateOne(c);
+            }
         }
     }
 }

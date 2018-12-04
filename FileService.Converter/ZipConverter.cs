@@ -1,4 +1,5 @@
 ﻿using FileService.Business;
+using FileService.Util;
 using MongoDB.Bson;
 using SharpCompress.Archives.Zip;
 using SharpCompress.Readers;
@@ -20,15 +21,16 @@ namespace FileService.Converter
             ObjectId fileWrapId = taskItem.Message["FileId"].AsObjectId;
             BsonDocument fileWrap = filesWrap.FindOne(fileWrapId);
             string fileName = taskItem.Message["FileName"].AsString;
+            string fileType = taskItem.Message["Type"].AsString;
 
             int processCount = System.Convert.ToInt32(taskItem.Message["ProcessCount"]);
-            string fullPath = GetFilePath(taskItem.Message);
+            string fullPath = AppSettings.GetFullPath(taskItem.Message);
             //判断文件处理次数，防止文件被多次提交到mongodb
             if (processCount == 0)
             {
                 if (File.Exists(fullPath))
                 {
-                    SaveFileFromSharedFolder(fileWrapId, fullPath);
+                    SaveFileFromSharedFolder(fileWrapId, fullPath, fileType);
                 }
             }
             else
@@ -100,13 +102,7 @@ namespace FileService.Converter
                         }
                         else
                         {
-                            ObjectId newFileId = mongoFileConvert.Upload(Path.GetFileName(reader.Entry.Key), reader.OpenEntryStream(), new BsonDocument()
-                            {
-                                {"From","FilesWrap" },
-                                {"Id",fileWrapId },
-                                {"FileType","attachment" },
-                                {"ContentType","application/octet-stream" },
-                            });
+                            ObjectId newFileId= mongoFileConvert.UploadFile(Path.GetFileName(reader.Entry.Key), reader.OpenEntryStream(), "FilesWrap", fileWrapId, "attachment", "application/octet-stream");
                             //id列表
                             result.Add(new BsonDocument() {
                                 { "_id",newFileId},
