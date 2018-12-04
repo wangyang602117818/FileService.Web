@@ -77,7 +77,7 @@ namespace FileService.Converter
                         string newPath = MongoFileBase.AppDataDir + fileName;
                         if (!File.Exists(newPath))
                         {
-                            BsonDocument filesWrap = new FilesWrap().FindOne(filesWrapId);
+                            BsonDocument filesWrap = new FilesWrap().FindOne(fileWrapId);
                             mongoFile.SaveTo(filesWrap["FileId"].AsObjectId);
                         }
                         fullPath = newPath;
