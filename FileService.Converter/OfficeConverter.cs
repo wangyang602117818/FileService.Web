@@ -28,7 +28,7 @@ namespace FileService.Converter
             {
                 if (File.Exists(fullPath))
                 {
-                    SaveFileFromSharedFolder(fileWrapId, fullPath, fileType);
+                    SaveFileFromSharedFolder(fileWrapId, fullPath);
                 }
             }
             else

@@ -1,6 +1,7 @@
 ﻿using FileService.Business;
 using FileService.Util;
 using FileService.Web.Filters;
+using FileService.Web.Models;
 using MongoDB.Bson;
 using MongoDB.Driver.GridFS;
 using System;
@@ -28,7 +29,6 @@ namespace FileService.Web.Controllers
             AddDownload(fileWrapId);
             ObjectId fileId = fileWrap["FileId"].AsObjectId;
             string fileName = fileWrap["FileName"].AsString;
-            string fileType = fileWrap["FileType"].AsString;
             if (fileId == ObjectId.Empty)
             {
                 string tempFilePath = AppDomain.CurrentDomain.BaseDirectory + AppSettings.tempFileDir + fileWrap["CreateTime"].ToUniversalTime().ToString("yyyyMMdd") + "\\" + fileName;
@@ -37,23 +37,7 @@ namespace FileService.Web.Controllers
             }
             else
             {
-                if (fileType == "video" && Path.GetExtension(fileName).ToLower() != ".mp4")
-                {
-                    IEnumerable<BsonValue> values = fileWrap["Videos"].AsBsonArray.Where(s => s.AsBsonDocument["Format"].AsInt32 == 1);
-                    if (values.Count() == 0)
-                    {
-                        return GetSourceFile(fileId, fileWrap["ContentType"].AsString);
-                    }
-                    else
-                    {
-                        ObjectId fileConvertId = values.FirstOrDefault().AsBsonDocument["_id"].AsObjectId;
-                        return GetConvertFile(fileConvertId);
-                    }
-                }
-                else
-                {
-                    return GetSourceFile(fileId, fileWrap["ContentType"].AsString);
-                }
+                return GetSourceFile(fileId, fileWrap["ContentType"].AsString);
             }
         }
         [AppAuthorizeDefault]
@@ -214,13 +198,13 @@ namespace FileService.Web.Controllers
             }
             else
             {
-                string tstime = Request.Headers["TsTime"];
-                string userName = Request.Headers["UserName"] ?? User.Identity.Name;
-                int currTsTime = string.IsNullOrEmpty(tstime) ? 0 : int.Parse(tstime);
-                if (currTsTime > 0 && !string.IsNullOrEmpty(userName))
-                {
-                    tsTime.UpdateByUserName(document["From"].AsString, document["SourceId"].AsObjectId, document["SourceName"].AsString, userName, currTsTime);
-                }
+                //string tstime = Request.Headers["TsTime"];
+                //string userName = Request.Headers["UserName"] ?? User.Identity.Name;
+                //int currTsTime = string.IsNullOrEmpty(tstime) ? 0 : int.Parse(tstime);
+                //if (currTsTime > 0 && !string.IsNullOrEmpty(userName))
+                //{
+                //    tsTime.UpdateByUserName(document["From"].AsString, document["SourceId"].AsObjectId, document["SourceName"].AsString, userName, currTsTime);
+                //}
                 return File(document["File"].AsByteArray, "video/vnd.dlna.mpeg-tts", document["_id"].ToString() + ".ts");
             }
         }
@@ -230,6 +214,16 @@ namespace FileService.Web.Controllers
             if (newId == ObjectId.Empty) return File(new MemoryStream(), "application/octet-stream");
             BsonDocument document = videoCapture.FindOne(newId);
             return File(document["File"].AsByteArray, ImageExtention.GetContentType(document["FileName"].AsString), document["FileName"].AsString);
+        }
+
+        public ActionResult M(string id)
+        {
+            BsonDocument bson = m3u8.FindOne(ObjectId.Parse(id));
+            
+            string m3u8Str = bson["File"].AsString;
+
+            List<ObjectId> tsIds = m3u8Str.GetTsIds();
+            return new ResponseModel<List<ObjectId>>(ErrorCode.success, tsIds);
         }
     }
 }

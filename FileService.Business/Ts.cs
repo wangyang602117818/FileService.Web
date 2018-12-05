@@ -7,32 +7,35 @@ namespace FileService.Business
     public class Ts : ModelBase<Data.Ts>
     {
         public Ts() : base(new Data.Ts()) { }
-        public void Insert(ObjectId id, string from, string sourceId, string sourceName, int n, long length, byte[] file)
+        public void Insert(ObjectId id, string from, long length, string md5, IEnumerable<ObjectId> sourceIds, byte[] file)
         {
             BsonDocument document = new BsonDocument()
             {
                 {"_id",id },
                 {"From",from },
-                {"SourceId",ObjectId.Parse(sourceId) },
-                {"SourceName",sourceName },
-                {"N",n },
+                {"Md5",md5 },
                 {"Length",length},
+                {"SourceIds",new BsonArray(sourceIds)},
                 {"File",file },
                 {"CreateTime",DateTime.Now }
             };
             mongoData.Insert(document);
         }
-        public BsonDocument GetByMd5(string from, string md5)
+        public bool AddSourceId(ObjectId id, ObjectId sourceId)
         {
-            return mongoData.GetByMd5(from, md5);
+           return mongoData.AddSourceId(id, sourceId);
         }
-        public bool DeleteBySourceId(string from, IEnumerable<ObjectId> sourceIds)
+        public BsonDocument GetIdByMd5(string from, string md5)
         {
-            return mongoData.DeleteBySourceId(from, sourceIds);
+            return mongoData.GetIdByMd5(from, md5);
         }
-        public bool DeleteBySourceId(string from, ObjectId sourceId)
+        public bool DeleteByIds(string from, IEnumerable<ObjectId> ids)
         {
-            return mongoData.DeleteBySourceId(from, sourceId);
+            return mongoData.DeleteByIds(from, ids);
+        }
+        public bool DeleteById(string from, ObjectId id)
+        {
+            return mongoData.DeleteById(from, id);
         }
     }
 }

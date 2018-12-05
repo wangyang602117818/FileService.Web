@@ -3,9 +3,9 @@ using FileService.Model;
 using FileService.Util;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization;
+using System.Collections.Generic;
 using System.Drawing.Imaging;
 using System.IO;
-using System.Linq;
 
 namespace FileService.Converter
 {
@@ -17,6 +17,7 @@ namespace FileService.Converter
         Thumbnail thumbnail = new Thumbnail();
         FilePreview filePreview = new FilePreview();
         FilePreviewBig filePreviewBig = new FilePreviewBig();
+        static Queue<string> queues = new Queue<string>();   //防止存储和转换源文件任务执行多次
         static object o = new object();
         public override bool Convert(FileItem taskItem)
         {
@@ -40,11 +41,18 @@ namespace FileService.Converter
                     if (File.Exists(fullPath))
                     {
                         fileStream = new FileStream(fullPath, FileMode.Open, FileAccess.Read);
-                        SaveFileFromSharedFolder(fileWrapId, fileName, fileStream);
-                        //生成文件缩略图
-                        GenerateFilePreview(fileWrapId, from, fileName, fileStream, format);
+                        //同一份文件的不同转换任务 该部分工作相同,确保不同的线程只执行一次
+                        if (!queues.Contains(fileWrapId.ToString()))
+                        {
+                            SaveFileFromSharedFolder(fileWrapId, fileName, fileStream);
+                            //生成文件缩略图
+                            GenerateFilePreview(fileWrapId, from, fileName, fileStream, format);
+                            queues.Enqueue(fileWrapId.ToString());
+                        }
+                        if (queues.Count >= 10) queues.Dequeue();
                         fileStream.Position = 0;
                     }
+                    //任务肯定是后加的
                     else
                     {
                         BsonDocument filesWrap = new FilesWrap().FindOne(fileWrapId);
@@ -69,9 +77,9 @@ namespace FileService.Converter
                         thumbnail.Replace(output.Id, from, taskItem.Message["FileId"].AsObjectId, stream.Length, twidth, theight, Path.GetFileNameWithoutExtension(fileName) + outputExt, output.Flag, stream.ToBytes());
                     }
                 }
+                fileStream.Close();
+                fileStream.Dispose();
             }
-            fileStream.Close();
-            fileStream.Dispose();
             return true;
         }
         public void GenerateFilePreview(ObjectId fileWrapId, string from, string fileName, Stream fileStream, ImageFormat format)

@@ -26,7 +26,7 @@ namespace FileService.Converter
             //第一次转换，文件肯定在共享文件夹
             if (processCount == 0)
             {
-                if (File.Exists(fullPath)) SaveFileFromSharedFolder(fileWrapId, fullPath, fileType);
+                if (File.Exists(fullPath)) SaveFileFromSharedFolder(fileWrapId, fullPath);
             }
             //生成图片文件缩略图
             if (fileType == "image")

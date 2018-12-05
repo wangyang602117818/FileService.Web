@@ -67,6 +67,10 @@ namespace FileService.Data
         {
             return MongoCollection.Find(new BsonDocument("_id", id)).FirstOrDefault();
         }
+        public IEnumerable<BsonDocument> FindByIds(IEnumerable<ObjectId> ids)
+        {
+            return MongoCollection.Find(FilterBuilder.In("_id", ids)).ToEnumerable();
+        }
         public BsonDocument FindOneNotDelete(ObjectId id)
         {
             var filter = FilterBuilder.Eq("_id", id) & FilterBuilder.Eq("Delete", false);

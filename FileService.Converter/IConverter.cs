@@ -14,7 +14,6 @@ namespace FileService.Converter
     public class Converter : IConverter
     {
         Files files = new Files();
-        FilesConvert filesConvert = new FilesConvert();
         FilesWrap filesWrap = new FilesWrap();
         MongoFile mongoFile = new MongoFile();
         MongoFileConvert mongoFileConvert = new MongoFileConvert();
@@ -22,7 +21,7 @@ namespace FileService.Converter
         {
             return false;
         }
-        public bool SaveFileFromSharedFolder(ObjectId filesWrapId, string fullPath, string fileType)
+        public bool SaveFileFromSharedFolder(ObjectId filesWrapId, string fullPath)
         {
             FileStream fileStream = new FileStream(fullPath, FileMode.Open, FileAccess.Read);
             string md5 = fileStream.GetMD5();
@@ -55,17 +54,7 @@ namespace FileService.Converter
             }
             return filesWrap.UpdateFileId(filesWrapId, id);
         }
-        public bool ConvertMp4(ObjectId fileWrapId, string fullPath, string fileType)
-        {
-            ObjectId fileConvertId = ConvertVideoMp4(fileWrapId, fullPath);
-            return filesWrap.AddSubVideo(fileWrapId, new BsonDocument()
-            {
-                {"_id",fileConvertId },
-                {"Format",VideoOutPutFormat.Mp4 },
-                {"Flag","mp4" }
-            });
-        }
-        private ObjectId ConvertVideoMp4(ObjectId fileWrapId, string fullPath)
+        public bool ConvertVideoMp4(ObjectId fileWrapId, string fullPath)
         {
             string convertPath = MongoFileBase.AppDataDir + Path.GetFileNameWithoutExtension(fullPath) + ".mp4";
             string cmd = "\"" + AppSettings.ExePath + "\"" + " -i " + "\"" + fullPath + "\" \"" + convertPath + "\"";
@@ -80,33 +69,27 @@ namespace FileService.Converter
             };
             process.Start();
             process.WaitForExit();
-            ObjectId fileConvertId = ObjectId.Empty;
+            ObjectId fileId = ObjectId.Empty;
             if (File.Exists(convertPath))
             {
                 using (FileStream fileStream = new FileStream(convertPath, FileMode.Open, FileAccess.Read))
                 {
                     string md5 = fileStream.GetMD5();
-                    BsonDocument file = filesConvert.GetFileByMd5(md5);
+                    BsonDocument file = files.GetFileByMd5(md5);
                     if (file == null)
                     {
-                        fileConvertId = mongoFileConvert.Upload(Path.GetFileName(convertPath), fileStream, new BsonDocument()
-                        {
-                            {"From", "FilesWrap"},
-                            {"Id",fileWrapId },
-                            {"FileType","video"},
-                            {"ContentType","video/mpeg4"}
-                        });
+                        fileId = mongoFile.Upload(Path.GetFileName(convertPath), fileStream, null);
                     }
                     else
                     {
-                        fileConvertId = file["_id"].AsObjectId;
+                        fileId = file["_id"].AsObjectId;
                     }
                 }
             }
             process.Close();
             process.Dispose();
             File.Delete(convertPath);
-            return fileConvertId;
+            return filesWrap.UpdateFileId(fileWrapId, fileId);
         }
     }
 }

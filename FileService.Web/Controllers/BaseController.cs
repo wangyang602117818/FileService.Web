@@ -159,23 +159,21 @@ namespace FileService.Web.Controllers
             if (fileWrap["FileType"] == "video")
             {
                 List<ObjectId> m3u8Ids = new List<ObjectId>();
-                List<ObjectId> subVideos = new List<ObjectId>();
+                List<ObjectId> tsIds = new List<ObjectId>();
                 List<ObjectId> videoCpIds = new List<ObjectId>();
                 foreach (BsonDocument d in fileWrap["Videos"].AsBsonArray)
                 {
                     ObjectId fileId = d["_id"].AsObjectId;
-                    if (d["Format"].AsInt32 == 0)
-                    {
-                        m3u8Ids.Add(fileId);
-                    }
-                    else
-                    {
-                        if (filesConvert.FindOne(fileId) != null) mongoFileConvert.Delete(fileId);
-                    }
+                    if (d["Format"].AsInt32 == 0) m3u8Ids.Add(fileId);
                 };
+                IEnumerable<BsonDocument> m3u8s = m3u8.FindByIds(m3u8Ids);
+                foreach(BsonDocument m3u8 in m3u8s)
+                {
+
+                }
                 foreach (BsonObjectId oId in fileWrap["VideoCpIds"].AsBsonArray) videoCpIds.Add(oId.AsObjectId);
                 m3u8.DeleteMany(m3u8Ids);
-                ts.DeleteBySourceId(fileWrap["From"].AsString, m3u8Ids);
+                ts.DeleteByIds(fileWrap["From"].AsString, tsIds);
                 videoCapture.DeleteByIds(fileWrap["From"].AsString, videoCpIds);
             }
             //删除 attachment 相关
@@ -227,19 +225,11 @@ namespace FileService.Web.Controllers
             if (fileWrap["FileType"] == "video")
             {
                 List<ObjectId> m3u8Ids = new List<ObjectId>();
-                List<ObjectId> subVideos = new List<ObjectId>();
                 List<ObjectId> videoCpIds = new List<ObjectId>();
                 foreach (BsonDocument d in fileWrap["Videos"].AsBsonArray)
                 {
                     ObjectId fileId = d["_id"].AsObjectId;
-                    if (d["Format"].AsInt32 == 0)
-                    {
-                        m3u8Ids.Add(fileId);
-                    }
-                    else
-                    {
-                        if (filesConvert.FindOne(fileId) != null) mongoFileConvert.Delete(fileId);
-                    }
+                    if (d["Format"].AsInt32 == 0) m3u8Ids.Add(fileId);
                 }
                 foreach (BsonObjectId oId in fileWrap["VideoCpIds"].AsBsonArray) videoCpIds.Add(oId.AsObjectId);
 

@@ -7,17 +7,23 @@ namespace FileService.Data
     public class Ts : MongoBase
     {
         public Ts() : base("Ts") { }
-        public bool DeleteBySourceId(string from, IEnumerable<ObjectId> sourceIds)
+        public bool DeleteByIds(string from, IEnumerable<ObjectId> ids)
         {
-            return MongoCollection.DeleteMany(FilterBuilder.Eq("From", from) & FilterBuilder.In("SourceId", sourceIds)).IsAcknowledged;
+            return MongoCollection.DeleteMany(FilterBuilder.Eq("From", from) & FilterBuilder.In("_id", ids) & FilterBuilder.Size("SourceIds", 1)).IsAcknowledged;
         }
-        public BsonDocument GetByMd5(string from, string md5)
+        public bool DeleteById(string from, ObjectId id)
         {
-            return MongoCollection.Find(FilterBuilder.Eq("From", from) & FilterBuilder.Eq("Md5", md5)).FirstOrDefault();
+            return MongoCollection.DeleteMany(FilterBuilder.Eq("From", from) & FilterBuilder.Eq("_id", id) & FilterBuilder.Size("SourceIds", 1)).IsAcknowledged;
         }
-        public bool DeleteBySourceId(string from, ObjectId sourceId)
+        public bool AddSourceId(ObjectId id, ObjectId sourceId)
         {
-            return MongoCollection.DeleteMany(FilterBuilder.Eq("From", from) & FilterBuilder.Eq("SourceId", sourceId)).IsAcknowledged;
+            return MongoCollection.UpdateOne(FilterBuilder.Eq("_id", id), Builders<BsonDocument>.Update.AddToSet("SourceIds", sourceId)).IsAcknowledged;
         }
+        public BsonDocument GetIdByMd5(string from, string md5)
+        {
+            var filter = FilterBuilder.Eq("From", from) & FilterBuilder.Eq("Md5", md5);
+            return MongoCollection.Find(filter).Project(Builders<BsonDocument>.Projection.Include("_id")).FirstOrDefault();
+        }
+
     }
 }

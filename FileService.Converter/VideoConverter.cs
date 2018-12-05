@@ -4,6 +4,7 @@ using FileService.Util;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing.Imaging;
 using System.IO;
@@ -22,6 +23,7 @@ namespace FileService.Converter
         Task task = new Task();
         FilePreview filePreview = new FilePreview();
         FilePreviewBig filePreviewBig = new FilePreviewBig();
+        static Queue<string> queues = new Queue<string>();   //防止存储和转换源文件任务执行多次
         static object o = new object();
         public override bool Convert(FileItem taskItem)
         {
@@ -46,13 +48,22 @@ namespace FileService.Converter
                 {
                     if (File.Exists(fullPath))
                     {
-                        SaveFileFromSharedFolder(fileWrapId, fullPath, fileType);
-                        if (ext != ".mp4" && fileType == "video")
+                        //同一份文件的不同转换任务 该部分工作相同,确保不同的线程只执行一次
+                        if (!queues.Contains(fileWrapId.ToString()))
                         {
-                            ConvertMp4(fileWrapId, fullPath, fileType);
+                            if (ext != ".mp4")
+                            {
+                                ConvertVideoMp4(fileWrapId, fullPath);
+                            }
+                            else
+                            {
+                                SaveFileFromSharedFolder(fileWrapId, fullPath);
+                            }
+                            //第一次转换，先截一张图
+                            ConvertVideoCp(videoCpId, from, taskItem.Message["FileId"].AsObjectId, fullPath);
+                            queues.Enqueue(fileWrapId.ToString());
                         }
-                        //第一次转换，先截一张图
-                        ConvertVideoCp(videoCpId, from, taskItem.Message["FileId"].AsObjectId, fullPath);
+                        if (queues.Count >= 10) queues.Dequeue();
                     }
                     //任务肯定是后加的
                     else
@@ -89,7 +100,7 @@ namespace FileService.Converter
                 switch (output.Format)
                 {
                     case VideoOutPutFormat.M3u8:
-                        ConvertHls(from, taskItem.Message["_id"].AsObjectId, taskItem.Message["FileId"].ToString(), fullPath, output);
+                        ConvertHls(from, taskItem.Message["_id"].AsObjectId, taskItem.Message["FileId"].AsObjectId, fullPath, output);
                         break;
                 }
             }
@@ -143,9 +154,9 @@ namespace FileService.Converter
             process.Dispose();
             File.Delete(cpPath);
         }
-        public void ConvertHls(string from, ObjectId id, string fileId, string fullPath, VideoOutPut output)
+        public void ConvertHls(string from, ObjectId id, ObjectId fileId, string fullPath, VideoOutPut output)
         {
-            string sengmentFileName = fileId.Substring(0, 18) + "%06d.ts";
+            string sengmentFileName = fileId.ToString().Substring(0, 18) + "%06d.ts";
             string outputPath = MongoFileBase.AppDataDir + output.Id.ToString() + "\\";
             if (!Directory.Exists(outputPath)) Directory.CreateDirectory(outputPath);
             int crf = 23 + (int)output.Quality * 6;
@@ -176,28 +187,38 @@ namespace FileService.Converter
                 }
             }
             process.WaitForExit();
-            HlsToMongo(from, outputPath, output.Id.ToString(), fileId, Path.GetFileNameWithoutExtension(fullPath) + ".m3u8", (int)output.Quality, totalDuration, output.Flag);
+            HlsToMongo(from, outputPath, output.Id, fileId, Path.GetFileNameWithoutExtension(fullPath) + ".m3u8", (int)output.Quality, totalDuration, output.Flag);
             process.Close();
             process.Dispose();
         }
-        public void HlsToMongo(string from, string path, string m3u8FileId, string sourceFileId, string fileNameM3u8, int quality, int duration, string flag)
+        public void HlsToMongo(string from, string path, ObjectId m3u8FileId, ObjectId sourceFileId, string fileNameM3u8, int quality, int duration, string flag)
         {
             string[] files = Directory.GetFiles(path);
             string m3u8Text = File.ReadAllText(path + fileNameM3u8);
-            ts.DeleteBySourceId(from, ObjectId.Parse(m3u8FileId));
-            int n = 0;
+            ////////此处需要改
+            ts.DeleteById(from, m3u8FileId);
             foreach (string file in files)
             {
                 if (Path.GetExtension(file) == ".ts")
                 {
                     byte[] buffer = File.ReadAllBytes(file);
-                    ObjectId tsId = ObjectId.GenerateNewId();
+                    string md5 = buffer.GetMD5();
+                    BsonDocument tsBson = ts.GetIdByMd5(from, md5);
+                    ObjectId tsId = ObjectId.Empty;
+                    if (tsBson == null)
+                    {
+                        tsId = ObjectId.GenerateNewId();
+                        ts.Insert(tsId, from, buffer.Length, md5, new List<ObjectId>() { m3u8FileId }, buffer);
+                    }
+                    else
+                    {
+                        tsId = tsBson["_id"].AsObjectId;
+                        ts.AddSourceId(tsId, m3u8FileId);
+                    }
                     m3u8Text = m3u8Text.Replace(Path.GetFileNameWithoutExtension(file), tsId.ToString());
-                    ts.Insert(tsId, from, m3u8FileId, fileNameM3u8, n, buffer.Length, buffer);
-                    n++;
                 }
             }
-            m3u8.Replace(ObjectId.Parse(m3u8FileId), from, ObjectId.Parse(sourceFileId), fileNameM3u8, m3u8Text, quality, duration, files.Length - 1, flag);
+            m3u8.Replace(m3u8FileId, from, sourceFileId, fileNameM3u8, m3u8Text, quality, duration, files.Length - 1, flag);
             Directory.Delete(path, true);
         }
         private int GetTotalDuration(string str)

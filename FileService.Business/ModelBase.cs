@@ -54,6 +54,10 @@ namespace FileService.Business
         {
             return mongoData.Find(document);
         }
+        public IEnumerable<BsonDocument> FindByIds(IEnumerable<ObjectId> ids)
+        {
+            return mongoData.FindByIds(ids);
+        }
         public BsonDocument FindOne(ObjectId id)
         {
             return mongoData.FindOne(id);
