@@ -58,8 +58,6 @@ namespace FileService.Converter
                             {
                                 SaveFileFromSharedFolder(from, fileType, fileWrapId, fullPath, ImageFormat.Jpeg);
                             }
-                            //第一次转换，先截一张图
-                            //ConvertVideoCp(videoCpId, from, taskItem.Message["FileId"].AsObjectId, fullPath);
                             queues.Enqueue(fileWrapId.ToString());
                         }
                         if (queues.Count >= 10) queues.Dequeue();
