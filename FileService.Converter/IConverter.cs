@@ -38,11 +38,12 @@ namespace FileService.Converter
                 id = mongoFile.Upload(fileName, fileStream, null);
                 //生成文件缩略图
                 if (type == "image") GenerateFilePreview(from, id, fileName, fileStream, format);
-                if (type == "video") ConvertVideoCpPreview(from, id, fileWrapId, fullPath);
+                if (type == "video") ConvertVideoCpPreview(from, id, fileWrapId, fullPath, true);
             }
             else
             {
                 id = file["_id"].AsObjectId;
+                ConvertVideoCpPreview(from, id, fileWrapId, fullPath, false);
             }
             fileStream.Close();
             fileStream.Dispose();
@@ -65,7 +66,7 @@ namespace FileService.Converter
             }
             return filesWrap.UpdateFileId(filesWrapId, id);
         }
-        public void ConvertVideoCpPreview(string from, ObjectId fileId, ObjectId fileWrapId, string fullPath)
+        public void ConvertVideoCpPreview(string from, ObjectId fileId, ObjectId fileWrapId, string fullPath, bool filePreview)
         {
             BsonDocument fileWrap = filesWrap.FindOne(fileWrapId);
             BsonArray videoCp = fileWrap["VideoCpIds"].AsBsonArray;
@@ -95,7 +96,7 @@ namespace FileService.Converter
             process.WaitForExit();
             if (File.Exists(cpPath))
             {
-                using(FileStream imageStream = new FileStream(cpPath, FileMode.Open, FileAccess.Read))
+                using (FileStream imageStream = new FileStream(cpPath, FileMode.Open, FileAccess.Read))
                 {
                     BsonDocument document = new BsonDocument()
                     {
@@ -108,7 +109,10 @@ namespace FileService.Converter
                         {"CreateTime",DateTime.Now }
                     };
                     videoCapture.Replace(document);
-                    GenerateFilePreview(from, fileId, fileName, imageStream, ImageFormat.Jpeg);
+                    if (filePreview)
+                    {
+                        GenerateFilePreview(from, fileId, fileName, imageStream, ImageFormat.Jpeg);
+                    }
                 }
             }
             process.Close();
@@ -154,11 +158,12 @@ namespace FileService.Converter
                     if (file == null)
                     {
                         fileId = mongoFile.Upload(Path.GetFileName(convertPath), fileStream, null);
-                        ConvertVideoCpPreview(from, fileId, fileWrapId, convertPath);
+                        ConvertVideoCpPreview(from, fileId, fileWrapId, convertPath, true);
                     }
                     else
                     {
                         fileId = file["_id"].AsObjectId;
+                        ConvertVideoCpPreview(from, fileId, fileWrapId, convertPath, false);
                     }
                 }
             }
