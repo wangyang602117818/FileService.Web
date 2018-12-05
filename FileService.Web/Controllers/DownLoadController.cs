@@ -218,11 +218,12 @@ namespace FileService.Web.Controllers
 
         public ActionResult M(string id)
         {
-            BsonDocument bson = m3u8.FindOne(ObjectId.Parse(id));
-            
-            string m3u8Str = bson["File"].AsString;
-
-            List<ObjectId> tsIds = m3u8Str.GetTsIds();
+            IEnumerable<BsonDocument> list = ts.FindAll();
+            foreach (BsonDocument bson in list)
+            {
+                bson.Add("SourceIds", new BsonArray());
+                ts.Replace(bson);
+            }
             return new ResponseModel<List<ObjectId>>(ErrorCode.success, tsIds);
         }
     }
