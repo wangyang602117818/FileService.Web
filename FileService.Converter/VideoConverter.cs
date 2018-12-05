@@ -195,8 +195,6 @@ namespace FileService.Converter
         {
             string[] files = Directory.GetFiles(path);
             string m3u8Text = File.ReadAllText(path + fileNameM3u8);
-            ////////此处需要改
-            ts.DeleteById(from, m3u8FileId);
             foreach (string file in files)
             {
                 if (Path.GetExtension(file) == ".ts")
@@ -213,7 +211,7 @@ namespace FileService.Converter
                     else
                     {
                         tsId = tsBson["_id"].AsObjectId;
-                        ts.AddSourceId(tsId, m3u8FileId);
+                        ts.AddSourceId(from, tsId, m3u8FileId);
                     }
                     m3u8Text = m3u8Text.Replace(Path.GetFileNameWithoutExtension(file), tsId.ToString());
                 }

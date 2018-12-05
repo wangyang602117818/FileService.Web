@@ -897,7 +897,9 @@ namespace FileService.Web.Controllers
         {
             ObjectId fId = ObjectId.Parse(fileId);
             ObjectId mId = ObjectId.Parse(m3u8Id);
-            ts.DeleteBySourceId(Request.Headers["AppName"], mId);
+            BsonDocument m3u8Bson = m3u8.FindOne(mId);
+            List<ObjectId> tsIds = m3u8Bson["File"].AsString.GetTsIds();
+            ts.DeleteByIds(m3u8Bson["From"].AsString, mId, tsIds);
             m3u8.DeleteOne(mId);
             task.DeleteByOutputId(mId);
             filesWrap.DeleteM3u8(fId, mId);

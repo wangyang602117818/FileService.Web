@@ -7,15 +7,15 @@ namespace FileService.Data
     public class Ts : MongoBase
     {
         public Ts() : base("Ts") { }
-        public bool DeleteByIds(string from, IEnumerable<ObjectId> ids)
+        public bool DeleteByIds(string from, ObjectId sourceId, IEnumerable<ObjectId> ids)
         {
-            return MongoCollection.DeleteMany(FilterBuilder.Eq("From", from) & FilterBuilder.In("_id", ids) & FilterBuilder.Size("SourceIds", 1)).IsAcknowledged;
+            return MongoCollection.DeleteMany(FilterBuilder.Eq("From", from) & FilterBuilder.In("_id", ids) & FilterBuilder.Size("SourceIds", 0)).IsAcknowledged;
         }
-        public bool DeleteById(string from, ObjectId id)
+        public bool DeleteSourceId(string from, ObjectId sourceId, IEnumerable<ObjectId> ids)
         {
-            return MongoCollection.DeleteMany(FilterBuilder.Eq("From", from) & FilterBuilder.Eq("_id", id) & FilterBuilder.Size("SourceIds", 1)).IsAcknowledged;
+            return MongoCollection.UpdateMany(FilterBuilder.Eq("From", from) & FilterBuilder.In("_id", ids), Builders<BsonDocument>.Update.Pull("SourceIds", sourceId)).IsAcknowledged;
         }
-        public bool AddSourceId(ObjectId id, ObjectId sourceId)
+        public bool AddSourceId(string from, ObjectId id, ObjectId sourceId)
         {
             return MongoCollection.UpdateOne(FilterBuilder.Eq("_id", id), Builders<BsonDocument>.Update.AddToSet("SourceIds", sourceId)).IsAcknowledged;
         }

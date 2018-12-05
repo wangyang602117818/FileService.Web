@@ -21,21 +21,25 @@ namespace FileService.Business
             };
             mongoData.Insert(document);
         }
-        public bool AddSourceId(ObjectId id, ObjectId sourceId)
+        public bool AddSourceId(string from, ObjectId id, ObjectId sourceId)
         {
-           return mongoData.AddSourceId(id, sourceId);
+            return mongoData.AddSourceId(from, id, sourceId);
         }
         public BsonDocument GetIdByMd5(string from, string md5)
         {
             return mongoData.GetIdByMd5(from, md5);
         }
-        public bool DeleteByIds(string from, IEnumerable<ObjectId> ids)
+        public bool DeleteByIds(string from, ObjectId sourceId, IEnumerable<ObjectId> ids)
         {
-            return mongoData.DeleteByIds(from, ids);
-        }
-        public bool DeleteById(string from, ObjectId id)
-        {
-            return mongoData.DeleteById(from, id);
+            if (mongoData.DeleteSourceId(from, sourceId, ids))
+            {
+                return mongoData.DeleteByIds(from, sourceId, ids);
+            }
+            else
+            {
+                return false;
+            }
+
         }
     }
 }
