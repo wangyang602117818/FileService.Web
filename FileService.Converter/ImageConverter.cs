@@ -15,8 +15,7 @@ namespace FileService.Converter
         Files files = new Files();
         FilesWrap filesWrap = new FilesWrap();
         Thumbnail thumbnail = new Thumbnail();
-        FilePreview filePreview = new FilePreview();
-        FilePreviewBig filePreviewBig = new FilePreviewBig();
+
         static Queue<string> queues = new Queue<string>();   //防止存储和转换源文件任务执行多次
         static object o = new object();
         public override bool Convert(FileItem taskItem)
@@ -44,9 +43,7 @@ namespace FileService.Converter
                         //同一份文件的不同转换任务 该部分工作相同,确保不同的线程只执行一次
                         if (!queues.Contains(fileWrapId.ToString()))
                         {
-                            SaveFileFromSharedFolder(fileWrapId, fileName, fileStream);
-                            //生成文件缩略图
-                            GenerateFilePreview(fileWrapId, from, fileName, fileStream, format);
+                            SaveFileFromSharedFolder(from, "image", fileWrapId, fileName, fileStream, format);
                             queues.Enqueue(fileWrapId.ToString());
                         }
                         if (queues.Count >= 10) queues.Dequeue();
@@ -81,20 +78,6 @@ namespace FileService.Converter
                 fileStream.Dispose();
             }
             return true;
-        }
-        public void GenerateFilePreview(ObjectId fileWrapId, string from, string fileName, Stream fileStream, ImageFormat format)
-        {
-            fileStream.Position = 0;
-            int width = 0, height = 0;
-            using (Stream stream = ImageExtention.GenerateFilePreview(fileName, 80, fileStream, ImageModelEnum.scale, format, ref width, ref height))
-            {
-                filePreview.Replace(fileWrapId, from, stream.Length, width, height, fileName, stream.ToBytes());
-            }
-            fileStream.Position = 0;
-            using (Stream stream = ImageExtention.GenerateFilePreview(fileName, 300, fileStream, ImageModelEnum.scale, format, ref width, ref height))
-            {
-                filePreviewBig.Replace(fileWrapId, from, stream.Length, width, height, fileName, stream.ToBytes());
-            }
         }
     }
 }

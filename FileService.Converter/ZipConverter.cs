@@ -30,7 +30,7 @@ namespace FileService.Converter
             {
                 if (File.Exists(fullPath))
                 {
-                    SaveFileFromSharedFolder(fileWrapId, fullPath);
+                    SaveFileFromSharedFolder("", "attachment", fileWrapId, fullPath, null);
                 }
             }
             else
@@ -102,7 +102,7 @@ namespace FileService.Converter
                         }
                         else
                         {
-                            ObjectId newFileId= mongoFileConvert.UploadFile(Path.GetFileName(reader.Entry.Key), reader.OpenEntryStream(), "FilesWrap", fileWrapId, "attachment", "application/octet-stream");
+                            ObjectId newFileId = mongoFileConvert.UploadFile(Path.GetFileName(reader.Entry.Key), reader.OpenEntryStream(), "FilesWrap", fileWrapId, "attachment", "application/octet-stream");
                             //id列表
                             result.Add(new BsonDocument() {
                                 { "_id",newFileId},

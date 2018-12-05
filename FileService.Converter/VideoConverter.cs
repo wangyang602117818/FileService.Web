@@ -17,7 +17,6 @@ namespace FileService.Converter
         MongoFile mongoFile = new MongoFile();
         Files files = new Files();
         FilesWrap filesWrap = new FilesWrap();
-        VideoCapture videoCapture = new VideoCapture();
         Ts ts = new Ts();
         M3u8 m3u8 = new M3u8();
         Task task = new Task();
@@ -53,14 +52,14 @@ namespace FileService.Converter
                         {
                             if (ext != ".mp4")
                             {
-                                ConvertVideoMp4(fileWrapId, fullPath);
+                                ConvertVideoMp4(from, fileType, fileWrapId, fullPath, ImageFormat.Jpeg);
                             }
                             else
                             {
-                                SaveFileFromSharedFolder(fileWrapId, fullPath);
+                                SaveFileFromSharedFolder(from, fileType, fileWrapId, fullPath, ImageFormat.Jpeg);
                             }
                             //第一次转换，先截一张图
-                            ConvertVideoCp(videoCpId, from, taskItem.Message["FileId"].AsObjectId, fullPath);
+                            //ConvertVideoCp(videoCpId, from, taskItem.Message["FileId"].AsObjectId, fullPath);
                             queues.Enqueue(fileWrapId.ToString());
                         }
                         if (queues.Count >= 10) queues.Dequeue();
@@ -106,54 +105,54 @@ namespace FileService.Converter
             }
             return true;
         }
-        public void ConvertVideoCp(ObjectId id, string from, ObjectId fileWrapId, string fullPath)
-        {
-            string cpPath = MongoFileBase.AppDataDir + Path.GetFileNameWithoutExtension(fullPath) + ".jpg";
-            string fileName = Path.GetFileName(cpPath);
-            string cmd = "\"" + AppSettings.ExePath + "\" -ss 00:00:01 -i \"" + fullPath + "\" -vframes 1 \"" + cpPath + "\"";
-            Process process = new Process()
-            {
-                StartInfo = new ProcessStartInfo(cmd)
-                {
-                    UseShellExecute = false,
-                    CreateNoWindow = true,
-                    RedirectStandardError = false
-                }
-            };
-            process.Start();
-            process.WaitForExit();
-            if (File.Exists(cpPath))
-            {
-                FileStream imageStream = new FileStream(cpPath, FileMode.Open, FileAccess.Read);
-                BsonDocument document = new BsonDocument()
-                    {
-                        {"_id",id },
-                        {"From",from },
-                        {"SourceId",fileWrapId },
-                        {"Length",imageStream.Length },
-                        {"FileName",fileName },
-                        {"File",imageStream.ToBytes() },
-                        {"CreateTime",DateTime.Now }
-                    };
-                videoCapture.Replace(document);
-                imageStream.Position = 0;
-                int width = 0, height = 0;
-                using (Stream stream = ImageExtention.GenerateFilePreview(fileName, 80, imageStream, ImageModelEnum.scale, ImageFormat.Jpeg, ref width, ref height))
-                {
-                    filePreview.Replace(fileWrapId, from, stream.Length, width, height, fileName, stream.ToBytes());
-                }
-                imageStream.Position = 0;
-                using (Stream stream = ImageExtention.GenerateFilePreview(fileName, 300, imageStream, ImageModelEnum.scale, ImageFormat.Jpeg, ref width, ref height))
-                {
-                    filePreviewBig.Replace(fileWrapId, from, stream.Length, width, height, fileName, stream.ToBytes());
-                }
-                imageStream.Close();
-                imageStream.Dispose();
-            }
-            process.Close();
-            process.Dispose();
-            File.Delete(cpPath);
-        }
+        //public void ConvertVideoCp(ObjectId id, string from, ObjectId fileWrapId, string fullPath)
+        //{
+        //    string cpPath = MongoFileBase.AppDataDir + Path.GetFileNameWithoutExtension(fullPath) + ".jpg";
+        //    string fileName = Path.GetFileName(cpPath);
+        //    string cmd = "\"" + AppSettings.ExePath + "\" -ss 00:00:01 -i \"" + fullPath + "\" -vframes 1 \"" + cpPath + "\"";
+        //    Process process = new Process()
+        //    {
+        //        StartInfo = new ProcessStartInfo(cmd)
+        //        {
+        //            UseShellExecute = false,
+        //            CreateNoWindow = true,
+        //            RedirectStandardError = false
+        //        }
+        //    };
+        //    process.Start();
+        //    process.WaitForExit();
+        //    if (File.Exists(cpPath))
+        //    {
+        //        FileStream imageStream = new FileStream(cpPath, FileMode.Open, FileAccess.Read);
+        //        BsonDocument document = new BsonDocument()
+        //            {
+        //                {"_id",id },
+        //                {"From",from },
+        //                {"SourceId",fileWrapId },
+        //                {"Length",imageStream.Length },
+        //                {"FileName",fileName },
+        //                {"File",imageStream.ToBytes() },
+        //                {"CreateTime",DateTime.Now }
+        //            };
+        //        videoCapture.Replace(document);
+        //        imageStream.Position = 0;
+        //        int width = 0, height = 0;
+        //        using (Stream stream = ImageExtention.GenerateFilePreview(fileName, 80, imageStream, ImageModelEnum.scale, ImageFormat.Jpeg, ref width, ref height))
+        //        {
+        //            filePreview.Replace(fileWrapId, from, stream.Length, width, height, fileName, stream.ToBytes());
+        //        }
+        //        imageStream.Position = 0;
+        //        using (Stream stream = ImageExtention.GenerateFilePreview(fileName, 300, imageStream, ImageModelEnum.scale, ImageFormat.Jpeg, ref width, ref height))
+        //        {
+        //            filePreviewBig.Replace(fileWrapId, from, stream.Length, width, height, fileName, stream.ToBytes());
+        //        }
+        //        imageStream.Close();
+        //        imageStream.Dispose();
+        //    }
+        //    process.Close();
+        //    process.Dispose();
+        //    File.Delete(cpPath);
+        //}
         public void ConvertHls(string from, ObjectId id, ObjectId fileId, string fullPath, VideoOutPut output)
         {
             string sengmentFileName = fileId.ToString().Substring(0, 18) + "%06d.ts";

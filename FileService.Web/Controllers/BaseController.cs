@@ -193,6 +193,10 @@ namespace FileService.Web.Controllers
             {
                 ObjectId fId = fileWrap["FileId"].AsObjectId;
                 mongoFile.Delete(fId);
+                //删除转换的小图标
+                filePreview.DeleteOne(fId);
+                //删除转换的大图标
+                filePreviewBig.DeleteOne(fId);
             }
             //删除缓存文件
             IEnumerable<BsonDocument> tasks = task.FindCacheFiles(fileWrapId);
@@ -201,10 +205,6 @@ namespace FileService.Web.Controllers
                 string fullPath = AppDomain.CurrentDomain.BaseDirectory + AppSettings.tempFileDir + task["Folder"].ToString() + "\\" + task["FileName"].ToString();
                 if (System.IO.File.Exists(fullPath)) System.IO.File.Delete(fullPath);
             }
-            //删除转换的小图标
-            filePreview.DeleteOne(fileWrapId);
-            //删除转换的大图标
-            filePreviewBig.DeleteOne(fileWrapId);
             //删除共享信息
             shared.DeleteShared(fileWrapId);
             task.DeleteByFileId(fileWrapId);
@@ -253,17 +253,15 @@ namespace FileService.Web.Controllers
                     videoCapture.DeleteByIds(fileWrap["From"].AsString, fileWrap["VideoCpIds"].AsBsonArray.Select(s => s.AsObjectId));
                 }
             }
-            //如果源文件没有被引用，则删除
-            //if (filesWrap.CountByFileId(fileWrap["FileId"].AsObjectId) == 1 && fileWrap["FileId"].AsObjectId != ObjectId.Empty)
-            //{
-            //    ObjectId fId = fileWrap["FileId"].AsObjectId;
-            //    mongoFile.Delete(fId);
-            //}
-            //删除转换的小图标
-            filePreview.DeleteOne(fileWrap["_id"].AsObjectId);
-            //删除转换的大图标
-            filePreviewBig.DeleteOne(fileWrap["_id"].AsObjectId);
-
+            //如果源文件没有被引用，则删除转换的大图标和小图标
+            if (filesWrap.CountByFileId(fileWrap["FileId"].AsObjectId) == 1 && fileWrap["FileId"].AsObjectId != ObjectId.Empty)
+            {
+                ObjectId fId = fileWrap["FileId"].AsObjectId;
+                //删除转换的小图标
+                filePreview.DeleteOne(fId);
+                //删除转换的大图标
+                filePreviewBig.DeleteOne(fId);
+            }
         }
     }
 }

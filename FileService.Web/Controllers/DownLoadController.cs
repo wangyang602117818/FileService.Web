@@ -216,15 +216,42 @@ namespace FileService.Web.Controllers
             return File(document["File"].AsByteArray, ImageExtention.GetContentType(document["FileName"].AsString), document["FileName"].AsString);
         }
 
+        public ActionResult M1()
+        {
+            IEnumerable<BsonDocument> files = filesWrap.FindAll();
+            foreach (BsonDocument bson in files)
+            {
+                ObjectId fileWrapId = bson["_id"].AsObjectId;
+                filePreview.DeleteOne(fileWrapId);
+            }
+            return new ResponseModel<string>(ErrorCode.success, "");
+        }
         public ActionResult M(string id)
         {
             IEnumerable<BsonDocument> list = ts.FindAll();
             foreach (BsonDocument bson in list)
             {
+                if (bson.Contains("SourceIds")) continue;
                 bson.Add("SourceIds", new BsonArray());
                 ts.Replace(bson);
             }
-            return new ResponseModel<List<ObjectId>>(ErrorCode.success, tsIds);
+            IEnumerable<BsonDocument> files = filesWrap.FindAll();
+            foreach (BsonDocument bson in files)
+            {
+                ObjectId fileWrapId = bson["_id"].AsObjectId;
+                ObjectId fileId = bson["FileId"].AsObjectId;
+                //如果有图标，则下一个
+                BsonDocument filePreviewBson1 = filePreview.FindOne(fileId);
+                if (filePreviewBson1 != null) continue;
+                //查找原来的图标，
+                BsonDocument filePreviewBson = filePreview.FindOne(fileWrapId);
+                if (filePreviewBson == null) continue;
+                filePreviewBson["_id"] = fileId;
+                filePreview.Insert(filePreviewBson);
+                filePreview.DeleteOne(fileWrapId);
+            }
+
+            return new ResponseModel<string>(ErrorCode.success, "");
         }
     }
 }

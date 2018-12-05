@@ -12,7 +12,6 @@ namespace FileService.Business
     {
         public static BlockingCollection<FileItem> itemlist = null;
         public static BlockingCollection<int> tasklist = null;
-        MongoFile mongoFile = new MongoFile();
         static Queue()
         {
             if (AppSettings.taskCount > 0)
