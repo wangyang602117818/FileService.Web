@@ -18,9 +18,6 @@ namespace FileService.Web.Filters
         {
             Controller controller = (Controller)filterContext.Controller;
             bool access = true;
-            //这一步判断user是否登录过，
-            //如果登录过，则判断是否有权限访问相应的资源
-            //如果没有登录过，则由系统默认处理
             if (controller.User.Identity.IsAuthenticated)
             {
                 IEnumerable<CustomAttributeData> customAttributes = ((ReflectedActionDescriptor)filterContext.ActionDescriptor).MethodInfo.CustomAttributes;
