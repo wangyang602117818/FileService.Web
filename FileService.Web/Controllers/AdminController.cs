@@ -178,6 +178,7 @@ namespace FileService.Web.Controllers
             }
             return new ResponseModel<IEnumerable<BsonDocument>>(ErrorCode.success, history);
         }
+        [OutputCache(Duration = 60 * 20, VaryByParam = "id")]
         public ActionResult GetFileIcon(string id)
         {
             BsonDocument file = filePreview.FindOne(ObjectId.Parse(id.Split('.')[0]));
@@ -212,6 +213,7 @@ namespace FileService.Web.Controllers
             }
             return File(file["File"].AsByteArray, "application/octet-stream");
         }
+        [OutputCache(Duration = 60 * 20, VaryByParam = "id")]
         public ActionResult GetFileIconBig(string id)
         {
             BsonDocument file = filePreviewBig.FindOne(ObjectId.Parse(id.Split('.')[0]));
