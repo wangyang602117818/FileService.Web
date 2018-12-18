@@ -25,6 +25,7 @@ Thumbs.db
 obj/
 .vs/
 App_Data/
+packages/
 !App_Data/FileServiceTempFiles/readme.txt
 !ffmpeg.exe
 !nuget.exe
