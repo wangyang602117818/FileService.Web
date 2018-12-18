@@ -22,7 +22,7 @@ namespace FileService.Converter
         Task task = new Task();
         FilePreview filePreview = new FilePreview();
         FilePreviewBig filePreviewBig = new FilePreviewBig();
-        static Queue<string> queues = new Queue<string>();   //防止存储和转换源文件任务执行多次
+        static Queue<string> queues = new Queue<string>();   //防止存储和转换源文件任务执行多次 
         static object o = new object();
         public override bool Convert(FileItem taskItem)
         {
