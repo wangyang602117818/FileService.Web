@@ -36,6 +36,7 @@ namespace FileService.Data
                     new BsonDocument(){{"Extension",".png"},{"Type","image"},{"Action","allow"},{"Description","image" }, { "CreateTime", DateTime.Now } },
                     new BsonDocument(){{"Extension",".gif"},{"Type","image"},{"Action","allow"},{"Description","image"}, { "CreateTime", DateTime.Now } },
                     new BsonDocument(){{"Extension", ".bmp"},{"Type","image"},{"Action","allow"},{"Description","image"}, { "CreateTime", DateTime.Now } },
+                    new BsonDocument(){{"Extension", ".jpeg"},{"Type","image"},{"Action","allow"},{"Description","image"}, { "CreateTime", DateTime.Now } },
                     new BsonDocument(){{"Extension",".mp4"},{"Type","video"},{"Action","allow"},{"Description","video"}, { "CreateTime", DateTime.Now }},
                     new BsonDocument(){{"Extension",".avi"},{"Type","video"},{"Action","allow"},{"Description", "video" }, { "CreateTime", DateTime.Now }},
                     new BsonDocument(){{"Extension",".wmv"},{"Type","video"},{"Action","allow"},{"Description", "video" }, { "CreateTime", DateTime.Now }},
