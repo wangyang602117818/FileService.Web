@@ -3,8 +3,6 @@
 处理器图模式
 预览其他项目的文件
 
-让处理器能处理不同服务器上的共享文件
-
 替换文件
 只能替换相同类型的文件 
 image只能替换成image
@@ -13,8 +11,6 @@ office只能替换成office
 rar、zip只能替换成rar，zip
 其他只替换文件就ok
 
-ts验证md5问题
-fs.chunks验证md5问题
 音频文件预览问题
 加密ts
 ffmpeg.exe -i Wildlife.mp4 -hls_time 2 -hls_list_size 0 -hls_allow_cache 0 -hls_enc 1 -hls_enc_key N74kEdQDwUgiR5QNyMQ9fg== -hls_enc_key_url http://localhost:2431/admin/key -hls_enc_iv EjRWeJCrze8= out.m3u8
@@ -29,3 +25,10 @@ mongodb://127.0.0.1:27017,127.0.0.1:27018/admin
 net use \\YWANG363PRI4\FileServiceTempFiles\ wy999999999 /user:"Yang X Wang"
 			
 net use * /delete
+
+微信登陆流程
+项目启动查询user表中的openid
+如果有，则使用该user登陆，
+如果没有，则重定向到登陆界面，登陆成功之后将openid写入user表
+退出清空相应的openid就可以
+
