@@ -82,8 +82,8 @@ namespace FileService.Util
                         cut = true;
                         break;
                 }
-                //if (width > image.Width) width = image.Width;
-                //if (height > image.Height) height = image.Height;
+                if (width > image.Width) width = image.Width;
+                if (height > image.Height) height = image.Height;
                 return isGif ? ConvertImageGif(image, x, y, width, height, cut) : ConvertImage(image, outputFormat, x, y, width, height, cut);
             }
         }
