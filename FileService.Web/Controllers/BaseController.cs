@@ -5,6 +5,7 @@ using MongoDB.Bson;
 using MongoDB.Driver.GridFS;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Web.Mvc;
@@ -28,10 +29,11 @@ namespace FileService.Web.Controllers
         protected MongoFile mongoFile = new MongoFile();
         protected MongoFileConvert mongoFileConvert = new MongoFileConvert();
         protected FilePreview filePreview = new FilePreview();
-        protected FilePreviewBig filePreviewBig = new FilePreviewBig();
+        protected FilePreviewMobile filePreviewMobile = new FilePreviewMobile();
         protected Shared shared = new Shared();
         protected Download download = new Download();
         protected Application application = new Application();
+        protected Extension extension = new Extension();
         public BaseController()
         {
             ViewBag.appName = AppSettings.appName;
@@ -39,15 +41,49 @@ namespace FileService.Web.Controllers
             ViewBag.apiType = AppSettings.apiType;
             ViewBag.appPath = System.Web.HttpContext.Current.Request.ApplicationPath;
         }
-        protected ActionResult GetSourceFile(ObjectId id, string contentType)
+        protected ActionResult GetSourceFile(ObjectId id, string contentType, string fileName)
         {
             GridFSDownloadStream stream = mongoFile.DownLoad(id);
-            return File(stream, contentType, stream.FileInfo.Filename);
+            return File(stream, contentType, fileName);
         }
         protected ActionResult GetConvertFile(ObjectId id)
         {
             GridFSDownloadStream stream = mongoFileConvert.DownLoad(id);
             return File(stream, stream.FileInfo.Metadata["ContentType"].AsString, stream.FileInfo.Filename);
+        }
+        protected ActionResult GetFilePreview(string id, BsonDocument filePreview)
+        {
+            string imagePath = AppDomain.CurrentDomain.BaseDirectory + "image\\";
+            string ext = "." + id.Split('.')[1].TrimEnd('/');
+            string type = extension.GetTypeByExtension(ext).ToLower();
+            if (filePreview == null)
+            {
+                switch (type)
+                {
+                    case "text":
+                    case "video":
+                    case "image":
+                    case "attachment":
+                    case "pdf":
+                        return File(System.IO.File.ReadAllBytes(imagePath + type + ".png"), "image/png");
+                    case "office":
+                        if (ext == ".doc" || ext == ".docx")
+                            return File(System.IO.File.ReadAllBytes(imagePath + "word.png"), "image/png");
+                        if (ext == ".xls" || ext == ".xlsx")
+                            return File(System.IO.File.ReadAllBytes(imagePath + "excel.png"), "image/png");
+                        if (ext == ".ppt" || ext == ".pptx")
+                            return File(System.IO.File.ReadAllBytes(imagePath + "ppt.png"), "image/png");
+                        if (new string[] { ".odg", ".ods", ".odp", ".odf", ".odt" }.Contains(ext))
+                            return File(System.IO.File.ReadAllBytes(imagePath + "libreoffice.png"), "image/png");
+                        if (new string[] { ".wps", ".dps", ".et" }.Contains(ext))
+                            return File(System.IO.File.ReadAllBytes(imagePath + "wps.png"), "image/png");
+                        return File(System.IO.File.ReadAllBytes(imagePath + "attachment.png"), "image/png");
+                    default:
+                        return File(System.IO.File.ReadAllBytes(imagePath + "attachment.png"), "image/png");
+                }
+            }
+            string contentType = Extension.GetContentType(Path.GetExtension(filePreview["FileName"].AsString.ToLower()).ToLower());
+            return File(filePreview["File"].AsByteArray, contentType, filePreview["FileName"].AsString);
         }
         protected void Log(string fileId, string content)
         {
@@ -196,7 +232,7 @@ namespace FileService.Web.Controllers
                 //删除转换的小图标
                 filePreview.DeleteOne(fId);
                 //删除转换的大图标
-                filePreviewBig.DeleteOne(fId);
+                filePreviewMobile.DeleteOne(fId);
             }
             //删除缓存文件
             IEnumerable<BsonDocument> tasks = task.FindCacheFiles(fileWrapId);
@@ -260,7 +296,7 @@ namespace FileService.Web.Controllers
                 //删除转换的小图标
                 filePreview.DeleteOne(fId);
                 //删除转换的大图标
-                filePreviewBig.DeleteOne(fId);
+                filePreviewMobile.DeleteOne(fId);
             }
         }
     }

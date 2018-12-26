@@ -27,8 +27,15 @@ namespace FileService.Converter
 
             ImageOutPut output = BsonSerializer.Deserialize<ImageOutPut>(outputDocument);
             string outputExt = "";
-            ImageFormat format = ImageExtention.GetFormat(output.Format, fileName, out outputExt);
-
+            ImageFormat format = ImageFormat.Jpeg;
+            if (Path.GetExtension(fileName).ToLower() == ".svg")
+            {
+                outputExt = ".svg";
+            }
+            else
+            {
+                format = ImageExtention.GetFormat(output.Format, fileName, out outputExt);
+            }
             int processCount = System.Convert.ToInt32(taskItem.Message["ProcessCount"]);
             Stream fileStream = null;
             string fullPath = AppSettings.GetFullPath(taskItem.Message);

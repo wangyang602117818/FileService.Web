@@ -1,9 +1,13 @@
 ﻿using FileService.Model;
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using System.IO;
+using System.Linq;
+using System.Xml;
+using System.Xml.Linq;
 
 namespace FileService.Util
 {
@@ -21,6 +25,12 @@ namespace FileService.Util
                     return ImageFormat.Gif;
                 case ".bmp":
                     return ImageFormat.Bmp;
+                case ".jpeg":
+                    return ImageFormat.Jpeg;
+                case ".ico":
+                    return ImageFormat.Icon;
+                case ".tif":
+                    return ImageFormat.Tiff;
             }
             return ImageFormat.Jpeg;
         }
@@ -36,6 +46,16 @@ namespace FileService.Util
                     return "image/gif";
                 case ".bmp":
                     return "application/x-bmp";
+                case ".jpeg":
+                    return "image/jpeg";
+                case ".pic":
+                    return "application/x-pic";
+                case ".ico":
+                    return "image/x-icon";
+                case ".tif":
+                    return "image/tiff";
+                case ".svg":
+                    return "image/svg+xml";
             }
             return "image/*";
         }
@@ -64,48 +84,118 @@ namespace FileService.Util
         }
         public static Stream GenerateThumbnail(string fileName, Stream stream, ImageModelEnum model, ImageFormat outputFormat, int x, int y, ref int width, ref int height)
         {
-            bool isGif = Path.GetExtension(fileName).ToLower() == ".gif" ? true : false;
+            string fileExt = Path.GetExtension(fileName).ToLower();
+            bool isGif = fileExt == ".gif" ? true : false;
+            bool isSvg = fileExt == ".svg" ? true : false;
             bool cut = false;
-            using (Image image = Image.FromStream(stream))
+            if (!isSvg)
             {
-                switch (model)
+                using (Image image = Image.FromStream(stream))
                 {
-                    case ImageModelEnum.scale:
-                        break;
-                    case ImageModelEnum.height:
-                        width = image.Width * height / image.Height;
-                        break;
-                    case ImageModelEnum.width:
-                        height = image.Height * width / image.Width;
-                        break;
-                    case ImageModelEnum.cut:
-                        cut = true;
-                        break;
+                    switch (model)
+                    {
+                        case ImageModelEnum.scale:
+                            break;
+                        case ImageModelEnum.height:
+                            width = image.Width * height / image.Height;
+                            break;
+                        case ImageModelEnum.width:
+                            height = image.Height * width / image.Width;
+                            break;
+                        case ImageModelEnum.cut:
+                            cut = true;
+                            break;
+                    }
+                    if (width > image.Width) width = image.Width;
+                    if (height > image.Height) height = image.Height;
+                    return isGif ? ConvertImageGif(image, x, y, width, height, cut) : ConvertImage(image, outputFormat, x, y, width, height, cut);
                 }
-                if (width > image.Width) width = image.Width;
-                if (height > image.Height) height = image.Height;
-                return isGif ? ConvertImageGif(image, x, y, width, height, cut) : ConvertImage(image, outputFormat, x, y, width, height, cut);
+            }
+            else
+            {
+
+                return GenerateSvg(fileName, stream, model, ref width, ref height);
             }
         }
         public static Stream GenerateFilePreview(string fileName, int fileHW, Stream stream, ImageModelEnum model, ImageFormat outputFormat, ref int width, ref int height)
         {
-            bool isGif = Path.GetExtension(fileName).ToLower() == ".gif" ? true : false;
-            using (Image image = Image.FromStream(stream))
+            string fileExt = Path.GetExtension(fileName).ToLower();
+            bool isGif = fileExt == ".gif" ? true : false;
+            bool isSvg = fileExt == ".svg" ? true : false;
+            if (!isSvg)
             {
-                //原图比较宽
-                if (image.Width >= image.Height)
+                using (Image image = Image.FromStream(stream))
                 {
-                    width = image.Width > fileHW ? fileHW : image.Width;  //原图比指定的宽度要宽，就是用指定的宽度，否则使用原图宽
-                    height = image.Height * width / image.Width;
+                    //原图比较宽
+                    if (image.Width >= image.Height)
+                    {
+                        width = image.Width > fileHW ? fileHW : image.Width;  //原图比指定的宽度要宽，就是用指定的宽度，否则使用原图宽
+                        height = image.Height * width / image.Width;
+                    }
+                    //原图比较高
+                    if (image.Width < image.Height)
+                    {
+                        height = image.Height > fileHW ? fileHW : image.Height; //原图比指定的高度要高，就是用指定的高度，否则使用原图高
+                        width = image.Width * height / image.Height;
+                    }
+                    return isGif ? ConvertImageGif(image, 0, 0, width, height, false) : ConvertImage(image, outputFormat, 0, 0, width, height, false);
                 }
-                //原图比较高
-                if (image.Width < image.Height)
-                {
-                    height = image.Height > fileHW ? fileHW : image.Height; //原图比指定的高度要高，就是用指定的高度，否则使用原图高
-                    width = image.Width * height / image.Height;
-                }
-                return isGif ? ConvertImageGif(image, 0, 0, width, height, false) : ConvertImage(image, outputFormat, 0, 0, width, height, false);
             }
+            else
+            {
+                width = fileHW;
+                height = fileHW;
+                return GenerateSvg(fileName, stream, model, ref width, ref height);
+            }
+        }
+        private static Stream GenerateSvg(string fileName, Stream stream, ImageModelEnum model, ref int width, ref int height)
+        {
+            XDocument xmldoc = XDocument.Load(stream);
+            XElement XRoot = xmldoc.Root;
+            int swidth = 0, sheight = 0;
+            foreach (XAttribute attribute in XRoot.Attributes())
+            {
+                if (attribute.Name.LocalName.ToLower() == "width") swidth = int.Parse(attribute.Value);
+                if (attribute.Name.LocalName.ToLower() == "height") sheight = int.Parse(attribute.Value);
+            }
+            switch (model)
+            {
+                case ImageModelEnum.scale:
+                    break;
+                case ImageModelEnum.height:
+                    if (sheight != 0 && swidth != 0)
+                    {
+                        width = swidth * height / sheight;
+                    }
+                    else
+                    {
+                        width = height;
+                    }
+                    break;
+                case ImageModelEnum.width:
+                    if (sheight != 0 && swidth != 0)
+                    {
+                        height = sheight * width / swidth;
+                    }
+                    else
+                    {
+                        height = width;
+                    }
+                    break;
+            }
+            List<XAttribute> attributes = XRoot.Attributes().Where(w => w.Name.LocalName != "width" && w.Name.LocalName != "height").ToList();
+            XRoot.RemoveAttributes();
+            attributes.Add(new XAttribute("width", width));
+            attributes.Add(new XAttribute("height", height));
+            XRoot.ReplaceAttributes(attributes);
+            MemoryStream ms = new MemoryStream();
+            using (XmlWriter xw = XmlWriter.Create(ms))
+            {
+                xmldoc.WriteTo(xw);
+            }
+            ms.Position = 0;
+            return ms;
+
         }
         private static Stream ConvertImage(Image image, ImageFormat outputFormat, int x, int y, int width, int height, bool cut)
         {

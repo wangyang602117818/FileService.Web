@@ -410,6 +410,11 @@ function getIconNameByFileName(filename) {
         case ".png":
         case ".gif":
         case ".bmp":
+        case ".jpeg":
+        case ".pic":
+        case ".ico":
+        case ".tif":
+        case ".svg":
             return "icon-image";
         case ".mp4":
         case ".avi":

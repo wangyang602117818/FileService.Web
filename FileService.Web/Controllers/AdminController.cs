@@ -17,7 +17,7 @@ namespace FileService.Web.Controllers
 {
     public class AdminController : BaseController
     {
-        Extension extension = new Extension();
+
         User user = new User();
         TsTime tsTime = new TsTime();
         Files files = new Files();
@@ -182,49 +182,13 @@ namespace FileService.Web.Controllers
         public ActionResult GetFileIcon(string id)
         {
             BsonDocument file = filePreview.FindOne(ObjectId.Parse(id.Split('.')[0]));
-            string imagePath = AppDomain.CurrentDomain.BaseDirectory + "image\\";
-            string ext = "." + id.Split('.')[1].TrimEnd('/');
-            if (file == null)
-            {
-                string type = extension.GetTypeByExtension(ext).ToLower();
-                switch (type)
-                {
-                    case "text":
-                    case "video":
-                    case "image":
-                    case "attachment":
-                    case "pdf":
-                        return File(System.IO.File.ReadAllBytes(imagePath + type + ".png"), "application/octet-stream");
-                    case "office":
-                        if (ext == ".doc" || ext == ".docx")
-                            return File(System.IO.File.ReadAllBytes(imagePath + "word.png"), "application/octet-stream");
-                        if (ext == ".xls" || ext == ".xlsx")
-                            return File(System.IO.File.ReadAllBytes(imagePath + "excel.png"), "application/octet-stream");
-                        if (ext == ".ppt" || ext == ".pptx")
-                            return File(System.IO.File.ReadAllBytes(imagePath + "ppt.png"), "application/octet-stream");
-                        if (new string[] { ".odg", ".ods", ".odp", ".odf", ".odt" }.Contains(ext))
-                            return File(System.IO.File.ReadAllBytes(imagePath + "libreoffice.png"), "application/octet-stream");
-                        if (new string[] { ".wps", ".dps", ".et" }.Contains(ext))
-                            return File(System.IO.File.ReadAllBytes(imagePath + "wps.png"), "application/octet-stream");
-                        return File(System.IO.File.ReadAllBytes(imagePath + "attachment.png"), "application/octet-stream");
-                    default:
-                        return File(System.IO.File.ReadAllBytes(imagePath + "attachment.png"), "application/octet-stream");
-                }
-            }
-            return File(file["File"].AsByteArray, "application/octet-stream");
+            return GetFilePreview(id, file);
         }
         [OutputCache(Duration = 60 * 20, VaryByParam = "id")]
-        public ActionResult GetFileIconBig(string id)
+        public ActionResult GetFileIconMobile(string id)
         {
-            BsonDocument file = filePreviewBig.FindOne(ObjectId.Parse(id.Split('.')[0]));
-            if (file == null)
-            {
-                return new ResponseModel<string>(ErrorCode.record_not_exist, "");
-            }
-            else
-            {
-                return new ResponseModel<BsonDocument>(ErrorCode.success, file);
-            }
+            BsonDocument file = filePreviewMobile.FindOne(ObjectId.Parse(id.Split('.')[0]));
+            return GetFilePreview(id, file);
         }
         public ActionResult GetAllShared(string fileId)
         {
@@ -310,7 +274,7 @@ namespace FileService.Web.Controllers
             ViewBag.id = id;
             ViewBag.convert = "false";
             ViewBag.deleted = deleted.ToString().ToLower();
-            ViewBag.fileType = fileType == "" ? "text" : fileType;
+            ViewBag.fileType = fileType;
             if (fileType == "office")
             {
                 ViewBag.Convert = "true";
@@ -326,7 +290,7 @@ namespace FileService.Web.Controllers
             string fileType = extension.GetTypeByExtension(Path.GetExtension(fileName).ToLower()).ToLower();
             ViewBag.id = id;
             ViewBag.convert = "true";
-            ViewBag.fileType = fileType == "" ? "text" : fileType;
+            ViewBag.fileType = fileType;
             ViewBag.FileName = fileName;
             ViewBag.template = System.IO.File.ReadAllText(AppDomain.CurrentDomain.BaseDirectory + "pdfview/template.html");
             return View("Preview");

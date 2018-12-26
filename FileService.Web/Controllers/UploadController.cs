@@ -21,7 +21,7 @@ namespace FileService.Web.Controllers
         string tempFileDirectory = AppDomain.CurrentDomain.BaseDirectory + AppSettings.tempFileDir + DateTime.Now.ToString("yyyyMMdd") + "\\";
         Extension extension = new Extension();
         [HttpPost]
-        public ActionResult Image(UploadImgModel uploadImgModel) 
+        public ActionResult Image(UploadImgModel uploadImgModel)
         {
             List<FileResponse> response = new List<FileResponse>();
             List<ImageOutPut> output = new List<ImageOutPut>();
@@ -47,7 +47,8 @@ namespace FileService.Web.Controllers
             foreach (HttpPostedFileBase file in uploadImgModel.Images)
             {
                 //过滤不正确的格式
-                if (!extension.CheckFileExtensionImage(Path.GetExtension(file.FileName).ToLower()))
+                string contentType = "";
+                if (!extension.CheckFileExtensionImage(Path.GetExtension(file.FileName).ToLower(), ref contentType))
                 {
                     response.Add(new FileResponse()
                     {
@@ -74,7 +75,7 @@ namespace FileService.Web.Controllers
                 file.SaveAs(tempFileDirectory + file.FileName);
                 ObjectId fileId = ObjectId.GenerateNewId();
 
-                filesWrap.InsertImage(fileId, ObjectId.Empty, file.FileName, file.InputStream.Length, Request.Headers["AppName"], 0, ImageExtention.GetContentType(file.FileName), thumbnail, access, Request.Headers["UserName"] ?? User.Identity.Name);
+                filesWrap.InsertImage(fileId, ObjectId.Empty, file.FileName, file.InputStream.Length, Request.Headers["AppName"], 0, contentType, thumbnail, access, Request.Headers["UserName"] ?? User.Identity.Name);
 
                 string handlerId = converter.GetHandlerId();
                 if (output.Count == 0)
@@ -129,7 +130,8 @@ namespace FileService.Web.Controllers
             foreach (HttpPostedFileBase file in uploadVideo.Videos)
             {
                 //过滤不正确的格式
-                if (!extension.CheckFileExtensionVideo(Path.GetExtension(file.FileName).ToLower()))
+                string contentType = "";
+                if (!extension.CheckFileExtensionVideo(Path.GetExtension(file.FileName).ToLower(), ref contentType))
                 {
                     response.Add(new FileResponse()
                     {
@@ -157,7 +159,7 @@ namespace FileService.Web.Controllers
 
                 ObjectId fileId = ObjectId.GenerateNewId();
 
-                filesWrap.InsertVideo(fileId, ObjectId.Empty, file.FileName, file.InputStream.Length, Request.Headers["AppName"], 0, file.ContentType, videos, access, Request.Headers["UserName"] ?? User.Identity.Name);
+                filesWrap.InsertVideo(fileId, ObjectId.Empty, file.FileName, file.InputStream.Length, Request.Headers["AppName"], 0, contentType, videos, access, Request.Headers["UserName"] ?? User.Identity.Name);
 
                 string handlerId = converter.GetHandlerId();
                 if (outputs.Count == 0)
@@ -202,7 +204,8 @@ namespace FileService.Web.Controllers
             {
                 string fileExt = Path.GetExtension(file.FileName).ToLower();
                 //过滤不正确的格式
-                if (!extension.CheckFileExtension(fileExt))
+                string contentType = "";
+                if (!extension.CheckFileExtension(fileExt,ref contentType))
                 {
                     response.Add(new FileResponse()
                     {
@@ -236,7 +239,7 @@ namespace FileService.Web.Controllers
                     file.InputStream.Length,
                     Request.Headers["AppName"],
                     0,
-                    file.ContentType,
+                    contentType,
                     files,
                     access,
                     Request.Headers["UserName"] ?? User.Identity.Name);
@@ -311,7 +314,8 @@ namespace FileService.Web.Controllers
             foreach (HttpPostedFileBase file in uploadVideoCPStreamModel.VideoCPs)
             {
                 //过滤不正确的格式
-                if (!extension.CheckFileExtension(Path.GetExtension(file.FileName)))
+                string contentType = "";
+                if (!extension.CheckFileExtension(Path.GetExtension(file.FileName),ref contentType))
                 {
                     response.Add(ObjectId.Empty.ToString());
                     continue;
@@ -346,7 +350,8 @@ namespace FileService.Web.Controllers
             ObjectId fileId = ObjectId.Parse(replaceFileModel.FileId);
             string fileExt = Path.GetExtension(replaceFileModel.File.FileName).ToLower();
             //过滤不正确的格式
-            if (!extension.CheckFileExtension(fileExt)) return new ResponseModel<string>(ErrorCode.file_type_blocked, "");
+            string contentType = "";
+            if (!extension.CheckFileExtension(fileExt, ref contentType)) return new ResponseModel<string>(ErrorCode.file_type_blocked, "");
             BsonDocument fileWrap = filesWrap.FindOne(fileId);
             string handlerId = converter.GetHandlerId();
             if (fileWrap["FileType"].AsString == replaceFileModel.FileType)
@@ -356,7 +361,7 @@ namespace FileService.Web.Controllers
                 //保存上传的文件到共享目录
                 replaceFileModel.File.SaveAs(tempFileDirectory + replaceFileModel.File.FileName);
 
-                if(filesWrap.Update(fileWrap["_id"].AsObjectId, new BsonDocument() {
+                if (filesWrap.Update(fileWrap["_id"].AsObjectId, new BsonDocument() {
                         {"FileName", replaceFileModel.File.FileName },
                         {"Length",replaceFileModel.File.InputStream.Length },
                         {"Download",0 }

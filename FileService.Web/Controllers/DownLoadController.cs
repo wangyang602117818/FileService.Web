@@ -29,15 +29,16 @@ namespace FileService.Web.Controllers
             AddDownload(fileWrapId);
             ObjectId fileId = fileWrap["FileId"].AsObjectId;
             string fileName = fileWrap["FileName"].AsString;
+            string contentType = fileWrap["ContentType"].AsString;
             if (fileId == ObjectId.Empty)
             {
                 string tempFilePath = AppDomain.CurrentDomain.BaseDirectory + AppSettings.tempFileDir + fileWrap["CreateTime"].ToUniversalTime().ToString("yyyyMMdd") + "\\" + fileName;
                 FileStream fileStream = new FileStream(tempFilePath, FileMode.Open, FileAccess.Read);
-                return File(fileStream, fileWrap["ContentType"].AsString, fileName);
+                return File(fileStream, contentType, fileName);
             }
             else
             {
-                return GetSourceFile(fileId, fileWrap["ContentType"].AsString);
+                return GetSourceFile(fileId, contentType, fileName);
             }
         }
         [AppAuthorizeDefault]
@@ -105,7 +106,7 @@ namespace FileService.Web.Controllers
             //没有缩略图
             if (thumbnail == null)
             {
-                return GetSourceFile(fileWrap["FileId"].AsObjectId, fileWrap["ContentType"].AsString);
+                return GetSourceFile(fileWrap["FileId"].AsObjectId, fileWrap["ContentType"].AsString, fileWrap["FileName"].AsString);
             }
             else
             {
@@ -126,7 +127,7 @@ namespace FileService.Web.Controllers
             //没有缩略图
             if (thumbnail == null)
             {
-                return GetSourceFile(fileWrap["FileId"].AsObjectId, fileWrap["ContentType"].AsString);
+                return GetSourceFile(fileWrap["FileId"].AsObjectId, fileWrap["ContentType"].AsString, fileWrap["FileName"].AsString);
             }
             else
             {

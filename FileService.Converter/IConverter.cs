@@ -20,7 +20,7 @@ namespace FileService.Converter
         MongoFile mongoFile = new MongoFile();
         MongoFileConvert mongoFileConvert = new MongoFileConvert();
         FilePreview filePreview = new FilePreview();
-        FilePreviewBig filePreviewBig = new FilePreviewBig();
+        FilePreviewMobile filePreviewMobile = new FilePreviewMobile();
         VideoCapture videoCapture = new VideoCapture();
         public virtual bool Convert(FileItem fileItem)
         {
@@ -128,9 +128,9 @@ namespace FileService.Converter
                 filePreview.Replace(fileId, from, stream.Length, width, height, fileName, stream.ToBytes());
             }
             fileStream.Position = 0;
-            using (Stream stream = ImageExtention.GenerateFilePreview(fileName, 300, fileStream, ImageModelEnum.scale, format, ref width, ref height))
+            using (Stream stream = ImageExtention.GenerateFilePreview(fileName, 50, fileStream, ImageModelEnum.scale, format, ref width, ref height))
             {
-                filePreviewBig.Replace(fileId, from, stream.Length, width, height, fileName, stream.ToBytes());
+                filePreviewMobile.Replace(fileId, from, stream.Length, width, height, fileName, stream.ToBytes());
             }
         }
         public bool ConvertVideoMp4(string from, string type, ObjectId fileWrapId, string fullPath, ImageFormat format)

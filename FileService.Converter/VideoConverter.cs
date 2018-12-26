@@ -21,7 +21,7 @@ namespace FileService.Converter
         M3u8 m3u8 = new M3u8();
         Task task = new Task();
         FilePreview filePreview = new FilePreview();
-        FilePreviewBig filePreviewBig = new FilePreviewBig();
+        FilePreviewMobile filePreviewBig = new FilePreviewMobile();
         static Queue<string> queues = new Queue<string>();   //防止存储和转换源文件任务执行多次 
         static object o = new object();
         public override bool Convert(FileItem taskItem)

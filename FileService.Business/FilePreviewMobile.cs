@@ -3,9 +3,9 @@ using System;
 
 namespace FileService.Business
 {
-    public class FilePreviewBig : ModelBase<Data.FilePreviewBig>
+    public class FilePreviewMobile : ModelBase<Data.FilePreviewMobile>
     {
-        public FilePreviewBig() : base(new Data.FilePreviewBig()) { }
+        public FilePreviewMobile() : base(new Data.FilePreviewMobile()) { }
         public bool Replace(ObjectId id, string from, long length, int width, int height, string fileName, byte[] file)
         {
             BsonDocument document = new BsonDocument()
