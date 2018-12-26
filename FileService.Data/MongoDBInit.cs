@@ -140,11 +140,11 @@ namespace FileService.Data
                 var c = new CreateIndexModel<BsonDocument>(new BsonDocument() { { "From", 1 }, { "CreateTime", 1 } });  //shared key
                 database.GetCollection<BsonDocument>("FilePreview").Indexes.CreateOne(c);
             }
-            if (!databases.Contains("FilePreviewBig"))
+            if (!databases.Contains("FilePreviewMobile"))
             {
-                database.CreateCollection("FilePreviewBig");
+                database.CreateCollection("FilePreviewMobile");
                 var c = new CreateIndexModel<BsonDocument>(new BsonDocument() { { "From", 1 }, { "CreateTime", 1 } });  //shared key
-                database.GetCollection<BsonDocument>("FilePreviewBig").Indexes.CreateOne(c);
+                database.GetCollection<BsonDocument>("FilePreviewMobile").Indexes.CreateOne(c);
             }
             if (!databases.Contains("Thumbnail"))
             {
