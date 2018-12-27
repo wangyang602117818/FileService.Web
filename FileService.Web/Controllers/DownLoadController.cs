@@ -50,6 +50,7 @@ namespace FileService.Web.Controllers
             GridFSDownloadStream stream = mongoFileConvert.DownLoad(fId);
             ObjectId fileWrapId = stream.FileInfo.Metadata["Id"].AsObjectId;
             AddDownload(fileWrapId);
+            Response.AddHeader("Accept-Ranges", "bytes");
             return File(stream, stream.FileInfo.Metadata["ContentType"].AsString, stream.FileInfo.Filename);
         }
         public ActionResult GetHistory(string id)
