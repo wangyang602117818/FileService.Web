@@ -30,6 +30,7 @@ namespace FileService.Web.Controllers
             ObjectId fileId = fileWrap["FileId"].AsObjectId;
             string fileName = fileWrap["FileName"].AsString;
             string contentType = fileWrap["ContentType"].AsString;
+            Response.AddHeader("Accept-Ranges", "bytes");
             if (fileId == ObjectId.Empty)
             {
                 string tempFilePath = AppDomain.CurrentDomain.BaseDirectory + AppSettings.tempFileDir + fileWrap["CreateTime"].ToUniversalTime().ToString("yyyyMMdd") + "\\" + fileName;
