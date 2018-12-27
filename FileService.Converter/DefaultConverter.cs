@@ -28,37 +28,6 @@ namespace FileService.Converter
             {
                 if (File.Exists(fullPath)) SaveFileFromSharedFolder(from, fileType, fileWrapId, fullPath, ImageFormat.Jpeg);
             }
-            //生成图片文件缩略图
-            //if (fileType == "image")
-            //{
-            //    GenerateImageFilePreview(from, fullPath, fileName, fileWrapId);
-            //}
-            //生成视频文件缩略图
-            //if (fileType == "video")
-            //{
-            //    BsonDocument fileWrap = filesWrap.FindOne(fileWrapId);
-            //    if (!File.Exists(fullPath))
-            //    {
-            //        string newPath = MongoFileBase.AppDataDir + fileName;
-            //        if (!File.Exists(newPath))
-            //        {
-            //            mongoFile.SaveTo(fileWrap["FileId"].AsObjectId);
-            //        }
-            //        fullPath = newPath;
-            //    }
-            //    BsonArray videoCp = fileWrap["VideoCpIds"].AsBsonArray;
-            //    ObjectId videoCpId;
-            //    if (videoCp.Count > 0)
-            //    {
-            //        videoCpId = videoCp[0].AsObjectId;
-            //    }
-            //    else
-            //    {
-            //        videoCpId = ObjectId.GenerateNewId();
-            //        filesWrap.AddVideoCapture(fileWrapId, videoCpId);
-            //    }
-            //    new VideoConverter().ConvertVideoCp(videoCpId, from, fileWrapId, fullPath);
-            //}
             if (File.Exists(fullPath)) File.Delete(fullPath);
             return true;
         }
