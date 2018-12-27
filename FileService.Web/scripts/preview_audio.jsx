@@ -4,7 +4,7 @@
     }
     render() {
         if (this.props.fileId) {
-            var url = urls.downloadUrl + "/" + this.props.fileId;
+            var url = (this.props.convert ? urls.downloadConvertUrl : urls.downloadUrl) + "/" + this.props.fileId;
             if (this.props.deleted) url = url + "?deleted=true";
             return (
                 <div className="background">
@@ -24,18 +24,20 @@ class Preview extends React.Component {
         this.state = {
             tabs: [],
             fileId: "",
+            convert: false,
             deleted: false,
             isOrigin: false
         }
     }
     componentDidMount() {
         var fileId = document.getElementById("fileId").value;
+        var convert = document.getElementById("convert").value == "true" ? true : false;
         var deleted = document.getElementById("deleted").value == "true" ? true : false;
         var array = [];
         array.push({ _id: fileId, tag: "origin", current: false });
         this.dataSetChange(array);
 
-        this.setState({ deleted: deleted, fileId: fileId});
+        this.setState({ convert: convert, deleted: deleted, fileId: fileId});
     }
     render() {
         return (
@@ -46,6 +48,7 @@ class Preview extends React.Component {
                 <PreviewBody fileId={this.state.fileId}
                     isOrigin={this.state.isOrigin}
                     deleted={this.state.deleted}
+                    convert={this.state.convert}
                 />
             </div>
         );
