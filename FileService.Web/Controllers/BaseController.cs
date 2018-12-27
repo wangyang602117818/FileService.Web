@@ -66,6 +66,8 @@ namespace FileService.Web.Controllers
                     case "attachment":
                     case "pdf":
                         return File(System.IO.File.ReadAllBytes(imagePath + type + ".png"), "image/png");
+                    case "audio":
+                        return File(System.IO.File.ReadAllBytes(imagePath + type + ".png"), "image/png");
                     case "office":
                         if (ext == ".doc" || ext == ".docx")
                             return File(System.IO.File.ReadAllBytes(imagePath + "word.png"), "image/png");

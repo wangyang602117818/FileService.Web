@@ -50,5 +50,9 @@ namespace FileService.Util
             }
             return tsIds;
         }
+        public static string RemoveHtml(this string str)
+        {
+            return Regex.Replace(str, "<[^>]+>", "").Replace("&[^;]+;", "");
+        }
     }
 }

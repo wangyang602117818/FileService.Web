@@ -100,6 +100,9 @@ namespace FileService.Web
             bundles.Add(new BabelBundle("~/scripts/preview_video")
                .Include("~/scripts/preview_video.jsx")
             );
+            bundles.Add(new BabelBundle("~/scripts/preview_audio")
+              .Include("~/scripts/preview_audio.jsx")
+           );
             //preview pdf
             bundles.Add(new BabelBundle("~/scripts/preview_pdf")
                .Include("~/scripts/preview_pdf.jsx")

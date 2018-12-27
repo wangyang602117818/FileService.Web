@@ -7,12 +7,13 @@
             <table className="table">
                 <thead>
                     <tr>
-                        <th width="25%">{culture.id}</th>
-                        <th width="10%">{culture.extension}</th>
-                        <th width="10%">{culture.type}</th>
-                        <th width="10%">{culture.action}</th>
-                        <th width="15%">{culture.description}</th>
-                        <th width="30%">{culture.createTime}</th>
+                        <th width="20%">{culture.id}</th>
+                        <th width="8%">{culture.extension}</th>
+                        <th width="8%">{culture.type}</th>
+                        <th width="24%">{culture.contentType}</th>
+                        <th width="8%">{culture.action}</th>
+                        <th width="14%">{culture.description}</th>
+                        <th width="18%">{culture.createTime}</th>
                     </tr>
                 </thead>
                 <ExtensionList data={this.props.data}
@@ -67,7 +68,7 @@ class ExtensionItem extends React.Component {
                 <td dangerouslySetInnerHTML={{ __html: this.props.extension.Extension }}>
                 </td>
                 <td dangerouslySetInnerHTML={{ __html: this.props.extension.Type }}></td>
-
+                <td title={this.props.extension.ContentType}>{this.props.extension.ContentType.getFileName(20)}</td>
                 <td dangerouslySetInnerHTML={{ __html: this.props.extension.Action }}></td>
                 <td dangerouslySetInnerHTML={{ __html: this.props.extension.Description }}></td>
                 <td>{parseBsonTime(this.props.extension.CreateTime)}</td>
@@ -138,7 +139,7 @@ class Extension extends React.Component {
             success(data);
         });
     }
-    updateExtension(obj,success) {
+    updateExtension(obj, success) {
         obj.id = this.state.deleteId;
         http.postJson(urls.extension.updateExtensionUrl, obj, function (data) {
             if (data.code == 0) {
@@ -155,7 +156,7 @@ class Extension extends React.Component {
             http.get(urls.extension.deleteUrl + "/" + id, function (data) {
                 if (data.code == 0) {
                     that.getData();
-                    that.setState({ deleteShow: false, updateShow: false  });
+                    that.setState({ deleteShow: false, updateShow: false });
                 }
                 else {
                     alert(data.message);
@@ -174,7 +175,11 @@ class Extension extends React.Component {
                     deleteId: data.result._id.$oid,
                     deleteName: data.result.Extension
                 }, function () {
-                        this.refs.updateextension.onIdClick(data.result.Extension, data.result.Type, data.result.Description || "", data.result.Action);
+                    this.refs.updateextension.onIdClick(data.result.Extension,
+                        data.result.Type,
+                        data.result.ContentType,
+                        data.result.Description || "",
+                        data.result.Action);
                 }.bind(this));
             }
         }.bind(this));

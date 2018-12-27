@@ -65,6 +65,10 @@
     {
         @Scripts.Render("~/scripts/preview_txt")
     }
+    else if (ViewBag.fileType == "audio")
+    {
+        @Scripts.Render("~/scripts/preview_audio")
+    }
     else if (ViewBag.id == ObjectId.Empty.ToString())
     {
         @Scripts.Render("~/scripts/preview_converting")

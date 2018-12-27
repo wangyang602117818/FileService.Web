@@ -425,6 +425,8 @@ function getIconNameByFileName(filename) {
         case ".rm":
         case ".rmvb":
             return "icon-video";
+        case ".mp3":
+            return "icon-audio";
         case ".pdf":
             return "icon-pdf";
         case ".txt":

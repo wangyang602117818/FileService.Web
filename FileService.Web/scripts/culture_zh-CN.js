@@ -231,4 +231,5 @@ var culture = {
     monitorState: "监视状态",
     monitorTime: "监视时间",
     monitorMachine: "监视机器",
+    contentType: "内容类型"
 }

@@ -231,4 +231,5 @@ var culture = {
     monitorState: "MonitorState",
     monitorTime: "MonitorTime",
     monitorMachine: "monitorMachine",
+    contentType:"ContentType"
 }

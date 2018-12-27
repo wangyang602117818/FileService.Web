@@ -13,6 +13,8 @@ namespace FileService.Web.Models
         public string Extension { get; set; }
         [Required]
         public string Type { get; set; }
+        [Required]
+        public string ContentType { get; set; }
         [BsonIgnoreIfDefault]
         public string Description { get; set; }
         [Required]
@@ -27,6 +29,8 @@ namespace FileService.Web.Models
         public string Extension { get; set; }
         [Required]
         public string Type { get; set; }
+        [Required]
+        public string ContentType { get; set; }
         [BsonIgnoreIfDefault]
         public string Description { get; set; }
         [Required]

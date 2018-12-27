@@ -510,7 +510,15 @@ h1 {
         color: #8E4C9E;
         margin-left: 0;
     }
+.table .icon-audio {
+    color: #00BECA;
+    cursor: default;
+}
 
+    .table .icon-audio:hover {
+        color: #00BECA;
+        margin-left: 0;
+    }
 .table .icon-attachment {
     color: #484848;
     cursor: default;

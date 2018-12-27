@@ -233,6 +233,7 @@
     <Content Include="image\image.png" />
     <Content Include="image\libreoffice.png" />
     <Content Include="image\logo.png" />
+    <Content Include="image\audio.png" />
     <Content Include="image\pdf.png" />
     <Content Include="image\ppt.png" />
     <Content Include="image\text.png" />
@@ -366,6 +367,7 @@
     <Content Include="scripts\nestedsortable.min.js" />
     <Content Include="scripts\overview.jsx" />
     <Content Include="scripts\preview.jsx" />
+    <Content Include="scripts\preview_audio.jsx" />
     <Content Include="scripts\preview_converting.jsx" />
     <Content Include="scripts\preview_image.jsx" />
     <Content Include="scripts\preview_notsupported.jsx" />

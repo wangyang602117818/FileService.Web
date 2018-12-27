@@ -4,22 +4,24 @@
         this.state = {
             extension: "",
             type: "",
+            contentType: "",
             action: "allow",
             description: "",
             message: ""
         };
     }
     updateExtension(e) {
-        if (this.state.extension && this.state.type && this.state.action) {
+        if (this.state.extension && this.state.type && this.state.contentType && this.state.action) {
             this.props.updateExtension(this.state, function (data) {
                 if (data.code != 0) this.setState({ message: data.message });
             }.bind(this));
         }
     }
-    onIdClick(extension, type, description, action) {
+    onIdClick(extension, type, contentType, description, action) {
         this.setState({
             extension: extension,
             type: type,
+            contentType: contentType,
             description: description,
             action: action
         });
@@ -47,6 +49,7 @@
                                     <option value=""></option>
                                     <option value="image">image</option>
                                     <option value="video">video</option>
+                                    <option value="audio">audio</option>
                                     <option value="office">office</option>
                                     <option value="pdf">pdf</option>
                                     <option value="text">text</option>
@@ -60,6 +63,16 @@
                                     name="description"
                                     onChange={e => this.setState({ description: e.target.value })}
                                     value={this.state.description} />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>{culture.contentType}:</td>
+                            <td colSpan="3">
+                                <input type="text"
+                                    size="25"
+                                    name="contentType"
+                                    onChange={e => this.setState({ contentType: e.target.value })}
+                                    value={this.state.contentType} /><font color="red">*</font>
                             </td>
                         </tr>
                         <tr>
@@ -93,6 +106,7 @@ class AddExtension extends React.Component {
         this.state = {
             extension: "",
             type: "",
+            contentType: "",
             action: "allow",
             description: "",
             message: ""
@@ -100,10 +114,10 @@ class AddExtension extends React.Component {
     }
     addExtension(e) {
         var that = this;
-        if (this.state.extension && this.state.type && this.state.action) {
+        if (this.state.extension && this.state.type && this.state.contentType && this.state.action) {
             this.props.addExtension(this.state, function (data) {
                 if (data.code == 0) {
-                    that.setState({ extension: "", type: "", description: "", message: "" });
+                    that.setState({ extension: "", message: "" });
                 } else {
                     that.setState({ message: data.message });
                 }
@@ -133,6 +147,7 @@ class AddExtension extends React.Component {
                                     <option value=""></option>
                                     <option value="image">image</option>
                                     <option value="video">video</option>
+                                    <option value="audio">audio</option>
                                     <option value="office">office</option>
                                     <option value="pdf">pdf</option>
                                     <option value="text">text</option>
@@ -146,6 +161,16 @@ class AddExtension extends React.Component {
                                     name="description"
                                     onChange={e => this.setState({ description: e.target.value })}
                                     value={this.state.description} />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>{culture.contentType}:</td>
+                            <td colSpan="3">
+                                <input type="text"
+                                    size="25"
+                                    name="contentType"
+                                    onChange={e => this.setState({ contentType: e.target.value })}
+                                    value={this.state.contentType} /><font color="red">*</font>
                             </td>
                         </tr>
                         <tr>

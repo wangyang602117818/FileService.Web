@@ -16,7 +16,7 @@ namespace FileService.Business
         {
             BsonDocument document = mongoData.FindByExtension(extension);
             if (document == null) return true;
-            contentType = document["Content-Type"].AsString;
+            contentType = document["ContentType"].AsString;
             if (document["Action"].AsString.ToLower() == "block") return false;
             return true;
         }
@@ -24,7 +24,7 @@ namespace FileService.Business
         {
             BsonDocument document = mongoData.FindByExtension(extension);
             if (document == null) return false;
-            contentType = document["Content-Type"].AsString;
+            contentType = document["ContentType"].AsString;
             if (document["Type"].AsString.ToLower() != "video") return false;
             if (document["Action"].AsString.ToLower() == "block") return false;
             return true;
@@ -33,7 +33,7 @@ namespace FileService.Business
         {
             BsonDocument document = mongoData.FindByExtension(extension);
             if (document == null) return false;
-            contentType = document["Content-Type"].AsString;
+            contentType = document["ContentType"].AsString;
             if (document["Type"].AsString.ToLower() != "image") return false;
             if (document["Action"].AsString.ToLower() == "block") return false;
             return true;
@@ -48,7 +48,7 @@ namespace FileService.Business
         {
             BsonDocument document = Extensions.Where(ext => ext["Extension"].AsString == extension).FirstOrDefault();
             if (document == null) return "application/octet-stream";
-            return document["Content-Type"].AsString;
+            return document["ContentType"].AsString;
         }
         public BsonDocument GetByExtension(string extension)
         {
