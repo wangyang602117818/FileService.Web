@@ -19,7 +19,6 @@ namespace FileService.Web.Controllers
     public class UploadController : BaseController
     {
         string tempFileDirectory = AppDomain.CurrentDomain.BaseDirectory + AppSettings.tempFileDir + DateTime.Now.ToString("yyyyMMdd") + "\\";
-        Extension extension = new Extension();
         [HttpPost]
         public ActionResult Image(UploadImgModel uploadImgModel)
         {
