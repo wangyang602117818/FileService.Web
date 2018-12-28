@@ -8,7 +8,7 @@
             if (this.props.deleted) url = url + "?deleted=true";
             return (
                 <div className="background">
-                    <audio controls="controls">
+                    <audio controls="controls" style={{ width:"500px" }}>
                         <source src={url} type="audio/mpeg" />
                     </audio>
                 </div>
