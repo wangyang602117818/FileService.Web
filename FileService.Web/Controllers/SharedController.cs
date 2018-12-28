@@ -11,7 +11,6 @@ namespace FileService.Web.Controllers
     [AllowAnonymous]
     public class SharedController : BaseController
     {
-        Extension extension = new Extension();
         public ActionResult Init(string id)
         {
             BsonDocument bson = shared.FindOne(ObjectId.Parse(id));
