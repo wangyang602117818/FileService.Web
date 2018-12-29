@@ -54,7 +54,7 @@ namespace FileService.Web.Controllers
         protected ActionResult GetFilePreview(string id, BsonDocument filePreview)
         {
             string imagePath = AppDomain.CurrentDomain.BaseDirectory + "image\\";
-            string ext = "." + id.Split('.')[1].TrimEnd('/');
+            string ext = "." + id.Split('.')[1].TrimEnd('/').ToLower();
             string type = extension.GetTypeByExtension(ext).ToLower();
             if (filePreview == null)
             {
@@ -64,9 +64,8 @@ namespace FileService.Web.Controllers
                     case "video":
                     case "image":
                     case "attachment":
-                    case "pdf":
-                        return File(System.IO.File.ReadAllBytes(imagePath + type + ".png"), "image/png");
                     case "audio":
+                    case "pdf":
                         return File(System.IO.File.ReadAllBytes(imagePath + type + ".png"), "image/png");
                     case "office":
                         if (ext == ".doc" || ext == ".docx")
