@@ -2,6 +2,7 @@
 using System;
 using System.Configuration;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 
 namespace FileService.Util
@@ -29,8 +30,9 @@ namespace FileService.Util
         public static string GetFullPath(BsonDocument task)
         {
             string machine = task["Machine"].AsString;
-            string tempPath = AppSettings.sharedFolders.Split(';').ToList().Where(w => w.Contains(machine)).FirstOrDefault();
-            return tempPath.TrimEnd('\\') + "\\" + task["Folder"].AsString + "\\" + task["FileName"];
+            string fileExt = Path.GetExtension(task["FileName"].ToString()).ToLower();
+            string tempPath = sharedFolders.Split(';').ToList().Where(w => w.Contains(machine)).FirstOrDefault();
+            return tempPath.TrimEnd('\\') + "\\" + task["Folder"].AsString + "\\" + task["FileId"].ToString() + fileExt;
         }
         public static bool connectState(string path, string userName, string passWord, ref string message)
         {

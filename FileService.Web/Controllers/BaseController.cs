@@ -239,7 +239,8 @@ namespace FileService.Web.Controllers
             IEnumerable<BsonDocument> tasks = task.FindCacheFiles(fileWrapId);
             foreach (BsonDocument task in tasks)
             {
-                string fullPath = AppDomain.CurrentDomain.BaseDirectory + AppSettings.tempFileDir + task["Folder"].ToString() + "\\" + task["FileName"].ToString();
+                string fileExt = Path.GetExtension(task["FileName"].AsString).ToLower();
+                string fullPath = AppDomain.CurrentDomain.BaseDirectory + AppSettings.tempFileDir + task["Folder"].ToString() + "\\" + task["FileId"].ToString()+ fileExt;
                 if (System.IO.File.Exists(fullPath)) System.IO.File.Delete(fullPath);
             }
             //删除共享信息

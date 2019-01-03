@@ -56,7 +56,7 @@ namespace FileService.Converter
                             }
                             else
                             {
-                                SaveFileFromSharedFolder(from, fileType, fileWrapId, fullPath, ImageFormat.Jpeg);
+                                SaveFileFromSharedFolder(from, fileType, fileWrapId, fullPath, fileName, ImageFormat.Jpeg);
                             }
                             queues.Enqueue(fileWrapId.ToString());
                         }
@@ -65,11 +65,11 @@ namespace FileService.Converter
                     //任务肯定是后加的
                     else
                     {
-                        string newPath = MongoFileBase.AppDataDir + fileName;
+                        string newPath = MongoFileBase.AppDataDir + fileWrapId.ToString() + Path.GetExtension(fileName).ToLower();
                         if (!File.Exists(newPath))
                         {
                             BsonDocument filesWrap = new FilesWrap().FindOne(fileWrapId);
-                            mongoFile.SaveTo(filesWrap["FileId"].AsObjectId);
+                            mongoFile.SaveTo(filesWrap["FileId"].AsObjectId, newPath);
                         }
                         fullPath = newPath;
                     }
@@ -82,11 +82,11 @@ namespace FileService.Converter
                 {
                     if (!File.Exists(fullPath))
                     {
-                        string newPath = MongoFileBase.AppDataDir + fileName;
+                        string newPath = MongoFileBase.AppDataDir + fileWrapId.ToString() + Path.GetExtension(fileName).ToLower();
                         if (!File.Exists(newPath))
                         {
                             BsonDocument filesWrap = new FilesWrap().FindOne(fileWrapId);
-                            mongoFile.SaveTo(filesWrap["FileId"].AsObjectId);
+                            mongoFile.SaveTo(filesWrap["FileId"].AsObjectId, newPath);
                         }
                         fullPath = newPath;
                     }
@@ -97,13 +97,13 @@ namespace FileService.Converter
                 switch (output.Format)
                 {
                     case VideoOutPutFormat.M3u8:
-                        ConvertHls(from, taskItem.Message["_id"].AsObjectId, taskItem.Message["FileId"].AsObjectId, fullPath, output);
+                        ConvertHls(from, taskItem.Message["_id"].AsObjectId, taskItem.Message["FileId"].AsObjectId, fullPath, fileName, output);
                         break;
                 }
             }
             return true;
         }
-        public void ConvertHls(string from, ObjectId id, ObjectId fileId, string fullPath, VideoOutPut output)
+        public void ConvertHls(string from, ObjectId id, ObjectId fileId, string fullPath, string fileName, VideoOutPut output)
         {
             string sengmentFileName = fileId.ToString().Substring(0, 18) + "%06d.ts";
             string outputPath = MongoFileBase.AppDataDir + output.Id.ToString() + "\\";
@@ -136,14 +136,14 @@ namespace FileService.Converter
                 }
             }
             process.WaitForExit();
-            HlsToMongo(from, outputPath, output.Id, fileId, Path.GetFileNameWithoutExtension(fullPath) + ".m3u8", (int)output.Quality, totalDuration, output.Flag);
+            HlsToMongo(from, outputPath, output.Id, fileId, Path.GetFileNameWithoutExtension(fileName) + ".m3u8", (int)output.Quality, totalDuration, output.Flag);
             process.Close();
             process.Dispose();
         }
         public void HlsToMongo(string from, string path, ObjectId m3u8FileId, ObjectId sourceFileId, string fileNameM3u8, int quality, int duration, string flag)
         {
             string[] files = Directory.GetFiles(path);
-            string m3u8Text = File.ReadAllText(path + fileNameM3u8);
+            string m3u8Text = File.ReadAllText(path + sourceFileId.ToString() + ".m3u8");
             foreach (string file in files)
             {
                 if (Path.GetExtension(file) == ".ts")

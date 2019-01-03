@@ -26,7 +26,7 @@ namespace FileService.Converter
         {
             return false;
         }
-        public bool SaveFileFromSharedFolder(string from, string type, ObjectId fileWrapId, string fullPath, ImageFormat format)
+        public bool SaveFileFromSharedFolder(string from, string type, ObjectId fileWrapId, string fullPath, string fileName, ImageFormat format)
         {
             FileStream fileStream = new FileStream(fullPath, FileMode.Open, FileAccess.Read);
             string md5 = fileStream.GetMD5();
@@ -34,7 +34,6 @@ namespace FileService.Converter
             ObjectId id = ObjectId.Empty;
             if (file == null)
             {
-                string fileName = Path.GetFileName(fullPath);
                 id = mongoFile.Upload(fileName, fileStream, null);
                 //生成文件缩略图
                 if (type == "image") GenerateFilePreview(from, id, fileName, fileStream, format);
@@ -43,7 +42,7 @@ namespace FileService.Converter
             else
             {
                 id = file["_id"].AsObjectId;
-                ConvertVideoCpPreview(from, id, fileWrapId, fullPath, false);
+                if (type == "video") ConvertVideoCpPreview(from, id, fileWrapId, fullPath, false);
             }
             fileStream.Close();
             fileStream.Dispose();

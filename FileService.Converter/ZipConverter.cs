@@ -20,6 +20,7 @@ namespace FileService.Converter
         {
             ObjectId fileWrapId = taskItem.Message["FileId"].AsObjectId;
             BsonDocument fileWrap = filesWrap.FindOne(fileWrapId);
+            string from = taskItem.Message["From"].AsString;
             string fileName = taskItem.Message["FileName"].AsString;
             string fileType = taskItem.Message["Type"].AsString;
 
@@ -30,18 +31,18 @@ namespace FileService.Converter
             {
                 if (File.Exists(fullPath))
                 {
-                    SaveFileFromSharedFolder("", "attachment", fileWrapId, fullPath, null);
+                    SaveFileFromSharedFolder(from, "attachment", fileWrapId, fullPath, fileName, null);
                 }
             }
             else
             {
                 if (!File.Exists(fullPath))
                 {
-                    string newPath = MongoFileBase.AppDataDir + fileName;
+                    string newPath = MongoFileBase.AppDataDir + fileWrapId.ToString() + Path.GetExtension(fileName).ToLower();
                     if (!File.Exists(newPath))
                     {
                         BsonDocument filesWrap = new FilesWrap().FindOne(fileWrapId);
-                        mongoFile.SaveTo(filesWrap["FileId"].AsObjectId);
+                        mongoFile.SaveTo(filesWrap["FileId"].AsObjectId, newPath);
                     }
                     fullPath = newPath;
                 }
@@ -88,8 +89,9 @@ namespace FileService.Converter
                                 reader.OpenEntryStream().CopyTo(fileStream);
                             }
                             //转换之后的文件id
-                            string destinationPath = destPath + Path.GetFileNameWithoutExtension(reader.Entry.Key) + ".pdf";
-                            ObjectId newFileId = new OfficeConverter().ConvertOffice(sourcePath, destinationPath, fileWrapId);
+                            string convertName = Path.GetFileNameWithoutExtension(reader.Entry.Key) + ".pdf";
+                            string destinationPath = destPath + convertName;
+                            ObjectId newFileId = new OfficeConverter().ConvertOffice(sourcePath, destinationPath, convertName, fileWrapId);
                             if (File.Exists(sourcePath)) File.Delete(sourcePath);
                             if (Directory.Exists(destPath)) Directory.Delete(destPath, true);
                             //id列表

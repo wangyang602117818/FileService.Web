@@ -33,12 +33,11 @@ namespace FileService.Business
         {
             mongoData.Delete(id);
         }
-        public void SaveTo(ObjectId id)
+        public void SaveTo(ObjectId id,string fullPath)
         {
             using (GridFSDownloadStream mongoStream = mongoData.DownLoad(id))
             {
-                string filePath = AppDataDir + mongoStream.FileInfo.Filename;
-                using (FileStream fileStream = new FileStream(filePath, FileMode.Create))
+                using (FileStream fileStream = new FileStream(fullPath, FileMode.Create))
                 {
                     mongoStream.CopyTo(fileStream);
                 }

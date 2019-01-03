@@ -1,5 +1,4 @@
-﻿using FileService.Business;
-using FileService.Model;
+﻿using FileService.Model;
 using FileService.Util;
 using FileService.Web.Filters;
 using FileService.Web.Models;
@@ -47,7 +46,8 @@ namespace FileService.Web.Controllers
             {
                 //过滤不正确的格式
                 string contentType = "";
-                if (!extension.CheckFileExtensionImage(Path.GetExtension(file.FileName).ToLower(), ref contentType))
+                string ext = Path.GetExtension(file.FileName).ToLower();
+                if (!extension.CheckFileExtensionImage(ext, ref contentType))
                 {
                     response.Add(new FileResponse()
                     {
@@ -70,9 +70,9 @@ namespace FileService.Web.Controllers
                         });
                 }
                 BsonArray access = new BsonArray(accessList.Select(a => a.ToBsonDocument()));
-                //上传到TempFiles
-                file.SaveAs(tempFileDirectory + file.FileName);
                 ObjectId fileId = ObjectId.GenerateNewId();
+                //上传到TempFiles
+                file.SaveAs(tempFileDirectory + fileId.ToString() + ext);
 
                 filesWrap.InsertImage(fileId, ObjectId.Empty, file.FileName, file.InputStream.Length, Request.Headers["AppName"], 0, contentType, thumbnail, access, Request.Headers["UserName"] ?? User.Identity.Name);
 
@@ -130,7 +130,8 @@ namespace FileService.Web.Controllers
             {
                 //过滤不正确的格式
                 string contentType = "";
-                if (!extension.CheckFileExtensionVideo(Path.GetExtension(file.FileName).ToLower(), ref contentType))
+                string ext = Path.GetExtension(file.FileName).ToLower();
+                if (!extension.CheckFileExtensionVideo(ext, ref contentType))
                 {
                     response.Add(new FileResponse()
                     {
@@ -153,11 +154,9 @@ namespace FileService.Web.Controllers
                     });
                 }
                 BsonArray access = new BsonArray(accessList.Select(a => a.ToBsonDocument()));
-                //上传到TempFiles
-                file.SaveAs(tempFileDirectory + file.FileName);
-
                 ObjectId fileId = ObjectId.GenerateNewId();
-
+                //上传到TempFiles
+                file.SaveAs(tempFileDirectory + fileId.ToString() + ext);
                 filesWrap.InsertVideo(fileId, ObjectId.Empty, file.FileName, file.InputStream.Length, Request.Headers["AppName"], 0, contentType, videos, access, Request.Headers["UserName"] ?? User.Identity.Name);
 
                 string handlerId = converter.GetHandlerId();
@@ -201,10 +200,10 @@ namespace FileService.Web.Controllers
                 Directory.CreateDirectory(tempFileDirectory);
             foreach (HttpPostedFileBase file in uploadAttachmentModel.Attachments)
             {
-                string fileExt = Path.GetExtension(file.FileName).ToLower();
+                string ext = Path.GetExtension(file.FileName).ToLower();
                 //过滤不正确的格式
                 string contentType = "";
-                if (!extension.CheckFileExtension(fileExt,ref contentType))
+                if (!extension.CheckFileExtension(ext, ref contentType))
                 {
                     response.Add(new FileResponse()
                     {
@@ -214,7 +213,7 @@ namespace FileService.Web.Controllers
                     continue;
                 }
                 BsonArray files = new BsonArray();
-                string fileType = extension.GetTypeByExtension(fileExt);
+                string fileType = extension.GetTypeByExtension(ext);
                 //office
                 if (fileType.ToLower() == "office")
                 {
@@ -226,11 +225,9 @@ namespace FileService.Web.Controllers
                 }
                 //上传
                 BsonArray access = new BsonArray(accessList.Select(a => a.ToBsonDocument()));
-                //上传到TempFiles
-                file.SaveAs(tempFileDirectory + file.FileName);
-
                 ObjectId fileId = ObjectId.GenerateNewId();
-
+                //上传到TempFiles
+                file.SaveAs(tempFileDirectory + fileId.ToString() + ext);
                 filesWrap.InsertAttachment(fileId,
                     ObjectId.Empty,
                     file.FileName,
@@ -256,7 +253,7 @@ namespace FileService.Web.Controllers
                     );
                 }
                 //zip转换任务
-                else if (fileExt == ".zip" || fileExt == ".rar")
+                else if (ext == ".zip" || ext == ".rar")
                 {
                     InsertTask(handlerId, fileId, file.FileName, "attachment", Request.Headers["AppName"], new BsonDocument() {
                         {"_id",ObjectId.Empty },
@@ -314,7 +311,7 @@ namespace FileService.Web.Controllers
             {
                 //过滤不正确的格式
                 string contentType = "";
-                if (!extension.CheckFileExtension(Path.GetExtension(file.FileName),ref contentType))
+                if (!extension.CheckFileExtension(Path.GetExtension(file.FileName), ref contentType))
                 {
                     response.Add(ObjectId.Empty.ToString());
                     continue;

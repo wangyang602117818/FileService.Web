@@ -26,7 +26,7 @@ namespace FileService.Converter
             //第一次转换，文件肯定在共享文件夹
             if (processCount == 0)
             {
-                if (File.Exists(fullPath)) SaveFileFromSharedFolder(from, fileType, fileWrapId, fullPath, ImageFormat.Jpeg);
+                if (File.Exists(fullPath)) SaveFileFromSharedFolder(from, fileType, fileWrapId, fullPath, fileName, ImageFormat.Jpeg);
             }
             if (File.Exists(fullPath)) File.Delete(fullPath);
             return true;
