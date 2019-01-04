@@ -53,6 +53,15 @@ namespace FileService.Web.Controllers
             Response.AddHeader("Accept-Ranges", "bytes");
             return File(stream, stream.FileInfo.Metadata["ContentType"].AsString, stream.FileInfo.Filename);
         }
+        [AppAuthorizeDefault]
+        public ActionResult DownloadVideoFromM3u8Id(string id)
+        {
+            ObjectId m3u8Id = GetObjectIdFromId(id);
+            if (m3u8Id == ObjectId.Empty) return File(new MemoryStream(), "application/octet-stream");
+            BsonDocument m3u8Bson = m3u8.FindOne(m3u8Id);
+            if (m3u8Bson == null) return File(new MemoryStream(), "application/octet-stream");
+            return Get(m3u8Bson["SourceId"].ToString());
+        }
         public ActionResult GetHistory(string id)
         {
             ObjectId fId = GetObjectIdFromId(id);
@@ -218,7 +227,6 @@ namespace FileService.Web.Controllers
             BsonDocument document = videoCapture.FindOne(newId);
             return File(document["File"].AsByteArray, ImageExtention.GetContentType(document["FileName"].AsString), document["FileName"].AsString);
         }
-
         public ActionResult M1()
         {
             IEnumerable<BsonDocument> files = filesWrap.FindAll();
