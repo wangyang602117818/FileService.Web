@@ -224,7 +224,7 @@ namespace FileService.Util
         private static Stream ConvertImageGif(Image image, int x, int y, int width, int height, bool cut)
         {
             Stream stream = new MemoryStream();
-            Image gif = new Bitmap(width, height);
+            Bitmap gif = new Bitmap(width, height);
             Image frame = new Bitmap(width, height);
             Graphics g = Graphics.FromImage(gif);
             Graphics gFrame = Graphics.FromImage(frame);
@@ -274,7 +274,6 @@ namespace FileService.Util
                 gif.SaveAdd(eps);
             }
             stream.Position = 0;
-
             return stream;
         }
         private static ImageCodecInfo GetEncoder(ImageFormat format)
