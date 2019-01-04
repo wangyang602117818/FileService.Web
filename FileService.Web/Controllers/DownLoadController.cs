@@ -54,7 +54,7 @@ namespace FileService.Web.Controllers
             return File(stream, stream.FileInfo.Metadata["ContentType"].AsString, stream.FileInfo.Filename);
         }
         [AppAuthorizeDefault]
-        public ActionResult DownloadVideoFromM3u8Id(string id)
+        public ActionResult GetVideoFromM3u8Id(string id)
         {
             ObjectId m3u8Id = GetObjectIdFromId(id);
             if (m3u8Id == ObjectId.Empty) return File(new MemoryStream(), "application/octet-stream");
