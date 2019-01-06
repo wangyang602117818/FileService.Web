@@ -8,6 +8,7 @@ var imageExtensions = [];
 var videoExtensions = [];
 var officeExtensions = [];
 var compressExtensions = [".rar", ".zip"];
+var extensions = [];
 var keywords = [
     "_id.$oid",
     "FileId.$oid",
@@ -205,7 +206,8 @@ var urls = {
         addExtensionUrl: appDomain + "admin/addextension",
         updateExtensionUrl: appDomain + "admin/updateextension",
         deleteUrl: appDomain + "admin/deleteextension",
-        getExtensionsByTypeUrl: appDomain + "admin/getextensionsbytype"
+        getExtensionsByTypeUrl: appDomain + "admin/getextensionsbytype",
+        getAllExtensionUrl: appDomain + "admin/getallextensions"
     },
     application: {
         getUrl: appDomain + "admin/getapplications",
@@ -781,15 +783,17 @@ function getQuality(quality) {
             return culture.bad;
     }
 }
-function getOfficeExtensions() {
-    http.getSync(urls.extension.getExtensionsByTypeUrl + "?type=office", function (data) {
-        if (data.code == 0) officeExtensions = data.result;
-    });
-    http.getSync(urls.extension.getExtensionsByTypeUrl + "?type=video", function (data) {
-        if (data.code == 0) videoExtensions = data.result;
-    });
-    http.getSync(urls.extension.getExtensionsByTypeUrl + "?type=image", function (data) {
-        if (data.code == 0) imageExtensions = data.result;
+function getExtensions() {
+    http.get(urls.extension.getAllExtensionUrl, function (data) {
+        if (data.code == 0) {
+            extensions = data.result;
+            for (var i = 0; i < data.result.length; i++) {
+                if (data.result[i].Type == "image") imageExtensions.push(data.result[i].Extension);
+                if (data.result[i].Type == "video") videoExtensions.push(data.result[i].Extension);
+                if (data.result[i].Type == "office") officeExtensions.push(data.result[i].Extension);
+            }
+        }
+
     });
 }
 function getMachineNameByPath(path) {

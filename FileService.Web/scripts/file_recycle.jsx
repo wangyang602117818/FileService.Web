@@ -85,6 +85,7 @@ class FileRecycle extends React.Component {
             orderField: "DeleteTime",
             orderFieldType: "desc",
             selectedList: [],
+            resourceFileType:"",
             filter: "",
             startTime: "",
             endTime: "",
@@ -167,6 +168,13 @@ class FileRecycle extends React.Component {
         this.setState({ data: this.state.data, selectedList: this.state.selectedList });
         e.stopPropagation();
     }
+    onFilterClick(e) {
+        var id = e.target.id;
+        if (e.target.className.indexOf("current") != -1) return;
+        this.setState({ resourceFileType: id }, function () {
+            this.getData();
+        }.bind(this));
+    }
     onOrderChanged(e) {
         var order = e.target.getAttribute("order");
         if (order) {
@@ -194,6 +202,8 @@ class FileRecycle extends React.Component {
                     orderField={this.state.orderField}
                     onOrderChanged={this.onOrderChanged.bind(this)}
                     onTipsClick={this.onTipsClick.bind(this)}
+                    fileType={this.state.resourceFileType}
+                    onFilterClick={this.onFilterClick.bind(this)}
                     restoreFiles={this.restoreFiles.bind(this)}
                     onShowChange={this.onPageShow.bind(this)} />
                 <Pagination show={this.state.pageShow}

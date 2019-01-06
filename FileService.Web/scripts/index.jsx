@@ -19,6 +19,7 @@
     }
     componentDidMount() {
         this.setState({ name: userName, role: role });
+        getExtensions();
     }
     render() {
         return (

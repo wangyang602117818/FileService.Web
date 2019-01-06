@@ -48,10 +48,31 @@
             cursor: default;
         }
 
+    .title_arrow .filter_item {
+        display: inline-block;
+        padding: 0px 8px;
+        margin-left: 5px;
+    }
+
+        .title_arrow .filter_item:hover {
+            background-color: #ddd;
+            cursor:pointer;
+        }
+
+    .title_arrow .current {
+        background-color: #DCDCFF;
+    }
+
+        .title_arrow .current:hover {
+            background-color: #DCDCFF;
+            cursor: default;
+        }
+
     .title_arrow .right_component {
         display: inline-block;
         float: right;
         padding: 0 5px;
+        position: relative;
     }
 
         .title_arrow .right_component i {
@@ -71,6 +92,7 @@
         font-weight: normal;
         overflow: hidden;
         width: 100px;
+        right: 0;
     }
 
         .title_arrow .order_list span {

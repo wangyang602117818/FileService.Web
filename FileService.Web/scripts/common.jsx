@@ -104,7 +104,6 @@ class TitleArrowComponent extends React.Component {
                     <i className={this.props.show ? "iconfont icon-down" : "iconfont icon-right"}></i>{this.props.title} {this.props.count > 0 ? "(" + this.props.count + ")" : ""}
                 </span>
                 <div className="right_component" onMouseLeave={this.orderNone.bind(this)}>
-
                     <div className="order_list"
                         style={{ display: this.state.orderDisp ? "inline-block" : "none" }}
                         onClick={this.props.onOrderChanged}>
@@ -115,20 +114,43 @@ class TitleArrowComponent extends React.Component {
                             <span order="DeleteTime">{culture.deleteTime} {this.props.orderField == "DeleteTime" ? "✔" : ""}</span>
                         }
                     </div>
+                    <div className={this.props.fileType == "" ? "filter_item current" : "filter_item"}
+                        onClick={this.props.onFilterClick} id="">{culture.all}</div>
+
+                    <div className={this.props.fileType == "video" ? "filter_item current" : "filter_item"}
+                        onClick={this.props.onFilterClick} id="video">{culture.video}</div>
+
+                    <div className={this.props.fileType == "image" ? "filter_item current" : "filter_item"}
+                        onClick={this.props.onFilterClick} id="image">{culture.image}</div>
+
+                    <div className={this.props.fileType == "audio" ? "filter_item current" : "filter_item"}
+                        onClick={this.props.onFilterClick} id="audio">{culture.audio}</div>
+
+                    <div className={this.props.fileType == "office" ? "filter_item current" : "filter_item"}
+                        onClick={this.props.onFilterClick} id="office">{culture.office}</div>
+
+                    <div className={this.props.fileType == "pdf" ? "filter_item current" : "filter_item"}
+                        onClick={this.props.onFilterClick} id="pdf">{culture.pdf}</div>
+
+                    <div className={this.props.fileType == "text" ? "filter_item current" : "filter_item"}
+                        onClick={this.props.onFilterClick} id="text">{culture.text}</div>
+
+                    <div className={this.props.fileType == "attachment" ? "filter_item current" : "filter_item"}
+                        onClick={this.props.onFilterClick} id="attachment">{culture.attachment}</div>
 
                     {this.props.type == "file" ?
                         <i className="iconfont icon-download" title={this.props.type == "file" ? culture.download : culture.permanent_del}
                             onClick={this.props.downloadByIds}
-                            style={{ visibility: this.props.delShow ? "visible" : "hidden" }} /> : null
+                            style={{ display: this.props.delShow ? "inline-block" : "none" }} /> : null
                     }
                     {this.props.type == "file_recycle" ?
                         <i className="iconfont icon-restore"
                             onClick={this.props.restoreFiles}
-                            style={{ visibility: this.props.delShow ? "visible" : "hidden" }}></i> : null
+                            style={{ display: this.props.delShow ? "inline-block" : "none" }}></i> : null
                     }
                     <i className="iconfont icon-del" title={culture.delete}
                         onClick={this.props.removeByIds}
-                        style={{ visibility: this.props.delShow ? "visible" : "hidden" }} />
+                        style={{ display: this.props.delShow ? "inline-block" : "none" }} />
                     {this.props.listType == "list" ?
                         <i className='iconfont icon-listicon'
                             id='resource_list'
@@ -229,6 +251,7 @@ var CommonUsePagination = {
         localStorage.update_time = getCurrentDateTime();
         var that = this;
         var url = this.url + "?pageindex=" + this.state.pageIndex + "&pagesize=" + this.state.pageSize + "&filter=" + this.state.filter + "&startTime=" + this.state.startTime + "&endTime=" + this.state.endTime;
+        if (this.state.resourceFileType && this.state.resourceFileType.length > 0) url = url + "&fileType=" + this.state.resourceFileType;
         if (this.state.orderField) url = url + "&orderField=" + this.state.orderField;
         if (this.state.orderFieldType) url = url + "&orderFieldType=" + this.state.orderFieldType;
         http.get(url, function (result) {

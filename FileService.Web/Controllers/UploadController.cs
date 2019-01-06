@@ -46,8 +46,9 @@ namespace FileService.Web.Controllers
             {
                 //过滤不正确的格式
                 string contentType = "";
+                string fileType = "";
                 string ext = Path.GetExtension(file.FileName).ToLower();
-                if (!extension.CheckFileExtensionImage(ext, ref contentType))
+                if (!extension.CheckFileExtensionImage(ext, ref contentType, ref fileType))
                 {
                     response.Add(new FileResponse()
                     {
@@ -74,18 +75,18 @@ namespace FileService.Web.Controllers
                 //上传到TempFiles
                 file.SaveAs(tempFileDirectory + fileId.ToString() + ext);
 
-                filesWrap.InsertImage(fileId, ObjectId.Empty, file.FileName, file.InputStream.Length, Request.Headers["AppName"], 0, contentType, thumbnail, access, Request.Headers["UserName"] ?? User.Identity.Name);
+                filesWrap.InsertImage(fileId, ObjectId.Empty, file.FileName, file.InputStream.Length, Request.Headers["AppName"], 0, fileType, contentType, thumbnail, access, Request.Headers["UserName"] ?? User.Identity.Name);
 
                 string handlerId = converter.GetHandlerId();
                 if (output.Count == 0)
                 {
-                    InsertTask(handlerId, fileId, file.FileName, "image", Request.Headers["AppName"], new BsonDocument(), access, Request.Headers["UserName"] ?? User.Identity.Name);
+                    InsertTask(handlerId, fileId, file.FileName, fileType, Request.Headers["AppName"], new BsonDocument(), access, Request.Headers["UserName"] ?? User.Identity.Name);
                 }
                 else
                 {
                     foreach (ImageOutPut o in output)
                     {
-                        InsertTask(handlerId, fileId, file.FileName, "image", Request.Headers["AppName"], o.ToBsonDocument(), access, Request.Headers["UserName"] ?? User.Identity.Name);
+                        InsertTask(handlerId, fileId, file.FileName, fileType, Request.Headers["AppName"], o.ToBsonDocument(), access, Request.Headers["UserName"] ?? User.Identity.Name);
                     }
                 }
                 //日志
@@ -130,8 +131,9 @@ namespace FileService.Web.Controllers
             {
                 //过滤不正确的格式
                 string contentType = "";
+                string fileType = "";
                 string ext = Path.GetExtension(file.FileName).ToLower();
-                if (!extension.CheckFileExtensionVideo(ext, ref contentType))
+                if (!extension.CheckFileExtensionVideo(ext, ref contentType, ref fileType))
                 {
                     response.Add(new FileResponse()
                     {
@@ -157,7 +159,7 @@ namespace FileService.Web.Controllers
                 ObjectId fileId = ObjectId.GenerateNewId();
                 //上传到TempFiles
                 file.SaveAs(tempFileDirectory + fileId.ToString() + ext);
-                filesWrap.InsertVideo(fileId, ObjectId.Empty, file.FileName, file.InputStream.Length, Request.Headers["AppName"], 0, contentType, videos, access, Request.Headers["UserName"] ?? User.Identity.Name);
+                filesWrap.InsertVideo(fileId, ObjectId.Empty, file.FileName, file.InputStream.Length, Request.Headers["AppName"], 0, fileType, contentType, videos, access, Request.Headers["UserName"] ?? User.Identity.Name);
 
                 string handlerId = converter.GetHandlerId();
                 if (outputs.Count == 0)
@@ -203,7 +205,8 @@ namespace FileService.Web.Controllers
                 string ext = Path.GetExtension(file.FileName).ToLower();
                 //过滤不正确的格式
                 string contentType = "";
-                if (!extension.CheckFileExtension(ext, ref contentType))
+                string fileType = "";
+                if (!extension.CheckFileExtension(ext, ref contentType, ref fileType))
                 {
                     response.Add(new FileResponse()
                     {
@@ -213,7 +216,6 @@ namespace FileService.Web.Controllers
                     continue;
                 }
                 BsonArray files = new BsonArray();
-                string fileType = extension.GetTypeByExtension(ext);
                 //office
                 if (fileType.ToLower() == "office")
                 {
@@ -244,7 +246,7 @@ namespace FileService.Web.Controllers
                 //office转换任务
                 if (fileType == "office")
                 {
-                    InsertTask(handlerId, fileId, file.FileName, "attachment", Request.Headers["AppName"], new BsonDocument() {
+                    InsertTask(handlerId, fileId, file.FileName, fileType, Request.Headers["AppName"], new BsonDocument() {
                         {"_id",ObjectId.Empty },
                         {"Format",AttachmentOutput.pdf },
                         {"Flag","preview" } },
@@ -255,7 +257,7 @@ namespace FileService.Web.Controllers
                 //zip转换任务
                 else if (ext == ".zip" || ext == ".rar")
                 {
-                    InsertTask(handlerId, fileId, file.FileName, "attachment", Request.Headers["AppName"], new BsonDocument() {
+                    InsertTask(handlerId, fileId, file.FileName, fileType, Request.Headers["AppName"], new BsonDocument() {
                         {"_id",ObjectId.Empty },
                         {"Flag","zip" }
                     },
@@ -264,7 +266,7 @@ namespace FileService.Web.Controllers
                 }
                 else
                 {
-                    InsertTask(handlerId, fileId, file.FileName, "attachment", Request.Headers["AppName"], new BsonDocument(), access, Request.Headers["UserName"] ?? User.Identity.Name);
+                    InsertTask(handlerId, fileId, file.FileName, fileType, Request.Headers["AppName"], new BsonDocument(), access, Request.Headers["UserName"] ?? User.Identity.Name);
                 }
                 //日志
                 Log(fileId.ToString(), "UploadAttachment");
@@ -311,7 +313,8 @@ namespace FileService.Web.Controllers
             {
                 //过滤不正确的格式
                 string contentType = "";
-                if (!extension.CheckFileExtension(Path.GetExtension(file.FileName), ref contentType))
+                string fileType = "";
+                if (!extension.CheckFileExtension(Path.GetExtension(file.FileName), ref contentType, ref fileType))
                 {
                     response.Add(ObjectId.Empty.ToString());
                     continue;
@@ -347,7 +350,8 @@ namespace FileService.Web.Controllers
             string fileExt = Path.GetExtension(replaceFileModel.File.FileName).ToLower();
             //过滤不正确的格式
             string contentType = "";
-            if (!extension.CheckFileExtension(fileExt, ref contentType)) return new ResponseModel<string>(ErrorCode.file_type_blocked, "");
+            string fileType = "";
+            if (!extension.CheckFileExtension(fileExt, ref contentType,ref fileType)) return new ResponseModel<string>(ErrorCode.file_type_blocked, "");
             BsonDocument fileWrap = filesWrap.FindOne(fileId);
             string handlerId = converter.GetHandlerId();
             if (fileWrap["FileType"].AsString == replaceFileModel.FileType)

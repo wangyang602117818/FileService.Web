@@ -96,6 +96,9 @@ namespace FileService.Converter
                     case "video":
                         result = new VideoConverter().Convert(item);
                         break;
+                    case "office":
+                        result = new OfficeConverter().Convert(item);
+                        break;
                     case "attachment":
                         string fileExt = Path.GetExtension(item.Message["FileName"].AsString).ToLower();
                         if (fileExt == ".zip")
@@ -105,10 +108,6 @@ namespace FileService.Converter
                         else if (fileExt == ".rar")
                         {
                             result = new RarConverter().Convert(item);
-                        }
-                        else if (extension.GetTypeByExtension(fileExt) == "office")
-                        {
-                            result = new OfficeConverter().Convert(item);
                         }
                         else
                         {

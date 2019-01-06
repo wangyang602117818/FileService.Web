@@ -47,13 +47,13 @@
                                     value={this.state.type}
                                     onChange={e => this.setState({ type: e.target.value })}>
                                     <option value=""></option>
-                                    <option value="image">image</option>
-                                    <option value="video">video</option>
-                                    <option value="audio">audio</option>
-                                    <option value="office">office</option>
-                                    <option value="pdf">pdf</option>
-                                    <option value="text">text</option>
-                                    <option value="attachment">attachment</option>
+                                    <option value="image">{culture.image}</option>
+                                    <option value="video">{culture.video}</option>
+                                    <option value="audio">{culture.audio}</option>
+                                    <option value="office">{culture.office}</option>
+                                    <option value="pdf">{culture.pdf}</option>
+                                    <option value="text">{culture.text}</option>
+                                    <option value="attachment">{culture.attachment}</option>
                                 </select><font color="red">*</font>
                             </td>
                             <td>{culture.description}:</td>
@@ -145,13 +145,13 @@ class AddExtension extends React.Component {
                                     value={this.state.type}
                                     onChange={e => this.setState({ type: e.target.value })}>
                                     <option value=""></option>
-                                    <option value="image">image</option>
-                                    <option value="video">video</option>
-                                    <option value="audio">audio</option>
-                                    <option value="office">office</option>
-                                    <option value="pdf">pdf</option>
-                                    <option value="text">text</option>
-                                    <option value="attachment">attachment</option>
+                                    <option value="image">{culture.image}</option>
+                                    <option value="video">{culture.video}</option>
+                                    <option value="audio">{culture.audio}</option>
+                                    <option value="office">{culture.office}</option>
+                                    <option value="pdf">{culture.pdf}</option>
+                                    <option value="text">{culture.text}</option>
+                                    <option value="attachment">{culture.attachment}</option>
                                 </select><font color="red">*</font>
                             </td>
                             <td>{culture.description}:</td>

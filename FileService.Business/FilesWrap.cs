@@ -11,7 +11,7 @@ namespace FileService.Business
         {
             return mongoData.CountByFileId(fileId);
         }
-        public void InsertImage(ObjectId id, ObjectId fileId, string fileName, long length, string from, int downloads, string contentType, BsonArray thumbnail, BsonArray access, string owner)
+        public void InsertImage(ObjectId id, ObjectId fileId, string fileName, long length, string from, int downloads, string fileType, string contentType, BsonArray thumbnail, BsonArray access, string owner)
         {
             BsonDocument filesWrap = new BsonDocument()
                 {
@@ -21,7 +21,7 @@ namespace FileService.Business
                     {"Length",length },
                     {"From",from },
                     {"Download",downloads },
-                    {"FileType","image" },
+                    {"FileType",fileType},
                     {"ContentType",contentType },
                     {"Thumbnail",thumbnail },
                     {"Access",access },
@@ -32,7 +32,7 @@ namespace FileService.Business
                 };
             mongoData.Insert(filesWrap);
         }
-        public void InsertVideo(ObjectId id, ObjectId fileId, string fileName, long length, string from, int downloads, string contentType, BsonArray videos, BsonArray access, string owner)
+        public void InsertVideo(ObjectId id, ObjectId fileId, string fileName, long length, string from, int downloads, string fileType, string contentType, BsonArray videos, BsonArray access, string owner)
         {
             BsonDocument filesWrap = new BsonDocument()
                 {
@@ -42,7 +42,7 @@ namespace FileService.Business
                     {"Length",length },
                     {"From",from },
                     {"Download",downloads },
-                    {"FileType","video" },
+                    {"FileType",fileType },
                     {"ContentType",contentType },
                     {"Videos",videos },
                     {"VideoCpIds",new BsonArray(){ ObjectId.GenerateNewId()} },
@@ -64,11 +64,12 @@ namespace FileService.Business
                     {"Length",length },
                     {"From",from },
                     {"Download",downloads },
-                    {"FileType","attachment" },
+                    {"FileType",fileType},
                     {"ContentType",contentType },
                     {"Files",files },
                 };
             if (fileType == "video") filesWrap.Add("VideoCpIds", new BsonArray() { ObjectId.GenerateNewId() });
+            if (fileType == "image") filesWrap.Add("Thumbnail", new BsonArray() {});
             filesWrap.AddRange(new Dictionary<string, object>{
                 { "Access",access },
                 { "Owner",owner },
@@ -174,6 +175,6 @@ namespace FileService.Business
         {
             return mongoData.GetCountByAppName(startDateTime);
         }
-        
+
     }
 }

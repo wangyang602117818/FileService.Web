@@ -30,7 +30,7 @@ namespace FileService.Converter
             {
                 if (File.Exists(fullPath))
                 {
-                    SaveFileFromSharedFolder(from, "attachment", fileWrapId, fullPath, fileName, null);
+                    SaveFileFromSharedFolder(from, fileType, fileWrapId, fullPath, fileName, null);
                 }
             }
             else

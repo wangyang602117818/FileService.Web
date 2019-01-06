@@ -51,6 +51,10 @@ var culture = {
 
     image: "图片",
     video: "视频",
+    audio:"音频",
+    office:"文档",
+    pdf: "pdf",
+    text:"文本",
     attachment: "附件",
 
     no_data: "无数据",

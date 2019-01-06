@@ -186,14 +186,14 @@ namespace FileService.Web.Controllers
             BsonDocument fileWrap = filesWrap.FindOne(fileWrapId);
             if (fileWrap == null) return false;
             //删除 thumbnail
-            if (fileWrap["FileType"] == "image")
+            if (fileWrap["FileType"] == "image" && fileWrap.Contains("Thumbnail"))
             {
                 List<ObjectId> thumbnailIds = new List<ObjectId>();
                 foreach (BsonDocument d in fileWrap["Thumbnail"].AsBsonArray) thumbnailIds.Add(d["_id"].AsObjectId);
                 thumbnail.DeleteMany(thumbnailIds);
             }
             //删除 video 相关
-            if (fileWrap["FileType"] == "video")
+            if (fileWrap["FileType"] == "video" && fileWrap.Contains("Videos"))
             {
                 List<ObjectId> m3u8Ids = new List<ObjectId>();
                 List<ObjectId> videoCpIds = new List<ObjectId>();
@@ -213,7 +213,7 @@ namespace FileService.Web.Controllers
                 videoCapture.DeleteByIds(fileWrap["From"].AsString, videoCpIds);
             }
             //删除 attachment 相关
-            if (fileWrap["FileType"] == "attachment")
+            if (fileWrap["FileType"] == "office" || fileWrap["FileType"] == "attachment")
             {
                 foreach (BsonDocument bson in fileWrap["Files"].AsBsonArray)
                 {
@@ -240,7 +240,7 @@ namespace FileService.Web.Controllers
             foreach (BsonDocument task in tasks)
             {
                 string fileExt = Path.GetExtension(task["FileName"].AsString).ToLower();
-                string fullPath = AppDomain.CurrentDomain.BaseDirectory + AppSettings.tempFileDir + task["Folder"].ToString() + "\\" + task["FileId"].ToString()+ fileExt;
+                string fullPath = AppDomain.CurrentDomain.BaseDirectory + AppSettings.tempFileDir + task["Folder"].ToString() + "\\" + task["FileId"].ToString() + fileExt;
                 if (System.IO.File.Exists(fullPath)) System.IO.File.Delete(fullPath);
             }
             //删除共享信息
@@ -252,14 +252,14 @@ namespace FileService.Web.Controllers
         protected void DeleteSubFiles(BsonDocument fileWrap)
         {
             //删除 thumbnail
-            if (fileWrap["FileType"] == "image")
+            if (fileWrap["FileType"] == "image" && fileWrap.Contains("Thumbnail"))
             {
                 List<ObjectId> thumbnailIds = new List<ObjectId>();
                 foreach (BsonDocument d in fileWrap["Thumbnail"].AsBsonArray) thumbnailIds.Add(d["_id"].AsObjectId);
                 thumbnail.DeleteMany(thumbnailIds);
             }
             //删除 video 相关
-            if (fileWrap["FileType"] == "video")
+            if (fileWrap["FileType"] == "video" && fileWrap.Contains("Videos"))
             {
                 List<ObjectId> m3u8Ids = new List<ObjectId>();
                 List<ObjectId> videoCpIds = new List<ObjectId>();
@@ -279,7 +279,7 @@ namespace FileService.Web.Controllers
                 videoCapture.DeleteByIds(fileWrap["From"].AsString, videoCpIds);
             }
             // 删除 attachment 相关
-            if (fileWrap["FileType"] == "attachment")
+            if (fileWrap["FileType"] == "office" || fileWrap["FileType"] == "attachment")
             {
                 foreach (BsonDocument bson in fileWrap["Files"].AsBsonArray)
                 {

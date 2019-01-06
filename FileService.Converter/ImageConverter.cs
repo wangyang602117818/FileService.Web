@@ -23,6 +23,7 @@ namespace FileService.Converter
             BsonDocument outputDocument = taskItem.Message["Output"].AsBsonDocument;
             string from = taskItem.Message["From"].AsString;
             string fileName = taskItem.Message["FileName"].AsString;
+            string fileType = taskItem.Message["Type"].AsString;
             ObjectId fileWrapId = taskItem.Message["FileId"].AsObjectId;
 
             ImageOutPut output = BsonSerializer.Deserialize<ImageOutPut>(outputDocument);
@@ -50,7 +51,7 @@ namespace FileService.Converter
                         //同一份文件的不同转换任务 该部分工作相同,确保不同的线程只执行一次
                         if (!queues.Contains(fileWrapId.ToString()))
                         {
-                            SaveFileFromSharedFolder(from, "image", fileWrapId, fileName, fileStream, format);
+                            SaveFileFromSharedFolder(from, fileType, fileWrapId, fileName, fileStream, format);
                             queues.Enqueue(fileWrapId.ToString());
                         }
                         if (queues.Count >= 10) queues.Dequeue();

@@ -29,7 +29,7 @@ namespace FileService.Converter
             {
                 if (File.Exists(fullPath))
                 {
-                    SaveFileFromSharedFolder(from, "attachment", fileWrapId, fullPath, fileName, null);
+                    SaveFileFromSharedFolder(from, fileType, fileWrapId, fullPath, fileName, null);
                 }
             }
             else
@@ -90,7 +90,7 @@ namespace FileService.Converter
             {
                 using (FileStream stream = new FileStream(destinationPath, FileMode.Open))
                 {
-                    return mongoFileConvert.UploadFile(convertName, stream, "FilesWrap", fileWrapId, "attachment", "application/pdf");
+                    return mongoFileConvert.UploadFile(convertName, stream, "FilesWrap", fileWrapId, "pdf", "application/pdf");
                 }
             }
             else

@@ -136,24 +136,28 @@ namespace FileService.Web.Controllers
             }
             return new ResponseModel<IEnumerable<BsonDocument>>(ErrorCode.success, result, count);
         }
-        public ActionResult GetFiles(int pageIndex = 1, int pageSize = 10, string orderField = "CreateTime", string orderFieldType = "desc", string filter = "", string startTime = null, string endTime = null)
+        public ActionResult GetFiles(int pageIndex = 1, int pageSize = 10, string orderField = "CreateTime", string orderFieldType = "desc", string filter = "", string fileType = "", string startTime = null, string endTime = null)
         {
             long count = 0;
             var userName = Request.Headers["UserName"] ?? User.Identity.Name;
             DateTime.TryParse(startTime, out DateTime timeStart);
             DateTime.TryParse(endTime, out DateTime timeEnd);
             Dictionary<string, string> sorts = new Dictionary<string, string> { { orderField, orderFieldType } };
-            IEnumerable<BsonDocument> result = filesWrap.GetPageList(pageIndex, pageSize, new BsonDocument("Delete", false), timeStart, timeEnd, sorts, filter, new List<string>() { "_id", "FileName", "From", "FileType" }, new List<string>() { }, out count, userName);
+            BsonDocument eqs = new BsonDocument("Delete", false);
+            if (!string.IsNullOrEmpty(fileType)) eqs.Add("FileType", fileType);
+            IEnumerable<BsonDocument> result = filesWrap.GetPageList(pageIndex, pageSize, eqs, timeStart, timeEnd, sorts, filter, new List<string>() { "_id", "FileName", "From", "FileType" }, new List<string>() { }, out count, userName);
             return new ResponseModel<IEnumerable<BsonDocument>>(ErrorCode.success, result, count);
         }
-        public ActionResult GetDeleteFiles(int pageIndex = 1, int pageSize = 10, string orderField = "DeleteTime", string orderFieldType = "desc", string filter = "", string startTime = null, string endTime = null)
+        public ActionResult GetDeleteFiles(int pageIndex = 1, int pageSize = 10, string orderField = "DeleteTime", string orderFieldType = "desc", string filter = "", string fileType = "", string startTime = null, string endTime = null)
         {
             long count = 0;
             var userName = Request.Headers["UserName"] ?? User.Identity.Name;
             DateTime.TryParse(startTime, out DateTime timeStart);
             DateTime.TryParse(endTime, out DateTime timeEnd);
             Dictionary<string, string> sorts = new Dictionary<string, string> { { orderField, orderFieldType } };
-            IEnumerable<BsonDocument> result = filesWrap.GetPageList(pageIndex, pageSize, new BsonDocument("Delete", true), timeStart, timeEnd, sorts, filter, new List<string>() { "_id", "FileName", "From", "FileType" }, new List<string>() { }, out count, userName);
+            BsonDocument eqs = new BsonDocument("Delete", true);
+            if (!string.IsNullOrEmpty(fileType)) eqs.Add("FileType", fileType);
+            IEnumerable<BsonDocument> result = filesWrap.GetPageList(pageIndex, pageSize, eqs, timeStart, timeEnd, sorts, filter, new List<string>() { "_id", "FileName", "From", "FileType" }, new List<string>() { }, out count, userName);
             return new ResponseModel<IEnumerable<BsonDocument>>(ErrorCode.success, result, count);
         }
         public ActionResult GetConvertFiles(int pageIndex = 1, int pageSize = 10, string filter = "", string startTime = null, string endTime = null)
@@ -386,7 +390,6 @@ namespace FileService.Web.Controllers
             IEnumerable<BsonDocument> result = tsTime.GetListLastMonth(oIds, tsTimeModel.Month);
             return new ResponseModel<IEnumerable<BsonDocument>>(ErrorCode.success, result);
         }
-        [Authorize(Roles = "admin,management")]
         public ActionResult GetExtensions(int pageIndex = 1, int pageSize = 10, string filter = "", string startTime = null, string endTime = null)
         {
             long count = 0;
@@ -394,6 +397,11 @@ namespace FileService.Web.Controllers
             DateTime.TryParse(endTime, out DateTime timeEnd);
             IEnumerable<BsonDocument> result = extension.GetPageList(pageIndex, pageSize, null, timeStart, timeEnd, null, filter, new List<string>() { "_id", "Extension", "Description", "Type", "Action" }, new List<string>() { }, out count);
             return new ResponseModel<IEnumerable<BsonDocument>>(ErrorCode.success, result, count);
+        }
+        public ActionResult GetAllExtensions()
+        {
+            IEnumerable<BsonDocument> result = extension.FindAll();
+            return new ResponseModel<IEnumerable<BsonDocument>>(ErrorCode.success, result, result.Count());
         }
         [Authorize(Roles = "admin,management")]
         public ActionResult GetExtension(string id)

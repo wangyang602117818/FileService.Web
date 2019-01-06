@@ -200,7 +200,6 @@ class ResourcesDataPicItem extends React.Component {
 class ReplaceFile extends React.Component {
     constructor(props) {
         super(props);
-        getOfficeExtensions();
         this.state = {
             input: null,
             buttonValue: culture.save,
@@ -321,6 +320,7 @@ class Resources extends React.Component {
             pageCount: 1,
             orderField: "CreateTime",
             orderFieldType: "desc",
+            resourceFileType: "",
             selectedList: [],
             filter: "",
             startTime: "",
@@ -439,7 +439,7 @@ class Resources extends React.Component {
                 fileName = culture.m3u8List + "(" + fileName + ")";
                 subComponent = M3u8Data;
                 break;
-            case "attachment":
+            default:
                 this.getSubFile(fileId);
                 var fileExt = fileName.getFileExtension().toLowerCase();
                 if (fileExt == ".zip" || fileExt == ".rar") {
@@ -686,6 +686,13 @@ class Resources extends React.Component {
             selectedList: []
         });
     }
+    onFilterClick(e) {
+        var id = e.target.id;
+        if (e.target.className.indexOf("current") != -1) return;
+        this.setState({ resourceFileType: id }, function () {
+            this.getData();
+        }.bind(this));
+    }
     onResourceSelected(e) {
         var id = e.target.getAttribute("data-fileid");
         for (var i = 0; i < this.state.data.result.length; i++) {
@@ -797,6 +804,8 @@ class Resources extends React.Component {
                     orderField={this.state.orderField}
                     onOrderChanged={this.onOrderChanged.bind(this)}
                     onTipsClick={this.onTipsClick.bind(this)}
+                    fileType={this.state.resourceFileType}
+                    onFilterClick={this.onFilterClick.bind(this)}
                     onShowChange={this.onPageShow.bind(this)} />
                 <Pagination show={this.state.pageShow}
                     pageIndex={this.state.pageIndex}

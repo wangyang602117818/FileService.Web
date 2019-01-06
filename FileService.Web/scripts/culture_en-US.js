@@ -51,6 +51,10 @@ var culture = {
 
     image: "Image",
     video: "Video",
+    audio: "Audio",
+    office: "Office",
+    pdf: "Pdf",
+    text: "Text",
     attachment: "Attachment",
 
     no_data: "no data",
