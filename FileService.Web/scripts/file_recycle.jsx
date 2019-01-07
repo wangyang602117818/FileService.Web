@@ -85,7 +85,8 @@ class FileRecycle extends React.Component {
             orderField: "DeleteTime",
             orderFieldType: "desc",
             selectedList: [],
-            resourceFileType:"",
+            resourceFileType: "",
+            from:"",
             filter: "",
             startTime: "",
             endTime: "",
@@ -186,6 +187,12 @@ class FileRecycle extends React.Component {
             }.bind(this));
         }
     }
+    onFromChange(e) {
+        var from = e.target.value;
+        this.setState({ from: from }, function () {
+            this.getData();
+        }.bind(this));
+    }
     render() {
         return (
             <div className="main">
@@ -215,6 +222,8 @@ class FileRecycle extends React.Component {
                     endTime={this.state.endTime}
                     onInput={this.onInput.bind(this)}
                     onKeyPress={this.onKeyPress.bind(this)}
+                    from={this.state.from}
+                    onFromChange={this.onFromChange.bind(this)}
                     lastPage={this.lastPage.bind(this)}
                     nextPage={this.nextPage.bind(this)} />
                 {this.state.listType == "list" ?

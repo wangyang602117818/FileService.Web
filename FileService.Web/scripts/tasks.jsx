@@ -155,6 +155,7 @@ class Tasks extends React.Component {
             pageIndex: 1,
             pageSize: localStorage.task_pageSize || 10,
             pageCount: 1,
+            from:"",
             filter: "",
             startTime: "",
             endTime: "",
@@ -245,6 +246,12 @@ class Tasks extends React.Component {
             }.bind(this));
         }
     }
+    onFromChange(e) {
+        var from = e.target.value;
+        this.setState({ from: from }, function () {
+            this.getData();
+        }.bind(this));
+    }
     render() {
         return (
             <div className="main">
@@ -265,6 +272,8 @@ class Tasks extends React.Component {
                     endTime={this.state.endTime}
                     onInput={this.onInput.bind(this)}
                     onKeyPress={this.onKeyPress.bind(this)}
+                    from={this.state.from}
+                    onFromChange={this.onFromChange.bind(this)}
                     lastPage={this.lastPage.bind(this)}
                     nextPage={this.nextPage.bind(this)} />
                 <TasksData data={this.state.data.result}

@@ -168,6 +168,9 @@ class TitleArrowComponent extends React.Component {
 class Pagination extends React.Component {
     constructor(props) {
         super(props);
+        this.state = {
+            application: application
+        }
     }
     componentDidMount() {
         datepicker();
@@ -188,6 +191,14 @@ class Pagination extends React.Component {
                     <i className="iconfont icon-last" title={culture.last_page} onClick={this.props.lastPage}></i>
                     {'\u00A0'}
                     <i className="iconfont icon-next" title={culture.next_page} onClick={this.props.nextPage}></i>
+                    {'\u00A0'}{'\u00A0'}{'\u00A0'}{'\u00A0'}
+                    {culture.from}:
+                    <select name="from" value={this.props.from} onChange={this.props.onFromChange}>
+                        <option value="">all</option>
+                        {this.state.application.map(function (item, index) {
+                            return (<option value={item.ApplicationName} key={index}>{item.ApplicationName}</option>)
+                        })}
+                    </select>
                     {'\u00A0'}{'\u00A0'}{'\u00A0'}{'\u00A0'}
                     {culture.filter}:
                     <input type="text" name="filter"
@@ -251,6 +262,7 @@ var CommonUsePagination = {
         localStorage.update_time = getCurrentDateTime();
         var that = this;
         var url = this.url + "?pageindex=" + this.state.pageIndex + "&pagesize=" + this.state.pageSize + "&filter=" + this.state.filter + "&startTime=" + this.state.startTime + "&endTime=" + this.state.endTime;
+        if (this.state.from && this.state.from.length > 0) url = url + "&from=" + this.state.from;
         if (this.state.resourceFileType && this.state.resourceFileType.length > 0) url = url + "&fileType=" + this.state.resourceFileType;
         if (this.state.orderField) url = url + "&orderField=" + this.state.orderField;
         if (this.state.orderFieldType) url = url + "&orderFieldType=" + this.state.orderFieldType;

@@ -78,6 +78,7 @@ class Logs extends React.Component {
             pageIndex: 1,
             pageSize: localStorage.log_pageSize || 15,
             pageCount: 1,
+            from:"",
             filter: "",
             startTime: "",
             endTime: "",
@@ -86,6 +87,12 @@ class Logs extends React.Component {
         this.url = urls.log.getUrl;
         this.storagePageShowKey = "log";
         this.storagePageSizeKey = "log_pageSize";
+    }
+    onFromChange(e) {
+        var from = e.target.value;
+        this.setState({ from: from }, function () {
+            this.getData();
+        }.bind(this));
     }
     render() {
         return (
@@ -105,6 +112,8 @@ class Logs extends React.Component {
                     endTime={this.state.endTime}
                     onInput={this.onInput.bind(this)}
                     onKeyPress={this.onKeyPress.bind(this)}
+                    from={this.state.from}
+                    onFromChange={this.onFromChange.bind(this)}
                     lastPage={this.lastPage.bind(this)}
                     nextPage={this.nextPage.bind(this)} />
                 <LogData data={this.state.data.result} show={this.state.pageShow} />

@@ -18,6 +18,10 @@ namespace FileService.Business
         {
             return mongoData.FindByAppName(appName);
         }
+        public IEnumerable<BsonDocument> FindApplications()
+        {
+            return mongoData.FindApplications();
+        }
         public void AddApplication(BsonDocument application)
         {
             application.Add("CreateTime", DateTime.Now);

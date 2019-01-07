@@ -113,14 +113,16 @@ namespace FileService.Web.Controllers
             IEnumerable<BsonDocument> result = converter.GetPageList(pageIndex, pageSize, null, timeStart, timeEnd, sorts, filter, new List<string>() { "HandlerId", "MachineName" }, new List<string>() { }, out count);
             return new ResponseModel<IEnumerable<BsonDocument>>(ErrorCode.success, result, count);
         }
-        public ActionResult GetTasks(int pageIndex = 1, int pageSize = 10, string filter = "", string startTime = null, string endTime = null)
+        public ActionResult GetTasks(int pageIndex = 1, int pageSize = 10, string from = "", string filter = "", string startTime = null, string endTime = null)
         {
             long count = 0;
             var userName = Request.Headers["UserName"] ?? User.Identity.Name;
             Dictionary<string, string> sorts = new Dictionary<string, string> { { "CreateTime", "desc" } };
             DateTime.TryParse(startTime, out DateTime timeStart);
             DateTime.TryParse(endTime, out DateTime timeEnd);
-            List<BsonDocument> result = task.GetPageList(pageIndex, pageSize, new BsonDocument("Delete", false), timeStart, timeEnd, sorts, filter, new List<string>() { "FileId", "FileName", "StateDesc", "HandlerId", "StateDesc", "Type" }, new List<string>() { }, out count, userName).ToList();
+            BsonDocument eqs = new BsonDocument("Delete", false);
+            if (!string.IsNullOrEmpty(from)) eqs.Add("From", from);
+            List<BsonDocument> result = task.GetPageList(pageIndex, pageSize, eqs, timeStart, timeEnd, sorts, filter, new List<string>() { "FileId", "FileName", "StateDesc", "HandlerId", "StateDesc", "Type" }, new List<string>() { }, out count, userName).ToList();
             foreach (BsonDocument bson in result)
             {
                 string fullPath = AppDomain.CurrentDomain.BaseDirectory + AppSettings.tempFileDir + bson["Folder"].ToString() + "\\" + bson["FileName"].ToString();
@@ -136,7 +138,7 @@ namespace FileService.Web.Controllers
             }
             return new ResponseModel<IEnumerable<BsonDocument>>(ErrorCode.success, result, count);
         }
-        public ActionResult GetFiles(int pageIndex = 1, int pageSize = 10, string orderField = "CreateTime", string orderFieldType = "desc", string filter = "", string fileType = "", string startTime = null, string endTime = null)
+        public ActionResult GetFiles(int pageIndex = 1, int pageSize = 10, string from = "", string orderField = "CreateTime", string orderFieldType = "desc", string filter = "", string fileType = "", string startTime = null, string endTime = null)
         {
             long count = 0;
             var userName = Request.Headers["UserName"] ?? User.Identity.Name;
@@ -145,10 +147,11 @@ namespace FileService.Web.Controllers
             Dictionary<string, string> sorts = new Dictionary<string, string> { { orderField, orderFieldType } };
             BsonDocument eqs = new BsonDocument("Delete", false);
             if (!string.IsNullOrEmpty(fileType)) eqs.Add("FileType", fileType);
+            if (!string.IsNullOrEmpty(from)) eqs.Add("From", from);
             IEnumerable<BsonDocument> result = filesWrap.GetPageList(pageIndex, pageSize, eqs, timeStart, timeEnd, sorts, filter, new List<string>() { "_id", "FileName", "From", "FileType" }, new List<string>() { }, out count, userName);
             return new ResponseModel<IEnumerable<BsonDocument>>(ErrorCode.success, result, count);
         }
-        public ActionResult GetDeleteFiles(int pageIndex = 1, int pageSize = 10, string orderField = "DeleteTime", string orderFieldType = "desc", string filter = "", string fileType = "", string startTime = null, string endTime = null)
+        public ActionResult GetDeleteFiles(int pageIndex = 1, int pageSize = 10, string from = "", string orderField = "DeleteTime", string orderFieldType = "desc", string filter = "", string fileType = "", string startTime = null, string endTime = null)
         {
             long count = 0;
             var userName = Request.Headers["UserName"] ?? User.Identity.Name;
@@ -157,6 +160,7 @@ namespace FileService.Web.Controllers
             Dictionary<string, string> sorts = new Dictionary<string, string> { { orderField, orderFieldType } };
             BsonDocument eqs = new BsonDocument("Delete", true);
             if (!string.IsNullOrEmpty(fileType)) eqs.Add("FileType", fileType);
+            if (!string.IsNullOrEmpty(from)) eqs.Add("From", from);
             IEnumerable<BsonDocument> result = filesWrap.GetPageList(pageIndex, pageSize, eqs, timeStart, timeEnd, sorts, filter, new List<string>() { "_id", "FileName", "From", "FileType" }, new List<string>() { }, out count, userName);
             return new ResponseModel<IEnumerable<BsonDocument>>(ErrorCode.success, result, count);
         }
@@ -375,13 +379,15 @@ namespace FileService.Web.Controllers
             IEnumerable<string> result = extension.FindByType(type).Select(s => s["Extension"].ToString());
             return new ResponseModel<IEnumerable<string>>(ErrorCode.success, result);
         }
-        public ActionResult GetLogs(int pageIndex = 1, int pageSize = 10, string filter = "", string startTime = null, string endTime = null)
+        public ActionResult GetLogs(int pageIndex = 1, int pageSize = 10, string from = "", string filter = "", string startTime = null, string endTime = null)
         {
             long count = 0;
             Dictionary<string, string> sorts = new Dictionary<string, string> { { "CreateTime", "desc" } };
             DateTime.TryParse(startTime, out DateTime timeStart);
             DateTime.TryParse(endTime, out DateTime timeEnd);
-            IEnumerable<BsonDocument> result = log.GetPageList(pageIndex, pageSize, null, timeStart, timeEnd, sorts, filter, new List<string>() { "_id", "AppName", "Content", "FileId" }, new List<string>() { }, out count);
+            BsonDocument eqs = null;
+            if (!string.IsNullOrEmpty(from)) eqs = new BsonDocument("From", from);
+            IEnumerable<BsonDocument> result = log.GetPageList(pageIndex, pageSize, eqs, timeStart, timeEnd, sorts, filter, new List<string>() { "_id", "AppName", "Content", "FileId" }, new List<string>() { }, out count);
             return new ResponseModel<IEnumerable<BsonDocument>>(ErrorCode.success, result, count);
         }
         public ActionResult GetTsTime(TsTimeModel tsTimeModel)
@@ -401,6 +407,11 @@ namespace FileService.Web.Controllers
         public ActionResult GetAllExtensions()
         {
             IEnumerable<BsonDocument> result = extension.FindAll();
+            return new ResponseModel<IEnumerable<BsonDocument>>(ErrorCode.success, result, result.Count());
+        }
+        public ActionResult GetAllApplications()
+        {
+            IEnumerable<BsonDocument> result = application.FindApplications();
             return new ResponseModel<IEnumerable<BsonDocument>>(ErrorCode.success, result, result.Count());
         }
         [Authorize(Roles = "admin,management")]

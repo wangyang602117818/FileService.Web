@@ -318,6 +318,7 @@ class Resources extends React.Component {
             pageIndex: 1,
             pageSize: localStorage.handler_pageSize || 15,
             pageCount: 1,
+            from: "",
             orderField: "CreateTime",
             orderFieldType: "desc",
             resourceFileType: "",
@@ -693,6 +694,12 @@ class Resources extends React.Component {
             this.getData();
         }.bind(this));
     }
+    onFromChange(e) {
+        var from = e.target.value;
+        this.setState({ from: from }, function () {
+            this.getData();
+        }.bind(this));
+    }
     onResourceSelected(e) {
         var id = e.target.getAttribute("data-fileid");
         for (var i = 0; i < this.state.data.result.length; i++) {
@@ -816,6 +823,8 @@ class Resources extends React.Component {
                     endTime={this.state.endTime}
                     onInput={this.onInput.bind(this)}
                     onKeyPress={this.onKeyPress.bind(this)}
+                    from={this.state.from}
+                    onFromChange={this.onFromChange.bind(this)}
                     lastPage={this.lastPage.bind(this)}
                     nextPage={this.nextPage.bind(this)} />
                 {this.state.listType == "list" ?
