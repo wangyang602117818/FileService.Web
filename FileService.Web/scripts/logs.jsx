@@ -65,7 +65,7 @@ class LogItem extends React.Component {
                 <td>{this.props.log.UserIp}</td>
                 <td>{getAgent(this.props.UserAgent)}</td>
                 <td title={parseBsonTime(this.props.log.CreateTime)}>{parseBsonTimeNoneSecond(this.props.log.CreateTime)}</td>
-                
+
             </tr>
         )
     }
@@ -78,7 +78,7 @@ class Logs extends React.Component {
             pageIndex: 1,
             pageSize: localStorage.log_pageSize || 15,
             pageCount: 1,
-            from:"",
+            from: localStorage.log_from || "",
             filter: "",
             startTime: "",
             endTime: "",
@@ -91,6 +91,7 @@ class Logs extends React.Component {
     onFromChange(e) {
         var from = e.target.value;
         this.setState({ from: from }, function () {
+            localStorage.log_from = from;
             this.getData();
         }.bind(this));
     }

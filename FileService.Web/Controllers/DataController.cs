@@ -168,37 +168,5 @@ namespace FileService.Web.Controllers
         {
             return new ResponseModel<string>(ErrorCode.success, ObjectId.GenerateNewId().ToString());
         }
-        public string M()
-        {
-            Dictionary<string, string> ext = new Dictionary<string, string>();
-            IEnumerable<BsonDocument> extensions = extension.FindAll();
-            foreach (BsonDocument b in extensions)
-            {
-                ext.Add(b["Extension"].AsString, b["Type"].AsString);
-            }
-            IEnumerable<BsonDocument> wraps = filesWrap.FindAll();
-            foreach (BsonDocument w in wraps)
-            {
-                string fileExt = System.IO.Path.GetExtension(w["FileName"].AsString).ToLower();
-                if (ext.ContainsKey(fileExt))
-                {
-                    string fileType = ext[fileExt];
-                    w["FileType"] = fileType;
-                    filesWrap.Replace(w);
-                }
-            }
-            IEnumerable<BsonDocument> tasks = task.FindAll();
-            foreach (BsonDocument t in tasks)
-            {
-                string fileExt = System.IO.Path.GetExtension(t["FileName"].AsString).ToLower();
-                if (ext.ContainsKey(fileExt))
-                {
-                    string fileType = ext[fileExt];
-                    t["Type"] = fileType;
-                    task.Replace(t);
-                }
-            }
-            return "ok";
-        }
     }
 }
