@@ -17,7 +17,6 @@ namespace FileService.Web.Controllers
 {
     public class AdminController : BaseController
     {
-
         User user = new User();
         TsTime tsTime = new TsTime();
         Files files = new Files();
