@@ -1,11 +1,8 @@
 ﻿using FileService.Model;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
-using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Web;
 
 namespace FileService.Web.Models
 {
@@ -46,7 +43,21 @@ namespace FileService.Web.Models
         [Required]
         public string Action { get; set; }
     }
-
+    public class ApplicationThird
+    {
+        private List<ImageOutPut> thumbnails = new List<ImageOutPut>() { };
+        private List<ThumbnailDisplay> thumbnailsDisplay = new List<ThumbnailDisplay>() { };
+        private List<VideoOutPut> videos = new List<VideoOutPut>() { };
+        private List<VideoDisplay> videosDisplay = new List<VideoDisplay>() { };
+        [Required]
+        public string ApplicationName { get; set; }
+        public string AuthCode { get; set; }
+        public string Action { get; set; }
+        public List<ImageOutPut> Thumbnails { get => thumbnails; set => thumbnails = value; }
+        public List<ThumbnailDisplay> ThumbnailsDisplay { get => thumbnailsDisplay; set => thumbnailsDisplay = value; }
+        public List<VideoOutPut> Videos { get => videos; set => videos = value; }
+        public List<VideoDisplay> VideosDisplay { get => videosDisplay; set => videosDisplay = value; }
+    }
     public class ThumbnailDisplay
     {
         public ObjectId Id { get; set; }

@@ -1,5 +1,7 @@
-﻿using FileService.Web.Models;
+﻿using FileService.Util;
+using FileService.Web.Models;
 using MongoDB.Bson;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
@@ -124,6 +126,17 @@ namespace FileService.Web.Controllers
             BsonDocument result = GetState(list);
             return new ResponseModel<BsonDocument>(ErrorCode.success, result);
         }
+        [HttpPost]
+        public ActionResult AddApplication(ApplicationThird addApplication)
+        {
+            BsonDocument appBson = application.FindByAppName(addApplication.ApplicationName);
+            if (appBson != null) return new ResponseModel<string>(ErrorCode.success, appBson["AuthCode"].AsString);
+            addApplication.AuthCode = new Random().RandomCodeHex(12);
+            addApplication.Action = "allow";
+            application.AddApplication(addApplication.ToBsonDocument());
+            Log("-", "AddApplication");
+            return new ResponseModel<string>(ErrorCode.success, addApplication.AuthCode);
+        }
         private BsonDocument GetState(IEnumerable<BsonDocument> list)
         {
             BsonDocument result = new BsonDocument()
@@ -155,6 +168,37 @@ namespace FileService.Web.Controllers
         {
             return new ResponseModel<string>(ErrorCode.success, ObjectId.GenerateNewId().ToString());
         }
-
+        public string M()
+        {
+            Dictionary<string, string> ext = new Dictionary<string, string>();
+            IEnumerable<BsonDocument> extensions = extension.FindAll();
+            foreach (BsonDocument b in extensions)
+            {
+                ext.Add(b["Extension"].AsString, b["Type"].AsString);
+            }
+            IEnumerable<BsonDocument> wraps = filesWrap.FindAll();
+            foreach (BsonDocument w in wraps)
+            {
+                string fileExt = System.IO.Path.GetExtension(w["FileName"].AsString).ToLower();
+                if (ext.ContainsKey(fileExt))
+                {
+                    string fileType = ext[fileExt];
+                    w["FileType"] = fileType;
+                    filesWrap.Replace(w);
+                }
+            }
+            IEnumerable<BsonDocument> tasks = task.FindAll();
+            foreach (BsonDocument t in tasks)
+            {
+                string fileExt = System.IO.Path.GetExtension(t["FileName"].AsString).ToLower();
+                if (ext.ContainsKey(fileExt))
+                {
+                    string fileType = ext[fileExt];
+                    t["Type"] = fileType;
+                    task.Replace(t);
+                }
+            }
+            return "ok";
+        }
     }
 }
