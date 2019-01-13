@@ -62,6 +62,15 @@ namespace FileService.Web.Controllers
             if (m3u8Bson == null) return File(new MemoryStream(), "application/octet-stream");
             return Get(m3u8Bson["SourceId"].ToString());
         }
+        [AppAuthorizeDefault]
+        public ActionResult GetImageFromThumbnailId(string id)
+        {
+            ObjectId thumbId = GetObjectIdFromId(id);
+            if (thumbId == ObjectId.Empty) return File(new MemoryStream(), "application/octet-stream");
+            BsonDocument imageBson = thumbnail.FindOne(thumbId);
+            if (imageBson == null) return File(new MemoryStream(), "application/octet-stream");
+            return Get(imageBson["SourceId"].ToString());
+        }
         public ActionResult GetHistory(string id)
         {
             ObjectId fId = GetObjectIdFromId(id);
@@ -226,43 +235,6 @@ namespace FileService.Web.Controllers
             if (newId == ObjectId.Empty) return File(new MemoryStream(), "application/octet-stream");
             BsonDocument document = videoCapture.FindOne(newId);
             return File(document["File"].AsByteArray, ImageExtention.GetContentType(document["FileName"].AsString), document["FileName"].AsString);
-        }
-        public ActionResult M1()
-        {
-            IEnumerable<BsonDocument> files = filesWrap.FindAll();
-            foreach (BsonDocument bson in files)
-            {
-                ObjectId fileWrapId = bson["_id"].AsObjectId;
-                filePreview.DeleteOne(fileWrapId);
-            }
-            return new ResponseModel<string>(ErrorCode.success, "");
-        }
-        public ActionResult M(string id)
-        {
-            IEnumerable<BsonDocument> list = ts.FindAll();
-            foreach (BsonDocument bson in list)
-            {
-                if (bson.Contains("SourceIds")) continue;
-                bson.Add("SourceIds", new BsonArray());
-                ts.Replace(bson);
-            }
-            IEnumerable<BsonDocument> files = filesWrap.FindAll();
-            foreach (BsonDocument bson in files)
-            {
-                ObjectId fileWrapId = bson["_id"].AsObjectId;
-                ObjectId fileId = bson["FileId"].AsObjectId;
-                //如果有图标，则下一个
-                BsonDocument filePreviewBson1 = filePreview.FindOne(fileId);
-                if (filePreviewBson1 != null) continue;
-                //查找原来的图标，
-                BsonDocument filePreviewBson = filePreview.FindOne(fileWrapId);
-                if (filePreviewBson == null) continue;
-                filePreviewBson["_id"] = fileId;
-                filePreview.Insert(filePreviewBson);
-                filePreview.DeleteOne(fileWrapId);
-            }
-
-            return new ResponseModel<string>(ErrorCode.success, "");
         }
     }
 }

@@ -21,6 +21,9 @@ namespace FileService.Data
             var filter = FilterBuilder.Eq("ApplicationName", appName);
             return MongoCollection.Find(filter).FirstOrDefault();
         }
-        
+        public IEnumerable<BsonDocument> FindApplications()
+        {
+            return MongoCollection.Find(new BsonDocument()).Project(Builders<BsonDocument>.Projection.Include("ApplicationName")).ToEnumerable();
+        }
     }
 }

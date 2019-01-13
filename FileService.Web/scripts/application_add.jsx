@@ -37,7 +37,7 @@
                 videosDisplay: this.state.videosDisplay
             }, function (data) {
                 if (data.code == 0) {
-                    that.setState({ applicationName: "", action: "allow" });
+                    that.setState({ applicationName: "", authCode: "", action: "allow" });
                 } else {
                     that.setState({ message: data.message });
                 }

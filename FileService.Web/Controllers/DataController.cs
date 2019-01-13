@@ -1,5 +1,7 @@
-﻿using FileService.Web.Models;
+﻿using FileService.Util;
+using FileService.Web.Models;
 using MongoDB.Bson;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
@@ -124,6 +126,17 @@ namespace FileService.Web.Controllers
             BsonDocument result = GetState(list);
             return new ResponseModel<BsonDocument>(ErrorCode.success, result);
         }
+        [HttpPost]
+        public ActionResult AddApplication(ApplicationThird addApplication)
+        {
+            BsonDocument appBson = application.FindByAppName(addApplication.ApplicationName);
+            if (appBson != null) return new ResponseModel<string>(ErrorCode.success, appBson["AuthCode"].AsString);
+            addApplication.AuthCode = new Random().RandomCodeHex(12);
+            addApplication.Action = "allow";
+            application.AddApplication(addApplication.ToBsonDocument());
+            Log("-", "AddApplication");
+            return new ResponseModel<string>(ErrorCode.success, addApplication.AuthCode);
+        }
         private BsonDocument GetState(IEnumerable<BsonDocument> list)
         {
             BsonDocument result = new BsonDocument()
@@ -155,6 +168,5 @@ namespace FileService.Web.Controllers
         {
             return new ResponseModel<string>(ErrorCode.success, ObjectId.GenerateNewId().ToString());
         }
-
     }
 }

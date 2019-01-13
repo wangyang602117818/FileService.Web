@@ -318,9 +318,10 @@ class Resources extends React.Component {
             pageIndex: 1,
             pageSize: localStorage.handler_pageSize || 15,
             pageCount: 1,
+            from: localStorage.resource_from || "",
             orderField: "CreateTime",
             orderFieldType: "desc",
-            resourceFileType: "",
+            resourceFileType: localStorage.resourceFileType||"",
             selectedList: [],
             filter: "",
             startTime: "",
@@ -690,6 +691,14 @@ class Resources extends React.Component {
         var id = e.target.id;
         if (e.target.className.indexOf("current") != -1) return;
         this.setState({ resourceFileType: id }, function () {
+            localStorage.resourceFileType = id;
+            this.getData();
+        }.bind(this));
+    }
+    onFromChange(e) {
+        var from = e.target.value;
+        this.setState({ from: from }, function () {
+            localStorage.resource_from = from;
             this.getData();
         }.bind(this));
     }
@@ -816,6 +825,8 @@ class Resources extends React.Component {
                     endTime={this.state.endTime}
                     onInput={this.onInput.bind(this)}
                     onKeyPress={this.onKeyPress.bind(this)}
+                    from={this.state.from}
+                    onFromChange={this.onFromChange.bind(this)}
                     lastPage={this.lastPage.bind(this)}
                     nextPage={this.nextPage.bind(this)} />
                 {this.state.listType == "list" ?

@@ -65,7 +65,7 @@
             }
             if (this.state.model == "2") {  //按宽度
                 if (this.state.width > 0) {
-                    this.setState({ button_disabled: false, x: 0, y: 0, height:0 });
+                    this.setState({ button_disabled: false, x: 0, y: 0, height: 0 });
                 } else {
                     this.setState({ button_disabled: true, x: 0, y: 0, height: 0 });
                 }
@@ -392,7 +392,7 @@ class TasksUpdate extends React.Component {
                     });
                 });
             }
-            if (task.Type == "video") {
+            else if (task.Type == "video") {
                 that.setState({
                     component: VideoUpdate
                 }, function () {
@@ -407,7 +407,7 @@ class TasksUpdate extends React.Component {
                     });
                 });
             }
-            if (task.Type == "attachment") {
+            else if (task.Type == "office") {
                 that.setState({
                     component: AttachmentUpdate
                 }, function () {
@@ -418,6 +418,14 @@ class TasksUpdate extends React.Component {
                         handler: task.HandlerId,
                         format: task.Output.Format,
                         flag: task.Output.Flag
+                    });
+                });
+            } else {
+                that.setState({ component: HandlerUpdate }, function () {
+                    that.refs.updatemodule.changeState({
+                        id: task._id.$oid,
+                        fileId: task.FileId.$oid,
+                        handler: task.HandlerId,
                     });
                 });
             }

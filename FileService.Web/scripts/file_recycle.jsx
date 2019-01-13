@@ -85,7 +85,8 @@ class FileRecycle extends React.Component {
             orderField: "DeleteTime",
             orderFieldType: "desc",
             selectedList: [],
-            resourceFileType:"",
+            resourceFileType: localStorage.recycleFileType || "",
+            from: localStorage.recycle_from || "",
             filter: "",
             startTime: "",
             endTime: "",
@@ -172,6 +173,7 @@ class FileRecycle extends React.Component {
         var id = e.target.id;
         if (e.target.className.indexOf("current") != -1) return;
         this.setState({ resourceFileType: id }, function () {
+            localStorage.recycleFileType = id;
             this.getData();
         }.bind(this));
     }
@@ -185,6 +187,13 @@ class FileRecycle extends React.Component {
                 this.getData();
             }.bind(this));
         }
+    }
+    onFromChange(e) {
+        var from = e.target.value;
+        this.setState({ from: from }, function () {
+            localStorage.recycle_from = from;
+            this.getData();
+        }.bind(this));
     }
     render() {
         return (
@@ -215,6 +224,8 @@ class FileRecycle extends React.Component {
                     endTime={this.state.endTime}
                     onInput={this.onInput.bind(this)}
                     onKeyPress={this.onKeyPress.bind(this)}
+                    from={this.state.from}
+                    onFromChange={this.onFromChange.bind(this)}
                     lastPage={this.lastPage.bind(this)}
                     nextPage={this.nextPage.bind(this)} />
                 {this.state.listType == "list" ?

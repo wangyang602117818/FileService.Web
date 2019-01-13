@@ -9,6 +9,7 @@ var videoExtensions = [];
 var officeExtensions = [];
 var compressExtensions = [".rar", ".zip"];
 var extensions = [];
+var application = [];
 var keywords = [
     "_id.$oid",
     "FileId.$oid",
@@ -212,6 +213,7 @@ var urls = {
     application: {
         getUrl: appDomain + "admin/getapplications",
         getapplicationUrl: appDomain + "admin/getapplication",
+        getAllApplicationUrl: appDomain +"admin/getallapplications",
         getApplicationByAuthCodeUrl: appDomain + "admin/getapplicationbyauthcode",
         addUrl: appDomain + "admin/addapplication",
         updateUrl: appDomain + "admin/updateapplication",
@@ -793,7 +795,13 @@ function getExtensions() {
                 if (data.result[i].Type == "office") officeExtensions.push(data.result[i].Extension);
             }
         }
-
+    });
+}
+function getApplications() {
+    http.getSync(urls.application.getAllApplicationUrl, function (data) {
+        if (data.code == 0) {
+            application = data.result;
+        }
     });
 }
 function getMachineNameByPath(path) {
@@ -846,3 +854,5 @@ String.prototype.getFileExtension = function () {
     if (dot == -1) return ".unknown";
     return this.substring(dot, this.length).toLowerCase();
 }
+getApplications();
+getExtensions();
