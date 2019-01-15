@@ -51,6 +51,14 @@ namespace FileService.Web.Controllers
             GridFSDownloadStream stream = mongoFileConvert.DownLoad(id);
             return File(stream, stream.FileInfo.Metadata["ContentType"].AsString, stream.FileInfo.Filename);
         }
+        protected string GetTempFilePath(BsonDocument task)
+        {
+            return AppDomain.CurrentDomain.BaseDirectory + AppSettings.tempFileDir + task["Folder"].ToString() + "\\" + task["FileId"].ToString() + Path.GetExtension(task["FileName"].ToString());
+        }
+        protected string GetTempFilePath(string folder, string fileId, string fileName)
+        {
+            return AppDomain.CurrentDomain.BaseDirectory + AppSettings.tempFileDir + folder + "\\" + fileId + Path.GetExtension(fileName);
+        }
         protected ActionResult GetFilePreview(string id, BsonDocument filePreview)
         {
             string imagePath = AppDomain.CurrentDomain.BaseDirectory + "image\\";

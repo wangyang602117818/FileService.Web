@@ -1,11 +1,9 @@
 ﻿using FileService.Business;
 using FileService.Util;
 using FileService.Web.Filters;
-using FileService.Web.Models;
 using MongoDB.Bson;
 using MongoDB.Driver.GridFS;
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -33,7 +31,7 @@ namespace FileService.Web.Controllers
             Response.AddHeader("Accept-Ranges", "bytes");
             if (fileId == ObjectId.Empty)
             {
-                string tempFilePath = AppDomain.CurrentDomain.BaseDirectory + AppSettings.tempFileDir + fileWrap["CreateTime"].ToUniversalTime().ToString("yyyyMMdd") + "\\" + fileName;
+                string tempFilePath = GetTempFilePath(fileWrap["CreateTime"].ToUniversalTime().ToString("yyyyMMdd"), fileWrap["_id"].ToString(), fileName);
                 FileStream fileStream = new FileStream(tempFilePath, FileMode.Open, FileAccess.Read);
                 return File(fileStream, contentType, fileName);
             }
