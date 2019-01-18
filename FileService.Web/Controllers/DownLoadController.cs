@@ -234,5 +234,17 @@ namespace FileService.Web.Controllers
             BsonDocument document = videoCapture.FindOne(newId);
             return File(document["File"].AsByteArray, ImageExtention.GetContentType(document["FileName"].AsString), document["FileName"].AsString);
         }
+        [OutputCache(Duration = 60 * 20, VaryByParam = "id")]
+        public ActionResult GetFileIcon(string id)
+        {
+            BsonDocument file = filePreview.FindOne(ObjectId.Parse(id.Split('.')[0]));
+            return GetFilePreview(id, file);
+        }
+        [OutputCache(Duration = 60 * 20, VaryByParam = "id")]
+        public ActionResult GetFileIconMobile(string id)
+        {
+            BsonDocument file = filePreviewMobile.FindOne(ObjectId.Parse(id.Split('.')[0]));
+            return GetFilePreview(id, file);
+        }
     }
 }

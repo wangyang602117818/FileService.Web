@@ -59,6 +59,7 @@
   <ItemGroup>
     <Compile Include="AppSettings.cs" />
     <Compile Include="Base64SecureURL.cs" />
+    <Compile Include="DateTimeExtention.cs" />
     <Compile Include="ImageExtention.cs" />
     <Compile Include="JsonSerializerHelper.cs" />
     <Compile Include="Log4Net.cs" />

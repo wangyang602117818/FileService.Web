@@ -707,6 +707,15 @@ function setKeyWord(result, filter) {
         }
     }
 }
+function setExpired(result) {
+    for (var i = 0; i < result.length; i++) {
+        if (result[i].ExpiredTime) {
+            if (parseBsonTime(result[i].ExpiredTime) <= parseBsonTime(result[i].CreateTime)) {
+                result[i].Expired = true;
+            }
+        }
+    }
+}
 function matchKeyWord(word) {
     return '<span class="search_word">' + word + '</span>';
 }

@@ -433,6 +433,7 @@ class AddImage extends React.Component {
             thumbnails: [],
             thumbnailsDisplay: [],
             accesses: [],
+            expiredDay: 0
         }
     }
     showConvert(e) {
@@ -520,7 +521,7 @@ class AddImage extends React.Component {
                     accessUsers: this.state.accesses[i].userArray
                 })
             }
-            this.props.imageUpload(this.input, this.state.thumbnails, access, function (data) {
+            this.props.imageUpload(this.input, this.state.thumbnails, access, this.state.expiredDay, function (data) {
                 if (data.code == 0) {
                     that.input.value = "";
                     that.setState({ buttonValue: culture.upload, buttonDisabled: false });
@@ -612,6 +613,12 @@ class AddImage extends React.Component {
                                 {this.state.accessShow ? <AccessAuthority
                                     ref="accessAuthority"
                                     accessOk={this.accessOk.bind(this)} /> : null}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>{culture.expired_date}:</td>
+                            <td colSpan="2">
+                                <input type="number" name="expiredDay" style={{width:"50px"}} value={this.state.expiredDay} onChange={e => { this.setState({ expiredDay: e.target.value }) }} />{'\u00A0'}{'\u00A0'}{culture.day}
                             </td>
                         </tr>
                         <tr>

@@ -75,7 +75,7 @@ namespace FileService.Web.Controllers
                 //上传到TempFiles
                 file.SaveAs(tempFileDirectory + fileId.ToString() + ext);
 
-                filesWrap.InsertImage(fileId, ObjectId.Empty, file.FileName, file.InputStream.Length, Request.Headers["AppName"], 0, fileType, contentType, thumbnail, access, Request.Headers["UserName"] ?? User.Identity.Name);
+                filesWrap.InsertImage(fileId, ObjectId.Empty, file.FileName, file.InputStream.Length, Request.Headers["AppName"], 0, fileType, contentType, thumbnail, access, uploadImgModel.ExpiredDay, Request.Headers["UserName"] ?? User.Identity.Name);
 
                 string handlerId = converter.GetHandlerId();
                 if (output.Count == 0)
@@ -159,7 +159,7 @@ namespace FileService.Web.Controllers
                 ObjectId fileId = ObjectId.GenerateNewId();
                 //上传到TempFiles
                 file.SaveAs(tempFileDirectory + fileId.ToString() + ext);
-                filesWrap.InsertVideo(fileId, ObjectId.Empty, file.FileName, file.InputStream.Length, Request.Headers["AppName"], 0, fileType, contentType, videos, access, Request.Headers["UserName"] ?? User.Identity.Name);
+                filesWrap.InsertVideo(fileId, ObjectId.Empty, file.FileName, file.InputStream.Length, Request.Headers["AppName"], 0, fileType, contentType, videos, access, uploadVideo.ExpiredDay, Request.Headers["UserName"] ?? User.Identity.Name);
 
                 string handlerId = converter.GetHandlerId();
                 if (outputs.Count == 0)
@@ -240,6 +240,7 @@ namespace FileService.Web.Controllers
                     contentType,
                     files,
                     access,
+                    uploadAttachmentModel.ExpiredDay,
                     Request.Headers["UserName"] ?? User.Identity.Name);
 
                 string handlerId = converter.GetHandlerId();
@@ -351,7 +352,7 @@ namespace FileService.Web.Controllers
             //过滤不正确的格式
             string contentType = "";
             string fileType = "";
-            if (!extension.CheckFileExtension(fileExt, ref contentType,ref fileType)) return new ResponseModel<string>(ErrorCode.file_type_blocked, "");
+            if (!extension.CheckFileExtension(fileExt, ref contentType, ref fileType)) return new ResponseModel<string>(ErrorCode.file_type_blocked, "");
             BsonDocument fileWrap = filesWrap.FindOne(fileId);
             string handlerId = converter.GetHandlerId();
             if (fileWrap["FileType"].AsString == replaceFileModel.FileType)

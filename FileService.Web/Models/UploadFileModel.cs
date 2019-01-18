@@ -15,6 +15,7 @@ namespace FileService.Web.Models
         public HttpPostedFileBase[] Images { get; set; }
         public string OutPut { get; set; }
         public string Access { get; set; }
+        public int ExpiredDay { get; set; }
     }
     public class UploadVideoModel
     {
@@ -22,12 +23,14 @@ namespace FileService.Web.Models
         public HttpPostedFileBase[] Videos { get; set; }
         public string OutPut { get; set; }
         public string Access { get; set; }
+        public int ExpiredDay { get; set; }
     }
     public class UploadAttachmentModel
     {
         [Required]
         public HttpPostedFileBase[] Attachments { get; set; }
         public string Access { get; set; }
+        public int ExpiredDay { get; set; }
     }
     public class UploadVideoCPModel
     {

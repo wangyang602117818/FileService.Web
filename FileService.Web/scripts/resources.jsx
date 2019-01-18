@@ -375,33 +375,36 @@ class Resources extends React.Component {
             }
         }.bind(this));
     }
-    imageUpload(input, thumbnails, access, success, process) {
+    imageUpload(input, thumbnails, access, expiredDay, success, process) {
         var that = this;
         http.post(urls.resources.uploadImageUrl, {
             images: input,
             output: thumbnails.length > 0 ? JSON.stringify(thumbnails) : null,
             access: access.length > 0 ? JSON.stringify(access) : null,
+            expiredDay: expiredDay
         }, function (data) {
             if (data.code == 0) that.getData();
             success(data);
         }, process);
     }
-    videoUpload(input, videos, access, success, process) {
+    videoUpload(input, videos, access, expiredDay, success, process) {
         var that = this;
         http.post(urls.resources.uploadVideoUrl, {
             videos: input,
             output: videos.length > 0 ? JSON.stringify(videos) : null,
             access: access.length > 0 ? JSON.stringify(access) : null,
+            expiredDay: expiredDay
         }, function (data) {
             if (data.code == 0) that.getData();
             success(data);
         }, process);
     }
-    attachmentUpload(input, access, success, process) {
+    attachmentUpload(input, access, expiredDay, success, process) {
         var that = this;
         http.post(urls.resources.uploadAttachmentUrl, {
             attachments: input,
             access: access.length > 0 ? JSON.stringify(access) : null,
+            expiredDay: expiredDay
         }, function (data) {
             if (data.code == 0) that.getData();
             success(data);

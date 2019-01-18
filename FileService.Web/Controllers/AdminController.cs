@@ -950,21 +950,6 @@ namespace FileService.Web.Controllers
             }
             return new ResponseModel<string>(ErrorCode.success, "");
         }
-        [AllowAnonymous]
-        public ActionResult Test()
-        {
-            byte[] IV = { 0x12, 0x34, 0x56, 0x78, 0x90, 0xAB, 0xCD, 0xEF };
-            string iv = Convert.ToBase64String(IV);
-            string key1 = Convert.ToBase64String(Rijndael.Create().Key);
-            RijndaelManaged rijndaelManaged = new RijndaelManaged() { KeySize = 128 };
-            string key2 = Convert.ToBase64String(rijndaelManaged.Key);
-            return Json(new
-            {
-                key1,
-                key2,
-                iv,
-            }, JsonRequestBehavior.AllowGet);
-        }
         public ActionResult GetHandler()
         {
             return Content(converter.GetHandlerId());

@@ -7,6 +7,7 @@
             buttonValue: culture.upload,
             buttonDisabled: false,
             accesses: [],
+            expiredDay: 0
         }
     }
     showAccess(e) {
@@ -50,7 +51,7 @@
                     accessUsers: this.state.accesses[i].userArray
                 })
             }
-            this.props.attachmentUpload(this.input, access,
+            this.props.attachmentUpload(this.input, access, this.state.expiredDay,
                 function (data) {
                     if (data.code == 0) {
                         that.input.value = "";  //清空input框
@@ -108,6 +109,12 @@
                                 {this.state.accessShow ? <AccessAuthority
                                     ref="accessAuthority"
                                     accessOk={this.accessOk.bind(this)} /> : null}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>{culture.expired_date}:</td>
+                            <td colSpan="2">
+                                <input type="number" name="expiredDay" style={{ width: "50px" }} value={this.state.expiredDay} onChange={e => { this.setState({ expiredDay: e.target.value }) }} />{'\u00A0'}{'\u00A0'}{culture.day}
                             </td>
                         </tr>
                         <tr>
