@@ -11,7 +11,7 @@ office只能替换成office
 rar、zip只能替换成rar，zip
 其他只替换文件就ok
 
-转换文件加入过期时间
+
 研究video加载事件
 
 
