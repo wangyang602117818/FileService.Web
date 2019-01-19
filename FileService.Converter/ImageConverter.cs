@@ -3,6 +3,7 @@ using FileService.Model;
 using FileService.Util;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization;
+using System;
 using System.Collections.Generic;
 using System.Drawing.Imaging;
 using System.IO;
@@ -25,6 +26,7 @@ namespace FileService.Converter
             string fileName = taskItem.Message["FileName"].AsString;
             string fileType = taskItem.Message["Type"].AsString;
             ObjectId fileWrapId = taskItem.Message["FileId"].AsObjectId;
+            BsonDocument fileWrap = filesWrap.FindOne(fileWrapId);
 
             ImageOutPut output = BsonSerializer.Deserialize<ImageOutPut>(outputDocument);
             string outputExt = "";
@@ -60,16 +62,14 @@ namespace FileService.Converter
                     //任务肯定是后加的
                     else
                     {
-                        BsonDocument filesWrap = new FilesWrap().FindOne(fileWrapId);
-                        ObjectId fileId = filesWrap["FileId"].AsObjectId;
+                        ObjectId fileId = fileWrap["FileId"].AsObjectId;
                         fileStream = mongoFile.DownLoadSeekable(fileId);
                     }
                 }
             }
             else
             {
-                BsonDocument filesWrap = new FilesWrap().FindOne(fileWrapId);
-                ObjectId fileId = filesWrap["FileId"].AsObjectId;
+                ObjectId fileId = fileWrap["FileId"].AsObjectId;
                 fileStream = mongoFile.DownLoadSeekable(fileId);
             }
             if (fileStream != null)
@@ -79,7 +79,7 @@ namespace FileService.Converter
                     int twidth = output.Width, theight = output.Height;
                     using (Stream stream = ImageExtention.GenerateThumbnail(fileName, fileStream, output.Model, format, output.X, output.Y, ref twidth, ref theight))
                     {
-                        thumbnail.Replace(output.Id, from, taskItem.Message["FileId"].AsObjectId, stream.Length, twidth, theight, Path.GetFileNameWithoutExtension(fileName) + outputExt, output.Flag, stream.ToBytes());
+                        thumbnail.Replace(output.Id, from, taskItem.Message["FileId"].AsObjectId, stream.Length, twidth, theight, Path.GetFileNameWithoutExtension(fileName) + outputExt, output.Flag, stream.ToBytes(), fileWrap.Contains("ExpiredTime") ? fileWrap["ExpiredTime"].ToUniversalTime() : DateTime.MaxValue.ToUniversalTime());
                     }
                 }
                 fileStream.Close();

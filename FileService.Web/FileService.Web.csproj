@@ -339,6 +339,7 @@
     <Content Include="pdfview\viewer.css" />
     <Content Include="pdfview\viewer.js" />
     <Content Include="pdfview\viewer.min.js" />
+    <Content Include="css\iconfont.woff2" />
     <None Include="readme.txt" />
     <Content Include="scripts\application.jsx" />
     <Content Include="scripts\application_add.jsx" />

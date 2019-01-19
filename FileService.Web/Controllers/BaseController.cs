@@ -34,6 +34,7 @@ namespace FileService.Web.Controllers
         protected Download download = new Download();
         protected Application application = new Application();
         protected Extension extension = new Extension();
+        string imagePath = AppDomain.CurrentDomain.BaseDirectory + "image\\";
         public BaseController()
         {
             ViewBag.appName = AppSettings.appName;
@@ -61,9 +62,8 @@ namespace FileService.Web.Controllers
         }
         protected ActionResult GetFilePreview(string id, BsonDocument filePreview)
         {
-            string imagePath = AppDomain.CurrentDomain.BaseDirectory + "image\\";
             string fileId = id.Split('.')[0].TrimEnd('/');
-            if (fileId == "ffffffffffffffffffffffff") return File(System.IO.File.ReadAllBytes(imagePath + "forbidden.png"), "image/png");
+            if (fileId == "ffffffffffffffffffffffff") return GetFileExpired();
             string ext = "." + id.Split('.')[1].TrimEnd('/').ToLower();
             string type = extension.GetTypeByExtension(ext).ToLower();
             if (filePreview == null)
@@ -95,6 +95,10 @@ namespace FileService.Web.Controllers
             }
             string contentType = Extension.GetContentType(Path.GetExtension(filePreview["FileName"].AsString.ToLower()).ToLower());
             return File(filePreview["File"].AsByteArray, contentType, filePreview["FileName"].AsString);
+        }
+        protected ActionResult GetFileExpired()
+        {
+            return File(System.IO.File.ReadAllBytes(imagePath + "forbidden.png"), "image/png");
         }
         protected void Log(string fileId, string content)
         {

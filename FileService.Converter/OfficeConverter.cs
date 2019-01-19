@@ -1,6 +1,7 @@
 ﻿using FileService.Business;
 using FileService.Util;
 using MongoDB.Bson;
+using System;
 using System.Diagnostics;
 using System.IO;
 
@@ -19,6 +20,7 @@ namespace FileService.Converter
         {
             ObjectId fileWrapId = taskItem.Message["FileId"].AsObjectId;
             BsonDocument fileWrap = filesWrap.FindOne(fileWrapId);
+            DateTime expiredTime = fileWrap.Contains("ExpiredTime") ? fileWrap["ExpiredTime"].ToUniversalTime() : DateTime.MaxValue.ToUniversalTime();
             string from = taskItem.Message["From"].AsString;
             string fileName = taskItem.Message["FileName"].AsString;
             string fileType = taskItem.Message["Type"].AsString;
@@ -54,7 +56,7 @@ namespace FileService.Converter
 
             string destinationFullPath = MongoFileBase.AppDataDir + fileWrapId.ToString() + ".pdf";
             //转换office方法
-            ObjectId outputId = ConvertOffice(fullPath, destinationFullPath, Path.GetFileNameWithoutExtension(fileName) + ".pdf", fileWrapId);
+            ObjectId outputId = ConvertOffice(fullPath, destinationFullPath, Path.GetFileNameWithoutExtension(fileName) + ".pdf", fileWrapId, expiredTime);
             //更新 filesWrap 表
             filesWrap.UpdateSubFileId(fileWrapId, oldFileId, outputId);
             //更新 task 表
@@ -63,7 +65,7 @@ namespace FileService.Converter
             if (File.Exists(fullPath)) File.Delete(fullPath);
             return true;
         }
-        public ObjectId ConvertOffice(string sourcePath, string destinationPath, string convertName, ObjectId fileWrapId)
+        public ObjectId ConvertOffice(string sourcePath, string destinationPath, string convertName, ObjectId fileWrapId, DateTime expiredTime)
         {
             if (!File.Exists(AppSettings.libreOffice))
             {
@@ -90,7 +92,7 @@ namespace FileService.Converter
             {
                 using (FileStream stream = new FileStream(destinationPath, FileMode.Open))
                 {
-                    return mongoFileConvert.UploadFile(convertName, stream, "FilesWrap", fileWrapId, "pdf", "application/pdf");
+                    return mongoFileConvert.UploadFile(convertName, stream, "FilesWrap", fileWrapId, "pdf", "application/pdf", expiredTime);
                 }
             }
             else

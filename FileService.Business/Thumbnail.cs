@@ -7,7 +7,7 @@ namespace FileService.Business
     public partial class Thumbnail : ModelBase<Data.Thumbnail>
     {
         public Thumbnail() : base(new Data.Thumbnail()) { }
-        public bool Replace(ObjectId id, string from, ObjectId sourceId, long length, int width, int height, string fileName, string flag, byte[] file)
+        public bool Replace(ObjectId id, string from, ObjectId sourceId, long length, int width, int height, string fileName, string flag, byte[] file, DateTime expiredTime)
         {
             BsonDocument document = new BsonDocument()
             {
@@ -21,6 +21,7 @@ namespace FileService.Business
                 {"File",file },
                 {"Flag",flag },
                 {"CreateTime",DateTime.Now },
+                {"ExpiredTime",expiredTime },
             };
             return mongoData.Replace(document);
         }

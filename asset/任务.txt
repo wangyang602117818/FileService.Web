@@ -11,8 +11,9 @@ office只能替换成office
 rar、zip只能替换成rar，zip
 其他只替换文件就ok
 
-缩略图id获取源文件
+转换文件加入过期时间
 研究video加载事件
+
 
 加密ts
 ffmpeg.exe -i Wildlife.mp4 -hls_time 2 -hls_list_size 0 -hls_allow_cache 0 -hls_enc 1 -hls_enc_key N74kEdQDwUgiR5QNyMQ9fg== -hls_enc_key_url http://localhost:2431/admin/key -hls_enc_iv EjRWeJCrze8= out.m3u8

@@ -24,6 +24,10 @@ namespace FileService.Web.Controllers
             if (fileWrapId == ObjectId.Empty) return File(new MemoryStream(), "application/octet-stream");
             BsonDocument fileWrap = deleted ? filesWrap.FindOne(fileWrapId) : filesWrap.FindOneNotDelete(fileWrapId);
             if (fileWrap == null) return File(new MemoryStream(), "application/octet-stream");
+            if (fileWrap.Contains("ExpiredTime") && (fileWrap["CreateTime"].ToUniversalTime() >= fileWrap["ExpiredTime"].ToUniversalTime()))
+            {
+                return GetFileExpired();
+            }
             AddDownload(fileWrapId);
             ObjectId fileId = fileWrap["FileId"].AsObjectId;
             string fileName = fileWrap["FileName"].AsString;
@@ -47,6 +51,10 @@ namespace FileService.Web.Controllers
             if (fId == ObjectId.Empty) return File(new MemoryStream(), "application/octet-stream");
             GridFSDownloadStream stream = mongoFileConvert.DownLoad(fId);
             ObjectId fileWrapId = stream.FileInfo.Metadata["Id"].AsObjectId;
+            if (stream.FileInfo.Metadata.Contains("ExpiredTime") && (stream.FileInfo.UploadDateTime >= stream.FileInfo.Metadata["ExpiredTime"].ToUniversalTime()))
+            {
+                return File(new MemoryStream(), "application/octet-stream");
+            }
             AddDownload(fileWrapId);
             Response.AddHeader("Accept-Ranges", "bytes");
             return File(stream, stream.FileInfo.Metadata["ContentType"].AsString, stream.FileInfo.Filename);
@@ -81,6 +89,10 @@ namespace FileService.Web.Controllers
             ObjectId fId = GetObjectIdFromId(id);
             if (fId == ObjectId.Empty) return File(new MemoryStream(), "application/octet-stream");
             BsonDocument fileWrap = filesWrap.FindOne(fId);
+            if (fileWrap.Contains("ExpiredTime") && (fileWrap["CreateTime"].ToUniversalTime() >= fileWrap["ExpiredTime"].ToUniversalTime()))
+            {
+                return File(new MemoryStream(), "application/octet-stream");
+            }
             ObjectId fileId = fileWrap["FileId"].AsObjectId;
             GridFSDownloadStream stream = mongoFile.DownLoadSeekable(fileId);
             Stream file = stream.GetFileInZip(fileName);
@@ -91,6 +103,10 @@ namespace FileService.Web.Controllers
             ObjectId fId = GetObjectIdFromId(id);
             if (fId == ObjectId.Empty) return File(new MemoryStream(), "application/octet-stream");
             BsonDocument fileWrap = filesWrap.FindOne(fId);
+            if (fileWrap.Contains("ExpiredTime") && (fileWrap["CreateTime"].ToUniversalTime() >= fileWrap["ExpiredTime"].ToUniversalTime()))
+            {
+                return File(new MemoryStream(), "application/octet-stream");
+            }
             ObjectId fileId = fileWrap["FileId"].AsObjectId;
             GridFSDownloadStream stream = mongoFile.DownLoadSeekable(fileId);
             Stream file = stream.GetFileInRar(fileName);
@@ -107,6 +123,10 @@ namespace FileService.Web.Controllers
             }
             else
             {
+                if (thumb.Contains("ExpiredTime") && (thumb["CreateTime"].ToUniversalTime() >= thumb["ExpiredTime"].ToUniversalTime()))
+                {
+                    return GetFileExpired();
+                }
                 return File(thumb["File"].AsByteArray, ImageExtention.GetContentType(thumb["FileName"].AsString), thumb["FileName"].AsString);
             }
         }
@@ -116,6 +136,10 @@ namespace FileService.Web.Controllers
             if (fileWrapId == ObjectId.Empty) return File(new MemoryStream(), "application/octet-stream");
             BsonDocument fileWrap = filesWrap.FindOne(fileWrapId);
             if (fileWrap == null) return File(new MemoryStream(), "application/octet-stream");
+            if (fileWrap.Contains("ExpiredTime") && (fileWrap["CreateTime"].ToUniversalTime() >= fileWrap["ExpiredTime"].ToUniversalTime()))
+            {
+                return GetFileExpired();
+            }
             BsonValue thumbnail = null;
             if (fileWrap.Contains("Thumbnail") && fileWrap["Thumbnail"].AsBsonArray.FirstOrDefault() != null)
             {
@@ -137,6 +161,10 @@ namespace FileService.Web.Controllers
             if (fileWrapId == ObjectId.Empty) return File(new MemoryStream(), "application/octet-stream");
             BsonDocument fileWrap = filesWrap.FindOne(fileWrapId);
             if (fileWrap == null) return File(new MemoryStream(), "application/octet-stream");
+            if (fileWrap.Contains("ExpiredTime") && (fileWrap["CreateTime"].ToUniversalTime() >= fileWrap["ExpiredTime"].ToUniversalTime()))
+            {
+                return GetFileExpired();
+            }
             BsonValue thumbnail = null;
             if (fileWrap.Contains("Thumbnail") && fileWrap["Thumbnail"].AsBsonArray.FirstOrDefault() != null)
             {
@@ -157,6 +185,10 @@ namespace FileService.Web.Controllers
             ObjectId m3u8Id = GetObjectIdFromId(id);
             if (m3u8Id == ObjectId.Empty) return File(new MemoryStream(), "application/octet-stream");
             BsonDocument document = m3u8.FindOne(m3u8Id);
+            if (document.Contains("ExpiredTime") && (document["CreateTime"].ToUniversalTime() >= document["ExpiredTime"].ToUniversalTime()))
+            {
+                return File(new MemoryStream(), "application/octet-stream");
+            }
             string baseUrl = Request.Url.Scheme + "://" + Request.Url.Authority + Request.ApplicationPath;
             string fileStr = Regex.Replace(document["File"].AsString, "(\\w+).ts", (match) =>
             {
@@ -170,6 +202,10 @@ namespace FileService.Web.Controllers
             ObjectId m3u8Id = GetObjectIdFromId(id);
             if (m3u8Id == ObjectId.Empty) return File(new MemoryStream(), "application/octet-stream");
             BsonDocument document = m3u8.FindOne(m3u8Id);
+            if (document.Contains("ExpiredTime") && (document["CreateTime"].ToUniversalTime() >= document["ExpiredTime"].ToUniversalTime()))
+            {
+                return File(new MemoryStream(), "application/octet-stream");
+            }
             if (document == null)
             {
                 return File(new MemoryStream(), "application/octet-stream");

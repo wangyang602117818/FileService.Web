@@ -30,7 +30,7 @@ namespace FileService.Business
                     {"DeleteTime",BsonNull.Value },
                     {"CreateTime",DateTime.Now },
                     {"ExpiredDay",expiredDay },
-                    {"ExpiredTime",DateTime.Now.AddDays(expiredDay) }
+                    {"ExpiredTime",expiredDay==0?DateTime.MaxValue.ToUniversalTime(): DateTime.Now.AddDays(expiredDay)}
                 };
             mongoData.Insert(filesWrap);
         }
@@ -54,7 +54,7 @@ namespace FileService.Business
                     {"DeleteTime",BsonNull.Value },
                     {"CreateTime",DateTime.Now },
                     {"ExpiredDay",expiredDay },
-                    {"ExpiredTime",DateTime.Now.AddDays(expiredDay) }
+                    {"ExpiredTime",expiredDay==0?DateTime.MaxValue.ToUniversalTime(): DateTime.Now.AddDays(expiredDay)}
                 };
             mongoData.Insert(filesWrap);
         }
@@ -81,7 +81,7 @@ namespace FileService.Business
                 { "DeleteTime",BsonNull.Value },
                 { "CreateTime",DateTime.Now },
                 { "ExpiredDay",expiredDay },
-                { "ExpiredTime",DateTime.Now.AddDays(expiredDay) }
+                { "ExpiredTime",expiredDay==0?DateTime.MaxValue.ToUniversalTime(): DateTime.Now.AddDays(expiredDay) }
             });
             mongoData.Insert(filesWrap);
         }

@@ -3,6 +3,7 @@ using FileService.Util;
 using MongoDB.Bson;
 using SharpCompress.Archives.Zip;
 using SharpCompress.Readers;
+using System;
 using System.IO;
 
 namespace FileService.Converter
@@ -20,6 +21,7 @@ namespace FileService.Converter
         {
             ObjectId fileWrapId = taskItem.Message["FileId"].AsObjectId;
             BsonDocument fileWrap = filesWrap.FindOne(fileWrapId);
+            DateTime expiredTime = fileWrap.Contains("ExpiredTime") ? fileWrap["ExpiredTime"].ToUniversalTime() : DateTime.MaxValue.ToUniversalTime();
             string from = taskItem.Message["From"].AsString;
             string fileName = taskItem.Message["FileName"].AsString;
             string fileType = taskItem.Message["Type"].AsString;
@@ -56,7 +58,7 @@ namespace FileService.Converter
                     if (filesConvert.FindOne(_id) != null) mongoFileConvert.Delete(_id);
                 }
             }
-            BsonArray subFiles = ConvertZip(fileWrapId, fullPath);
+            BsonArray subFiles = ConvertZip(fileWrapId, fullPath, expiredTime);
             ////更新 fs.files表
             if (filesWrap.ReplaceSubFiles(fileWrapId, subFiles))
             {
@@ -65,7 +67,7 @@ namespace FileService.Converter
             }
             return false;
         }
-        public BsonArray ConvertZip(ObjectId fileWrapId, string fullSourceFileName)
+        public BsonArray ConvertZip(ObjectId fileWrapId, string fullSourceFileName,DateTime expiredTime)
         {
             BsonArray result = new BsonArray();
             using (ZipArchive rarArchive = ZipArchive.Open(fullSourceFileName))
@@ -91,7 +93,7 @@ namespace FileService.Converter
                             //转换之后的文件id
                             string convertName = Path.GetFileNameWithoutExtension(reader.Entry.Key) + ".pdf";
                             string destinationPath = destPath + convertName;
-                            ObjectId newFileId = new OfficeConverter().ConvertOffice(sourcePath, destinationPath, convertName, fileWrapId);
+                            ObjectId newFileId = new OfficeConverter().ConvertOffice(sourcePath, destinationPath, convertName, fileWrapId, expiredTime);
                             if (File.Exists(sourcePath)) File.Delete(sourcePath);
                             if (Directory.Exists(destPath)) Directory.Delete(destPath, true);
                             //id列表
@@ -104,7 +106,7 @@ namespace FileService.Converter
                         }
                         else
                         {
-                            ObjectId newFileId = mongoFileConvert.UploadFile(Path.GetFileName(reader.Entry.Key), reader.OpenEntryStream(), "FilesWrap", fileWrapId, "attachment", "application/octet-stream");
+                            ObjectId newFileId = mongoFileConvert.UploadFile(Path.GetFileName(reader.Entry.Key), reader.OpenEntryStream(), "FilesWrap", fileWrapId, "attachment", "application/octet-stream", expiredTime);
                             //id列表
                             result.Add(new BsonDocument() {
                                 { "_id",newFileId},
