@@ -230,6 +230,7 @@
     <Content Include="image\date.png" />
     <Content Include="image\department.svg" />
     <Content Include="image\excel.png" />
+    <Content Include="image\forbidden.png" />
     <Content Include="image\image.png" />
     <Content Include="image\libreoffice.png" />
     <Content Include="image\logo.png" />

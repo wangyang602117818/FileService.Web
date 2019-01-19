@@ -223,9 +223,9 @@ h1 {
         height: 80px;
         background-position: center;
         background-repeat: no-repeat;
-        display:flex;
-        align-items:center;
-        justify-content:center;
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
 
     .table_grid .file_icon_preview {
@@ -234,6 +234,10 @@ h1 {
         display: flex;
         align-items: center;
         justify-content: center;
+    }
+
+    .table_grid .expired {
+        background-color: #f0f0f0;
     }
 
     .table_grid svg {
@@ -510,6 +514,7 @@ h1 {
         color: #8E4C9E;
         margin-left: 0;
     }
+
 .table .icon-audio {
     color: #00BECA;
     cursor: default;
@@ -519,6 +524,7 @@ h1 {
         color: #00BECA;
         margin-left: 0;
     }
+
 .table .icon-attachment {
     color: #484848;
     cursor: default;

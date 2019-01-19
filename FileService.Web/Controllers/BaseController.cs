@@ -62,6 +62,8 @@ namespace FileService.Web.Controllers
         protected ActionResult GetFilePreview(string id, BsonDocument filePreview)
         {
             string imagePath = AppDomain.CurrentDomain.BaseDirectory + "image\\";
+            string fileId = id.Split('.')[0].TrimEnd('/');
+            if (fileId == "ffffffffffffffffffffffff") return File(System.IO.File.ReadAllBytes(imagePath + "forbidden.png"), "image/png");
             string ext = "." + id.Split('.')[1].TrimEnd('/').ToLower();
             string type = extension.GetTypeByExtension(ext).ToLower();
             if (filePreview == null)
