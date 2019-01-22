@@ -152,13 +152,6 @@ namespace FileService.Web.Controllers
             long count = 0;
             Dictionary<string, string> sorts = new Dictionary<string, string> { { "CreateTime", "desc" } };
             List<BsonDocument> result = filesWrap.GetPageList(pageIndex, pageSize, eqs, null, null, sorts, filter, new List<string>() { "FileName" }, new List<string>() { }, out count, "").ToList();
-            //foreach (BsonDocument item in result)
-            //{
-            //    item["_id"] = item["_id"].ToString();
-            //    item["FileId"] = item["FileId"].ToString();
-            //    item["CreateTime"] = item["CreateTime"].ToUniversalTime().UTCTimeStamp();
-            //    if (item.Contains("ExpiredTime")) item["ExpiredTime"] = item["ExpiredTime"].ToUniversalTime().UTCTimeStamp();
-            //}
             return new ResponseModel<IEnumerable<BsonDocument>>(ErrorCode.success, result, count);
         }
         private BsonDocument GetState(IEnumerable<BsonDocument> list)

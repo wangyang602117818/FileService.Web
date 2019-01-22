@@ -1,5 +1,5 @@
 ﻿//////////////////////////////////////////////////////////////////////////////////////
-///version:1.6.7
+///version:1.7.2
 ///author: wangyang
 /////////////////////////////////////////////////////////////////////////////////////
 function FileClient(authCode, remoteUrl) {
@@ -155,6 +155,12 @@ function FileClient(authCode, remoteUrl) {
     };
     this.getThumbnailFromSourceIdFlagUrl = function (fileId, flag) {
         return this.remoteUrl + "/download/getthumbnailbytag/" + fileId + "?flag=" + flag;
+    };
+    this.getImageFromThumbnailIdUrl = function (thumbId) {
+        return this.remoteUrl + "/download/getimagefromthumbnailid/" + thumbId;
+    };
+    this.getVideoFromM3u8IdUrl = function (m3u8FileId) {
+        return this.remoteUrl + "/download/getvideofromm3u8id/" + m3u8FileId;
     };
     this.getTsUrl = function (tsId) {
         return this.remoteUrl + "/download/ts/" + tsId;

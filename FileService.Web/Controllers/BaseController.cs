@@ -76,21 +76,21 @@ namespace FileService.Web.Controllers
                     case "attachment":
                     case "audio":
                     case "pdf":
-                        return File(System.IO.File.ReadAllBytes(imagePath + type + ".png"), "image/png");
+                        return File(System.IO.File.ReadAllBytes(imagePath + type + ".png"), "image/png", type + ".png");
                     case "office":
                         if (ext == ".doc" || ext == ".docx")
-                            return File(System.IO.File.ReadAllBytes(imagePath + "word.png"), "image/png");
+                            return File(System.IO.File.ReadAllBytes(imagePath + "word.png"), "image/png", "word.png");
                         if (ext == ".xls" || ext == ".xlsx")
-                            return File(System.IO.File.ReadAllBytes(imagePath + "excel.png"), "image/png");
+                            return File(System.IO.File.ReadAllBytes(imagePath + "excel.png"), "image/png", "excel.png");
                         if (ext == ".ppt" || ext == ".pptx")
-                            return File(System.IO.File.ReadAllBytes(imagePath + "ppt.png"), "image/png");
+                            return File(System.IO.File.ReadAllBytes(imagePath + "ppt.png"), "image/png", "ppt.png");
                         if (new string[] { ".odg", ".ods", ".odp", ".odf", ".odt" }.Contains(ext))
-                            return File(System.IO.File.ReadAllBytes(imagePath + "libreoffice.png"), "image/png");
+                            return File(System.IO.File.ReadAllBytes(imagePath + "libreoffice.png"), "image/png", "libreoffice.png");
                         if (new string[] { ".wps", ".dps", ".et" }.Contains(ext))
-                            return File(System.IO.File.ReadAllBytes(imagePath + "wps.png"), "image/png");
-                        return File(System.IO.File.ReadAllBytes(imagePath + "attachment.png"), "image/png");
+                            return File(System.IO.File.ReadAllBytes(imagePath + "wps.png"), "image/png", "wps.png");
+                        return File(System.IO.File.ReadAllBytes(imagePath + "attachment.png"), "image/png", "attachment.png");
                     default:
-                        return File(System.IO.File.ReadAllBytes(imagePath + "attachment.png"), "image/png");
+                        return File(System.IO.File.ReadAllBytes(imagePath + "attachment.png"), "image/png", "attachment.png");
                 }
             }
             string contentType = Extension.GetContentType(Path.GetExtension(filePreview["FileName"].AsString.ToLower()).ToLower());
@@ -98,7 +98,7 @@ namespace FileService.Web.Controllers
         }
         protected ActionResult GetFileExpired()
         {
-            return File(System.IO.File.ReadAllBytes(imagePath + "forbidden.png"), "image/png");
+            return File(System.IO.File.ReadAllBytes(imagePath + "forbidden.png"), "image/png", "forbidden.png");
         }
         protected void Log(string fileId, string content)
         {
