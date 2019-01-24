@@ -246,6 +246,18 @@ var urls = {
         sharedFile: appDomain + "shared/f"
     }
 }
+function reMapArray(array, len) {
+    var new_array = [];
+    for (var i = 0; i < array.length; i += len) {
+        if (i % len == 0) {
+            new_array.push(array.slice(i, i + len));
+        }
+    }
+    while (new_array[new_array.length - 1].length < len) {
+        new_array[new_array.length - 1].push(null);
+    }
+    return new_array;
+}
 function assemblyUrl(url) {
     if (url.indexOf("?") > -1) {
         url = url + "&r=" + selectFrom(1000, 1000000);

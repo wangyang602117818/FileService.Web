@@ -131,6 +131,7 @@ class ResourcesDataPic extends React.Component {
         super(props);
     }
     render() {
+
         return (
             <div className="table_grid">
                 {this.props.data.map(function (item, i) {
@@ -162,7 +163,6 @@ class ResourcesDataPicItem extends React.Component {
         var fileName = this.props.resource.FileName.removeHTML();
         var fileType = this.props.resource.FileType.removeHTML();
         var owner = this.props.resource.Owner.removeHTML();
-        //var select = this.props.resource.selected;
         var className = "table_grid_item_wrap ";
         className += fileIconId == "000000000000000000000000" ? "doing " : "done ";
         className += this.props.selectedIds.indexOf(fileId) > -1 ? "selected" : "";
@@ -182,7 +182,6 @@ class ResourcesDataPicItem extends React.Component {
                         data-owner={owner}
                     />
                     <div className="table_grid_content">
-                        {/* <img src={urls.getFileIconUrl + "/" + fileId + fileName.getFileExtension() + "/"} /> */}
                         <div className="file_icon" style={{ backgroundImage: "url(" + urls.getFileIconUrl + "/" + fileIconId + fileName.getFileExtension() + "/)" }}>
                             <div className="file_icon_preview">
                                 {fileType == "video" ?

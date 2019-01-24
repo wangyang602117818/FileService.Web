@@ -360,7 +360,7 @@ namespace FileService.Web.Controllers
                 //删除文件的附加信息
                 DeleteSubFiles(fileWrap);
                 //保存上传的文件到共享目录
-                replaceFileModel.File.SaveAs(tempFileDirectory + replaceFileModel.File.FileName);
+                replaceFileModel.File.SaveAs(tempFileDirectory + fileId.ToString() + fileExt);
 
                 if (filesWrap.Update(fileWrap["_id"].AsObjectId, new BsonDocument() {
                         {"FileName", replaceFileModel.File.FileName },
