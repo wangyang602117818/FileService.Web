@@ -54,16 +54,16 @@ namespace FileService.Util
             }
             return size;
         }
-        public static string GetFileConvertSize(long size)
+        public static string GetFileConvertSize(double size)
         {
-            size = size / 1024;
-            if (size < 1024) return size + "KB";
-            size = size / 1024;
-            if (size < 1024) return size + "MB";
-            size = size / 1024;
-            if (size < 1024) return size + "GB";
-            size = size / 1024;
-            return size + "TB";
+            size = size / 1024.0;
+            if (size < 1024) return Math.Round(size,2) + "KB";
+            size = size / 1024.0;
+            if (size < 1024) return Math.Round(size,2) + "MB";
+            size = size / 1024.0;
+            if (size < 1024) return Math.Round(size,2) + "GB";
+            size = size / 1024.0;
+            return Math.Round(size,2) + "TB";
         }
     }
     public class MongoServerState
