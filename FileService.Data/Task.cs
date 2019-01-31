@@ -98,9 +98,9 @@ namespace FileService.Data
             var filter = FilterBuilder.In("FileId", ids);
             return MongoCollection.UpdateMany(filter, Builders<BsonDocument>.Update.Set("Access", array)).IsAcknowledged;
         }
-        public override FilterDefinition<BsonDocument> GetAccessFilter(string userName)
+        public override FilterDefinition<BsonDocument> GetAccessFilter(string userName,bool checkAccess)
         {
-            return base.GetAccessFilterBase(userName);
+            return base.GetAccessFilterBase(userName, checkAccess);
         }
         public override FilterDefinition<BsonDocument> GetAndFilter()
         {

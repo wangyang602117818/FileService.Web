@@ -149,10 +149,19 @@ namespace FileService.Web.Controllers
             BsonDocument eqs = new BsonDocument("Delete", false);
             if (!string.IsNullOrEmpty(fileType)) eqs.Add("FileType", fileType);
             if (!string.IsNullOrEmpty(from)) eqs.Add("From", from);
+            var userName = Request.Headers["UserName"] ?? "";
             long count = 0;
             Dictionary<string, string> sorts = new Dictionary<string, string> { { "CreateTime", "desc" } };
-            List<BsonDocument> result = filesWrap.GetPageList(pageIndex, pageSize, eqs, null, null, sorts, filter, new List<string>() { "FileName" }, new List<string>() { }, out count, "").ToList();
+            List<BsonDocument> result = filesWrap.GetPageList(pageIndex, pageSize, eqs, null, null, sorts, filter, new List<string>() { "FileName" }, new List<string>() { }, out count, userName, false).ToList();
             return new ResponseModel<IEnumerable<BsonDocument>>(ErrorCode.success, result, count);
+        }
+        [AppAuthorize]
+        public ActionResult Remove(string id)
+        {
+            if (Request.Headers["UserName"] == null) return new ResponseModel<string>(ErrorCode.username_required, "");
+            RemoveFile(id);
+            Log(id, "RemoveFile");
+            return new ResponseModel<string>(ErrorCode.success, "");
         }
         private BsonDocument GetState(IEnumerable<BsonDocument> list)
         {

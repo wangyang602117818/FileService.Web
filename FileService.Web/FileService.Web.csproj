@@ -219,12 +219,13 @@
     <Content Include="css\org_chart.css" />
     <Content Include="css\page.css" />
     <Content Include="css\preview.css" />
-    <Content Include="file-service-api-1.7.2.js" />
+    <Content Include="file-service-api-1.7.4.js" />
     <Content Include="Global.asax" />
     <Content Include="hlsplayer\flowplayer.controls.swf" />
     <Content Include="hlsplayer\flowplayer.swf" />
     <Content Include="hlsplayer\flowplayerhls.swf" />
     <Content Include="hlsplayer\hlsplayer.min.js" />
+    <Content Include="HtmlPage1.html" />
     <Content Include="image\attachment.png" />
     <Content Include="image\data.ico" />
     <Content Include="image\date.png" />

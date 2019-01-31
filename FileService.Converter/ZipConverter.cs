@@ -101,7 +101,7 @@ namespace FileService.Converter
                                 {"_id",newFileId},
                                 {"FileName",reader.Entry.Key },
                                 {"Length",reader.Entry.Size},
-                                {"Tag","preview" }
+                                {"Flag","preview" }
                             });
                         }
                         else
@@ -112,7 +112,7 @@ namespace FileService.Converter
                                 { "_id",newFileId},
                                 {"FileName",reader.Entry.Key },
                                 {"Length",reader.Entry.Size},
-                                {"Tag","preview" }
+                                {"Flag","preview" }
                             });
                         }
                     }

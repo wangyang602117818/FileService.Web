@@ -88,7 +88,7 @@ namespace FileService.Data
         {
             return MongoCollection.ReplaceOne(new BsonDocument("_id", document["_id"].AsObjectId), document, new UpdateOptions() { IsUpsert = true }).IsAcknowledged;
         }
-        public FilterDefinition<BsonDocument> GetAccessFilterBase(string userName)
+        public FilterDefinition<BsonDocument> GetAccessFilterBase(string userName, bool checkAccess)
         {
             if (string.IsNullOrEmpty(userName)) return null;
             string companyCode = "";
@@ -96,34 +96,38 @@ namespace FileService.Data
             if (userName != "local")
             {
                 BsonDocument user = new User().GetUser(userName);
-                companyCode = user["Company"].AsString;
-                departments = user["Department"].AsBsonArray.Select(s => s.ToString());
+                if (user != null)
+                {
+                    companyCode = user["Company"].AsString;
+                    departments = user["Department"].AsBsonArray.Select(s => s.ToString());
+                }
             }
             List<FilterDefinition<BsonDocument>> list = new List<FilterDefinition<BsonDocument>>();
-            //这种全部可见
-            list.Add(FilterBuilder.Size("Access", 0));
-            //Owner是我就可见
-            list.Add(FilterBuilder.Eq("Owner", userName));
+            if (checkAccess) list.Add(FilterBuilder.Size("Access", 0));   //这种全部可见
+            list.Add(FilterBuilder.Eq("Owner", userName));  //Owner是我就可见  
             list.Add(FilterBuilder.Eq("Owner", ""));
             //属于companyCode公司的人可见
-            list.Add(FilterBuilder.ElemMatch<BsonDocument>("Access", new BsonDocument() {
-                { "Company",companyCode },
-                { "AccessCodes",new BsonArray()},
-                { "AccessUsers",new BsonArray()},
-            }));
-            //属于companyCode公司 并且 部门相匹配的
-            list.Add(FilterBuilder.ElemMatch<BsonDocument>("Access", new BsonDocument() {
-                {"Company",companyCode },
-                {"AccessCodes",new BsonDocument("$in",new BsonArray(departments))},
-            }));
-            //属于companyCode公司 并且 用户相匹配的
-            list.Add(FilterBuilder.ElemMatch<BsonDocument>("Access", new BsonDocument() {
-                {"Company",companyCode },
-                {"AccessUsers",userName},
-            }));
+            if (!string.IsNullOrEmpty(companyCode))
+            {
+                list.Add(FilterBuilder.ElemMatch<BsonDocument>("Access", new BsonDocument() {
+                    { "Company",companyCode },
+                    { "AccessCodes",new BsonArray()},
+                    { "AccessUsers",new BsonArray()},
+                }));
+                //属于companyCode公司 并且 部门相匹配的
+                list.Add(FilterBuilder.ElemMatch<BsonDocument>("Access", new BsonDocument() {
+                    {"Company",companyCode },
+                    {"AccessCodes",new BsonDocument("$in",new BsonArray(departments))},
+                }));
+                //属于companyCode公司 并且 用户相匹配的
+                list.Add(FilterBuilder.ElemMatch<BsonDocument>("Access", new BsonDocument() {
+                    {"Company",companyCode },
+                    {"AccessUsers",userName},
+                }));
+            }
             return FilterBuilder.Or(list);
         }
-        public virtual FilterDefinition<BsonDocument> GetAccessFilter(string userName)
+        public virtual FilterDefinition<BsonDocument> GetAccessFilter(string userName, bool checkAccess)
         {
             return null;
         }
@@ -131,7 +135,7 @@ namespace FileService.Data
         {
             return null;
         }
-        public FilterDefinition<BsonDocument> GetPageFilters(BsonDocument eqs, DateTime? start, DateTime? end, IEnumerable<string> fields, string filter, string userName)
+        public FilterDefinition<BsonDocument> GetPageFilters(BsonDocument eqs, DateTime? start, DateTime? end, IEnumerable<string> fields, string filter, string userName, bool checkAccess)
         {
             FilterDefinition<BsonDocument> filterBuilder = null;
             if (!string.IsNullOrEmpty(filter))
@@ -162,15 +166,15 @@ namespace FileService.Data
             if (eqs != null) result.Add(eqs);
             if (start != null && start != DateTime.MinValue) result.Add(FilterBuilder.Gte("CreateTime", start.Value.AddHours(0).AddMinutes(0).AddSeconds(0)));
             if (end != null && end != DateTime.MinValue) result.Add(FilterBuilder.Lte("CreateTime", end.Value.AddHours(23).AddMinutes(59).AddSeconds(59)));
-            var accessFilter = GetAccessFilter(userName);
+            var accessFilter = GetAccessFilter(userName, checkAccess);
             if (accessFilter != null) result.Add(accessFilter);
             var andFilter = GetAndFilter();
             if (andFilter != null) result.Add(andFilter);
             return FilterBuilder.And(result);
         }
-        public IEnumerable<BsonDocument> GetPageList(int pageIndex, int pageSize, BsonDocument eqs, DateTime? start, DateTime? end, Dictionary<string, string> sorts, string filter, IEnumerable<string> fields, IEnumerable<string> excludeFields, out long count, string userName)
+        public IEnumerable<BsonDocument> GetPageList(int pageIndex, int pageSize, BsonDocument eqs, DateTime? start, DateTime? end, Dictionary<string, string> sorts, string filter, IEnumerable<string> fields, IEnumerable<string> excludeFields, out long count, string userName, bool checkAccess)
         {
-            FilterDefinition<BsonDocument> filterBuilder = GetPageFilters(eqs, start, end, fields, filter, userName);
+            FilterDefinition<BsonDocument> filterBuilder = GetPageFilters(eqs, start, end, fields, filter, userName, checkAccess);
             count = MongoCollection.CountDocuments(filterBuilder);
             var exclude = Builders<BsonDocument>.Projection.Exclude("PassWord");
             foreach (string ex in excludeFields)

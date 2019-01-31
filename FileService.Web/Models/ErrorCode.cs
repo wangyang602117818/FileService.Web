@@ -23,6 +23,7 @@
         params_valid_fault = 106,
         owner_not_match = 107,
         file_type_blocked = 108,
+        username_required = 109,
         /// <summary>
         /// 不存在
         /// </summary>

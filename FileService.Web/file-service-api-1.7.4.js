@@ -1,5 +1,5 @@
 ﻿//////////////////////////////////////////////////////////////////////////////////////
-///version:1.7.2
+///version:1.7.4
 ///author: wangyang
 /////////////////////////////////////////////////////////////////////////////////////
 function FileClient(authCode, remoteUrl) {
@@ -164,6 +164,24 @@ FileClient.prototype = {
         xhr.send();
     },
     getFileUrl: function (fileId) { return this.remoteUrl + "/download/get/" + fileId; },
+    getFileConvertUrl: function (fileId) { return this.remoteUrl + "/download/getconvert/" + fileId; },
+    removeFile: function (fileId, success, progress, error, userName) {
+        var xhr = new XMLHttpRequest();
+        xhr.upload.onprogress = function (event) {
+            var precent = ((event.loaded / event.total) * 100).toFixed();
+            if (progress) progress(precent);
+        }
+        xhr.onload = function (event) {
+            var target = event.srcElement || event.target;
+            if (success) success(JSON.parse(target.responseText));
+        }
+        xhr.onerror = function (event) {
+            if (error) error(event);
+        }
+        xhr.open('get', this.remoteUrl + "/data/remove/" + fileId);
+        this.setXhrHeaders(xhr, userName);
+        xhr.send();
+    },
     getM3u8Url: function (m3u8FileId) {
         return this.remoteUrl + "/download/m3u8/" + m3u8FileId;
     },
@@ -218,11 +236,14 @@ FileClient.prototype = {
         var that = this;
         var xhr = new XMLHttpRequest();
         var url = this.remoteUrl + "/data/getfilelist/?";
-        if (data.from) url = url += "from=" + data.from;
-        if (data.fileType) url = url += "fileType=" + data.fileType;
-        if (data.filter) url = url += "filter=" + data.filter;
-        if (data.pageIndex) url = url += "pageIndex=" + data.pageIndex;
-        if (data.pageSize) url = url += "pageSize=" + data.pageSize;
+        var params = "";
+        if (data.fileType == "all") data.fileType = "";
+        if (data.from) params = params += "&from=" + data.from;
+        if (data.fileType) params = params += "&fileType=" + data.fileType;
+        if (data.filter) params = params += "&filter=" + data.filter;
+        if (data.pageIndex) params = params += "&pageIndex=" + data.pageIndex;
+        if (data.pageSize) params = params += "&pageSize=" + data.pageSize;
+        url += this.trimStart(params);
         xhr.upload.onprogress = function (event) {
             var precent = ((event.loaded / event.total) * 100).toFixed();
             if (progress) progress(precent);
@@ -356,6 +377,40 @@ FileClient.prototype = {
     assembleData: function (result) {
         if (result.code == 0) {
             for (var i = 0; i < result.result.length; i++) {
+                var thumbnails = [], videos = [], videoCpIds = [], files = [];
+                if (result.result[i].FileType == "image" && result.result[i].Thumbnail) {
+                    for (var k = 0; k < result.result[i].Thumbnail.length; k++) {
+                        thumbnails.push({
+                            FileId: result.result[i].Thumbnail[k]._id.$oid,
+                            Flag: result.result[i].Thumbnail[k].Flag
+                        })
+                    }
+                    result.result[i].Thumbnail = thumbnails;
+                }
+                if (result.result[i].FileType == "video" && result.result[i].Videos) {
+                    for (var k = 0; k < result.result[i].Videos.length; k++) {
+                        videos.push({
+                            FileId: result.result[i].Videos[k]._id.$oid,
+                            Flag: result.result[i].Videos[k].Flag
+                        })
+                    }
+                    for (var k = 0; k < result.result[i].VideoCpIds.length; k++) {
+                        videoCpIds.push(result.result[i].VideoCpIds[k].$oid)
+                    }
+                    result.result[i].Videos = videos;
+                    result.result[i].VideoCpIds = videoCpIds;
+                }
+                if (result.result[i].FileType == "office" || result.result[i].FileType == "attachment") {
+                    if (result.result[i].Files) {
+                        for (var k = 0; k < result.result[i].Files.length; k++) {
+                            files.push({
+                                FileId: result.result[i].Files[k]._id.$oid,
+                                Flag: result.result[i].Files[k].Flag
+                            })
+                        }
+                    }
+                    result.result[i].Files = files;
+                }
                 var createTime = this.getTimestamp(result.result[i].CreateTime);
                 var expiredTime = result.result[i].ExpiredTime ? this.getTimestamp(result.result[i].ExpiredTime) : 253402271999;
                 var fileIconId = createTime >= expiredTime ? "ffffffffffffffffffffffff" : result.result[i].FileId.$oid;
@@ -365,8 +420,17 @@ FileClient.prototype = {
                 result.result[i].FileIconId = fileIconId + this.getFileExtension(result.result[i].FileName);
                 delete result.result[i].FileId;
                 delete result.result[i]._id;
+                delete result.result[i].Access;
+                delete result.result[i].Delete;
+                delete result.result[i].DeleteTime;
             }
         }
         return result;
+    },
+    trimEnd: function (str) {
+        return str.replace(/.{1}$/, "");
+    },
+    trimStart: function (str) {
+        return str.replace(/^.{1}/, "");
     }
 }

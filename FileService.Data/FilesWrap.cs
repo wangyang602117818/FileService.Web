@@ -164,9 +164,10 @@ namespace FileService.Data
                 .Sort(new BsonDocument("_id.date", 1))
                 .ToEnumerable();
         }
-        public override FilterDefinition<BsonDocument> GetAccessFilter(string userName)
+        public override FilterDefinition<BsonDocument> GetAccessFilter(string userName, bool checkAccess)
         {
-            return base.GetAccessFilterBase(userName);
+            return base.GetAccessFilterBase(userName, checkAccess);
         }
+
     }
 }
