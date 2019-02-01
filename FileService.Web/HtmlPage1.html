@@ -9,9 +9,9 @@
 </body>
 </html>
 <script>
-    var fileClient = new FileClient("3c9deb1f8f6e", "http://localhost/FileService.Web/");
+    var fileClient = new FileClient("9cdc78c90274", "http://hkappuwv819/FileServiceWeb/");
     fileClient.getFileList({
-        from: "FileServiceWeb",
+        from: "IssacTest",
         fileType: "all",
         filter: "",
         pageIndex: 1,
@@ -19,7 +19,5 @@
     }, function (data) {
         console.log(data);
         });
-
-    
-
+    var url = fileClient.getFileIconUrl(fileIconId);
 </script>

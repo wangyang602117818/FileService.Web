@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace FileService.Model
+﻿namespace FileService.Model
 {
     public enum ImageModelEnum
     {
@@ -23,6 +17,10 @@ namespace FileService.Model
         /// <summary>
         /// 按高度
         /// </summary>
-        height = 3
+        height = 3,
+        /// <summary>
+        /// 按质量
+        /// </summary>
+        quality = 4
     }
 }

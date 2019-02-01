@@ -1,9 +1,4 @@
 ﻿using MongoDB.Bson;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace FileService.Model
 {
@@ -17,6 +12,7 @@ namespace FileService.Model
         public int Y { get; set; }
         public int Width { get; set; }
         public int Height { get; set; }
+        public ImageQuality ImageQuality { get; set; }
     }
     public enum ImageOutPutFormat
     {
@@ -25,5 +21,11 @@ namespace FileService.Model
         Png = 2,
         Gif = 3,
         Bmp = 4
+    }
+    public enum ImageQuality
+    {
+        High = 0,
+        Medium = 1,
+        Low = 2
     }
 }

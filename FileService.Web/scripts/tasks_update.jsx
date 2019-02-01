@@ -13,6 +13,7 @@
             y: 0,
             width: 0,
             height: 0,
+            imageQuality: 0,
             button_disabled: false
         }
     }
@@ -42,6 +43,9 @@
     }
     heightChange(e) {
         this.setState({ height: e.target.value }, function () { this.checkAvailable(); });
+    }
+    imageQualityChange(e) {
+        this.setState({ imageQuality: e.target.value }, function () { this.checkAvailable(); })
     }
     updateImage() {
         if (this.state.flag)
@@ -120,6 +124,7 @@
                                     <option value="1">{culture.cut}</option>
                                     <option value="2">{culture.by_width}</option>
                                     <option value="3">{culture.by_height}</option>
+                                    <option value="4">{culture.by_quality}</option>
                                 </select>
                             </td>
                             <td colSpan="2">
@@ -140,16 +145,41 @@
                             <td width="35%"><input type="text"
                                 name="width"
                                 style={{ width: "60px" }}
-                                disabled={this.state.model == "3" ? true : false}
+                                disabled={(this.state.model == "3" || this.state.model == "4") ? true : false}
                                 value={this.state.width}
                                 onChange={this.widthChange.bind(this)} />px</td>
                             <td width="20%">{culture.height}:</td>
                             <td width="30%"><input type="text"
                                 name="height"
-                                disabled={this.state.model == "2" ? true : false}
+                                disabled={(this.state.model == "2" || this.state.model=="4") ? true : false}
                                 style={{ width: "60px" }}
                                 value={this.state.height}
                                 onChange={this.heightChange.bind(this)} />px</td>
+                        </tr>
+                        <tr>
+                            <td>{culture.image_quality}</td>
+                            <td colSpan="3">
+                                <input type="radio" value="0" name="imageQuality" id="high"
+                                    onChange={this.imageQualityChange.bind(this)}
+                                    disabled={this.state.model == "4" ? false : true}
+                                    checked={this.state.imageQuality == "0" ? true : false} /><label htmlFor="high">{culture.high}</label>
+                                {'\u00A0'}
+                                {'\u00A0'}
+                                {'\u00A0'}
+                                {'\u00A0'}
+                                <input type="radio" value="1" name="imageQuality" id="medium"
+                                    onChange={this.imageQualityChange.bind(this)}
+                                    disabled={this.state.model == "4" ? false : true}
+                                    checked={this.state.imageQuality == "1" ? true : false} /><label htmlFor="medium">{culture.medium}</label>
+                                {'\u00A0'}
+                                {'\u00A0'}
+                                {'\u00A0'}
+                                {'\u00A0'}
+                                <input type="radio" value="2" name="imageQuality" id="low"
+                                    onChange={this.imageQualityChange.bind(this)}
+                                    disabled={this.state.model == "4" ? false : true}
+                                    checked={this.state.imageQuality == "2" ? true : false} /><label htmlFor="low">{culture.low}</label>
+                            </td>
                         </tr>
                         <tr>
                             <td colSpan="4">
@@ -388,7 +418,8 @@ class TasksUpdate extends React.Component {
                         x: task.Output.X,
                         y: task.Output.Y,
                         width: task.Output.Width,
-                        height: task.Output.Height
+                        height: task.Output.Height,
+                        imageQuality: task.Output.ImageQuality
                     });
                 });
             }

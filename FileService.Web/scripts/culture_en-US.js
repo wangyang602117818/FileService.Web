@@ -93,8 +93,12 @@ var culture = {
     cut: "Cut",
     by_width: "By Width",
     by_height: "By Height",
+    by_quality: "By Quality",
     width: "Width",
     height: "Height",
+    image_quality: "ImageQuality",
+    high: "High",
+    low:"Low",
 
     quality: "Quality",
     original: "Original",
@@ -235,5 +239,5 @@ var culture = {
     monitorState: "MonitorState",
     monitorTime: "MonitorTime",
     monitorMachine: "monitorMachine",
-    contentType:"ContentType"
+    contentType: "ContentType"
 }

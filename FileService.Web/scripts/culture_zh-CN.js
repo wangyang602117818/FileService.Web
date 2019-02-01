@@ -93,8 +93,12 @@ var culture = {
     cut: "剪切",
     by_width: "按宽度",
     by_height: "按高度",
+    by_quality: "按质量",
     width: "宽度",
     height: "高度",
+    image_quality: "图片质量",
+    high: "高",
+    low: "低",
 
     quality: "质量",
     original: "原画",

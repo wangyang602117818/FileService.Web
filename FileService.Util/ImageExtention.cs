@@ -82,10 +82,10 @@ namespace FileService.Util
             ext = ".jpg";
             return ImageFormat.Jpeg;
         }
-        public static Stream GenerateThumbnail(string fileName, Stream stream, ImageModelEnum model, ImageFormat outputFormat, int x, int y, ref int width, ref int height)
+        public static Stream GenerateThumbnail(string fileName, Stream stream, ImageModelEnum model, ImageFormat outputFormat, ImageQuality imageQuality, int x, int y, ref int width, ref int height)
         {
             string fileExt = Path.GetExtension(fileName).ToLower();
-            bool isGif = fileExt == ".gif" ? true : false;
+            bool isGif = GetImageType(stream) == ".gif";
             bool isSvg = fileExt == ".svg" ? true : false;
             bool cut = false;
             if (!isSvg)
@@ -105,10 +105,14 @@ namespace FileService.Util
                         case ImageModelEnum.cut:
                             cut = true;
                             break;
+                        case ImageModelEnum.quality:
+                            width = image.Width;
+                            height = image.Height;
+                            return isGif ? ConvertImageGif(image, 0, 0, width, height, false, imageQuality) : ConvertImageQuality(image, imageQuality);
                     }
                     if (width > image.Width) width = image.Width;
                     if (height > image.Height) height = image.Height;
-                    return isGif ? ConvertImageGif(image, x, y, width, height, cut) : ConvertImage(image, outputFormat, x, y, width, height, cut);
+                    return isGif ? ConvertImageGif(image, x, y, width, height, cut, ImageQuality.High) : ConvertImage(image, outputFormat, x, y, width, height, cut);
                 }
             }
             else
@@ -120,7 +124,7 @@ namespace FileService.Util
         public static Stream GenerateFilePreview(string fileName, int fileHW, Stream stream, ImageModelEnum model, ImageFormat outputFormat, ref int width, ref int height)
         {
             string fileExt = Path.GetExtension(fileName).ToLower();
-            bool isGif = fileExt == ".gif" ? true : false;
+            bool isGif = GetImageType(stream) == ".gif";
             bool isSvg = fileExt == ".svg" ? true : false;
             if (!isSvg)
             {
@@ -138,7 +142,7 @@ namespace FileService.Util
                         height = image.Height > fileHW ? fileHW : image.Height; //原图比指定的高度要高，就是用指定的高度，否则使用原图高
                         width = image.Width * height / image.Height;
                     }
-                    return isGif ? ConvertImageGif(image, 0, 0, width, height, false) : ConvertImage(image, outputFormat, 0, 0, width, height, false);
+                    return isGif ? ConvertImageGif(image, 0, 0, width, height, false, ImageQuality.High) : ConvertImage(image, outputFormat, 0, 0, width, height, false);
                 }
             }
             else
@@ -221,7 +225,17 @@ namespace FileService.Util
             stream.Position = 0;
             return stream;
         }
-        private static Stream ConvertImageGif(Image image, int x, int y, int width, int height, bool cut)
+        private static Stream ConvertImageQuality(Image image, ImageQuality imageQuality)
+        {
+            Stream stream = new MemoryStream();
+            ImageCodecInfo encoder = GetEncoder(ImageFormat.Jpeg);
+            EncoderParameters ep = new EncoderParameters(1);
+            ep.Param[0] = GetEncoderParameter(imageQuality);
+            image.Save(stream, encoder, ep);
+            stream.Position = 0;
+            return stream;
+        }
+        private static Stream ConvertImageGif(Image image, int x, int y, int width, int height, bool cut, ImageQuality imageQuality)
         {
             Stream stream = new MemoryStream();
             Bitmap gif = new Bitmap(width, height);
@@ -250,7 +264,9 @@ namespace FileService.Util
                         }
                         eps = new EncoderParameters(1);
                         eps.Param[0] = new EncoderParameter(Encoder.SaveFlag, (long)EncoderValue.MultiFrame);
+                        //eps.Param[1] = GetEncoderParameter(imageQuality);
                         bindProperty(image, gif);
+                        //gif.Save(stream, ImageFormat.Gif);
                         gif.Save(stream, codecInfo, eps);
                     }
                     else
@@ -265,6 +281,7 @@ namespace FileService.Util
                         }
                         eps = new EncoderParameters(1);
                         eps.Param[0] = new EncoderParameter(Encoder.SaveFlag, (long)EncoderValue.FrameDimensionTime);
+                        //eps.Param[1] = GetEncoderParameter(imageQuality);
                         bindProperty(image, frame);
                         gif.SaveAdd(frame, eps);
                     }
@@ -275,6 +292,19 @@ namespace FileService.Util
             }
             stream.Position = 0;
             return stream;
+        }
+        private static EncoderParameter GetEncoderParameter(ImageQuality imageQuality)
+        {
+            switch (imageQuality)
+            {
+                case ImageQuality.High:
+                    return new EncoderParameter(Encoder.Quality, 80L);
+                case ImageQuality.Medium:
+                    return new EncoderParameter(Encoder.Quality, 50L);
+                case ImageQuality.Low:
+                    return new EncoderParameter(Encoder.Quality, 20L);
+            }
+            return new EncoderParameter(Encoder.Quality, 80L);
         }
         private static ImageCodecInfo GetEncoder(ImageFormat format)
         {
@@ -294,6 +324,16 @@ namespace FileService.Util
             {
                 b.SetPropertyItem(a.PropertyItems[i]);
             }
+        }
+        private static string GetImageType(Stream stream)
+        {
+            byte[] buffer = new byte[10];
+            stream.Read(buffer, 0, 10);
+            if (buffer[0] == 'G' && buffer[1] == 'I' && buffer[2] == 'F') return ".gif";
+            if (buffer[1] == 'P' && buffer[2] == 'N' && buffer[3] == 'G') return ".png";
+            if (buffer[6] == 'J' && buffer[7] == 'F' && buffer[8] == 'I' && buffer[9] == 'F') return ".jpg";
+            if (buffer[0] == 'B' && buffer[1] == 'M') return ".bmp";
+            return null;
         }
     }
 }

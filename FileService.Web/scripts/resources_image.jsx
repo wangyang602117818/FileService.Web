@@ -10,6 +10,7 @@
                 y: 0,
                 width: 0,
                 height: 0,
+                imageQuality: 0
             },
             convertTitle: {
                 formatName: culture.default,
@@ -19,6 +20,7 @@
                 y: 0,
                 width: 0,
                 height: 0,
+                imageQuality: 0
             },
             button_disabled: true
         }
@@ -95,6 +97,14 @@
             convertTitle: this.state.convertTitle
         }, function () { this.checkAvailable(); });
     }
+    imageQualityChange(e) {
+        this.state.convert.imageQuality = e.target.value;
+        this.state.convertTitle.imageQuality = e.target.value;
+        this.setState({
+            convert: this.state.convert,
+            convertTitle: this.state.convertTitle
+        }, function () { this.checkAvailable(); });
+    }
     checkAvailable() {
         if (this.state.convert.flag.length > 0) {
             if (this.state.convert.model == "0") { //缩放
@@ -153,12 +163,27 @@
                     convertTitle: this.state.convertTitle
                 });
             }
+            if (this.state.convert.model == "4") {  //按质量
+                this.state.convert.x = 0;
+                this.state.convert.y = 0;
+                this.state.convertTitle.x = 0;
+                this.state.convertTitle.y = 0;
+                this.state.convert.width = 0;
+                this.state.convert.height = 0;
+                this.state.convertTitle.width = 0;
+                this.state.convertTitle.height = 0;
+                this.setState({
+                    convert: this.state.convert,
+                    convertTitle: this.state.convertTitle,
+                    button_disabled: false
+                });
+            }
         } else {
             this.setState({ button_disabled: true });
         }
     }
     Ok(e) {
-        if (this.state.convert.flag && (this.state.convert.width || this.state.convert.height)) {
+        if (this.state.convert.flag) {
             this.props.imageOk(this.state.convert, this.state.convertTitle);
             this.setState({
                 button_disabled: true
@@ -203,6 +228,7 @@
                                 <option value="1">{culture.cut}</option>
                                 <option value="2">{culture.by_width}</option>
                                 <option value="3">{culture.by_height}</option>
+                                <option value="4">{culture.by_quality}</option>
                             </select>
                         </td>
                         <td colSpan="2">
@@ -222,14 +248,39 @@
                         <td width="35%"><input type="text" name="width"
                             style={{ width: "60px" }}
                             value={this.state.convert.width}
-                            disabled={this.state.convert.model == "3" ? true : false}
+                            disabled={(this.state.convert.model == "3" || this.state.convert.model=="4") ? true : false}
                             onChange={this.widthChange.bind(this)} />px</td>
                         <td width="20%">{culture.height}:</td>
                         <td width="30%"><input type="text" name="height"
                             style={{ width: "60px" }}
                             value={this.state.convert.height}
-                            disabled={this.state.convert.model == "2" ? true : false}
+                            disabled={(this.state.convert.model == "2" || this.state.convert.model == "4") ? true : false}
                             onChange={this.heightChange.bind(this)} />px</td>
+                    </tr>
+                    <tr>
+                        <td>{culture.image_quality}</td>
+                        <td colSpan="3">
+                            <input type="radio" value="0" name="imageQuality" id="high"
+                                onChange={this.imageQualityChange.bind(this)}
+                                disabled={this.state.convert.model == "4" ? false : true}
+                                checked={this.state.convert.imageQuality == "0" ? true : false} /><label htmlFor="high">{culture.high}</label>
+                            {'\u00A0'}
+                            {'\u00A0'}
+                            {'\u00A0'}
+                            {'\u00A0'}
+                            <input type="radio" value="1" name="imageQuality" id="medium"
+                                onChange={this.imageQualityChange.bind(this)}
+                                disabled={this.state.convert.model == "4" ? false : true}
+                                checked={this.state.convert.imageQuality == "1" ? true : false} /><label htmlFor="medium">{culture.medium}</label>
+                            {'\u00A0'}
+                            {'\u00A0'}
+                            {'\u00A0'}
+                            {'\u00A0'}
+                            <input type="radio" value="2" name="imageQuality" id="low"
+                                onChange={this.imageQualityChange.bind(this)}
+                                disabled={this.state.convert.model == "4" ? false : true}
+                                checked={this.state.convert.imageQuality == "2" ? true : false} /><label htmlFor="low">{culture.low}</label>
+                        </td>
                     </tr>
                     <tr>
                         <td colSpan="4" style={{ textAlign: "center" }}>
@@ -451,6 +502,7 @@ class AddImage extends React.Component {
             y: convert.y,
             width: convert.width,
             height: convert.height,
+            imageQuality: convert.imageQuality
         });
         this.state.thumbnailsDisplay.push({
             format: convertTitle.formatName,
@@ -460,6 +512,7 @@ class AddImage extends React.Component {
             y: convertTitle.y,
             width: convertTitle.width,
             height: convertTitle.height,
+            imageQuality: convert.imageQuality
         });
         this.setState({
             thumbnails: this.state.thumbnails,
@@ -618,7 +671,7 @@ class AddImage extends React.Component {
                         <tr>
                             <td>{culture.expired_date}:</td>
                             <td colSpan="2">
-                                <input type="number" name="expiredDay" style={{width:"50px"}} value={this.state.expiredDay} onChange={e => { this.setState({ expiredDay: e.target.value }) }} />{'\u00A0'}{'\u00A0'}{culture.day}
+                                <input type="number" name="expiredDay" style={{ width: "50px" }} value={this.state.expiredDay} onChange={e => { this.setState({ expiredDay: e.target.value }) }} />{'\u00A0'}{'\u00A0'}{culture.day}
                             </td>
                         </tr>
                         <tr>

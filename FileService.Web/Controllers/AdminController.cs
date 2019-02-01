@@ -8,7 +8,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Security.Cryptography;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Security;
@@ -613,6 +612,7 @@ namespace FileService.Web.Controllers
                 {"Output.Height",updateImageTask.Height },
                 {"Output.X",updateImageTask.X },
                 {"Output.Y",updateImageTask.Y },
+                {"Output.ImageQuality",updateImageTask.ImageQuality }
             };
             Log(updateImageTask.FileId, "UpdateImageTask");
             filesWrap.UpdateFlagImage(ObjectId.Parse(updateImageTask.FileId), ObjectId.Parse(updateImageTask.ThumbnailId), updateImageTask.Flag);
@@ -687,6 +687,7 @@ namespace FileService.Web.Controllers
                 {"Y",addImageTask.Y },
                 {"Width",addImageTask.Width },
                 {"Height",addImageTask.Height },
+                {"ImageQuality",addImageTask.ImageQuality }
             };
             BsonDocument subFile = new BsonDocument()
             {

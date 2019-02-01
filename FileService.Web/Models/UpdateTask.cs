@@ -1,9 +1,5 @@
-﻿using MongoDB.Bson.Serialization.Attributes;
-using System;
-using System.Collections.Generic;
+﻿using FileService.Model;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Web;
 
 namespace FileService.Web.Models
 {
@@ -16,7 +12,7 @@ namespace FileService.Web.Models
         [Required]
         public string Handler { get; set; }
     }
-    public class UpdateImageTask:AddImageTask
+    public class UpdateImageTask : AddImageTask
     {
         [Required]
         public string Id { get; set; }
@@ -39,6 +35,7 @@ namespace FileService.Web.Models
         public int Width { get; set; }
         public int X { get; set; }
         public int Y { get; set; }
+        public ImageQuality ImageQuality { get; set; }
     }
     public class UpdateVideoTask : AddVideoTask
     {

@@ -196,7 +196,6 @@ class Tasks extends React.Component {
                 });
             }
         }.bind(this));
-
     }
     updateHandler(obj) {
         var that = this;
