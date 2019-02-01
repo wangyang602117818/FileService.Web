@@ -108,11 +108,11 @@ namespace FileService.Util
                         case ImageModelEnum.quality:
                             width = image.Width;
                             height = image.Height;
-                            return isGif ? ConvertImageGif(image, 0, 0, width, height, false, imageQuality) : ConvertImageQuality(image, imageQuality);
+                            return isGif ? ConvertImageGif(image, 0, 0, width, height, false) : ConvertImageQuality(image, imageQuality);
                     }
                     if (width > image.Width) width = image.Width;
                     if (height > image.Height) height = image.Height;
-                    return isGif ? ConvertImageGif(image, x, y, width, height, cut, ImageQuality.High) : ConvertImage(image, outputFormat, x, y, width, height, cut);
+                    return isGif ? ConvertImageGif(image, x, y, width, height, cut) : ConvertImage(image, outputFormat, x, y, width, height, cut);
                 }
             }
             else
@@ -142,7 +142,7 @@ namespace FileService.Util
                         height = image.Height > fileHW ? fileHW : image.Height; //原图比指定的高度要高，就是用指定的高度，否则使用原图高
                         width = image.Width * height / image.Height;
                     }
-                    return isGif ? ConvertImageGif(image, 0, 0, width, height, false, ImageQuality.High) : ConvertImage(image, outputFormat, 0, 0, width, height, false);
+                    return isGif ? ConvertImageGif(image, 0, 0, width, height, false) : ConvertImage(image, outputFormat, 0, 0, width, height, false);
                 }
             }
             else
@@ -235,7 +235,7 @@ namespace FileService.Util
             stream.Position = 0;
             return stream;
         }
-        private static Stream ConvertImageGif(Image image, int x, int y, int width, int height, bool cut, ImageQuality imageQuality)
+        private static Stream ConvertImageGif(Image image, int x, int y, int width, int height, bool cut)
         {
             Stream stream = new MemoryStream();
             Bitmap gif = new Bitmap(width, height);
@@ -266,7 +266,6 @@ namespace FileService.Util
                         eps.Param[0] = new EncoderParameter(Encoder.SaveFlag, (long)EncoderValue.MultiFrame);
                         //eps.Param[1] = GetEncoderParameter(imageQuality);
                         bindProperty(image, gif);
-                        //gif.Save(stream, ImageFormat.Gif);
                         gif.Save(stream, codecInfo, eps);
                     }
                     else
