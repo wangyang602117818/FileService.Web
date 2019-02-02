@@ -1,4 +1,5 @@
 ﻿using FileService.Model;
+using ImageProcessor;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -235,63 +236,85 @@ namespace FileService.Util
             stream.Position = 0;
             return stream;
         }
+        //private static Stream ConvertImageGif(Image image, int x, int y, int width, int height, bool cut)
+        //{
+        //    Stream stream = new MemoryStream();
+        //    Bitmap gif = new Bitmap(width, height);
+        //    Image frame = new Bitmap(width, height);
+        //    Graphics g = Graphics.FromImage(gif);
+        //    g.Clear(Color.Transparent);
+        //    Graphics gFrame = Graphics.FromImage(frame);
+        //    gFrame.Clear(Color.Transparent);
+        //    foreach (Guid gd in image.FrameDimensionsList)
+        //    {
+        //        FrameDimension fd = new FrameDimension(gd);
+        //        FrameDimension f = FrameDimension.Time;
+        //        int count = image.GetFrameCount(fd);
+        //        ImageCodecInfo codecInfo = GetEncoder(ImageFormat.Gif);
+        //        EncoderParameters eps = null;
+        //        for (int i = 0; i < count; i++)
+        //        {
+        //            image.SelectActiveFrame(f, i);
+        //            if (0 == i)
+        //            {
+
+        //                if (cut)
+        //                {
+        //                    g.DrawImage(image, new Rectangle(0, 0, width, height), new Rectangle(x, y, width, height), GraphicsUnit.Pixel);
+        //                }
+        //                else
+        //                {
+        //                    g.DrawImage(image, new Rectangle(0, 0, width, height), new Rectangle(0, 0, image.Width, image.Height), GraphicsUnit.Pixel);
+        //                }
+        //                eps = new EncoderParameters(1);
+        //                eps.Param[0] = new EncoderParameter(Encoder.SaveFlag, (long)EncoderValue.MultiFrame);
+        //                bindProperty(image, gif);
+        //                gif.Save(stream, codecInfo, eps);
+        //            }
+        //            else
+        //            {
+
+        //                if (cut)
+        //                {
+        //                    gFrame.DrawImage(image, new Rectangle(0, 0, width, height), new Rectangle(x, y, width, height), GraphicsUnit.Pixel);
+        //                }
+        //                else
+        //                {
+        //                    gFrame.DrawImage(image, new Rectangle(0, 0, width, height), new Rectangle(0, 0, image.Width, image.Height), GraphicsUnit.Pixel);
+        //                }
+        //                eps = new EncoderParameters(1);
+        //                eps.Param[0] = new EncoderParameter(Encoder.SaveFlag, (long)EncoderValue.FrameDimensionTime);
+        //                bindProperty(image, frame);
+        //                gif.SaveAdd(frame, eps);
+        //            }
+        //        }
+        //        eps = new EncoderParameters(1);
+        //        eps.Param[0] = new EncoderParameter(Encoder.SaveFlag, (long)EncoderValue.Flush);
+        //        gif.SaveAdd(eps);
+        //    }
+        //    stream.Position = 0;
+        //    return stream;
+        //}
         private static Stream ConvertImageGif(Image image, int x, int y, int width, int height, bool cut)
         {
             Stream stream = new MemoryStream();
-            Bitmap gif = new Bitmap(width, height);
-            Image frame = new Bitmap(width, height);
-            Graphics g = Graphics.FromImage(gif);
-            g.Clear(Color.Transparent);
-            Graphics gFrame = Graphics.FromImage(frame);
-            gFrame.Clear(Color.Transparent);
-            foreach (Guid gd in image.FrameDimensionsList)
+            using (ImageFactory imageFactory = new ImageFactory(preserveExifData: true))
             {
-                FrameDimension fd = new FrameDimension(gd);
-                FrameDimension f = FrameDimension.Time;
-                int count = image.GetFrameCount(fd);
-                ImageCodecInfo codecInfo = GetEncoder(ImageFormat.Gif);
-                EncoderParameters eps = null;
-                for (int i = 0; i < count; i++)
+                if (cut)
                 {
-                    image.SelectActiveFrame(f, i);
-                    if (0 == i)
-                    {
-                        
-                        if (cut)
-                        {
-                            g.DrawImage(image, new Rectangle(0, 0, width, height), new Rectangle(x, y, width, height), GraphicsUnit.Pixel);
-                        }
-                        else
-                        {
-                            g.DrawImage(image, new Rectangle(0, 0, width, height), new Rectangle(0, 0, image.Width, image.Height), GraphicsUnit.Pixel);
-                        }
-                        eps = new EncoderParameters(1);
-                        eps.Param[0] = new EncoderParameter(Encoder.SaveFlag, (long)EncoderValue.MultiFrame);
-                        bindProperty(image, gif);
-                        gif.Save(stream, codecInfo, eps);
-                    }
-                    else
-                    {
-                        
-                        if (cut)
-                        {
-                            gFrame.DrawImage(image, new Rectangle(0, 0, width, height), new Rectangle(x, y, width, height), GraphicsUnit.Pixel);
-                        }
-                        else
-                        {
-                            gFrame.DrawImage(image, new Rectangle(0, 0, width, height), new Rectangle(0, 0, image.Width, image.Height), GraphicsUnit.Pixel);
-                        }
-                        eps = new EncoderParameters(1);
-                        eps.Param[0] = new EncoderParameter(Encoder.SaveFlag, (long)EncoderValue.FrameDimensionTime);
-                        bindProperty(image, frame);
-                        gif.SaveAdd(frame, eps);
-                    }
+                    imageFactory.Load(image)
+                        .Crop(new Rectangle(x, y, width, height))
+                        .Save(stream);
                 }
-                eps = new EncoderParameters(1);
-                eps.Param[0] = new EncoderParameter(Encoder.SaveFlag, (long)EncoderValue.Flush);
-                gif.SaveAdd(eps);
+                else
+                {
+                    imageFactory.Load(image)
+                               .Resize(new Size(width, height))
+                               .BackgroundColor(Color.Transparent)
+                               .Save(stream);
+
+                }
             }
-            stream.Position = 0;
             return stream;
         }
         private static EncoderParameter GetEncoderParameter(ImageQuality imageQuality)
