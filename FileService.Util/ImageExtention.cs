@@ -241,7 +241,9 @@ namespace FileService.Util
             Bitmap gif = new Bitmap(width, height);
             Image frame = new Bitmap(width, height);
             Graphics g = Graphics.FromImage(gif);
+            g.Clear(Color.Transparent);
             Graphics gFrame = Graphics.FromImage(frame);
+            gFrame.Clear(Color.Transparent);
             foreach (Guid gd in image.FrameDimensionsList)
             {
                 FrameDimension fd = new FrameDimension(gd);
@@ -254,6 +256,7 @@ namespace FileService.Util
                     image.SelectActiveFrame(f, i);
                     if (0 == i)
                     {
+                        
                         if (cut)
                         {
                             g.DrawImage(image, new Rectangle(0, 0, width, height), new Rectangle(x, y, width, height), GraphicsUnit.Pixel);
@@ -264,12 +267,12 @@ namespace FileService.Util
                         }
                         eps = new EncoderParameters(1);
                         eps.Param[0] = new EncoderParameter(Encoder.SaveFlag, (long)EncoderValue.MultiFrame);
-                        //eps.Param[1] = GetEncoderParameter(imageQuality);
                         bindProperty(image, gif);
                         gif.Save(stream, codecInfo, eps);
                     }
                     else
                     {
+                        
                         if (cut)
                         {
                             gFrame.DrawImage(image, new Rectangle(0, 0, width, height), new Rectangle(x, y, width, height), GraphicsUnit.Pixel);
@@ -280,7 +283,6 @@ namespace FileService.Util
                         }
                         eps = new EncoderParameters(1);
                         eps.Param[0] = new EncoderParameter(Encoder.SaveFlag, (long)EncoderValue.FrameDimensionTime);
-                        //eps.Param[1] = GetEncoderParameter(imageQuality);
                         bindProperty(image, frame);
                         gif.SaveAdd(frame, eps);
                     }
