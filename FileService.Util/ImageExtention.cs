@@ -314,7 +314,6 @@ namespace FileService.Util
                                    .Resize(new Size(width, height))
                                    .BackgroundColor(Color.Transparent)
                                    .Save(stream);
-
                     }
                 }
                 return stream;
