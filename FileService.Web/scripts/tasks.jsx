@@ -105,7 +105,7 @@ class TaskItem extends React.Component {
                         id={"id=" + this.props.task.FileId.$oid + "&filename=" + this.props.task.FileName.removeHTML() + "#" + (this.props.task.Output._id ? this.props.task.Output._id.$oid : "")}></i>
                 </td>
                 <td>
-                    {this.props.task.State == 2 || this.props.task.State == 4 || this.props.task.State == -1 ?
+                    {this.props.task.State == 2 || this.props.task.State == 4 || this.props.task.State == -100 ?
                         <i className="iconfont icon-redo" onClick={this.redo.bind(this)}
                             id={"id=" + this.props.task._id.$oid + "&type=" + this.props.task.Type}></i> :
                         null}

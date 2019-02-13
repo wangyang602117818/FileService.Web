@@ -14,6 +14,7 @@ namespace FileService.Util
 {
     public static class ImageExtention
     {
+        private static object o = new object();
         public static ImageFormat GetImageFormat(string ext)
         {
             switch (ext.ToLower())
@@ -298,24 +299,27 @@ namespace FileService.Util
         private static Stream ConvertImageGif(Image image, int x, int y, int width, int height, bool cut)
         {
             Stream stream = new MemoryStream();
-            using (ImageFactory imageFactory = new ImageFactory(preserveExifData: true))
+            lock (o)
             {
-                if (cut)
+                using (ImageFactory imageFactory = new ImageFactory(preserveExifData: true))
                 {
-                    imageFactory.Load(image)
-                        .Crop(new Rectangle(x, y, width, height))
-                        .Save(stream);
-                }
-                else
-                {
-                    imageFactory.Load(image)
-                               .Resize(new Size(width, height))
-                               .BackgroundColor(Color.Transparent)
-                               .Save(stream);
+                    if (cut)
+                    {
+                        imageFactory.Load(image)
+                            .Crop(new Rectangle(x, y, width, height))
+                            .Save(stream);
+                    }
+                    else
+                    {
+                        imageFactory.Load(image)
+                                   .Resize(new Size(width, height))
+                                   .BackgroundColor(Color.Transparent)
+                                   .Save(stream);
 
+                    }
                 }
+                return stream;
             }
-            return stream;
         }
         private static EncoderParameter GetEncoderParameter(ImageQuality imageQuality)
         {

@@ -37,7 +37,7 @@ namespace FileService.Data
         }
         public bool Fault(ObjectId id)
         {
-            return MongoCollection.UpdateOne(FilterBuilder.Eq("_id", id), Builders<BsonDocument>.Update.Set("State", TaskStateEnum.fault).Set("StateDesc", TaskStateEnum.fault.ToString())).IsAcknowledged;
+            return MongoCollection.UpdateOne(FilterBuilder.Eq("_id", id), Builders<BsonDocument>.Update.Set("State", TaskStateEnum.error).Set("StateDesc", TaskStateEnum.error.ToString())).IsAcknowledged;
         }
         public bool RemoveByFileId(ObjectId fileId)
         {

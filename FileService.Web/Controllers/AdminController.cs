@@ -515,7 +515,7 @@ namespace FileService.Web.Controllers
             BsonDocument document = task.FindOne(ObjectId.Parse(id));
             string handlerId = document["HandlerId"].AsString;
             int state = Convert.ToInt32(document["State"]);
-            if (state == 2 || state == 4 || state == -1)
+            if (state == 2 || state == 4 || state == -100)
             {
                 task.UpdateState(ObjectId.Parse(id), TaskStateEnum.wait, 0);
                 queue.Insert(handlerId, type, "Task", ObjectId.Parse(id), false, new BsonDocument());
