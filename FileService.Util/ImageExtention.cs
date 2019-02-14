@@ -209,8 +209,8 @@ namespace FileService.Util
             {
                 using (Graphics g = Graphics.FromImage(bmp)) //画板
                 {
-                    g.InterpolationMode = InterpolationMode.High;
-                    g.SmoothingMode = SmoothingMode.HighQuality;
+                    g.InterpolationMode = InterpolationMode.Low;
+                    g.SmoothingMode = SmoothingMode.Default;
                     g.Clear(Color.Transparent);
                     if (cut)
                     {
