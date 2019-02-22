@@ -182,6 +182,23 @@ FileClient.prototype = {
         this.setXhrHeaders(xhr, userName);
         xhr.send();
     },
+    removeFiles: function (fileIds, success, progress, error, userName) {
+        var xhr = new XMLHttpRequest();
+        xhr.upload.onprogress = function (event) {
+            var precent = ((event.loaded / event.total) * 100).toFixed();
+            if (progress) progress(precent);
+        }
+        xhr.onload = function (event) {
+            var target = event.srcElement || event.target;
+            if (success) success(JSON.parse(target.responseText));
+        }
+        xhr.onerror = function (event) {
+            if (error) error(event);
+        }
+        xhr.open('get', this.remoteUrl + "/data/remove/" + fileId);
+        this.setXhrHeaders(xhr, userName);
+        xhr.send();
+    },
     getM3u8Url: function (m3u8FileId) {
         return this.remoteUrl + "/download/m3u8/" + m3u8FileId;
     },

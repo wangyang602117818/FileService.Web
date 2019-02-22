@@ -43,10 +43,6 @@ namespace FileService.Data
         {
             return MongoCollection.UpdateMany(FilterBuilder.Eq("FileId", fileId), Builders<BsonDocument>.Update.Set("Delete", true).Set("DeleteTime", DateTime.Now)).IsAcknowledged;
         }
-        public bool RemoveByFileId(IEnumerable<ObjectId> fileIds)
-        {
-            return MongoCollection.UpdateMany(FilterBuilder.Eq("FileId", fileIds), Builders<BsonDocument>.Update.Set("Delete", true).Set("DeleteTime", DateTime.Now)).IsAcknowledged;
-        }
         public bool RestoreByFileId(ObjectId fileId)
         {
             return MongoCollection.UpdateMany(FilterBuilder.Eq("FileId", fileId), Builders<BsonDocument>.Update.Set("Delete", false).Set("DeleteTime", BsonNull.Value)).IsAcknowledged;

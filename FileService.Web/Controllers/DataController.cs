@@ -162,6 +162,7 @@ namespace FileService.Web.Controllers
             RemoveFile(id);
             return new ResponseModel<string>(ErrorCode.success, "");
         }
+        [HttpPost]
         [AppAuthorize]
         public ActionResult Removes(IEnumerable<string> ids)
         {
