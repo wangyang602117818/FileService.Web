@@ -13,7 +13,7 @@ rar、zip只能替换成rar，zip
 
 
 研究video加载事件
-图片大小不变，质量变小,gif?
+批量removefiles
 
 
 

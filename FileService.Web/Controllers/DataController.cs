@@ -160,7 +160,12 @@ namespace FileService.Web.Controllers
         {
             if (Request.Headers["UserName"] == null) return new ResponseModel<string>(ErrorCode.username_required, "");
             RemoveFile(id);
-            Log(id, "RemoveFile");
+            return new ResponseModel<string>(ErrorCode.success, "");
+        }
+        public ActionResult Removes(IEnumerable<string> ids)
+        {
+            if (Request.Headers["UserName"] == null) return new ResponseModel<string>(ErrorCode.username_required, "");
+            RemoveFiles(ids);
             return new ResponseModel<string>(ErrorCode.success, "");
         }
         private BsonDocument GetState(IEnumerable<BsonDocument> list)

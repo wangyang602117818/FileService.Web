@@ -188,11 +188,19 @@ namespace FileService.Web.Controllers
         }
         protected void RemoveFile(string id)
         {
+            Log(id, "RemoveFile");
             ObjectId fileWrapId = ObjectId.Parse(id);
             BsonDocument fileWrap = filesWrap.FindOne(fileWrapId);
             if (filesWrap == null) return;
             task.RemoveByFileId(fileWrapId);
             filesWrap.Remove(fileWrapId);
+        }
+        protected void RemoveFiles(IEnumerable<string> ids)
+        {
+            foreach(string id in ids)
+            {
+                RemoveFile(id);
+            }
         }
         protected bool DeleteFile(string id)
         {
