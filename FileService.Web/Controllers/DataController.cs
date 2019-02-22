@@ -162,6 +162,7 @@ namespace FileService.Web.Controllers
             RemoveFile(id);
             return new ResponseModel<string>(ErrorCode.success, "");
         }
+        [AppAuthorize]
         public ActionResult Removes(IEnumerable<string> ids)
         {
             if (Request.Headers["UserName"] == null) return new ResponseModel<string>(ErrorCode.username_required, "");
