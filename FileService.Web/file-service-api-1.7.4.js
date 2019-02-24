@@ -24,7 +24,8 @@ FileClient.prototype = {
                 } catch (error) {
                     result = target.responseText;
                 }
-            } success(result);
+                success(result);
+            }
         }
         xhr.onerror = function (event) {
             if (error) error(event);
@@ -33,7 +34,7 @@ FileClient.prototype = {
         this.setXhrHeaders(xhr, userName);
         xhr.send();
     },
-    uploadImageDefaultConvert: function (file, userAccess, success, progress, error, userName) {
+    post: function (url, formData, success, progress, error, userName, defaultConvert) {
         var xhr = new XMLHttpRequest();
         xhr.upload.onprogress = function (event) {
             var precent = ((event.loaded / event.total) * 100).toFixed();
@@ -41,146 +42,74 @@ FileClient.prototype = {
         }
         xhr.onload = function (event) {
             var target = event.srcElement || event.target;
-            if (success) success(JSON.parse(target.responseText));
+            if (success) {
+                var result = "";
+                try {
+                    result = JSON.parse(target.responseText);
+                } catch (error) {
+                    result = target.responseText;
+                }
+                success(result);
+            }
         }
         xhr.onerror = function (event) {
             if (error) error(event);
         }
-        var formData = this.getFormData("images", file, null, userAccess);
-        xhr.open('post', this.remoteUrl + "/upload/image");
-        this.setXhrHeaders(xhr, userName, "true");
+        xhr.open('post', url);
+        this.setXhrHeaders(xhr, userName, defaultConvert);
         xhr.send(formData);
+    },
+    uploadImageDefaultConvert: function (file, userAccess, success, progress, error, userName) {
+        var url = this.remoteUrl + "/upload/image";
+        var formData = this.getFormData("images", file, null, userAccess);
+        this.post(url, formData, success, progress, error, userName, true);
     },
     uploadVideoDefaultConvert: function (file, userAccess, success, progress, error, userName) {
-        var xhr = new XMLHttpRequest();
-        xhr.upload.onprogress = function (event) {
-            var precent = ((event.loaded / event.total) * 100).toFixed();
-            if (progress) progress(precent);
-        }
-        xhr.onload = function (event) {
-            var target = event.srcElement || event.target;
-            if (success) success(JSON.parse(target.responseText));
-        }
-        xhr.onerror = function (event) {
-            if (error) error(event);
-        }
+        var url = this.remoteUrl + "/upload/video";
         var formData = this.getFormData("videos", file, null, userAccess);
-        xhr.open('post', this.remoteUrl + "/upload/video");
-        this.setXhrHeaders(xhr, userName, "true");
-        xhr.send(formData);
+        this.post(url, formData, success, progress, error, userName, true);
     },
     uploadImage: function (file, imageConvert, userAccess, success, progress, error, userName) {
-        var xhr = new XMLHttpRequest();
-        xhr.upload.onprogress = function (event) {
-            var precent = ((event.loaded / event.total) * 100).toFixed();
-            if (progress) progress(precent);
-        }
-        xhr.onload = function (event) {
-            var target = event.srcElement || event.target;
-            if (success) success(JSON.parse(target.responseText));
-        }
-        xhr.onerror = function (event) {
-            if (error) error(event);
-        }
+        var url = this.remoteUrl + "/upload/image";
         var formData = this.getFormData("images", file, imageConvert, userAccess);
-        xhr.open('post', this.remoteUrl + "/upload/image");
-        this.setXhrHeaders(xhr, userName, "false");
-        xhr.send(formData);
+        this.post(url, formData, success, progress, error, userName, false);
     },
     uploadVideo: function (file, videoConvert, userAccess, success, progress, error, userName) {
-        var xhr = new XMLHttpRequest();
-        xhr.upload.onprogress = function (event) {
-            var precent = ((event.loaded / event.total) * 100).toFixed();
-            if (progress) progress(precent);
-        }
-        xhr.onload = function (event) {
-            var target = event.srcElement || event.target;
-            if (success) success(JSON.parse(target.responseText));
-        }
-        xhr.onerror = function (event) {
-            if (error) error(event);
-        }
+        var url = this.remoteUrl + "/upload/video";
         var formData = this.getFormData("videos", file, videoConvert, userAccess);
-        xhr.open('post', this.remoteUrl + "/upload/video");
-        this.setXhrHeaders(xhr, userName, "false");
-        xhr.send(formData);
+        this.post(url, formData, success, progress, error, userName, false);
     },
     uploadAttachment: function (file, userAccess, success, progress, error, userName) {
-        var xhr = new XMLHttpRequest();
-        xhr.upload.onprogress = function (event) {
-            var precent = ((event.loaded / event.total) * 100).toFixed();
-            if (progress) progress(precent);
-        }
-        xhr.onload = function (event) {
-            var target = event.srcElement || event.target;
-            if (success) success(JSON.parse(target.responseText));
-        }
-        xhr.onerror = function (event) {
-            if (error) error(event);
-        }
+        var url = this.remoteUrl + "/upload/attachment";
         var formData = this.getFormData("attachments", file, null, userAccess);
-        xhr.open('post', this.remoteUrl + "/upload/attachment");
-        this.setXhrHeaders(xhr, userName, "false");
-        xhr.send(formData);
+        this.post(url, formData, success, progress, error, userName, false);
     },
     uploadVideoCapture: function (fileId, file, success, progress, error, userName) {
-        var xhr = new XMLHttpRequest();
-        xhr.upload.onprogress = function (event) {
-            var precent = ((event.loaded / event.total) * 100).toFixed();
-            if (progress) progress(precent);
-        }
-        xhr.onload = function (event) {
-            var target = event.srcElement || event.target;
-            if (success) success(JSON.parse(target.responseText));
-        }
-        xhr.onerror = function (event) {
-            if (error) error(event);
+        var url = "";
+        if (typeof file == "string") {
+            url = this.remoteUrl + "/upload/videocapture";
+        } else {
+            url = this.remoteUrl + "/upload/videocapturestream";
         }
         var formData = this.getFormData("videocps", file, null, null);
         formData.append("fileId", fileId);
-        if (typeof file == "string") {
-            xhr.open('post', this.remoteUrl + "/upload/videocapture");
-        } else {
-            xhr.open('post', this.remoteUrl + "/upload/videocapturestream");
-        }
-        this.setXhrHeaders(xhr, userName);
-        xhr.send(formData);
+        this.post(url, formData, success, progress, error, userName, false);
     },
     deleteVideoCapture: function (captureFileId, success, progress, error, userName) {
-        var xhr = new XMLHttpRequest();
-        xhr.upload.onprogress = function (event) {
-            var precent = ((event.loaded / event.total) * 100).toFixed();
-            if (progress) progress(precent);
-        }
-        xhr.onload = function (event) {
-            var target = event.srcElement || event.target;
-            if (success) success(JSON.parse(target.responseText));
-        }
-        xhr.onerror = function (event) {
-            if (error) error(event);
-        }
-        xhr.open('get', this.remoteUrl + "/data/deletevideocapture/" + captureFileId);
-        this.setXhrHeaders(xhr, userName);
-        xhr.send();
+        var url = this.remoteUrl + "/data/deletevideocapture/" + captureFileId;
+        this.get(url, success, progress, error, userName);
     },
     getFileUrl: function (fileId) { return this.remoteUrl + "/download/get/" + fileId; },
     getFileConvertUrl: function (fileId) { return this.remoteUrl + "/download/getconvert/" + fileId; },
     removeFile: function (fileId, success, progress, error, userName) {
-        var xhr = new XMLHttpRequest();
-        xhr.upload.onprogress = function (event) {
-            var precent = ((event.loaded / event.total) * 100).toFixed();
-            if (progress) progress(precent);
-        }
-        xhr.onload = function (event) {
-            var target = event.srcElement || event.target;
-            if (success) success(JSON.parse(target.responseText));
-        }
-        xhr.onerror = function (event) {
-            if (error) error(event);
-        }
-        xhr.open('get', this.remoteUrl + "/data/remove/" + fileId);
-        this.setXhrHeaders(xhr, userName);
-        xhr.send();
+        var url = this.remoteUrl + "/data/remove/" + fileId;
+        this.get(url, success, progress, error, userName);
+    },
+    removeFiles: function (fileIds, success, progress, error, userName) {
+        var url = this.remoteUrl + "/data/removes";
+        var formData = new FormData();
+        for (var i = 0; i < fileIds.length; i++) formData.append("ids", fileIds[i]);
+        this.post(url, formData, success, progress, error, userName, false);
     },
     getM3u8Url: function (m3u8FileId) {
         return this.remoteUrl + "/download/m3u8/" + m3u8FileId;
@@ -216,21 +145,8 @@ FileClient.prototype = {
         return this.remoteUrl + "/download/getfileiconmobile/" + fileIconId + "/";
     },
     getFileState: function (fileId, success, progress, error, userName) {
-        var xhr = new XMLHttpRequest();
-        xhr.upload.onprogress = function (event) {
-            var precent = ((event.loaded / event.total) * 100).toFixed();
-            if (progress) progress(precent);
-        }
-        xhr.onload = function (event) {
-            var target = event.srcElement || event.target;
-            if (success) success(JSON.parse(target.responseText));
-        }
-        xhr.onerror = function (event) {
-            if (error) error(event);
-        }
-        xhr.open('get', this.remoteUrl + "/data/filestate/" + fileId);
-        this.setXhrHeaders(xhr, userName);
-        xhr.send();
+        var url = this.remoteUrl + "/data/filestate/" + fileId;
+        this.get(url, success, progress, error, userName);
     },
     getFileList: function (data, success, progress, error, userName) {
         var that = this;
@@ -260,38 +176,12 @@ FileClient.prototype = {
         xhr.send();
     },
     getSubFileState: function (subFileId, success, progress, error, userName) {
-        var xhr = new XMLHttpRequest();
-        xhr.upload.onprogress = function (event) {
-            var precent = ((event.loaded / event.total) * 100).toFixed();
-            if (progress) progress(precent);
-        }
-        xhr.onload = function (event) {
-            var target = event.srcElement || event.target;
-            if (success) success(JSON.parse(target.responseText));
-        }
-        xhr.onerror = function (event) {
-            if (error) error(event);
-        }
-        xhr.open('get', this.remoteUrl + "/data/subfilestate/" + subFileId);
-        this.setXhrHeaders(xhr, userName);
-        xhr.send();
+        var url = this.remoteUrl + "/data/subfilestate/" + subFileId;
+        this.get(url, success, progress, error, userName);
     },
     getVideoCaptureIds: function (fileId, success, progress, error, userName) {
-        var xhr = new XMLHttpRequest();
-        xhr.upload.onprogress = function (event) {
-            var precent = ((event.loaded / event.total) * 100).toFixed();
-            if (progress) progress(precent);
-        }
-        xhr.onload = function (event) {
-            var target = event.srcElement || event.target;
-            if (success) success(JSON.parse(target.responseText));
-        }
-        xhr.onerror = function (event) {
-            if (error) error(event);
-        }
-        xhr.open('get', this.remoteUrl + "/data/getvideocaptureids/" + fileId);
-        this.setXhrHeaders(xhr, userName);
-        xhr.send();
+        var url = this.remoteUrl + "/data/getvideocaptureids/" + fileId;
+        this.get(url, success, progress, error, userName);
     },
     getFormData: function (name, file, convert, access) {
         var formData = new FormData();

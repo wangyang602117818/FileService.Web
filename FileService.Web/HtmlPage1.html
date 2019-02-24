@@ -6,18 +6,25 @@
     <script src="file-service-api-1.7.4.js"></script>
 </head>
 <body>
+    <input type ="file" name="file" id="file" />
 </body>
 </html>
 <script>
-    var fileClient = new FileClient("9cdc78c90274", "http://hkappuwv819/FileServiceWeb/");
-    fileClient.getFileList({
-        from: "IssacTest",
-        fileType: "all",
-        filter: "",
-        pageIndex: 1,
-        pageSize: 15
-    }, function (data) {
+    var fileClient = new FileClient("3c9deb1f8f6e", "http://localhost/FileService.Web/");
+    //document.getElementById("file").onchange = function () {
+    //    var files = this.files;
+    //    fileClient.uploadVideo(files, null, null,
+    //        function (data) {
+    //            console.log(data);
+    //        },
+    //        function (percent) {
+    //            console.log(percent);
+    //        },
+    //        null,
+    //        null,
+    //    )
+    //};
+    fileClient.removeFiles(["5c70bf1c520dfb31e492b81a","5c70beac520dfb31e492b815"], function (data) {
         console.log(data);
-        });
-    var url = fileClient.getFileIconUrl(fileIconId);
+    },null,null,"wang")
 </script>

@@ -10,6 +10,7 @@ using System.Web.Mvc;
 namespace FileService.Web.Controllers
 {
     [AllowAnonymous]
+    [AppAuthorize]
     public class DataController : BaseController
     {
         public ActionResult GetFileAccess(string id)
@@ -138,7 +139,6 @@ namespace FileService.Web.Controllers
             Log("-", "AddApplication");
             return new ResponseModel<string>(ErrorCode.success, addApplication.AuthCode);
         }
-        [AppAuthorize]
         public ActionResult GetApplication()
         {
             IEnumerable<BsonDocument> result = application.FindApplications();
@@ -155,7 +155,6 @@ namespace FileService.Web.Controllers
             List<BsonDocument> result = filesWrap.GetPageList(pageIndex, pageSize, eqs, null, null, sorts, filter, new List<string>() { "FileName" }, new List<string>() { }, out count, userName, false).ToList();
             return new ResponseModel<IEnumerable<BsonDocument>>(ErrorCode.success, result, count);
         }
-        [AppAuthorize]
         public ActionResult Remove(string id)
         {
             if (Request.Headers["UserName"] == null) return new ResponseModel<string>(ErrorCode.username_required, "");
@@ -163,7 +162,6 @@ namespace FileService.Web.Controllers
             return new ResponseModel<string>(ErrorCode.success, "");
         }
         [HttpPost]
-        [AppAuthorize]
         public ActionResult Removes(IEnumerable<string> ids)
         {
             if (Request.Headers["UserName"] == null) return new ResponseModel<string>(ErrorCode.username_required, "");

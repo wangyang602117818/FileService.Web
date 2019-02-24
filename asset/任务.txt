@@ -13,8 +13,7 @@ rar、zip只能替换成rar，zip
 
 
 研究video加载事件
-批量removefiles
-
+thumbnail 不重复
 
 
 加密ts
