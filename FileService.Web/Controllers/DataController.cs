@@ -107,7 +107,7 @@ namespace FileService.Web.Controllers
         {
             BsonDocument fileWrap = filesWrap.FindOne(ObjectId.Parse(id));
             IEnumerable<ObjectId> thumbnailIds = fileWrap["Thumbnail"].AsBsonArray.Select(s => s["_id"].AsObjectId);
-            IEnumerable<BsonDocument> thumbs = thumbnail.FindThumbnailMetadata(fileWrap["From"].ToString(), thumbnailIds).OrderBy(o => o["Length"]);
+            IEnumerable<BsonDocument> thumbs = thumbnail.FindThumbnailMetadata(fileWrap["From"].ToString(), thumbnailIds);
             return new ResponseModel<IEnumerable<BsonDocument>>(ErrorCode.success, thumbs);
         }
         public ActionResult DeleteVideoCapture(string id)
