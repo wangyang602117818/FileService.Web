@@ -103,6 +103,13 @@ namespace FileService.Web.Controllers
             }
             return new ResponseModel<List<dynamic>>(ErrorCode.success, list);
         }
+        public ActionResult GetThumbnailMetadata(string id)
+        {
+            BsonDocument fileWrap = filesWrap.FindOne(ObjectId.Parse(id));
+            IEnumerable<ObjectId> thumbnailIds = fileWrap["Thumbnail"].AsBsonArray.Select(s => s["_id"].AsObjectId);
+            IEnumerable<BsonDocument> thumbs = thumbnail.FindThumbnailMetadata(fileWrap["From"].ToString(), thumbnailIds).OrderBy(o => o["Length"]);
+            return new ResponseModel<IEnumerable<BsonDocument>>(ErrorCode.success, thumbs);
+        }
         public ActionResult DeleteVideoCapture(string id)
         {
             BsonDocument document = videoCapture.FindOne(ObjectId.Parse(id));

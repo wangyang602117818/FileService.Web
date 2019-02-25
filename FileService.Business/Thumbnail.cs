@@ -29,5 +29,9 @@ namespace FileService.Business
         {
             return mongoData.FindByIds(from, ids);
         }
+        public IEnumerable<BsonDocument> FindThumbnailMetadata(string from, IEnumerable<ObjectId> ids)
+        {
+            return mongoData.FindThumbnailMetadata(from, ids);
+        }
     }
 }
