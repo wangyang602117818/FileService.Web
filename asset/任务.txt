@@ -15,6 +15,9 @@ rar、zip只能替换成rar，zip
 研究video加载事件
 thumbnail 不重复
 tcp传文件问题
+c#文件列表接口，总数bug
+getapplication bug
+清空回收站
 
 加密ts
 ffmpeg.exe -i Wildlife.mp4 -hls_time 2 -hls_list_size 0 -hls_allow_cache 0 -hls_enc 1 -hls_enc_key N74kEdQDwUgiR5QNyMQ9fg== -hls_enc_key_url http://localhost:2431/admin/key -hls_enc_iv EjRWeJCrze8= out.m3u8

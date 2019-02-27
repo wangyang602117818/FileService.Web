@@ -15,9 +15,7 @@ namespace FileService.Data
         }
         public IEnumerable<BsonDocument> FindThumbnailMetadata(string from, IEnumerable<ObjectId> ids)
         {
-            return MongoCollection.Aggregate()
-                 .Match(FilterBuilder.Eq("From", from) & FilterBuilder.In("_id", ids))
-                 .Project(new BsonDocument()
+            var proj = new BsonDocument()
                  {
                      { "Id", new BsonDocument("$toString", "$_id")},
                      {"_id",0 },
@@ -25,7 +23,10 @@ namespace FileService.Data
                      {"Width",1 },
                      {"Height",1 },
                      {"Flag",1 }
-                 })
+                 };
+            return MongoCollection.Aggregate()
+                 .Match(FilterBuilder.Eq("From", from) & FilterBuilder.In("_id", ids))
+                 .Project(proj)
                  .Sort(new BsonDocument("Length", 1))
                  .ToEnumerable();
         }

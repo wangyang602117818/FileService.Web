@@ -148,8 +148,8 @@ namespace FileService.Web.Controllers
         }
         public ActionResult GetApplication()
         {
-            IEnumerable<BsonDocument> result = application.FindApplications();
-            return new ResponseModel<IEnumerable<BsonDocument>>(ErrorCode.success, result, result.Count());
+            IEnumerable<string> result = application.FindApplications().Select(s => s["ApplicationName"].AsString);
+            return new ResponseModel<IEnumerable<string>>(ErrorCode.success, result, result.Count());
         }
         public ActionResult GetFileList(string from = "", string fileType = "", string filter = "", int pageIndex = 1, int pageSize = 15)
         {
