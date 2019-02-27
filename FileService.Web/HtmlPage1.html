@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8" />
     <title></title>
-    <script src="file-service-api-1.7.4.js"></script>
+    <script src="file-service-api-1.7.7.js"></script>
 </head>
 <body>
     <input type ="file" name="file" id="file" />
@@ -24,7 +24,7 @@
     //        null,
     //    )
     //};
-    fileClient.removeFiles(["5c70bf1c520dfb31e492b81a","5c70beac520dfb31e492b815"], function (data) {
+    fileClient.getThumbnailMetadata("5c738ff929d0db5cac6f6a8b", function (data) {
         console.log(data);
     },null,null,"wang")
 </script>

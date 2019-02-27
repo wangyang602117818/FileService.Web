@@ -1,7 +1,7 @@
 ﻿//////////////////////////////////////////////////////////////////////////////////////
 ///version:1.7.7
 ///author: wangyang
-///update: add removeFiles,Optimization code
+///update: add removeFiles, add getThumbnailMetadata,Optimization code
 /////////////////////////////////////////////////////////////////////////////////////
 function FileClient(authCode, remoteUrl) {
     this.authCode = authCode;
@@ -111,6 +111,10 @@ FileClient.prototype = {
         var formData = new FormData();
         for (var i = 0; i < fileIds.length; i++) formData.append("ids", fileIds[i]);
         this.post(url, formData, success, progress, error, userName, false);
+    },
+    getThumbnailMetadata: function (fileId, success, progress, error, userName) {
+        var url = this.remoteUrl + "/data/getthumbnailmetadata/" + fileId;
+        this.get(url, success, progress, error, userName);
     },
     getM3u8Url: function (m3u8FileId) {
         return this.remoteUrl + "/download/m3u8/" + m3u8FileId;
