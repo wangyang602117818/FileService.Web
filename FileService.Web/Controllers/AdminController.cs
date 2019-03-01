@@ -897,35 +897,34 @@ namespace FileService.Web.Controllers
         public ActionResult Remove(string id)
         {
             RemoveFile(id);
-            Log(id, "RemoveFile");
             return new ResponseModel<string>(ErrorCode.success, "");
         }
         [Authorize(Roles = "admin")]
-        public ActionResult RemoveFiles(IEnumerable<string> ids)
+        public ActionResult Removes(IEnumerable<string> ids)
         {
             foreach (string id in ids)
             {
                 RemoveFile(id);
-                Log(id, "RemoveFile");
             }
             return new ResponseModel<string>(ErrorCode.success, "");
         }
         [Authorize(Roles = "admin")]
         public ActionResult Restore(string id)
         {
-            ObjectId fileWrapId = ObjectId.Parse(id);
-            task.RestoreByFileId(fileWrapId);
-            filesWrap.Restore(fileWrapId);
-            Log(id, "RestoreFile");
+            RestoreFile(id);
             return new ResponseModel<string>(ErrorCode.success, "");
         }
         [Authorize(Roles = "admin")]
         public ActionResult RestoreFiles(IEnumerable<string> ids)
         {
-            IEnumerable<ObjectId> idsObject = ids.Select(s => ObjectId.Parse(s));
-            task.RestoreByFileIds(idsObject);
-            filesWrap.RestoreFiles(idsObject);
-            foreach (string id in ids) Log(id, "RestoreFile");
+            if (ids == null || ids.Count() == 0)
+            {
+                ids = filesWrap.Find(new BsonDocument("Delete", true)).Select(s => s["_id"].ToString());
+            }
+            foreach (string id in ids)
+            {
+                RestoreFile(id);
+            }
             return new ResponseModel<string>(ErrorCode.success, "");
         }
         [Authorize(Roles = "admin")]
@@ -933,7 +932,6 @@ namespace FileService.Web.Controllers
         {
             if (DeleteFile(id))
             {
-                Log(id, "DeleteFile");
                 return new ResponseModel<string>(ErrorCode.success, "");
             }
             else
@@ -944,12 +942,13 @@ namespace FileService.Web.Controllers
         [Authorize(Roles = "admin")]
         public ActionResult DeleteFiles(IEnumerable<string> ids)
         {
+            if (ids == null || ids.Count() == 0)
+            {
+                ids = filesWrap.Find(new BsonDocument("Delete", true)).Select(s => s["_id"].ToString());
+            }
             foreach (string id in ids)
             {
-                if (DeleteFile(id))
-                {
-                    Log(id, "DeleteFile");
-                }
+                DeleteFile(id);
             }
             return new ResponseModel<string>(ErrorCode.success, "");
         }

@@ -144,13 +144,19 @@ class TitleArrowComponent extends React.Component {
                             style={{ display: this.props.delShow ? "inline-block" : "none" }} /> : null
                     }
                     {this.props.type == "file_recycle" ?
-                        <i className="iconfont icon-restore"
-                            onClick={this.props.restoreFiles}
-                            style={{ display: this.props.delShow ? "inline-block" : "none" }}></i> : null
+                        <React.Fragment>
+                            <i className="iconfont icon-restore"
+                                onClick={this.props.restoreFiles}
+                            />
+                            <i className="iconfont icon-del" title={culture.delete}
+                                onClick={this.props.removeByIds} />
+                        </React.Fragment> : null
                     }
-                    <i className="iconfont icon-del" title={culture.delete}
-                        onClick={this.props.removeByIds}
-                        style={{ display: this.props.delShow ? "inline-block" : "none" }} />
+                    {this.props.type == "file" ?
+                        <i className="iconfont icon-del" title={culture.delete}
+                            onClick={this.props.removeByIds}
+                            style={{ display: this.props.delShow ? "inline-block" : "none" }} /> : null
+                    }
                     {this.props.listType == "list" ?
                         <i className='iconfont icon-listicon'
                             id='resource_list'

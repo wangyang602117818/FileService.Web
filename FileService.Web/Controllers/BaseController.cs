@@ -186,24 +186,26 @@ namespace FileService.Web.Controllers
                 accessModel.DepartmentDisplay = departmentDisplay.ToArray();
             }
         }
-        protected void RemoveFile(string id)
+        protected bool RemoveFile(string id)
         {
             Log(id, "RemoveFile");
             ObjectId fileWrapId = ObjectId.Parse(id);
             BsonDocument fileWrap = filesWrap.FindOne(fileWrapId);
-            if (filesWrap == null) return;
+            if (filesWrap == null) return false;
             task.RemoveByFileId(fileWrapId);
             filesWrap.Remove(fileWrapId);
+            return true;
         }
-        protected void RemoveFiles(IEnumerable<string> ids)
+        protected void RestoreFile(string id)
         {
-            foreach(string id in ids)
-            {
-                RemoveFile(id);
-            }
+            Log(id, "RestoreFile");
+            ObjectId fileWrapId = ObjectId.Parse(id);
+            task.RestoreByFileId(fileWrapId);
+            filesWrap.Restore(fileWrapId);
         }
         protected bool DeleteFile(string id)
         {
+            Log(id, "DeleteFile");
             ObjectId fileWrapId = ObjectId.Parse(id);
             BsonDocument fileWrap = filesWrap.FindOne(fileWrapId);
             if (fileWrap == null) return false;

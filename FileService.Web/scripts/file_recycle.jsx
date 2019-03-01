@@ -120,7 +120,7 @@ class FileRecycle extends React.Component {
     }
     deleteFiles() {
         if (window.confirm(" " + culture.permanent_del + " ?")) {
-            http.post(urls.deleteFilesUrl, { ids: this.state.selectedList }, function (data) {
+            http.postJson(urls.deleteFilesUrl, { ids: this.state.selectedList }, function (data) {
                 if (data.code == 0) {
                     this.getData();
                 }

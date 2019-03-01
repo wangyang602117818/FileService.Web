@@ -172,7 +172,10 @@ namespace FileService.Web.Controllers
         public ActionResult Removes(IEnumerable<string> ids)
         {
             if (Request.Headers["UserName"] == null) return new ResponseModel<string>(ErrorCode.username_required, "");
-            RemoveFiles(ids);
+            foreach (string id in ids)
+            {
+                RemoveFile(id);
+            }
             return new ResponseModel<string>(ErrorCode.success, "");
         }
         private BsonDocument GetState(IEnumerable<BsonDocument> list)
