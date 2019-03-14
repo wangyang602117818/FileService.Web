@@ -403,20 +403,40 @@ h1 {
     background-color: #444;
 }
 
+.wait_c, .updated_c {
+    color: #999;
+}
+
 .processing {
     background-color: #FD7D3D;
+}
+
+.processing_c {
+    color: #FD7D3D;
 }
 
 .completed {
     background-color: #00D34A;
 }
 
+.completed_c {
+    color: #00D34A;
+}
+
 .error {
     background-color: red;
 }
 
+.error_c {
+    color: red;
+}
+
 .deleted {
     background-color: #ccc;
+}
+
+.deleted_c {
+    color: #ccc;
 }
 
 .iconfont {

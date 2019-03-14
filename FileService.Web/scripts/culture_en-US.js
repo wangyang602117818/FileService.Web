@@ -98,7 +98,7 @@ var culture = {
     height: "Height",
     image_quality: "ImageQuality",
     high: "High",
-    low:"Low",
+    low: "Low",
 
     quality: "Quality",
     original: "Original",
@@ -239,5 +239,11 @@ var culture = {
     monitorState: "MonitorState",
     monitorTime: "MonitorTime",
     monitorMachine: "monitorMachine",
-    contentType: "ContentType"
+    contentType: "ContentType",
+
+    wait: "Wait",
+    processing: "Processing",
+    completed: "Completed",
+    updated: "Updated",
+    error:"Error"
 }

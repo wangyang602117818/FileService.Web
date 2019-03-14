@@ -239,5 +239,11 @@ var culture = {
     monitorState: "监视状态",
     monitorTime: "监视时间",
     monitorMachine: "监视机器",
-    contentType: "内容类型"
+    contentType: "内容类型",
+
+    wait: "等待中",
+    processing: "处理中",
+    completed: "已完成",
+    updated: "已更新",
+    error: "已出错"
 }

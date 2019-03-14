@@ -155,7 +155,7 @@ class Tasks extends React.Component {
             pageIndex: 1,
             pageSize: localStorage.task_pageSize || 10,
             pageCount: 1,
-            from: localStorage.task_from||"",
+            from: localStorage.task_from || "",
             filter: "",
             startTime: "",
             endTime: "",
@@ -164,6 +164,7 @@ class Tasks extends React.Component {
             task: null,
             taskFileExists: false,
             cacheFullPath: "",
+            state:"",
             rightTips: culture.empty_cache_file,
             rightTipsDisabled: false
         };
@@ -252,16 +253,27 @@ class Tasks extends React.Component {
             this.getData();
         }.bind(this));
     }
+    onFilterClick(e) {
+        var id = e.target.id;
+        if (e.target.className.indexOf("current") != -1) return;
+        this.setState({ state: id }, function () {
+            localStorage.taskState = id;
+            this.getData();
+        }.bind(this));
+    }
     render() {
         return (
             <div className="main">
                 <h1>{culture.tasks}</h1>
                 <TitleArrow title={culture.all + culture.tasks}
+                    type="task"
                     show={this.state.pageShow}
                     count={this.state.data.count}
                     rightTips={this.state.rightTips}
                     rightTipsClick={this.onRightTipsClick.bind(this)}
                     rightTipsDisabled={this.state.rightTipsDisabled}
+                    state={this.state.state}
+                    onFilterClick={this.onFilterClick.bind(this)}
                     onShowChange={this.onPageShow.bind(this)} />
                 <Pagination show={this.state.pageShow}
                     pageIndex={this.state.pageIndex}

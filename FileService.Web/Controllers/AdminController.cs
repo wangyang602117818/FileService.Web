@@ -111,7 +111,7 @@ namespace FileService.Web.Controllers
             IEnumerable<BsonDocument> result = converter.GetPageList(pageIndex, pageSize, null, timeStart, timeEnd, sorts, filter, new List<string>() { "HandlerId", "MachineName" }, new List<string>() { }, out count);
             return new ResponseModel<IEnumerable<BsonDocument>>(ErrorCode.success, result, count);
         }
-        public ActionResult GetTasks(int pageIndex = 1, int pageSize = 10, string from = "", string filter = "", string startTime = null, string endTime = null)
+        public ActionResult GetTasks(int pageIndex = 1, int pageSize = 10, string from = "", int? state = null, string filter = "", string startTime = null, string endTime = null)
         {
             long count = 0;
             var userName = Request.Headers["UserName"] ?? User.Identity.Name;
@@ -120,6 +120,7 @@ namespace FileService.Web.Controllers
             DateTime.TryParse(endTime, out DateTime timeEnd);
             BsonDocument eqs = new BsonDocument("Delete", false);
             if (!string.IsNullOrEmpty(from)) eqs.Add("From", from);
+            if (state >= -100) eqs.Add("State", state);
             List<BsonDocument> result = task.GetPageList(pageIndex, pageSize, eqs, timeStart, timeEnd, sorts, filter, new List<string>() { "FileId", "FileName", "StateDesc", "HandlerId", "StateDesc", "Type" }, new List<string>() { }, out count, userName).ToList();
             foreach (BsonDocument bson in result)
             {

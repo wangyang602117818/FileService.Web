@@ -80,6 +80,27 @@ class TitleArrow extends React.Component {
                     disabled={this.props.rightTipsDisabled}
                     dangerouslySetInnerHTML={{ __html: this.props.rightTips }}
                     onClick={this.props.rightTipsClick}></div>
+                {this.props.type == "task" ?
+                    <div className="right_component">
+                        <div className={this.props.state === "" ? "filter_item current" : "filter_item"}
+                            onClick={this.props.onFilterClick} id="">{culture.all}</div>
+
+                        <div className={this.props.state === "0" ? "filter_item wait_c current" : "filter_item wait_c"}
+                            onClick={this.props.onFilterClick} id="0">{culture.wait}</div>
+
+                        <div className={this.props.state === "1" ? "filter_item processing_c current" : "filter_item processing_c"}
+                            onClick={this.props.onFilterClick} id="1">{culture.processing}</div>
+
+                        <div className={this.props.state === "2" ? "filter_item completed_c current" : "filter_item completed_c"}
+                            onClick={this.props.onFilterClick} id="2">{culture.completed}</div>
+
+                        <div className={this.props.state === "4" ? "filter_item updated_c current" : "filter_item updated_c"}
+                            onClick={this.props.onFilterClick} id="4">{culture.updated}</div>
+
+                        <div className={this.props.state === "-100" ? "filter_item error_c current" : "filter_item error_c"}
+                            onClick={this.props.onFilterClick} id="-100">{culture.error}</div>
+                    </div> : null
+                }
             </div>
         );
     }
@@ -272,6 +293,7 @@ var CommonUsePagination = {
         if (this.state.resourceFileType && this.state.resourceFileType.length > 0) url = url + "&fileType=" + this.state.resourceFileType;
         if (this.state.orderField) url = url + "&orderField=" + this.state.orderField;
         if (this.state.orderFieldType) url = url + "&orderFieldType=" + this.state.orderFieldType;
+        if (this.state.state) url = url + "&state=" + this.state.state;
         http.get(url, function (result) {
             setKeyWord(result, that.state.filter);
             if (result.code == 0) setExpired(result.result);
