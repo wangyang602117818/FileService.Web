@@ -164,7 +164,7 @@ class Tasks extends React.Component {
             task: null,
             taskFileExists: false,
             cacheFullPath: "",
-            state:"",
+            state: localStorage.taskState || "",
             rightTips: culture.empty_cache_file,
             rightTipsDisabled: false
         };

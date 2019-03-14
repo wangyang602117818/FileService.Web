@@ -16,7 +16,6 @@ rar、zip只能替换成rar，zip
 thumbnail 不重复
 tcp传文件问题
 
-转换任务的状态过滤
 记录图片下载来源
 
 加密ts
