@@ -219,7 +219,7 @@
     <Content Include="css\org_chart.css" />
     <Content Include="css\page.css" />
     <Content Include="css\preview.css" />
-    <Content Include="file-service-api-1.7.7.js" />
+    <Content Include="file-service-api-1.8.0.js" />
     <Content Include="Global.asax" />
     <Content Include="hlsplayer\flowplayer.controls.swf" />
     <Content Include="hlsplayer\flowplayer.swf" />

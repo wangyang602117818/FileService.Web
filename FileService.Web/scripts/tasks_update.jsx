@@ -57,7 +57,7 @@
                 if (this.state.width > 0 && this.state.height > 0) {
                     this.setState({ button_disabled: false, x: 0, y: 0 });
                 } else {
-                    this.setState({ button_disabled: true, x: 0, y: 0 });
+                    this.setState({ button_disabled: false, x: 0, y: 0 });
                 }
             }
             if (this.state.model == "1") {  //剪切
@@ -124,7 +124,6 @@
                                     <option value="1">{culture.cut}</option>
                                     <option value="2">{culture.by_width}</option>
                                     <option value="3">{culture.by_height}</option>
-                                    <option value="4">{culture.by_quality}</option>
                                 </select>
                             </td>
                             <td colSpan="2">
@@ -145,13 +144,13 @@
                             <td width="35%"><input type="text"
                                 name="width"
                                 style={{ width: "60px" }}
-                                disabled={(this.state.model == "3" || this.state.model == "4") ? true : false}
+                                disabled={(this.state.model == "3") ? true : false}
                                 value={this.state.width}
                                 onChange={this.widthChange.bind(this)} />px</td>
                             <td width="20%">{culture.height}:</td>
                             <td width="30%"><input type="text"
                                 name="height"
-                                disabled={(this.state.model == "2" || this.state.model=="4") ? true : false}
+                                disabled={(this.state.model == "2") ? true : false}
                                 style={{ width: "60px" }}
                                 value={this.state.height}
                                 onChange={this.heightChange.bind(this)} />px</td>
@@ -161,7 +160,6 @@
                             <td colSpan="3">
                                 <input type="radio" value="0" name="imageQuality" id="high"
                                     onChange={this.imageQualityChange.bind(this)}
-                                    disabled={this.state.model == "4" ? false : true}
                                     checked={this.state.imageQuality == "0" ? true : false} /><label htmlFor="high">{culture.high}</label>
                                 {'\u00A0'}
                                 {'\u00A0'}
@@ -169,7 +167,6 @@
                                 {'\u00A0'}
                                 <input type="radio" value="1" name="imageQuality" id="medium"
                                     onChange={this.imageQualityChange.bind(this)}
-                                    disabled={this.state.model == "4" ? false : true}
                                     checked={this.state.imageQuality == "1" ? true : false} /><label htmlFor="medium">{culture.medium}</label>
                                 {'\u00A0'}
                                 {'\u00A0'}
@@ -177,7 +174,6 @@
                                 {'\u00A0'}
                                 <input type="radio" value="2" name="imageQuality" id="low"
                                     onChange={this.imageQualityChange.bind(this)}
-                                    disabled={this.state.model == "4" ? false : true}
                                     checked={this.state.imageQuality == "2" ? true : false} /><label htmlFor="low">{culture.low}</label>
                             </td>
                         </tr>

@@ -112,12 +112,8 @@
                 this.state.convert.y = 0;
                 this.state.convertTitle.x = 0;
                 this.state.convertTitle.y = 0;
-                if (this.state.convert.width > 0 && this.state.convert.height > 0) {
-                    this.setState({ button_disabled: false });
-                } else {
-                    this.setState({ button_disabled: true });
-                }
                 this.setState({
+                    button_disabled: false,
                     convert: this.state.convert,
                     convertTitle: this.state.convertTitle
                 });
@@ -163,21 +159,21 @@
                     convertTitle: this.state.convertTitle
                 });
             }
-            if (this.state.convert.model == "4") {  //按质量
-                this.state.convert.x = 0;
-                this.state.convert.y = 0;
-                this.state.convertTitle.x = 0;
-                this.state.convertTitle.y = 0;
-                this.state.convert.width = 0;
-                this.state.convert.height = 0;
-                this.state.convertTitle.width = 0;
-                this.state.convertTitle.height = 0;
-                this.setState({
-                    convert: this.state.convert,
-                    convertTitle: this.state.convertTitle,
-                    button_disabled: false
-                });
-            }
+            //if (this.state.convert.model == "4") {  //按质量
+            //    this.state.convert.x = 0;
+            //    this.state.convert.y = 0;
+            //    this.state.convertTitle.x = 0;
+            //    this.state.convertTitle.y = 0;
+            //    this.state.convert.width = 0;
+            //    this.state.convert.height = 0;
+            //    this.state.convertTitle.width = 0;
+            //    this.state.convertTitle.height = 0;
+            //    this.setState({
+            //        convert: this.state.convert,
+            //        convertTitle: this.state.convertTitle,
+            //        button_disabled: false
+            //    });
+            //}
         } else {
             this.setState({ button_disabled: true });
         }
@@ -228,7 +224,7 @@
                                 <option value="1">{culture.cut}</option>
                                 <option value="2">{culture.by_width}</option>
                                 <option value="3">{culture.by_height}</option>
-                                <option value="4">{culture.by_quality}</option>
+
                             </select>
                         </td>
                         <td colSpan="2">
@@ -248,13 +244,13 @@
                         <td width="35%"><input type="text" name="width"
                             style={{ width: "60px" }}
                             value={this.state.convert.width}
-                            disabled={(this.state.convert.model == "3" || this.state.convert.model=="4") ? true : false}
+                            disabled={(this.state.convert.model == "3") ? true : false}
                             onChange={this.widthChange.bind(this)} />px</td>
                         <td width="20%">{culture.height}:</td>
                         <td width="30%"><input type="text" name="height"
                             style={{ width: "60px" }}
                             value={this.state.convert.height}
-                            disabled={(this.state.convert.model == "2" || this.state.convert.model == "4") ? true : false}
+                            disabled={(this.state.convert.model == "2") ? true : false}
                             onChange={this.heightChange.bind(this)} />px</td>
                     </tr>
                     <tr>
@@ -262,7 +258,6 @@
                         <td colSpan="3">
                             <input type="radio" value="0" name="imageQuality" id="high"
                                 onChange={this.imageQualityChange.bind(this)}
-                                disabled={this.state.convert.model == "4" ? false : true}
                                 checked={this.state.convert.imageQuality == "0" ? true : false} /><label htmlFor="high">{culture.high}</label>
                             {'\u00A0'}
                             {'\u00A0'}
@@ -270,7 +265,6 @@
                             {'\u00A0'}
                             <input type="radio" value="1" name="imageQuality" id="medium"
                                 onChange={this.imageQualityChange.bind(this)}
-                                disabled={this.state.convert.model == "4" ? false : true}
                                 checked={this.state.convert.imageQuality == "1" ? true : false} /><label htmlFor="medium">{culture.medium}</label>
                             {'\u00A0'}
                             {'\u00A0'}
@@ -278,7 +272,6 @@
                             {'\u00A0'}
                             <input type="radio" value="2" name="imageQuality" id="low"
                                 onChange={this.imageQualityChange.bind(this)}
-                                disabled={this.state.convert.model == "4" ? false : true}
                                 checked={this.state.convert.imageQuality == "2" ? true : false} /><label htmlFor="low">{culture.low}</label>
                         </td>
                     </tr>

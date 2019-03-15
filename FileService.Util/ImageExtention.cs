@@ -96,6 +96,19 @@ namespace FileService.Util
                     switch (model)
                     {
                         case ImageModelEnum.scale:
+                            if (width == 0 && height == 0)
+                            {
+                                width = image.Width;
+                                height = image.Height;
+                            }
+                            else if (width == 0 && height > 0)
+                            {
+                                width = image.Width * height / image.Height;
+                            }
+                            else if (width > 0 && height == 0)
+                            {
+                                height = image.Height * width / image.Width;
+                            }
                             break;
                         case ImageModelEnum.height:
                             width = image.Width * height / image.Height;
@@ -106,13 +119,19 @@ namespace FileService.Util
                         case ImageModelEnum.cut:
                             cut = true;
                             break;
-                        case ImageModelEnum.quality:
-                            width = image.Width;
-                            height = image.Height;
-                            return isGif ? ConvertImageGif(image, 0, 0, width, height, false) : ConvertImageQuality(image, imageQuality);
+                        //case ImageModelEnum.quality:
+                        //    width = image.Width;
+                        //    height = image.Height;
+                        //    return isGif ? ConvertImageGif(image, 0, 0, width, height, false) : ConvertImageQuality(image, imageQuality);
                     }
                     if (width > image.Width) width = image.Width;
                     if (height > image.Height) height = image.Height;
+                    Stream imageStream = isGif ? ConvertImageGif(image, x, y, width, height, cut) : ConvertImage(image, outputFormat, x, y, width, height, cut);
+                    if (!isGif)
+                    {
+                        Image imageQ = Image.FromStream(imageStream);
+                        return ConvertImageQuality(imageQ, imageQuality);
+                    }
                     return isGif ? ConvertImageGif(image, x, y, width, height, cut) : ConvertImage(image, outputFormat, x, y, width, height, cut);
                 }
             }

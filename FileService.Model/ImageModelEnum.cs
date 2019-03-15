@@ -17,10 +17,6 @@
         /// <summary>
         /// 按高度
         /// </summary>
-        height = 3,
-        /// <summary>
-        /// 按质量
-        /// </summary>
-        quality = 4
+        height = 3
     }
 }

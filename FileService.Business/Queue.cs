@@ -3,8 +3,6 @@ using FileService.Util;
 using MongoDB.Bson;
 using System;
 using System.Collections.Concurrent;
-using System.Diagnostics;
-using System.IO;
 
 namespace FileService.Business
 {
@@ -53,7 +51,8 @@ namespace FileService.Business
                     string collectionName = doc["collectionName"].AsString;
                     ObjectId collectionId = doc["collectionId"].AsObjectId;
                     BsonDocument taskItem = new MongoBase(collectionName).FindOne(collectionId);
-                    if (taskItem == null) continue;
+                    if (taskItem == null || taskItem["Delete"].AsBoolean == true) continue;
+                    if (taskItem.Contains("Delete") && taskItem["Delete"].AsBoolean == true) continue;
                     itemlist.Add(new FileItem()
                     {
                         QueueId = queueId,
@@ -62,7 +61,7 @@ namespace FileService.Business
                 }
             }
         }
-        
+
 
     }
     public class FileItem

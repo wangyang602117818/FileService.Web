@@ -16,6 +16,7 @@ rar、zip只能替换成rar，zip
 thumbnail 不重复
 tcp传文件问题
 
+转换任务的状态过滤
 记录图片下载来源
 
 加密ts
@@ -40,3 +41,16 @@ net use * /delete
 	user:
 	获取用户列表(pageIndex,pageSize,filter)
 	
+
+用户中心(UserCenter.Web)
+User:
+{
+	_id:"",
+	UserName:"",
+	Password:"",
+	Email:"",
+	EmailConfirmed:"",
+	PhoneNumber:"",
+	CreateTime:"",
+	
+}
