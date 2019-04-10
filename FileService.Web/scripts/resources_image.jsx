@@ -103,7 +103,7 @@
         this.setState({
             convert: this.state.convert,
             convertTitle: this.state.convertTitle
-        }, function () { this.checkAvailable(); });
+        });
     }
     checkAvailable() {
         if (this.state.convert.flag.length > 0) {
@@ -159,21 +159,6 @@
                     convertTitle: this.state.convertTitle
                 });
             }
-            //if (this.state.convert.model == "4") {  //按质量
-            //    this.state.convert.x = 0;
-            //    this.state.convert.y = 0;
-            //    this.state.convertTitle.x = 0;
-            //    this.state.convertTitle.y = 0;
-            //    this.state.convert.width = 0;
-            //    this.state.convert.height = 0;
-            //    this.state.convertTitle.width = 0;
-            //    this.state.convertTitle.height = 0;
-            //    this.setState({
-            //        convert: this.state.convert,
-            //        convertTitle: this.state.convertTitle,
-            //        button_disabled: false
-            //    });
-            //}
         } else {
             this.setState({ button_disabled: true });
         }

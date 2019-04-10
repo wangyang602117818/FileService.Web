@@ -52,6 +52,7 @@ namespace FileService.Business
                     ObjectId collectionId = doc["collectionId"].AsObjectId;
                     BsonDocument taskItem = new MongoBase(collectionName).FindOne(collectionId);
                     if (taskItem == null) continue;
+                    if (taskItem["State"].AsInt32 == -100) continue;
                     if (taskItem.Contains("Delete") && taskItem["Delete"].AsBoolean == true) continue;
                     itemlist.Add(new FileItem()
                     {

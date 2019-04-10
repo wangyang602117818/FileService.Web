@@ -1,13 +1,12 @@
 ﻿using FileService.Model;
 using ImageProcessor;
-using System.Collections.Generic;
+using System;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using System.IO;
-using System.Linq;
+using System.Text.RegularExpressions;
 using System.Xml;
-using System.Xml.Linq;
 
 namespace FileService.Util
 {
@@ -119,10 +118,10 @@ namespace FileService.Util
                         case ImageModelEnum.cut:
                             cut = true;
                             break;
-                        //case ImageModelEnum.quality:
-                        //    width = image.Width;
-                        //    height = image.Height;
-                        //    return isGif ? ConvertImageGif(image, 0, 0, width, height, false) : ConvertImageQuality(image, imageQuality);
+                            //case ImageModelEnum.quality:
+                            //    width = image.Width;
+                            //    height = image.Height;
+                            //    return isGif ? ConvertImageGif(image, 0, 0, width, height, false) : ConvertImageQuality(image, imageQuality);
                     }
                     if (width > image.Width) width = image.Width;
                     if (height > image.Height) height = image.Height;
@@ -174,14 +173,16 @@ namespace FileService.Util
         }
         private static Stream GenerateSvg(string fileName, Stream stream, ImageModelEnum model, ref int width, ref int height)
         {
-            XDocument xmldoc = XDocument.Load(stream);
-            XElement XRoot = xmldoc.Root;
-            int swidth = 0, sheight = 0;
-            foreach (XAttribute attribute in XRoot.Attributes())
-            {
-                if (attribute.Name.LocalName.ToLower() == "width") swidth = int.Parse(attribute.Value);
-                if (attribute.Name.LocalName.ToLower() == "height") sheight = int.Parse(attribute.Value);
-            }
+            string text = stream.ToStr();
+            string pattern = @"<svg\s*(.|\n)+?>";
+            string widthPattern = @"width=""(\d+)(px)?""";
+            string heightPattern = @"height=""(\d+)(px)?""";
+            string svgTag = Regex.Match(text, pattern).Groups[0].Value;
+            string newSvgTag = svgTag;
+            var widthMath = Regex.Match(svgTag, widthPattern);
+            int swidth = widthMath.Success ? int.Parse(widthMath.Groups[1].Value) : 1024;
+            var heightMath = Regex.Match(svgTag, heightPattern);
+            int sheight = heightMath.Success ? int.Parse(widthMath.Groups[1].Value) : 1024;
             switch (model)
             {
                 case ImageModelEnum.scale:
@@ -207,18 +208,24 @@ namespace FileService.Util
                     }
                     break;
             }
-            List<XAttribute> attributes = XRoot.Attributes().Where(w => w.Name.LocalName != "width" && w.Name.LocalName != "height").ToList();
-            XRoot.RemoveAttributes();
-            attributes.Add(new XAttribute("width", width));
-            attributes.Add(new XAttribute("height", height));
-            XRoot.ReplaceAttributes(attributes);
-            MemoryStream ms = new MemoryStream();
-            using (XmlWriter xw = XmlWriter.Create(ms))
+            if (newSvgTag.Contains("width"))
             {
-                xmldoc.WriteTo(xw);
+                newSvgTag = Regex.Replace(newSvgTag, widthPattern, "width=\"" + width + "\"");
             }
-            ms.Position = 0;
-            return ms;
+            else
+            {
+                newSvgTag = newSvgTag.TrimEnd('>') + " width=\"" + width + "\"" + ">";
+            }
+            if (newSvgTag.Contains("height"))
+            {
+                newSvgTag = Regex.Replace(newSvgTag, heightPattern, "height=\"" + height + "\"");
+            }
+            else
+            {
+                newSvgTag = newSvgTag.TrimEnd('>') + " height=\"" + height + "\"" + ">";
+            }
+            text = text.Replace(svgTag, newSvgTag);
+            return text.ToStream();
 
         }
         private static Stream ConvertImage(Image image, ImageFormat outputFormat, int x, int y, int width, int height, bool cut)

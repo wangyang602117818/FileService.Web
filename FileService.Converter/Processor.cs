@@ -122,7 +122,6 @@ namespace FileService.Converter
                 {
                     new Queue().MessageProcessed(item.QueueId);
                     task.Compeleted(messageId);
-                    converter.AddCount(item.Message["HandlerId"].AsString, -1);
                 }
                 else
                 {
@@ -134,7 +133,11 @@ namespace FileService.Converter
                 task.Error(messageId);
                 Log4Net.ErrorLog(ex);
             }
-            Queue.tasklist.Add(1);
+            finally
+            {
+                converter.AddCount(item.Message["HandlerId"].AsString, -1);
+                Queue.tasklist.Add(1);
+            }
         }
 
     }

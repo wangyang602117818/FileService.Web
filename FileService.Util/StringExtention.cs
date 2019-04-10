@@ -1,7 +1,6 @@
 ﻿using MongoDB.Bson;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -25,8 +24,16 @@ namespace FileService.Util
         }
         public static string ToStr(this Stream stream)
         {
-            StreamReader reader = new StreamReader(stream);
+            stream.Position = 0;
+            StreamReader reader = new StreamReader(stream, Encoding.UTF8);
             return reader.ReadToEnd();
+        }
+        public static Stream ToStream(this string str)
+        {
+            byte[] array = Encoding.UTF8.GetBytes(str);
+            MemoryStream stream = new MemoryStream(array);
+            stream.Position = 0;
+            return stream;
         }
         public static byte[] ToBytes(this Stream stream)
         {
