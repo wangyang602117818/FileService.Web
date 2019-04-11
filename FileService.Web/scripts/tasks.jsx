@@ -88,7 +88,7 @@ class TaskItem extends React.Component {
                     <span dangerouslySetInnerHTML={{ __html: this.props.task.FileName.getFileName(10) }}
                         className="link"
                         onClick={this.preView.bind(this)}
-                        id={"id=" + this.props.task.FileId.$oid + "&filename=" + this.props.task.FileName.removeHTML() + "#" + (this.props.task.Output._id ? this.props.task.Output._id.$oid : "")}></span>
+                        id={"id=" + this.props.task.FileId.$oid + "&filename=" + encodeURIComponent(this.props.task.FileName.removeHTML()) + "#" + (this.props.task.Output._id ? this.props.task.Output._id.$oid : "")}></span>
                 </td>
                 <td dangerouslySetInnerHTML={{ __html: this.props.task.HandlerId + icon }}></td>
                 <td title={this.props.task.Output._id ? this.props.task.Output.Flag : ""} >
@@ -102,7 +102,7 @@ class TaskItem extends React.Component {
                 <td title={parseBsonTime(this.props.task.CompletedTime)}>{parseBsonTimeNoneSecond(this.props.task.CompletedTime)}</td>
                 <td>
                     <i className="iconfont icon-view" onClick={this.preView.bind(this)}
-                        id={"id=" + this.props.task.FileId.$oid + "&filename=" + this.props.task.FileName.removeHTML() + "#" + (this.props.task.Output._id ? this.props.task.Output._id.$oid : "")}></i>
+                        id={"id=" + this.props.task.FileId.$oid + "&filename=" + encodeURIComponent(this.props.task.FileName.removeHTML()) + "#" + (this.props.task.Output._id ? this.props.task.Output._id.$oid : "")}></i>
                 </td>
                 <td>
                     {this.props.task.State == 2 || this.props.task.State == 4 || this.props.task.State == -100 ?

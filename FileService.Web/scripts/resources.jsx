@@ -101,7 +101,7 @@ class ResourceItem extends React.Component {
                         className="link"
                         dangerouslySetInnerHTML={{ __html: this.props.resource.FileName.getFileName(15) }}
                         onClick={this.preView.bind(this)}
-                        id={"id=" + this.props.resource._id.$oid.removeHTML() + "&filename=" + this.props.resource.FileName.removeHTML()}>
+                        id={"id=" + this.props.resource._id.$oid.removeHTML() + "&filename=" + encodeURIComponent(this.props.resource.FileName.removeHTML())}>
                     </span>
                 </td>
                 <td>{convertFileSize(this.props.resource.Length)}</td>
@@ -114,7 +114,7 @@ class ResourceItem extends React.Component {
                         onClick={this.preView.bind(this)}
                         onMouseOver={this.mouseOverView.bind(this)}
                         data-id={this.props.resource._id.$oid.removeHTML() + this.props.resource.FileName.removeHTML().getFileExtension()}
-                        id={"id=" + this.props.resource._id.$oid.removeHTML() + "&filename=" + this.props.resource.FileName.removeHTML()}></i>
+                        id={"id=" + this.props.resource._id.$oid.removeHTML() + "&filename=" + encodeURIComponent(this.props.resource.FileName.removeHTML())}></i>
                 </td>
                 <td>
                     <i className="iconfont icon-download" onClick={this.download.bind(this)} id={this.props.resource._id.$oid.removeHTML()}></i>
@@ -166,7 +166,7 @@ class ResourcesDataPicItem extends React.Component {
         var className = "table_grid_item_wrap ";
         className += fileIconId == "000000000000000000000000" ? "doing " : "done ";
         className += this.props.selectedIds.indexOf(fileId) > -1 ? "selected" : "";
-        var preId = "id=" + fileId + "&filename=" + fileName;
+        var preId = "id=" + fileId + "&filename=" + encodeURIComponent(fileName);
         if (this.props.deleted) preId = preId + "&deleted=true";
         return (
             <div className={className}
