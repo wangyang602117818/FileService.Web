@@ -226,7 +226,6 @@
     <Content Include="hlsplayer\flowplayerhls.swf" />
     <Content Include="hlsplayer\hlsplayer.min.js" />
     <Content Include="HtmlPage1.html" />
-    <Content Include="HtmlPage2.html" />
     <Content Include="image\attachment.png" />
     <Content Include="image\data.ico" />
     <Content Include="image\date.png" />
