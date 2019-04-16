@@ -957,5 +957,10 @@ namespace FileService.Web.Controllers
         {
             return Content(converter.GetHandlerId());
         }
+        public ActionResult M()
+        {
+            List<int> result = new Random().GetRandomCodes(20, 19);
+            return Json(result, JsonRequestBehavior.AllowGet);
+        }
     }
 }

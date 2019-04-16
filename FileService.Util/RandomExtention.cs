@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace FileService.Util
 {
@@ -34,6 +32,33 @@ namespace FileService.Util
                 }
             }
             return sb.ToString();
+        }
+        /// <summary>
+        /// 获取[0,max]之间的len个不重复随机整数列表
+        /// </summary>
+        /// <param name="random"></param>
+        /// <param name="max"></param>
+        /// <param name="len"></param>
+        /// <returns></returns>
+        public static List<int> GetRandomCodes(this Random random, int max, int len)
+        {
+            List<int> result = new List<int>();
+            if (max <= len)
+            {
+                for (var i = 0; i <= max; i++) result.Add(i);
+            }
+            else
+            {
+                while (result.Count < len)
+                {
+                    int l = random.Next(0, max + 1);
+                    if (!result.Contains(l))
+                    {
+                        result.Add(l);
+                    }
+                }
+            }
+            return result;
         }
         /// <summary>
         /// 随机16精制字符串
