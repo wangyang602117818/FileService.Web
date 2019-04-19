@@ -959,8 +959,15 @@ namespace FileService.Web.Controllers
         }
         public ActionResult M()
         {
-            List<int> result = new Random().GetRandomCodes(20, 19);
-            return Json(result, JsonRequestBehavior.AllowGet);
+            Random random = new Random();
+            //List<bool> list = new List<bool>();
+            //for(var i = 0; i < 50; i++)
+            //{
+            //    list.Add(random.Probability(0.1));
+            //}
+            
+            IEnumerable<int> result = random.GetRewardIdsDecrease(100, 10);
+            return new ResponseModel<IEnumerable<int>>(ErrorCode.success, result,result.Count());
         }
     }
 }

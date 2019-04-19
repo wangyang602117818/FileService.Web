@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace FileService.Util
@@ -59,6 +60,46 @@ namespace FileService.Util
                 }
             }
             return result;
+        }
+        /// <summary>
+        /// 概率获取
+        /// </summary>
+        /// <param name="random"></param>
+        /// <param name="percent">0-1</param>
+        /// <returns></returns>
+        public static bool Probability(this Random random, double percent)
+        {
+            percent = Math.Round(percent, 2) * 100;
+            List<bool> result = new List<bool>();
+            for (var i = 0; i < percent; i++)
+            {
+                result.Add(true);
+            }
+            for (var i = percent; i < 100; i++)
+            {
+                result.Add(false);
+            }
+            int r = random.Next(0, 100);
+            return result[r];
+        }
+        public static IEnumerable<int> GetRewardIdsDecrease(this Random random, int all, int len)
+        {
+            List<int> result = new List<int>();
+            if (all <= len) { for (var i = 0; i < all; i++) { result.Add(i); } return result; }
+            //初始化概率因子
+            double singleProbability = 1.0 / len;
+            //第一个人的中奖概率
+            double probability = (len - 1) * singleProbability;
+            for (var i = 0; i < all; i++)
+            {
+                if (random.Probability(probability))
+                {
+                    result.Add(i);
+                    probability = (len - (i + 2)) * singleProbability;
+                    if (probability <= 0.1) probability = 0.1;
+                }
+            }
+            return result.Take(len);
         }
         /// <summary>
         /// 随机16精制字符串
