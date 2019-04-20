@@ -1,7 +1,7 @@
 ﻿//////////////////////////////////////////////////////////////////////////////////////
-///version:1.8.0
+///version:1.8.1
 ///author: wangyang
-///update: add removeFiles, add getThumbnailMetadata,Optimization code
+///update: remove userName,add userCode
 /////////////////////////////////////////////////////////////////////////////////////
 function FileClient(authCode, remoteUrl) {
     this.authCode = authCode;
@@ -10,7 +10,7 @@ function FileClient(authCode, remoteUrl) {
     this.apiType = "javascript";
 };
 FileClient.prototype = {
-    get: function (url, success, progress, error, userName) {
+    get: function (url, success, progress, error, userCode) {
         var xhr = new XMLHttpRequest();
         xhr.upload.onprogress = function (event) {
             var precent = ((event.loaded / event.total) * 100).toFixed();
@@ -32,10 +32,10 @@ FileClient.prototype = {
             if (error) error(event);
         }
         xhr.open('get', url);
-        this.setXhrHeaders(xhr, userName);
+        this.setXhrHeaders(xhr, userCode);
         xhr.send();
     },
-    post: function (url, formData, success, progress, error, userName, defaultConvert) {
+    post: function (url, formData, success, progress, error, userCode, defaultConvert) {
         var xhr = new XMLHttpRequest();
         xhr.upload.onprogress = function (event) {
             var precent = ((event.loaded / event.total) * 100).toFixed();
@@ -57,35 +57,35 @@ FileClient.prototype = {
             if (error) error(event);
         }
         xhr.open('post', url);
-        this.setXhrHeaders(xhr, userName, defaultConvert);
+        this.setXhrHeaders(xhr, userCode, defaultConvert);
         xhr.send(formData);
     },
-    uploadImageDefaultConvert: function (file, userAccess, success, progress, error, userName) {
+    uploadImageDefaultConvert: function (file, userAccess, success, progress, error, userCode) {
         var url = this.remoteUrl + "/upload/image";
         var formData = this.getFormData("images", file, null, userAccess);
-        this.post(url, formData, success, progress, error, userName, true);
+        this.post(url, formData, success, progress, error, userCode, true);
     },
-    uploadVideoDefaultConvert: function (file, userAccess, success, progress, error, userName) {
+    uploadVideoDefaultConvert: function (file, userAccess, success, progress, error, userCode) {
         var url = this.remoteUrl + "/upload/video";
         var formData = this.getFormData("videos", file, null, userAccess);
-        this.post(url, formData, success, progress, error, userName, true);
+        this.post(url, formData, success, progress, error, userCode, true);
     },
-    uploadImage: function (file, imageConvert, userAccess, success, progress, error, userName) {
+    uploadImage: function (file, imageConvert, userAccess, success, progress, error, userCode) {
         var url = this.remoteUrl + "/upload/image";
         var formData = this.getFormData("images", file, imageConvert, userAccess);
-        this.post(url, formData, success, progress, error, userName, false);
+        this.post(url, formData, success, progress, error, userCode, false);
     },
-    uploadVideo: function (file, videoConvert, userAccess, success, progress, error, userName) {
+    uploadVideo: function (file, videoConvert, userAccess, success, progress, error, userCode) {
         var url = this.remoteUrl + "/upload/video";
         var formData = this.getFormData("videos", file, videoConvert, userAccess);
-        this.post(url, formData, success, progress, error, userName, false);
+        this.post(url, formData, success, progress, error, userCode, false);
     },
-    uploadAttachment: function (file, userAccess, success, progress, error, userName) {
+    uploadAttachment: function (file, userAccess, success, progress, error, userCode) {
         var url = this.remoteUrl + "/upload/attachment";
         var formData = this.getFormData("attachments", file, null, userAccess);
-        this.post(url, formData, success, progress, error, userName, false);
+        this.post(url, formData, success, progress, error, userCode, false);
     },
-    uploadVideoCapture: function (fileId, file, success, progress, error, userName) {
+    uploadVideoCapture: function (fileId, file, success, progress, error, userCode) {
         var url = "";
         if (typeof file == "string") {
             url = this.remoteUrl + "/upload/videocapture";
@@ -94,27 +94,27 @@ FileClient.prototype = {
         }
         var formData = this.getFormData("videocps", file, null, null);
         formData.append("fileId", fileId);
-        this.post(url, formData, success, progress, error, userName, false);
+        this.post(url, formData, success, progress, error, userCode, false);
     },
-    deleteVideoCapture: function (captureFileId, success, progress, error, userName) {
+    deleteVideoCapture: function (captureFileId, success, progress, error, userCode) {
         var url = this.remoteUrl + "/data/deletevideocapture/" + captureFileId;
-        this.get(url, success, progress, error, userName);
+        this.get(url, success, progress, error, userCode);
     },
     getFileUrl: function (fileId) { return this.remoteUrl + "/download/get/" + fileId; },
     getFileConvertUrl: function (fileId) { return this.remoteUrl + "/download/getconvert/" + fileId; },
-    removeFile: function (fileId, success, progress, error, userName) {
+    removeFile: function (fileId, success, progress, error, userCode) {
         var url = this.remoteUrl + "/data/remove/" + fileId;
-        this.get(url, success, progress, error, userName);
+        this.get(url, success, progress, error, userCode);
     },
-    removeFiles: function (fileIds, success, progress, error, userName) {
+    removeFiles: function (fileIds, success, progress, error, userCode) {
         var url = this.remoteUrl + "/data/removes";
         var formData = new FormData();
         for (var i = 0; i < fileIds.length; i++) formData.append("ids", fileIds[i]);
-        this.post(url, formData, success, progress, error, userName, false);
+        this.post(url, formData, success, progress, error, userCode, false);
     },
-    getThumbnailMetadata: function (fileId, success, progress, error, userName) {
+    getThumbnailMetadata: function (fileId, success, progress, error, userCode) {
         var url = this.remoteUrl + "/data/getthumbnailmetadata/" + fileId;
-        this.get(url, success, progress, error, userName);
+        this.get(url, success, progress, error, userCode);
     },
     getM3u8Url: function (m3u8FileId) {
         return this.remoteUrl + "/download/m3u8/" + m3u8FileId;
@@ -149,11 +149,11 @@ FileClient.prototype = {
     getFileIconMobileUrl: function (fileIconId) {
         return this.remoteUrl + "/download/getfileiconmobile/" + fileIconId + "/";
     },
-    getFileState: function (fileId, success, progress, error, userName) {
+    getFileState: function (fileId, success, progress, error, userCode) {
         var url = this.remoteUrl + "/data/filestate/" + fileId;
-        this.get(url, success, progress, error, userName);
+        this.get(url, success, progress, error, userCode);
     },
-    getFileList: function (data, success, progress, error, userName) {
+    getFileList: function (data, success, progress, error, userCode) {
         var that = this;
         var xhr = new XMLHttpRequest();
         var url = this.remoteUrl + "/data/getfilelist/?";
@@ -177,16 +177,16 @@ FileClient.prototype = {
             if (error) error(event);
         }
         xhr.open('get', url);
-        this.setXhrHeaders(xhr, userName);
+        this.setXhrHeaders(xhr, userCode);
         xhr.send();
     },
-    getSubFileState: function (subFileId, success, progress, error, userName) {
+    getSubFileState: function (subFileId, success, progress, error, userCode) {
         var url = this.remoteUrl + "/data/subfilestate/" + subFileId;
-        this.get(url, success, progress, error, userName);
+        this.get(url, success, progress, error, userCode);
     },
-    getVideoCaptureIds: function (fileId, success, progress, error, userName) {
+    getVideoCaptureIds: function (fileId, success, progress, error, userCode) {
         var url = this.remoteUrl + "/data/getvideocaptureids/" + fileId;
-        this.get(url, success, progress, error, userName);
+        this.get(url, success, progress, error, userCode);
     },
     getFormData: function (name, file, convert, access) {
         var formData = new FormData();
@@ -216,12 +216,12 @@ FileClient.prototype = {
         }
         return formData;
     },
-    setXhrHeaders: function (xhr, userName, defaultConvert) {
+    setXhrHeaders: function (xhr, userCode, defaultConvert) {
         xhr.setRequestHeader("AuthCode", this.authCode);
         xhr.setRequestHeader("FromApi", true);
         xhr.setRequestHeader("ApiType", this.apiType);
         if (defaultConvert) xhr.setRequestHeader("DefaultConvert", defaultConvert);
-        if (userName) xhr.setRequestHeader("UserName", userName);
+        if (userCode) xhr.setRequestHeader("UserCode", userCode);
     },
     parseBsonTime: function (value) {
         if (!value) {

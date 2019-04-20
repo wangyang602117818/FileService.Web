@@ -10,25 +10,13 @@ namespace FileService.Business
     public class User : ModelBase<Data.User>
     {
         public User() : base(new Data.User()) { }
-        public bool CheckExists(string userName)
+        public BsonDocument GetUser(string userCode)
         {
-            return mongoData.CheckExists(userName);
+            return mongoData.GetUser(userCode);
         }
-        public BsonDocument GetUser(string userName)
+        public BsonDocument Login(string UserCode, string passWord)
         {
-            return mongoData.GetUser(userName);
-        }
-        public bool UpdateUser(string userName, BsonDocument document)
-        {
-            return mongoData.UpdateUser(userName, document);
-        }
-        public bool DeleteUser(string userName)
-        {
-            return mongoData.DeleteUser(userName);
-        }
-        public BsonDocument Login(string userName, string passWord)
-        {
-            return mongoData.Login(userName, passWord);
+            return mongoData.Login(UserCode, passWord);
         }
     }
 }

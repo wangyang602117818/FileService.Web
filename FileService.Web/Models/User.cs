@@ -12,6 +12,8 @@ namespace FileService.Web.Models
         [Required]
         public string UserName { get; set; }
         [Required]
+        public string UserCode { get; set; }
+        [Required]
         public string PassWord { get; set; }
         [Required]
         public string Company { get; set; }
@@ -34,6 +36,8 @@ namespace FileService.Web.Models
         [Required]
         public string UserName { get; set; }
         [Required]
+        public string UserCode { get; set; }
+        [Required]
         public string PassWord { get; set; }
         [Required]
         public string Company { get; set; }
@@ -51,6 +55,7 @@ namespace FileService.Web.Models
     public class UserLogin
     {
         [Required]
+        public string UserCode { get; set; }
         public string UserName { get; set; }
         [Required]
         public string PassWord { get; set; }

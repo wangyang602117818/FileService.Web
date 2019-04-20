@@ -75,18 +75,18 @@ namespace FileService.Web.Controllers
                 //上传到TempFiles
                 file.SaveAs(tempFileDirectory + fileId.ToString() + ext);
 
-                filesWrap.InsertImage(fileId, ObjectId.Empty, file.FileName, file.InputStream.Length, Request.Headers["AppName"], 0, fileType, contentType, thumbnail, access, uploadImgModel.ExpiredDay, Request.Headers["UserName"] ?? User.Identity.Name);
+                filesWrap.InsertImage(fileId, ObjectId.Empty, file.FileName, file.InputStream.Length, Request.Headers["AppName"], 0, fileType, contentType, thumbnail, access, uploadImgModel.ExpiredDay, Request.Headers["UserCode"] ?? User.Identity.Name);
 
                 string handlerId = converter.GetHandlerId();
                 if (output.Count == 0)
                 {
-                    InsertTask(handlerId, fileId, file.FileName, fileType, Request.Headers["AppName"], new BsonDocument(), access, Request.Headers["UserName"] ?? User.Identity.Name);
+                    InsertTask(handlerId, fileId, file.FileName, fileType, Request.Headers["AppName"], new BsonDocument(), access, Request.Headers["UserCode"] ?? User.Identity.Name);
                 }
                 else
                 {
                     foreach (ImageOutPut o in output)
                     {
-                        InsertTask(handlerId, fileId, file.FileName, fileType, Request.Headers["AppName"], o.ToBsonDocument(), access, Request.Headers["UserName"] ?? User.Identity.Name);
+                        InsertTask(handlerId, fileId, file.FileName, fileType, Request.Headers["AppName"], o.ToBsonDocument(), access, Request.Headers["UserCode"] ?? User.Identity.Name);
                     }
                 }
                 //日志
@@ -159,18 +159,18 @@ namespace FileService.Web.Controllers
                 ObjectId fileId = ObjectId.GenerateNewId();
                 //上传到TempFiles
                 file.SaveAs(tempFileDirectory + fileId.ToString() + ext);
-                filesWrap.InsertVideo(fileId, ObjectId.Empty, file.FileName, file.InputStream.Length, Request.Headers["AppName"], 0, fileType, contentType, videos, access, uploadVideo.ExpiredDay, Request.Headers["UserName"] ?? User.Identity.Name);
+                filesWrap.InsertVideo(fileId, ObjectId.Empty, file.FileName, file.InputStream.Length, Request.Headers["AppName"], 0, fileType, contentType, videos, access, uploadVideo.ExpiredDay, Request.Headers["UserCode"] ?? User.Identity.Name);
 
                 string handlerId = converter.GetHandlerId();
                 if (outputs.Count == 0)
                 {
-                    InsertTask(handlerId, fileId, file.FileName, "video", Request.Headers["AppName"], new BsonDocument(), access, Request.Headers["UserName"] ?? User.Identity.Name);
+                    InsertTask(handlerId, fileId, file.FileName, "video", Request.Headers["AppName"], new BsonDocument(), access, Request.Headers["UserCode"] ?? User.Identity.Name);
                 }
                 else
                 {
                     foreach (VideoOutPut o in outputs)
                     {
-                        InsertTask(handlerId, fileId, file.FileName, "video", Request.Headers["AppName"], o.ToBsonDocument(), access, Request.Headers["UserName"] ?? User.Identity.Name);
+                        InsertTask(handlerId, fileId, file.FileName, "video", Request.Headers["AppName"], o.ToBsonDocument(), access, Request.Headers["UserCode"] ?? User.Identity.Name);
                     }
                 }
                 //日志
@@ -241,7 +241,7 @@ namespace FileService.Web.Controllers
                     files,
                     access,
                     uploadAttachmentModel.ExpiredDay,
-                    Request.Headers["UserName"] ?? User.Identity.Name);
+                    Request.Headers["UserCode"] ?? User.Identity.Name);
 
                 string handlerId = converter.GetHandlerId();
                 //office转换任务
@@ -252,7 +252,7 @@ namespace FileService.Web.Controllers
                         {"Format",AttachmentOutput.pdf },
                         {"Flag","preview" } },
                         access,
-                        Request.Headers["UserName"] ?? User.Identity.Name
+                        Request.Headers["UserCode"] ?? User.Identity.Name
                     );
                 }
                 //zip转换任务
@@ -263,11 +263,11 @@ namespace FileService.Web.Controllers
                         {"Flag","zip" }
                     },
                     access,
-                    Request.Headers["UserName"] ?? User.Identity.Name);
+                    Request.Headers["UserCode"] ?? User.Identity.Name);
                 }
                 else
                 {
-                    InsertTask(handlerId, fileId, file.FileName, fileType, Request.Headers["AppName"], new BsonDocument(), access, Request.Headers["UserName"] ?? User.Identity.Name);
+                    InsertTask(handlerId, fileId, file.FileName, fileType, Request.Headers["AppName"], new BsonDocument(), access, Request.Headers["UserCode"] ?? User.Identity.Name);
                 }
                 //日志
                 Log(fileId.ToString(), "UploadAttachment");

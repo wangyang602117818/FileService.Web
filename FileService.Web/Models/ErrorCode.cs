@@ -24,12 +24,13 @@
         owner_not_match = 107,
         file_type_blocked = 108,
         username_required = 109,
+        usercode_required = 110,
         /// <summary>
         /// 不存在
         /// </summary>
         record_not_exist = 200,
         uri_not_found = 201,
-        username_exist = 202,
+        usercode_exist = 202,
         login_fault = 203,
         task_not_completed = 204,
         invalid_password = 205,

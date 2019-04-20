@@ -21,7 +21,6 @@ namespace FileService.Web.Controllers
         Files files = new Files();
         public ActionResult Index()
         {
-            ViewBag.Name = User.Identity.Name;
             BsonDocument bsonUser = user.GetUser(User.Identity.Name);
             if (User.Identity.Name != "local")
             {
@@ -39,6 +38,7 @@ namespace FileService.Web.Controllers
                 }
             }
             ViewBag.Role = User.Identity.Name == "local" ? "admin" : bsonUser["Role"].AsString;
+            ViewBag.Name = User.Identity.Name == "local" ? "local" : bsonUser["UserName"].AsString;
             return View();
         }
         [AllowAnonymous]
@@ -67,17 +67,19 @@ namespace FileService.Web.Controllers
         public ActionResult Login(UserLogin userLogin, string returnUrl = "")
         {
             BsonDocument bsonUser = new BsonDocument("Role", "admin");
-            if (Request.IsLocal && userLogin.UserName == "local" && userLogin.PassWord == "123")
+            if (Request.IsLocal && userLogin.UserCode == "local" && userLogin.PassWord == "123")
             {
+                userLogin.UserName = "local";
             }
             else
             {
-                bsonUser = user.Login(userLogin.UserName, userLogin.PassWord);
+                bsonUser = user.Login(userLogin.UserCode, userLogin.PassWord);
                 if (bsonUser == null) return new ResponseModel<string>(ErrorCode.login_fault, "");
+                userLogin.UserName = bsonUser["UserName"].AsString;
             }
             FormsAuthenticationTicket ticket = new FormsAuthenticationTicket(
                 1,
-                userLogin.UserName,
+                userLogin.UserCode,
                 DateTime.Now,
                 DateTime.MaxValue,
                 true,
@@ -85,7 +87,7 @@ namespace FileService.Web.Controllers
             HttpCookie userCookie = new HttpCookie(FormsAuthentication.FormsCookieName, FormsAuthentication.Encrypt(ticket));
             userCookie.Expires = DateTime.MaxValue;
             Response.Cookies.Add(userCookie);
-            LogInRecord("Login", userLogin.UserName);
+            LogInRecord("Login", userLogin.UserCode);
             if (Url.IsLocalUrl(returnUrl) && returnUrl.Length > 1 && returnUrl.StartsWith("/")
                     && !returnUrl.StartsWith("//") && !returnUrl.StartsWith("/\\"))
             {
@@ -114,7 +116,7 @@ namespace FileService.Web.Controllers
         public ActionResult GetTasks(int pageIndex = 1, int pageSize = 10, string from = "", int? state = null, string filter = "", string startTime = null, string endTime = null)
         {
             long count = 0;
-            var userName = Request.Headers["UserName"] ?? User.Identity.Name;
+            var userName = Request.Headers["UserCode"] ?? User.Identity.Name;
             Dictionary<string, string> sorts = new Dictionary<string, string> { { "CreateTime", "desc" } };
             DateTime.TryParse(startTime, out DateTime timeStart);
             DateTime.TryParse(endTime, out DateTime timeEnd);
@@ -140,7 +142,7 @@ namespace FileService.Web.Controllers
         public ActionResult GetFiles(int pageIndex = 1, int pageSize = 10, string from = "", string orderField = "CreateTime", string orderFieldType = "desc", string filter = "", string fileType = "", string startTime = null, string endTime = null)
         {
             long count = 0;
-            var userName = Request.Headers["UserName"] ?? User.Identity.Name;
+            var userName = Request.Headers["UserCode"] ?? User.Identity.Name;
             DateTime.TryParse(startTime, out DateTime timeStart);
             DateTime.TryParse(endTime, out DateTime timeEnd);
             Dictionary<string, string> sorts = new Dictionary<string, string> { { orderField, orderFieldType } };
@@ -153,7 +155,7 @@ namespace FileService.Web.Controllers
         public ActionResult GetDeleteFiles(int pageIndex = 1, int pageSize = 10, string from = "", string orderField = "DeleteTime", string orderFieldType = "desc", string filter = "", string fileType = "", string startTime = null, string endTime = null)
         {
             long count = 0;
-            var userName = Request.Headers["UserName"] ?? User.Identity.Name;
+            var userName = Request.Headers["UserCode"] ?? User.Identity.Name;
             DateTime.TryParse(startTime, out DateTime timeStart);
             DateTime.TryParse(endTime, out DateTime timeEnd);
             Dictionary<string, string> sorts = new Dictionary<string, string> { { orderField, orderFieldType } };
@@ -666,7 +668,7 @@ namespace FileService.Web.Controllers
                 {"Flag",addVideoTask.Flag }
             };
             Log(addVideoTask.FileId, "AddVideoTask");
-            InsertTask(handlerId, fileId, fileWrap["FileName"].AsString, "video", Request.Headers["AppName"], output, fileWrap["Access"].AsBsonArray, Request.Headers["UserName"] ?? User.Identity.Name);
+            InsertTask(handlerId, fileId, fileWrap["FileName"].AsString, "video", Request.Headers["AppName"], output, fileWrap["Access"].AsBsonArray, Request.Headers["UserCode"] ?? User.Identity.Name);
             filesWrap.AddSubVideo(fileId, subFile);
             return new ResponseModel<bool>(ErrorCode.success, true);
         }
@@ -697,7 +699,7 @@ namespace FileService.Web.Controllers
                 {"Flag",addImageTask.Flag }
             };
             Log(addImageTask.FileId, "AddThumbnailTask");
-            InsertTask(handlerId, fileId, fileWrap["FileName"].AsString, "image", Request.Headers["AppName"], output, fileWrap["Access"].AsBsonArray, Request.Headers["UserName"] ?? User.Identity.Name);
+            InsertTask(handlerId, fileId, fileWrap["FileName"].AsString, "image", Request.Headers["AppName"], output, fileWrap["Access"].AsBsonArray, Request.Headers["UserCode"] ?? User.Identity.Name);
             filesWrap.AddSubThumbnail(fileId, subFile);
             return new ResponseModel<bool>(ErrorCode.success, true);
         }
@@ -752,8 +754,8 @@ namespace FileService.Web.Controllers
         [HttpPost]
         public ActionResult AddUser(AddUser addUser)
         {
-            BsonDocument bsonUser = user.GetUser(addUser.UserName);
-            if (bsonUser != null) return new ResponseModel<string>(ErrorCode.record_exist, "");
+            BsonDocument bsonUser = user.GetUser(addUser.UserCode);
+            if (bsonUser != null) return new ResponseModel<string>(ErrorCode.usercode_exist, "");
             addUser.CreateTime = DateTime.Now;
             if (addUser.Department == null) addUser.Department = new List<string>();
             if (addUser.DepartmentDisplay == null) addUser.DepartmentDisplay = new List<string>();
@@ -766,7 +768,7 @@ namespace FileService.Web.Controllers
         }
         public ActionResult UpdateUser(UpdateUser updateUser)
         {
-            BsonDocument userBson = user.GetUser(updateUser.UserName);
+            BsonDocument userBson = user.GetUser(updateUser.UserCode);
             updateUser.Modified = true;
             updateUser.PassWord = updateUser.PassWord.ToMD5();
             if (updateUser.Department == null) updateUser.Department = new List<string>();
@@ -788,11 +790,11 @@ namespace FileService.Web.Controllers
             return new ResponseModel<BsonDocument>(ErrorCode.success, document);
         }
         [Authorize(Roles = "admin")]
-        public ActionResult DeleteUser(string userName)
+        public ActionResult DeleteUser(string id)
         {
-            if (user.DeleteUser(userName))
+            if (user.DeleteOne(ObjectId.Parse(id)))
             {
-                Log("-", "DeleteUser(" + userName + ")");
+                Log("-", "DeleteUser(" + id + ")");
                 return new ResponseModel<string>(ErrorCode.success, "");
             }
             return new ResponseModel<string>(ErrorCode.server_exception, "");
@@ -965,9 +967,9 @@ namespace FileService.Web.Controllers
             //{
             //    list.Add(random.Probability(0.1));
             //}
-            
+
             IEnumerable<int> result = random.GetRewardIdsDecrease(100, 10);
-            return new ResponseModel<IEnumerable<int>>(ErrorCode.success, result,result.Count());
+            return new ResponseModel<IEnumerable<int>>(ErrorCode.success, result, result.Count());
         }
     }
 }

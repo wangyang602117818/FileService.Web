@@ -3,6 +3,7 @@
         super(props);
         this.state = {
             userName: "",
+            userCode: "",
             passWord: "",
             confirm: "",
 
@@ -57,9 +58,10 @@
         }.bind(this));
     }
     //父组件调用，用于点击某一个用户之后。回显状态
-    changeState(userName, userRole, companyCode, companyDisplay, codeArray, departmentDisplay) {
+    changeState(userName,userCode, userRole, companyCode, companyDisplay, codeArray, departmentDisplay) {
         this.setState({
             userName: userName,
+            userCode: userCode,
             role: userRole,
             companyCode: companyCode,
             companyName: companyDisplay,
@@ -109,6 +111,7 @@
             if (this.state.passWord === this.state.confirm) {
                 this.props.updateUser({
                     userName: this.state.userName,
+                    userCode: this.state.userCode,
                     passWord: this.state.passWord,
                     company: this.state.companyCode,
                     companyDisplay: this.state.companyName,
@@ -119,6 +122,7 @@
                     if (data.code == 0) {
                         that.setState({
                             userName: "",
+                            usercode:"",
                             passWord: "",
                             confirm: "",
                             role: "",
@@ -157,6 +161,15 @@
                                 name="userName"
                                 value={this.state.userName}
                                 onChange={this.nameChanged.bind(this)} /><font color="red">*</font></td>
+                        </tr>
+                        <tr>
+                            <td>{culture.usercode}:</td>
+                            <td>
+                                <input type="text"
+                                    name="userCode"
+                                    value={this.state.userCode}
+                                    onChange={(e) => this.setState({ userCode: e.target.value })} /><font color="red">*</font>
+                            </td>
                         </tr>
                         <tr>
                             <td>{culture.password}:</td>
@@ -223,6 +236,7 @@ class AddUser extends React.Component {
         super(props);
         this.state = {
             userName: "",
+            userCode:"",
             passWord: "",
             confirm: "",
 
@@ -288,6 +302,12 @@ class AddUser extends React.Component {
     roleChanged(e) {
         this.setState({ role: e.target.value });
     }
+    userCodeDefault(e) {
+        var value = e.target.value;
+        if (!value) {
+            this.setState({ userCode: this.state.userName });
+        }
+    }
     onCompanyChange(e) {
         var companyCode = e.target.value, companyName = "";
         for (var i = 0; i < this.state.companyData.length; i++) {
@@ -312,10 +332,11 @@ class AddUser extends React.Component {
     }
     addUser(e) {
         var that = this;
-        if (this.state.userName && this.state.passWord && this.state.confirm) {
+        if (this.state.userName && this.state.userCode && this.state.passWord && this.state.confirm) {
             if (this.state.passWord === this.state.confirm) {
                 this.props.addUser({
                     userName: this.state.userName,
+                    userCode: this.state.userCode,
                     passWord: this.state.passWord,
                     company: this.state.companyCode,
                     companyDisplay: this.state.companyName,
@@ -326,6 +347,7 @@ class AddUser extends React.Component {
                     if (data.code == 0) {
                         that.setState({
                             userName: "",
+                            usercode:"",
                             passWord: "",
                             confirm: "",
                             role: "",
@@ -364,6 +386,16 @@ class AddUser extends React.Component {
                                 name="userName"
                                 value={this.state.userName}
                                 onChange={this.nameChanged.bind(this)} /><font color="red">*</font></td>
+                        </tr>
+                        <tr>
+                            <td>{culture.usercode}:</td>
+                            <td>
+                                <input type="text"
+                                    name="userCode"
+                                    value={this.state.userCode}
+                                    onChange={(e) => this.setState({ userCode: e.target.value })}
+                                    onFocus={this.userCodeDefault.bind(this)} /><font color="red">*</font>
+                            </td>
                         </tr>
                         <tr>
                             <td>{culture.password}:</td>

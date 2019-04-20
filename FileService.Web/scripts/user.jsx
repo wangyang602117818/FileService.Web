@@ -12,11 +12,12 @@
                     <tr>
                         <td width="19%">{culture.id}</td>
                         <th width="10%">{culture.username}</th>
-                        <th width="10%">{culture.password}</th>
+                        <th width="10%">{culture.usercode}({culture.login})</th>
+                        <th width="5%">{culture.password}</th>
                         <td width="10%">{culture.company}</td>
-                        <td width="20%">{culture.department}</td>
+                        <td width="18%">{culture.department}</td>
                         <th width="8%">{culture.role}</th>
-                        <th width="8%">{culture.modified}</th>
+                        <th width="5%">{culture.modified}</th>
                         <th width="15%">{culture.createTime}</th>
                     </tr>
                 </thead>
@@ -65,7 +66,8 @@ class UserItem extends React.Component {
                         dangerouslySetInnerHTML={{ __html: this.props.user._id.$oid }}></b>
                 </td>
                 <td dangerouslySetInnerHTML={{ __html: this.props.user.UserName }}></td>
-                <td>******</td>
+                <td>{this.props.user.UserCode}</td>
+                <td>***</td>
                 <td>{this.props.user.CompanyDisplay}</td>
                 <td>{this.props.user.DepartmentDisplay ? this.props.user.DepartmentDisplay.toString() : ""}</td>
                 <td dangerouslySetInnerHTML={{ __html: this.props.user.Role }}></td>
@@ -146,6 +148,7 @@ class User extends React.Component {
             if (data.code == 0) {
                 this.setState({ deleteShow: true, updateShow: true, deleteName: data.result.UserName, updateId: id }, function () {
                     this.refs.update_user.changeState(data.result.UserName,
+                        data.result.UserCode,
                         data.result.Role,
                         data.result.Company,
                         data.result.CompanyDisplay,
@@ -174,7 +177,7 @@ class User extends React.Component {
     deleteUser(e) {
         var that = this;
         if (confirm(" " + culture.delete + " ?")) {
-            http.get(urls.user.deleteUserUrl + "?userName=" + this.state.deleteName, function (data) {
+            http.get(urls.user.deleteUserUrl + "/" + this.state.updateId, function (data) {
                 if (data.code == 0) {
                     that.getData();
                     that.setState({ deleteShow: false, updateShow: false });

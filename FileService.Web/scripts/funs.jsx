@@ -125,6 +125,7 @@ var appDomain = appPath == "/" ? "/" : appPath + "/";
 var baseUrl = window.location.protocol + "//" + window.location.host + appDomain;
 var urls = {
     logoUrl: appDomain + "image/logo.png",
+    loginUrl: appDomain+"admin/login",
     homeUrl: appDomain + "admin/index",
     logOutUrl: appDomain + "admin/logout",
     preview: appDomain + "admin/preview",
@@ -807,6 +808,7 @@ function getQuality(quality) {
     }
 }
 function getExtensions() {
+    if (!userName) return;
     http.get(urls.extension.getAllExtensionUrl, function (data) {
         if (data.code == 0) {
             extensions = data.result;
@@ -819,6 +821,7 @@ function getExtensions() {
     });
 }
 function getApplications() {
+    if (!userName) return;
     http.getSync(urls.application.getAllApplicationUrl, function (data) {
         if (data.code == 0) {
             application = data.result;

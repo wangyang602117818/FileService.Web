@@ -18,10 +18,10 @@ class LoginName extends React.Component {
         return (
             <div className="login_row margin_top">
                 <div className="name">
-                    {culture.username}:
+                    {culture.usercode}:
                </div>
                 <div className="value">
-                    <input type="text" name="username"
+                    <input type="text" name="usercode"
                         value={this.props.value}
                         onChange={this.props.nameChanged}
                         onKeyPress={this.props.onKeypressName} /> <font color="red">*</font>
@@ -86,13 +86,13 @@ class Login extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            username: "",
+            usercode: "",
             password: "",
             message: ""
         }
     }
     nameChanged(e) {
-        this.setState({ username: e.target.value });
+        this.setState({ usercode: e.target.value });
     }
     passWordChangd(e) {
         this.setState({ password: e.target.value });
@@ -104,15 +104,15 @@ class Login extends React.Component {
         if (e.key.toLowerCase() == "enter") { this.onClick(); }
     }
     onClick(e) {
-        if (!this.state.username) {
-            alert(culture.username_required);
+        if (!this.state.usercode) {
+            alert(culture.usercode_required);
             return;
         }
         if (!this.state.password) {
             alert(culture.password_required);
             return;
         }
-        http.post(window.location.href, this.state, function (data) {
+        http.post(urls.loginUrl, this.state, function (data) {
             switch (data.code) {
                 case 0:
                     window.location.href = urls.homeUrl;
@@ -132,7 +132,7 @@ class Login extends React.Component {
                 <Logo />
                 {this.state.message ?
                     <Tips message={this.state.message} /> : null}
-                <LoginName value={this.state.username}
+                <LoginName value={this.state.usercode}
                     nameChanged={this.nameChanged.bind(this)}
                     onKeypressName={this.onKeypressName.bind(this)} />
                 <LoginValue value={this.state.password}

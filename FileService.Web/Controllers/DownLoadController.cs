@@ -213,10 +213,10 @@ namespace FileService.Web.Controllers
             else
             {
                 int tsLastTime = 0;
-                string userName = Request.Headers["UserName"] ?? User.Identity.Name;
-                if (!string.IsNullOrEmpty(userName))
+                string userCode = Request.Headers["UserCode"] ?? User.Identity.Name;
+                if (!string.IsNullOrEmpty(userCode))
                 {
-                    tsLastTime = tsTime.GetTsTime(document["From"].AsString, m3u8Id, userName);
+                    tsLastTime = tsTime.GetTsTime(document["From"].AsString, m3u8Id, userCode);
                 }
                 document["File"] = Regex.Replace(document["File"].AsString, "(\\w+).ts", (match) =>
                 {

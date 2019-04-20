@@ -31,7 +31,7 @@ namespace FileService.Web.Controllers
                 string documentOwner = document["Owner"].AsString;
                 if (!string.IsNullOrEmpty(documentOwner))
                 {
-                    string userName = Request.Headers["UserName"] ?? User.Identity.Name;
+                    string userName = Request.Headers["UserCode"] ?? User.Identity.Name;
                     if (userName != documentOwner)
                     {
                         return new ResponseModel<string>(ErrorCode.owner_not_match, "");
@@ -156,7 +156,7 @@ namespace FileService.Web.Controllers
             BsonDocument eqs = new BsonDocument("Delete", false);
             if (!string.IsNullOrEmpty(fileType)) eqs.Add("FileType", fileType);
             if (!string.IsNullOrEmpty(from)) eqs.Add("From", from);
-            var userName = Request.Headers["UserName"] ?? "";
+            var userName = Request.Headers["UserCode"] ?? "";
             long count = 0;
             Dictionary<string, string> sorts = new Dictionary<string, string> { { "CreateTime", "desc" } };
             List<BsonDocument> result = filesWrap.GetPageList(pageIndex, pageSize, eqs, null, null, sorts, filter, new List<string>() { "FileName" }, new List<string>() { }, out count, userName, false).ToList();
@@ -164,14 +164,14 @@ namespace FileService.Web.Controllers
         }
         public ActionResult Remove(string id)
         {
-            if (Request.Headers["UserName"] == null) return new ResponseModel<string>(ErrorCode.username_required, "");
+            if (Request.Headers["UserCode"] == null) return new ResponseModel<string>(ErrorCode.usercode_required, "");
             RemoveFile(id);
             return new ResponseModel<string>(ErrorCode.success, "");
         }
         [HttpPost]
         public ActionResult Removes(IEnumerable<string> ids)
         {
-            if (Request.Headers["UserName"] == null) return new ResponseModel<string>(ErrorCode.username_required, "");
+            if (Request.Headers["UserCode"] == null) return new ResponseModel<string>(ErrorCode.usercode_required, "");
             foreach (string id in ids)
             {
                 RemoveFile(id);

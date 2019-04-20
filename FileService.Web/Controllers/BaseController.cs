@@ -111,7 +111,7 @@ namespace FileService.Web.Controllers
             log.Insert(appName,
                 fileId,
                 content,
-                Request.Headers["UserName"] ?? User.Identity.Name,
+                Request.Headers["UserCode"] ?? User.Identity.Name,
                 Request.Headers["ApiType"] ?? "",
                 Request.Headers["UserIp"] ?? Request.UserHostAddress,
                 Request.Headers["UserAgent"] ?? Request.UserAgent);
@@ -140,10 +140,10 @@ namespace FileService.Web.Controllers
         }
         protected void AddDownload(ObjectId fileWrapId)
         {
-            if (!download.AddedInOneMinute(Request.Headers["AppName"], fileWrapId, Request.Headers["UserName"] ?? User.Identity.Name))
+            if (!download.AddedInOneMinute(Request.Headers["AppName"], fileWrapId, Request.Headers["UserCode"] ?? User.Identity.Name))
             {
                 download.AddDownload(fileWrapId, Request.Headers["AppName"],
-                    Request.Headers["UserName"] ?? User.Identity.Name,
+                    Request.Headers["UserCode"] ?? User.Identity.Name,
                     Request.Headers["UserIp"] ?? Request.UserHostAddress,
                     Request.Headers["UserAgent"] ?? Request.UserAgent);
                 filesWrap.AddDownloads(fileWrapId);
