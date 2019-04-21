@@ -16,10 +16,9 @@ rar、zip只能替换成rar，zip
 thumbnail 不重复
 tcp传文件问题
 
-转换任务的状态过滤
 记录图片下载来源
+user选择
 
-权限问题，username 变 usercode
 加密ts
 ffmpeg.exe -i Wildlife.mp4 -hls_time 2 -hls_list_size 0 -hls_allow_cache 0 -hls_enc 1 -hls_enc_key N74kEdQDwUgiR5QNyMQ9fg== -hls_enc_key_url http://localhost:2431/admin/key -hls_enc_iv EjRWeJCrze8= out.m3u8
 
