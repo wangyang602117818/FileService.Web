@@ -3,28 +3,26 @@
 <head>
     <meta charset="utf-8" />
     <title></title>
-    <script src="file-service-api-1.7.7.js"></script>
+    <script src="file-service-api-1.8.1.js"></script>
 </head>
 <body>
     <input type ="file" name="file" id="file" />
 </body>
 </html>
 <script>
-    var fileClient = new FileClient("3c9deb1f8f6e", "http://localhost/FileService.Web/");
-    //document.getElementById("file").onchange = function () {
-    //    var files = this.files;
-    //    fileClient.uploadVideo(files, null, null,
-    //        function (data) {
-    //            console.log(data);
-    //        },
-    //        function (percent) {
-    //            console.log(percent);
-    //        },
-    //        null,
-    //        null,
-    //    )
-    //};
-    fileClient.getThumbnailMetadata("5c738ff929d0db5cac6f6a8b", function (data) {
-        console.log(data);
-    },null,null,"wang")
+    var fileClient = new FileClient("1936aef6d2ba", "http://localhost/FileService.Web/");
+    document.getElementById("file").onchange = function () {
+        var files = this.files;
+        fileClient.uploadImage(files, null, null,
+            function (data) {
+                console.log(data);
+            },
+            function (percent) {
+                console.log(percent);
+            },
+            null,
+            null,
+        )
+    };
+    
 </script>

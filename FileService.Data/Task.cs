@@ -10,11 +10,6 @@ namespace FileService.Data
     public class Task : MongoBase
     {
         public Task() : base("Task") { }
-        public override long Count()
-        {
-            var filter = FilterBuilder.Eq("Delete", false) & FilterBuilder.Exists("Output._id");
-            return MongoCollection.CountDocuments(filter);
-        }
         public bool UpdateState(ObjectId id, TaskStateEnum state, int percent)
         {
             return MongoCollection.UpdateOne(FilterBuilder.Eq("_id", id), Builders<BsonDocument>.Update.Set("State", state).Set("StateDesc", state.ToString()).Set("Percent", percent)).IsAcknowledged;
@@ -62,7 +57,7 @@ namespace FileService.Data
         public IEnumerable<BsonDocument> GetCountByRecentMonth(DateTime dateTime)
         {
             return MongoCollection.Aggregate()
-                 .Match(FilterBuilder.Eq("Delete", false) & FilterBuilder.Gte("CreateTime", dateTime) & FilterBuilder.Exists("Output._id"))
+                 .Match(FilterBuilder.Eq("Delete", false) & FilterBuilder.Gte("CreateTime", dateTime))
                  .Project(new BsonDocument("date", new BsonDocument("$dateToString", new BsonDocument() {
                     {"format", "%Y-%m-%d" },
                     {"date", "$CreateTime" }}
@@ -76,7 +71,7 @@ namespace FileService.Data
         public IEnumerable<BsonDocument> GetFilesByAppName()
         {
             return MongoCollection.Aggregate()
-                .Match(FilterBuilder.Eq("Delete", false) & FilterBuilder.Exists("Output._id"))
+                .Match(FilterBuilder.Eq("Delete", false))
                 .Group<BsonDocument>(new BsonDocument()
                 {
                     {"_id","$From" },
@@ -101,10 +96,6 @@ namespace FileService.Data
         public override FilterDefinition<BsonDocument> GetAccessFilter(string userName, bool checkAccess)
         {
             return base.GetAccessFilterBase(userName, checkAccess);
-        }
-        public override FilterDefinition<BsonDocument> GetAndFilter()
-        {
-            return FilterBuilder.Exists("Output._id");
         }
         public IEnumerable<BsonDocument> FindCacheFiles()
         {
