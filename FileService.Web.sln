@@ -17,6 +17,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileService.Model", "FileSe
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileService.Util", "FileService.Util\FileService.Util.csproj", "{8A43E57B-7CBF-49DD-B163-77084C742726}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileServiceTransfor.Web", "FileServiceTransfor.Web\FileServiceTransfor.Web.csproj", "{CE9867B8-5E76-4E29-9824-CFDA9CBBFE7E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -51,6 +53,10 @@ Global
 		{8A43E57B-7CBF-49DD-B163-77084C742726}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8A43E57B-7CBF-49DD-B163-77084C742726}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8A43E57B-7CBF-49DD-B163-77084C742726}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CE9867B8-5E76-4E29-9824-CFDA9CBBFE7E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CE9867B8-5E76-4E29-9824-CFDA9CBBFE7E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CE9867B8-5E76-4E29-9824-CFDA9CBBFE7E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CE9867B8-5E76-4E29-9824-CFDA9CBBFE7E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

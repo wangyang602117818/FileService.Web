@@ -403,14 +403,17 @@ function getQueryString(name) {
     var r = window.location.search.substr(1).match(reg);
     if (r != null) return unescape(r[2]); return null;
 }
-function trim(str) {
-    return str.replace(/(^\s*)|(\s*$)/g, "");
+function trim(str, char) {
+    var reTag = new RegExp("^" + (char || ' ') + "+|" + (char || ' ') + "+$", "gi");
+    return str.replace(reTag, "");
 }
-function trimEnd(str) {
-    return str.replace(/.{1}$/, "");
+function trimEnd(str, char) {
+    var reTag = new RegExp((char || ' ') + "+$", "gi");
+    return str.replace(reTag, "");
 }
-function trimStart(str) {
-    return str.replace(/^.{1}/, "");
+function trimStart(str, char) {
+    var reTag = new RegExp("^" + (char || ' ') + "+", "gi");
+    return str.replace(reTag, "");
 }
 function getIconNameByFileName(filename) {
     switch (filename.getFileExtension().toLowerCase()) {

@@ -61,8 +61,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AppSettings.cs" />
+    <Compile Include="AsymmetricEncryptHelper.cs" />
     <Compile Include="Base64SecureURL.cs" />
     <Compile Include="DateTimeExtention.cs" />
+    <Compile Include="HashEncryptHelper.cs" />
     <Compile Include="ImageExtention.cs" />
     <Compile Include="JsonSerializerHelper.cs" />
     <Compile Include="Log4Net.cs" />
@@ -71,6 +73,7 @@
     <Compile Include="ServerState.cs" />
     <Compile Include="StreamExtention.cs" />
     <Compile Include="StringExtention.cs" />
+    <Compile Include="SymmetricEncryptHelper.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="log4net.config">
