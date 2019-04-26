@@ -17,38 +17,38 @@ namespace FileService.Converter
         Extension extension = new Extension();
         public void StartMonitor(string handlerId)
         {
-            List<MonitorState> MonitorStateList = new List<MonitorState>();
-            string[] sharedFolders = AppSettings.sharedFolders.Split(';');
-            string[] userNames = AppSettings.sharedUserNames.Split(';');
-            string[] passWords = AppSettings.sharedUserPwds.Split(';');
-            for (var i = 0; i < sharedFolders.Length; i++)
-            {
-                string sharedFolder = sharedFolders[i];
-                string userName = userNames[i];
-                string passWord = passWords[i];
-                string message = "";
-                bool result = AppSettings.connectState(sharedFolder, userName, passWord, ref message);
-                //用户名和密码可用
-                if (result)
-                {
-                    MonitorStateList.Add(new MonitorState()
-                    {
-                        Machine = sharedFolder.GetMachineName(),
-                        Message = "success",
-                        MonitorTime = DateTime.Now
-                    });
-                }
-                else
-                {
-                    MonitorStateList.Add(new MonitorState()
-                    {
-                        Machine = sharedFolder.GetMachineName(),
-                        Message = message.Replace("\n", "").Replace("\r", ""),
-                        MonitorTime = DateTime.Now
-                    });
-                }
-            }
-            converter.UpdateStatesByHanderId(handlerId, new BsonArray(MonitorStateList.Select(s => s.ToBsonDocument())));
+            //List<MonitorState> MonitorStateList = new List<MonitorState>();
+            //string[] sharedFolders = AppSettings.sharedFolders.Split(';');
+            //string[] userNames = AppSettings.sharedUserNames.Split(';');
+            //string[] passWords = AppSettings.sharedUserPwds.Split(';');
+            //for (var i = 0; i < sharedFolders.Length; i++)
+            //{
+            //    string sharedFolder = sharedFolders[i];
+            //    string userName = userNames[i];
+            //    string passWord = passWords[i];
+            //    string message = "";
+            //    bool result = AppSettings.connectState(sharedFolder, userName, passWord, ref message);
+            //    //用户名和密码可用
+            //    if (result)
+            //    {
+            //        MonitorStateList.Add(new MonitorState()
+            //        {
+            //            Machine = sharedFolder.GetMachineName(),
+            //            Message = "success",
+            //            MonitorTime = DateTime.Now
+            //        });
+            //    }
+            //    else
+            //    {
+            //        MonitorStateList.Add(new MonitorState()
+            //        {
+            //            Machine = sharedFolder.GetMachineName(),
+            //            Message = message.Replace("\n", "").Replace("\r", ""),
+            //            MonitorTime = DateTime.Now
+            //        });
+            //    }
+            //}
+            //converter.UpdateStatesByHanderId(handlerId, new BsonArray(MonitorStateList.Select(s => s.ToBsonDocument())));
             new Queue().MonitorMessage(handlerId);
         }
         /// <summary>

@@ -1,4 +1,4 @@
-﻿namespace FileService.Web.Models
+﻿namespace FileServiceTransfor.Web.Models
 {
     public enum ErrorCode
     {
@@ -25,8 +25,6 @@
         file_type_blocked = 108,
         username_required = 109,
         usercode_required = 110,
-        no_handler_available = 111,
-        api_not_available = 112,
         /// <summary>
         /// 不存在
         /// </summary>

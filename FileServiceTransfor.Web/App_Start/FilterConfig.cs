@@ -1,4 +1,5 @@
-﻿using System.Web;
+﻿using FileServiceTransfor.Web.Filters;
+using System.Web;
 using System.Web.Mvc;
 
 namespace FileServiceTransfor.Web
@@ -7,7 +8,7 @@ namespace FileServiceTransfor.Web
     {
         public static void RegisterGlobalFilters(GlobalFilterCollection filters)
         {
-            filters.Add(new HandleErrorAttribute());
+            filters.Add(new MyHandleErrorAttribute());
         }
     }
 }

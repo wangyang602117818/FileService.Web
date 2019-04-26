@@ -8,7 +8,7 @@ using System.Text;
 using System.Web;
 using System.Web.Mvc;
 
-namespace FileService.Web.Models
+namespace FileServiceTransfor.Web.Models
 {
     public class ResponseModel<T> : ContentResult
     {
@@ -31,10 +31,10 @@ namespace FileService.Web.Models
         }
 
     }
-    public class UploadTransforModel
+    public class ResponseItem<T>
     {
-        public int code { get; set; }
+        public Enum code { get; set; }
         public string message { get; set; }
-        public string result { get; set; }
+        public T result { get; set; }
     }
 }

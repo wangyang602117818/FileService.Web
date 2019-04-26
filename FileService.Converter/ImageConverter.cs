@@ -79,7 +79,15 @@ namespace FileService.Converter
                     int twidth = output.Width, theight = output.Height;
                     using (Stream stream = ImageExtention.GenerateThumbnail(fileName, fileStream, output.Model, format, output.ImageQuality, output.X, output.Y, ref twidth, ref theight))
                     {
-                        thumbnail.Replace(output.Id, from, taskItem.Message["FileId"].AsObjectId, stream.Length, twidth, theight, Path.GetFileNameWithoutExtension(fileName) + outputExt, output.Flag, stream.ToBytes(), fileWrap.Contains("ExpiredTime") ? fileWrap["ExpiredTime"].ToUniversalTime() : DateTime.MaxValue.ToUniversalTime());
+                        thumbnail.Replace(output.Id, 
+                            from, 
+                            taskItem.Message["FileId"].AsObjectId, 
+                            stream.Length, 
+                            twidth, 
+                            theight, 
+                            Path.GetFileNameWithoutExtension(fileName) + outputExt, 
+                            output.Flag, stream.ToBytes(), 
+                            fileWrap.Contains("ExpiredTime") ? fileWrap["ExpiredTime"].ToUniversalTime() : DateTime.MaxValue.ToUniversalTime());
                     }
                 }
                 fileStream.Close();

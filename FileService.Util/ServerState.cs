@@ -33,8 +33,8 @@ namespace FileService.Util
                 }
             }
             Disk = string.Join(",", dirvesInfo);
-            string cacheDir = AppDomain.CurrentDomain.BaseDirectory + AppSettings.tempFileDir;
-            CacheFiles = GetFileConvertSize(DirectorySize(new DirectoryInfo(cacheDir))) + "/" + Directory.GetDirectories(cacheDir).Length;
+            //string cacheDir = AppDomain.CurrentDomain.BaseDirectory + AppSettings.tempFileDir;
+            //CacheFiles = GetFileConvertSize(DirectorySize(new DirectoryInfo(cacheDir))) + "/" + Directory.GetDirectories(cacheDir).Length;
             string logDir = AppDomain.CurrentDomain.BaseDirectory + @"App_Data\Log\";
             LogFiles = GetFileConvertSize(DirectorySize(new DirectoryInfo(logDir))) + "/" + Directory.GetDirectories(logDir).Length;
             return this;

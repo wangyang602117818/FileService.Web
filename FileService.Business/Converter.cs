@@ -14,7 +14,12 @@ namespace FileService.Business
             BsonDocument handler = mongoData.FindByHandler(HandlerId);
             if (handler != null)
             {
-                return mongoData.Running(HandlerId);
+                return mongoData.UpdateByHanderId(HandlerId, new BsonDocument() {
+                    {"State",ConverterStateEnum.running },
+                    {"StartTime",DateTime.Now },
+                    {"SaveFileType",SaveFileType },
+                    {"SaveFilePath",SaveFilePath }
+                });
             }
             else
             {
@@ -46,20 +51,20 @@ namespace FileService.Business
         {
             return mongoData.Offline(HandlerId);
         }
-        public string GetHandlerId()
+        public BsonDocument GetHandlerId()
         {
-            string machine = Environment.MachineName;
-            IEnumerable<BsonDocument> all = mongoData.FindAllExistsMachine(machine).OrderBy(o => o["Total"]);
-            if (all.Count() == 0) return "unknown";
-            if (all.Count() == 1) return all.First()["HandlerId"].AsString;
-            IEnumerable<BsonDocument> run = all.Where(sel => sel["State"].AsInt32 >= 0).OrderBy(o => o["State"]).OrderBy(o => o["State"]);
+            //string machine = Environment.MachineName;
+            IEnumerable<BsonDocument> all = mongoData.FindAll().OrderBy(o => o["Total"]);
+            if (all.Count() == 0) return null;
+            if (all.Count() == 1) return all.First();
+            IEnumerable<BsonDocument> run = all.Where(sel => sel["State"].AsInt32 >= 0).OrderBy(o => o["State"]);
             if (run.Count() == 0)
             {
-                return all.First()["HandlerId"].AsString;
+                return all.First();
             }
             else
             {
-                return run.First()["HandlerId"].AsString;
+                return run.First();
             }
         }
     }
@@ -69,7 +74,9 @@ namespace FileService.Business
         public string MachineName { get; set; }
         public int Total { get; set; }
         public ConverterStateEnum State { get; set; }
-        public List<MonitorState> MonitorStateList { get; set; }
+        public string SaveFileType { get; set; }
+        public string SaveFilePath { get; set; }
+        //public List<MonitorState> MonitorStateList { get; set; }
         public DateTime StartTime { get; set; }
         public DateTime? EndTime { get; set; }
         public DateTime CreateTime { get; set; }

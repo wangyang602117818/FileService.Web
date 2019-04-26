@@ -124,19 +124,19 @@ namespace FileService.Web.Controllers
             if (!string.IsNullOrEmpty(from)) eqs.Add("From", from);
             if (state >= -100) eqs.Add("State", state);
             List<BsonDocument> result = task.GetPageList(pageIndex, pageSize, eqs, timeStart, timeEnd, sorts, filter, new List<string>() { "FileId", "FileName", "StateDesc", "HandlerId", "StateDesc", "Type" }, new List<string>() { }, out count, userName).ToList();
-            foreach (BsonDocument bson in result)
-            {
-                string fullPath = GetTempFilePath(bson);
-                if (System.IO.File.Exists(fullPath))
-                {
-                    bson.Add("FileExists", true);
-                }
-                else
-                {
-                    bson.Add("FileExists", false);
-                }
-                bson.Remove("Machine");
-            }
+            //foreach (BsonDocument bson in result)
+            //{
+            //    string fullPath = GetTempFilePath(bson);
+            //    if (System.IO.File.Exists(fullPath))
+            //    {
+            //        bson.Add("FileExists", true);
+            //    }
+            //    else
+            //    {
+            //        bson.Add("FileExists", false);
+            //    }
+            //    bson.Remove("Machine");
+            //}
             return new ResponseModel<IEnumerable<BsonDocument>>(ErrorCode.success, result, count);
         }
         public ActionResult GetFiles(int pageIndex = 1, int pageSize = 10, string from = "", string orderField = "CreateTime", string orderFieldType = "desc", string filter = "", string fileType = "", string startTime = null, string endTime = null)
@@ -533,51 +533,53 @@ namespace FileService.Web.Controllers
         public ActionResult GetTaskById(string id)
         {
             BsonDocument document = task.FindOne(ObjectId.Parse(id));
-            string fullPath = GetTempFilePath(document);
-            if (System.IO.File.Exists(fullPath))
-            {
-                document.Add("FileExists", true);
-            }
-            else
-            {
-                document.Add("FileExists", false);
-            }
-            document.Add("RelativePath", "$\\" + AppSettings.tempFileDir + document["Folder"].ToString() + "\\" + document["FileId"].ToString() + Path.GetExtension(document["FileName"].ToString()));
+            //string fullPath = GetTempFilePath(document);
+            //if (System.IO.File.Exists(fullPath))
+            //{
+            //    document.Add("FileExists", true);
+            //}
+            //else
+            //{
+            //    document.Add("FileExists", false);
+            //}
+            //document.Add("RelativePath", "$\\" + AppSettings.tempFileDir + document["Folder"].ToString() + "\\" + document["FileId"].ToString() + Path.GetExtension(document["FileName"].ToString()));
             return new ResponseModel<BsonDocument>(ErrorCode.success, document);
         }
         public ActionResult DeleteCacheFile(string id)
         {
-            Log(id, "DeleteCacheFile");
-            BsonDocument document = task.FindOne(ObjectId.Parse(id));
-            if (Convert.ToInt32(document["State"]) == 2)
-            {
-                string fullPath = GetTempFilePath(document);
-                if (System.IO.File.Exists(fullPath))
-                {
-                    System.IO.File.Delete(fullPath);
-                }
-                return new ResponseModel<string>(ErrorCode.success, "");
-            }
-            else
-            {
-                return new ResponseModel<string>(ErrorCode.task_not_complete, "");
-            }
+            //Log(id, "DeleteCacheFile");
+            //BsonDocument document = task.FindOne(ObjectId.Parse(id));
+            //if (Convert.ToInt32(document["State"]) == 2)
+            //{
+            //    string fullPath = GetTempFilePath(document);
+            //    if (System.IO.File.Exists(fullPath))
+            //    {
+            //        System.IO.File.Delete(fullPath);
+            //    }
+            //    return new ResponseModel<string>(ErrorCode.success, "");
+            //}
+            //else
+            //{
+            //    return new ResponseModel<string>(ErrorCode.task_not_complete, "");
+            //}
+            return null;
         }
         public ActionResult DeleteAllCacheFile()
         {
-            Log("-", "DeleteAllCacheFile");
-            IEnumerable<BsonDocument> list = task.FindCacheFiles();
-            int count = 0;
-            foreach (BsonDocument bson in list)
-            {
-                string fullPath = GetTempFilePath(bson);
-                if (System.IO.File.Exists(fullPath))
-                {
-                    count++;
-                    System.IO.File.Delete(fullPath);
-                }
-            }
-            return new ResponseModel<string>(ErrorCode.success, "", count);
+            //Log("-", "DeleteAllCacheFile");
+            //IEnumerable<BsonDocument> list = task.FindCacheFiles();
+            //int count = 0;
+            //foreach (BsonDocument bson in list)
+            //{
+            //    string fullPath = GetTempFilePath(bson);
+            //    if (System.IO.File.Exists(fullPath))
+            //    {
+            //        count++;
+            //        System.IO.File.Delete(fullPath);
+            //    }
+            //}
+            //return new ResponseModel<string>(ErrorCode.success, "", count);
+            return null;
         }
         public ActionResult GetAllHandlers()
         {
@@ -650,7 +652,8 @@ namespace FileService.Web.Controllers
         [HttpPost]
         public ActionResult AddVideoTask(AddVideoTask addVideoTask)
         {
-            string handlerId = converter.GetHandlerId();
+            BsonDocument handler = converter.GetHandlerId();
+            if (handler == null) return new ResponseModel<string>(ErrorCode.no_handler_available, "");
             ObjectId fileId = ObjectId.Parse(addVideoTask.FileId);
             BsonDocument fileWrap = filesWrap.FindOne(fileId);
             ObjectId m3u8Id = ObjectId.GenerateNewId();
@@ -668,7 +671,7 @@ namespace FileService.Web.Controllers
                 {"Flag",addVideoTask.Flag }
             };
             Log(addVideoTask.FileId, "AddVideoTask");
-            InsertTask(handlerId, fileId, fileWrap["FileName"].AsString, "video", Request.Headers["AppName"], output, fileWrap["Access"].AsBsonArray, Request.Headers["UserCode"] ?? User.Identity.Name);
+            InsertTask(handler["HandlerId"].ToString(), fileId, fileWrap["FileName"].AsString, "video", Request.Headers["AppName"], output, fileWrap["Access"].AsBsonArray, Request.Headers["UserCode"] ?? User.Identity.Name);
             filesWrap.AddSubVideo(fileId, subFile);
             return new ResponseModel<bool>(ErrorCode.success, true);
         }
@@ -676,7 +679,8 @@ namespace FileService.Web.Controllers
         [HttpPost]
         public ActionResult AddThumbnailTask(AddImageTask addImageTask)
         {
-            string handlerId = converter.GetHandlerId();
+            BsonDocument handler = converter.GetHandlerId();
+            if (handler == null) return new ResponseModel<string>(ErrorCode.no_handler_available, "");
             ObjectId fileId = ObjectId.Parse(addImageTask.FileId);
             BsonDocument fileWrap = filesWrap.FindOne(fileId);
             ObjectId thumbnailId = ObjectId.GenerateNewId();
@@ -699,7 +703,7 @@ namespace FileService.Web.Controllers
                 {"Flag",addImageTask.Flag }
             };
             Log(addImageTask.FileId, "AddThumbnailTask");
-            InsertTask(handlerId, fileId, fileWrap["FileName"].AsString, "image", Request.Headers["AppName"], output, fileWrap["Access"].AsBsonArray, Request.Headers["UserCode"] ?? User.Identity.Name);
+            InsertTask(handler["HandlerId"].ToString(), fileId, fileWrap["FileName"].AsString, "image", Request.Headers["AppName"], output, fileWrap["Access"].AsBsonArray, Request.Headers["UserCode"] ?? User.Identity.Name);
             filesWrap.AddSubThumbnail(fileId, subFile);
             return new ResponseModel<bool>(ErrorCode.success, true);
         }
@@ -955,21 +959,12 @@ namespace FileService.Web.Controllers
             }
             return new ResponseModel<string>(ErrorCode.success, "");
         }
-        public ActionResult GetHandler()
-        {
-            return Content(converter.GetHandlerId());
-        }
+        
         public ActionResult M()
         {
-            Random random = new Random();
-            //List<bool> list = new List<bool>();
-            //for(var i = 0; i < 50; i++)
-            //{
-            //    list.Add(random.Probability(0.1));
-            //}
+            string filename = "dddd.doc";
 
-            IEnumerable<int> result = random.GetRewardIdsDecrease(100, 10);
-            return new ResponseModel<IEnumerable<int>>(ErrorCode.success, result, result.Count());
+            return new ResponseModel<string>(ErrorCode.success, filename.GetFileExt());
         }
     }
 }

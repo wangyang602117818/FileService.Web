@@ -1,13 +1,16 @@
 ﻿using FileService.Business;
 using FileService.Model;
 using FileService.Util;
+using FileService.Web.Models;
 using MongoDB.Bson;
 using MongoDB.Driver.GridFS;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Web;
 using System.Web.Mvc;
 
 namespace FileService.Web.Controllers
@@ -54,11 +57,13 @@ namespace FileService.Web.Controllers
         }
         protected string GetTempFilePath(BsonDocument task)
         {
-            return AppDomain.CurrentDomain.BaseDirectory + AppSettings.tempFileDir + task["Folder"].ToString() + "\\" + task["FileId"].ToString() + Path.GetExtension(task["FileName"].ToString());
+            //return AppDomain.CurrentDomain.BaseDirectory + AppSettings.tempFileDir + task["Folder"].ToString() + "\\" + task["FileId"].ToString() + Path.GetExtension(task["FileName"].ToString());
+            return null;
         }
         protected string GetTempFilePath(string folder, string fileId, string fileName)
         {
-            return AppDomain.CurrentDomain.BaseDirectory + AppSettings.tempFileDir + folder + "\\" + fileId + Path.GetExtension(fileName);
+            //return AppDomain.CurrentDomain.BaseDirectory + AppSettings.tempFileDir + folder + "\\" + fileId + Path.GetExtension(fileName);
+            return null;
         }
         protected ActionResult GetFilePreview(string id, BsonDocument filePreview)
         {
@@ -99,6 +104,92 @@ namespace FileService.Web.Controllers
         protected ActionResult GetFileExpired()
         {
             return File(System.IO.File.ReadAllBytes(imagePath + "forbidden.png"), "image/png", "forbidden.png");
+        }
+        protected bool SaveFile(string saveFileType, string saveFilePath, string fileName, HttpPostedFileBase file, ref List<FileResponse> response)
+        {
+            if (saveFileType == "local")
+            {
+                if (!Directory.Exists(saveFilePath)) Directory.CreateDirectory(saveFilePath);
+                file.SaveAs(saveFilePath + fileName);
+            }
+            else
+            {
+                UploadTransforModel result = JsonConvert.DeserializeObject<UploadTransforModel>(new HttpRequestHelper().PostFile(saveFilePath, "file", fileName, file.InputStream).Result);
+                if (result.code != 0)
+                {
+                    response.Add(new FileResponse()
+                    {
+                        FileId = ObjectId.Empty.ToString(),
+                        FileName = file.FileName,
+                        SubFiles = new List<SubFileItem>()
+                    });
+                    return false;
+                }
+            }
+            return true;
+        }
+        protected bool CheckFileAndHandler(string method, string fileName, ref string contentType, ref string fileType, ref string handlerId, ref string saveFileType, ref string saveFilePath, ref ObjectId saveFileId, ref string saveFileName, ref List<FileResponse> response)
+        {
+            string ext = fileName.GetFileExt().ToLower();
+            switch (method)
+            {
+                case "image":
+                    if (!extension.CheckFileExtensionImage(ext, ref contentType, ref fileType))
+                    {
+                        response.Add(new FileResponse()
+                        {
+                            FileId = ObjectId.Empty.ToString(),
+                            FileName = fileName,
+                            SubFiles = new List<SubFileItem>()
+                        });
+                        Log4Net.InfoLog("image extension not allowed");
+                        return false;
+                    }
+                    break;
+                case "video":
+                    if (!extension.CheckFileExtensionVideo(ext, ref contentType, ref fileType))
+                    {
+                        response.Add(new FileResponse()
+                        {
+                            FileId = ObjectId.Empty.ToString(),
+                            FileName = fileName,
+                            SubFiles = new List<SubFileItem>()
+                        });
+                        Log4Net.InfoLog("video extension not allowed");
+                        return false;
+                    }
+                    break;
+                case "attachment":
+                    if (!extension.CheckFileExtension(ext, ref contentType, ref fileType))
+                    {
+                        response.Add(new FileResponse()
+                        {
+                            FileId = ObjectId.Empty.ToString(),
+                            FileName = fileName
+                        });
+                        Log4Net.InfoLog("attachment extension not allowed");
+                        return false;
+                    }
+                    break;
+            }
+            BsonDocument handler = converter.GetHandlerId();
+            if (handler == null)
+            {
+                response.Add(new FileResponse()
+                {
+                    FileId = ObjectId.Empty.ToString(),
+                    FileName = fileName,
+                    SubFiles = new List<SubFileItem>()
+                });
+                Log4Net.InfoLog("handler not exists");
+                return false;
+            }
+            handlerId = handler["HandlerId"].ToString();
+            saveFileType = handler["SaveFileType"].ToString();
+            saveFilePath = handler["SaveFilePath"].ToString();
+            if (saveFileId == ObjectId.Empty) saveFileId = ObjectId.GenerateNewId();
+            if (string.IsNullOrEmpty(saveFileName)) saveFileName = saveFileId.ToString() + ext;
+            return true;
         }
         protected void Log(string fileId, string content)
         {

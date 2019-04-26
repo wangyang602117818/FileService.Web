@@ -17,7 +17,6 @@ namespace FileService.Web.Controllers
     [AppAuthorize]
     public class UploadController : BaseController
     {
-        string tempFileDirectory = AppDomain.CurrentDomain.BaseDirectory + AppSettings.tempFileDir + DateTime.Now.ToString("yyyyMMdd") + "\\";
         [HttpPost]
         public ActionResult Image(UploadImgModel uploadImgModel)
         {
@@ -40,22 +39,14 @@ namespace FileService.Web.Controllers
                 accessList = JsonConvert.DeserializeObject<List<AccessModel>>(uploadImgModel.Access);
                 if (Request.Headers["FromApi"] == "true") ConvertAccess(accessList);
             }
-            if (!Directory.Exists(tempFileDirectory))
-                Directory.CreateDirectory(tempFileDirectory);
             foreach (HttpPostedFileBase file in uploadImgModel.Images)
             {
-                //过滤不正确的格式
-                string contentType = "";
-                string fileType = "";
-                string ext = Path.GetExtension(file.FileName).ToLower();
-                if (!extension.CheckFileExtensionImage(ext, ref contentType, ref fileType))
+                //初始化参数
+                string contentType = "", fileType = "", handlerId = "", saveFileType = "", saveFilePath = "", saveFileName = "";
+                ObjectId saveFileId = ObjectId.Empty;
+                //检测文件
+                if (!CheckFileAndHandler("image", file.FileName, ref contentType, ref fileType, ref handlerId, ref saveFileType, ref saveFilePath, ref saveFileId, ref saveFileName, ref response))
                 {
-                    response.Add(new FileResponse()
-                    {
-                        FileId = ObjectId.Empty.ToString(),
-                        FileName = file.FileName,
-                        SubFiles = new List<SubFileItem>()
-                    });
                     continue;
                 }
                 //要存到表中的数据
@@ -71,29 +62,37 @@ namespace FileService.Web.Controllers
                         });
                 }
                 BsonArray access = new BsonArray(accessList.Select(a => a.ToBsonDocument()));
-                ObjectId fileId = ObjectId.GenerateNewId();
-                //上传到TempFiles
-                file.SaveAs(tempFileDirectory + fileId.ToString() + ext);
+                //上传文件
+                if (!SaveFile(saveFileType, saveFilePath, saveFileName, file, ref response)) continue;
+                filesWrap.InsertImage(saveFileId,
+                    ObjectId.Empty,
+                    file.FileName,
+                    file.InputStream.Length,
+                    Request.Headers["AppName"],
+                    0,
+                    fileType,
+                    contentType,
+                    thumbnail,
+                    access,
+                    uploadImgModel.ExpiredDay,
+                    Request.Headers["UserCode"] ?? User.Identity.Name);
 
-                filesWrap.InsertImage(fileId, ObjectId.Empty, file.FileName, file.InputStream.Length, Request.Headers["AppName"], 0, fileType, contentType, thumbnail, access, uploadImgModel.ExpiredDay, Request.Headers["UserCode"] ?? User.Identity.Name);
-
-                string handlerId = converter.GetHandlerId();
                 if (output.Count == 0)
                 {
-                    InsertTask(handlerId, fileId, file.FileName, fileType, Request.Headers["AppName"], new BsonDocument(), access, Request.Headers["UserCode"] ?? User.Identity.Name);
+                    InsertTask(handlerId, saveFileId, file.FileName, fileType, Request.Headers["AppName"], new BsonDocument(), access, Request.Headers["UserCode"] ?? User.Identity.Name);
                 }
                 else
                 {
                     foreach (ImageOutPut o in output)
                     {
-                        InsertTask(handlerId, fileId, file.FileName, fileType, Request.Headers["AppName"], o.ToBsonDocument(), access, Request.Headers["UserCode"] ?? User.Identity.Name);
+                        InsertTask(handlerId, saveFileId, file.FileName, fileType, Request.Headers["AppName"], o.ToBsonDocument(), access, Request.Headers["UserCode"] ?? User.Identity.Name);
                     }
                 }
                 //日志
-                Log(fileId.ToString(), "UploadImage");
+                Log(saveFileId.ToString(), "UploadImage");
                 response.Add(new FileResponse()
                 {
-                    FileId = fileId.ToString(),
+                    FileId = saveFileId.ToString(),
                     FileName = file.FileName,
                     FileSize = file.InputStream.Length,
                     SubFiles = thumbnail.Select(sel => new SubFileItem() { FileId = sel["_id"].ToString(), Flag = sel["Flag"].ToString() })
@@ -125,22 +124,13 @@ namespace FileService.Web.Controllers
                 accessList = JsonConvert.DeserializeObject<List<AccessModel>>(uploadVideo.Access);
                 if (Request.Headers["FromApi"] == "true") ConvertAccess(accessList);
             }
-            if (!Directory.Exists(tempFileDirectory))
-                Directory.CreateDirectory(tempFileDirectory);
             foreach (HttpPostedFileBase file in uploadVideo.Videos)
             {
-                //过滤不正确的格式
-                string contentType = "";
-                string fileType = "";
-                string ext = Path.GetExtension(file.FileName).ToLower();
-                if (!extension.CheckFileExtensionVideo(ext, ref contentType, ref fileType))
+                //初始化参数
+                string contentType = "", fileType = "", handlerId = "", saveFileType = "", saveFilePath = "", saveFileName = "";
+                ObjectId saveFileId = ObjectId.Empty;
+                if (!CheckFileAndHandler("video", file.FileName, ref contentType, ref fileType, ref handlerId, ref saveFileType, ref saveFilePath, ref saveFileId, ref saveFileName, ref response))
                 {
-                    response.Add(new FileResponse()
-                    {
-                        FileId = ObjectId.Empty.ToString(),
-                        FileName = file.FileName,
-                        SubFiles = new List<SubFileItem>()
-                    });
                     continue;
                 }
                 //要存到表中的数据
@@ -156,29 +146,36 @@ namespace FileService.Web.Controllers
                     });
                 }
                 BsonArray access = new BsonArray(accessList.Select(a => a.ToBsonDocument()));
-                ObjectId fileId = ObjectId.GenerateNewId();
-                //上传到TempFiles
-                file.SaveAs(tempFileDirectory + fileId.ToString() + ext);
-                filesWrap.InsertVideo(fileId, ObjectId.Empty, file.FileName, file.InputStream.Length, Request.Headers["AppName"], 0, fileType, contentType, videos, access, uploadVideo.ExpiredDay, Request.Headers["UserCode"] ?? User.Identity.Name);
-
-                string handlerId = converter.GetHandlerId();
+                //上传到文件
+                if (!SaveFile(saveFileType, saveFilePath, saveFileName, file, ref response)) continue;
+                filesWrap.InsertVideo(saveFileId,
+                    ObjectId.Empty,
+                    file.FileName,
+                    file.InputStream.Length,
+                    Request.Headers["AppName"],
+                    0,
+                    fileType,
+                    contentType,
+                    videos,
+                    access,
+                    uploadVideo.ExpiredDay,
+                    Request.Headers["UserCode"] ?? User.Identity.Name);
                 if (outputs.Count == 0)
                 {
-                    InsertTask(handlerId, fileId, file.FileName, "video", Request.Headers["AppName"], new BsonDocument(), access, Request.Headers["UserCode"] ?? User.Identity.Name);
+                    InsertTask(handlerId, saveFileId, file.FileName, "video", Request.Headers["AppName"], new BsonDocument(), access, Request.Headers["UserCode"] ?? User.Identity.Name);
                 }
                 else
                 {
                     foreach (VideoOutPut o in outputs)
                     {
-                        InsertTask(handlerId, fileId, file.FileName, "video", Request.Headers["AppName"], o.ToBsonDocument(), access, Request.Headers["UserCode"] ?? User.Identity.Name);
+                        InsertTask(handlerId, saveFileId, file.FileName, "video", Request.Headers["AppName"], o.ToBsonDocument(), access, Request.Headers["UserCode"] ?? User.Identity.Name);
                     }
                 }
                 //日志
-                Log(fileId.ToString(), "UploadVideo");
-
+                Log(saveFileId.ToString(), "UploadVideo");
                 response.Add(new FileResponse()
                 {
-                    FileId = fileId.ToString(),
+                    FileId = saveFileId.ToString(),
                     FileName = file.FileName,
                     FileSize = file.InputStream.Length,
                     SubFiles = videos.Select(sel => new SubFileItem() { FileId = sel["_id"].ToString(), Flag = sel["Flag"].AsString })
@@ -198,21 +195,13 @@ namespace FileService.Web.Controllers
                 accessList = JsonConvert.DeserializeObject<List<AccessModel>>(uploadAttachmentModel.Access);
                 if (Request.Headers["FromApi"] == "true") ConvertAccess(accessList);
             }
-            if (!Directory.Exists(tempFileDirectory))
-                Directory.CreateDirectory(tempFileDirectory);
             foreach (HttpPostedFileBase file in uploadAttachmentModel.Attachments)
             {
-                string ext = Path.GetExtension(file.FileName).ToLower();
-                //过滤不正确的格式
-                string contentType = "";
-                string fileType = "";
-                if (!extension.CheckFileExtension(ext, ref contentType, ref fileType))
+                //初始化参数
+                string contentType = "", fileType = "", handlerId = "", saveFileType = "", saveFilePath = "", saveFileName = "";
+                ObjectId saveFileId = ObjectId.Empty;
+                if (!CheckFileAndHandler("attachment", file.FileName, ref contentType, ref fileType, ref handlerId, ref saveFileType, ref saveFilePath, ref saveFileId, ref saveFileName, ref response))
                 {
-                    response.Add(new FileResponse()
-                    {
-                        FileId = ObjectId.Empty.ToString(),
-                        FileName = file.FileName
-                    });
                     continue;
                 }
                 BsonArray files = new BsonArray();
@@ -225,12 +214,10 @@ namespace FileService.Web.Controllers
                         {"Flag","preview" }
                     });
                 }
-                //上传
                 BsonArray access = new BsonArray(accessList.Select(a => a.ToBsonDocument()));
-                ObjectId fileId = ObjectId.GenerateNewId();
-                //上传到TempFiles
-                file.SaveAs(tempFileDirectory + fileId.ToString() + ext);
-                filesWrap.InsertAttachment(fileId,
+                //上传到文件
+                if (!SaveFile(saveFileType, saveFilePath, saveFileName, file, ref response)) continue;
+                filesWrap.InsertAttachment(saveFileId,
                     ObjectId.Empty,
                     file.FileName,
                     fileType,
@@ -242,12 +229,10 @@ namespace FileService.Web.Controllers
                     access,
                     uploadAttachmentModel.ExpiredDay,
                     Request.Headers["UserCode"] ?? User.Identity.Name);
-
-                string handlerId = converter.GetHandlerId();
                 //office转换任务
                 if (fileType == "office")
                 {
-                    InsertTask(handlerId, fileId, file.FileName, fileType, Request.Headers["AppName"], new BsonDocument() {
+                    InsertTask(handlerId, saveFileId, file.FileName, fileType, Request.Headers["AppName"], new BsonDocument() {
                         {"_id",ObjectId.Empty },
                         {"Format",AttachmentOutput.pdf },
                         {"Flag","preview" } },
@@ -256,9 +241,9 @@ namespace FileService.Web.Controllers
                     );
                 }
                 //zip转换任务
-                else if (ext == ".zip" || ext == ".rar")
+                else if (saveFileName.GetFileExt() == ".zip" || saveFileName.GetFileExt() == ".rar")
                 {
-                    InsertTask(handlerId, fileId, file.FileName, fileType, Request.Headers["AppName"], new BsonDocument() {
+                    InsertTask(handlerId, saveFileId, file.FileName, fileType, Request.Headers["AppName"], new BsonDocument(){
                         {"_id",ObjectId.Empty },
                         {"Flag","zip" }
                     },
@@ -267,13 +252,13 @@ namespace FileService.Web.Controllers
                 }
                 else
                 {
-                    InsertTask(handlerId, fileId, file.FileName, fileType, Request.Headers["AppName"], new BsonDocument(), access, Request.Headers["UserCode"] ?? User.Identity.Name);
+                    InsertTask(handlerId, saveFileId, file.FileName, fileType, Request.Headers["AppName"], new BsonDocument(), access, Request.Headers["UserCode"] ?? User.Identity.Name);
                 }
                 //日志
-                Log(fileId.ToString(), "UploadAttachment");
+                Log(saveFileId.ToString(), "UploadAttachment");
                 response.Add(new FileResponse()
                 {
-                    FileId = fileId.ToString(),
+                    FileId = saveFileId.ToString(),
                     FileName = file.FileName,
                     FileSize = file.InputStream.Length,
                 });
@@ -344,24 +329,28 @@ namespace FileService.Web.Controllers
         [HttpPost]
         public ActionResult ReplaceFile(ReplaceFileModel replaceFileModel)
         {
-            Log(replaceFileModel.FileId, "ReplaceFile");
-            if (!Directory.Exists(tempFileDirectory))
-                Directory.CreateDirectory(tempFileDirectory);
             ObjectId fileId = ObjectId.Parse(replaceFileModel.FileId);
-            string fileExt = Path.GetExtension(replaceFileModel.File.FileName).ToLower();
-            //过滤不正确的格式
-            string contentType = "";
-            string fileType = "";
-            if (!extension.CheckFileExtension(fileExt, ref contentType, ref fileType)) return new ResponseModel<string>(ErrorCode.file_type_blocked, "");
+            string contentType = "",
+                fileType = "",
+                handlerId = "",
+                saveFileType = "",
+                saveFilePath = "",
+                saveFileName = fileId.ToString()+ replaceFileModel.File.FileName.GetFileExt();
+            List<FileResponse> response = new List<FileResponse>();
+            if (!CheckFileAndHandler("attachment", replaceFileModel.File.FileName, ref contentType, ref fileType, ref handlerId, ref saveFileType, ref saveFilePath, ref fileId, ref saveFileName, ref response))
+            {
+                return new ResponseModel<string>(ErrorCode.success, "");
+            }
             BsonDocument fileWrap = filesWrap.FindOne(fileId);
-            string handlerId = converter.GetHandlerId();
             if (fileWrap["FileType"].AsString == replaceFileModel.FileType)
             {
                 //删除文件的附加信息
                 DeleteSubFiles(fileWrap);
-                //保存上传的文件到共享目录
-                replaceFileModel.File.SaveAs(tempFileDirectory + fileId.ToString() + fileExt);
-
+                //上传文件
+                if (!SaveFile(saveFileType, saveFilePath, saveFileName, replaceFileModel.File, ref response))
+                {
+                    return new ResponseModel<string>(ErrorCode.api_not_available, "");
+                }
                 if (filesWrap.Update(fileWrap["_id"].AsObjectId, new BsonDocument() {
                         {"FileName", replaceFileModel.File.FileName },
                         {"Length",replaceFileModel.File.InputStream.Length },
@@ -375,6 +364,7 @@ namespace FileService.Web.Controllers
                 {
                     UpdateTask(item["_id"].AsObjectId, handlerId, replaceFileModel.File.FileName, item["Type"].AsString, 0, TaskStateEnum.wait);
                 }
+                Log(replaceFileModel.FileId, "ReplaceFile");
                 return new ResponseModel<string>(ErrorCode.success, "");
             }
             else

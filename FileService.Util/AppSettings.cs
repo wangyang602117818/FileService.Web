@@ -3,7 +3,6 @@ using System;
 using System.Configuration;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 
 namespace FileService.Util
 {
@@ -14,10 +13,14 @@ namespace FileService.Util
         public static string handlerId = ConfigurationManager.AppSettings["handlerId"];
         public static int taskCount = Convert.ToInt32(ConfigurationManager.AppSettings["taskCount"]);
         public static string libreOffice = ConfigurationManager.AppSettings["libreOffice"];
-        public static string tempFileDir = ConfigurationManager.AppSettings["tempFileDir"];
-        public static string sharedFolders = ConfigurationManager.AppSettings["sharedFolders"];
-        public static string sharedUserNames = ConfigurationManager.AppSettings["sharedUserNames"];
-        public static string sharedUserPwds = ConfigurationManager.AppSettings["sharedUserPwds"];
+        //public static string tempFileDir = ConfigurationManager.AppSettings["tempFileDir"];
+
+        public static string saveFileType = ConfigurationManager.AppSettings["saveFileType"];
+        public static string saveFilePath = ConfigurationManager.AppSettings["saveFilePath"];
+
+        //public static string sharedFolders = ConfigurationManager.AppSettings["sharedFolders"];
+        //public static string sharedUserNames = ConfigurationManager.AppSettings["sharedUserNames"];
+        //public static string sharedUserPwds = ConfigurationManager.AppSettings["sharedUserPwds"];
         /// <summary>
         /// 本web页面的权限配置
         /// </summary>
@@ -29,9 +32,8 @@ namespace FileService.Util
 
         public static string GetFullPath(BsonDocument task)
         {
-            string machine = task["Machine"].AsString;
             string fileExt = Path.GetExtension(task["FileName"].ToString()).ToLower();
-            string tempPath = sharedFolders.Split(';').ToList().Where(w => w.Contains(machine)).FirstOrDefault();
+            string tempPath = AppDomain.CurrentDomain.BaseDirectory + "App_Data\\FileServiceTempFiles";
             return tempPath.TrimEnd('\\') + "\\" + task["Folder"].AsString + "\\" + task["FileId"].ToString() + fileExt;
         }
         public static bool connectState(string path, string userName, string passWord, ref string message)

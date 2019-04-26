@@ -125,5 +125,15 @@ namespace FileService.Util
             }
             return sb.ToString();
         }
+        public static string GetFileName(this string str)
+        {
+            var index = str.LastIndexOf("\\");
+            return str.Substring(index + 1);
+        }
+        public static string GetFileExt(this string str)
+        {
+            var index = str.LastIndexOf(".");
+            return str.Substring(index);
+        }
     }
 }

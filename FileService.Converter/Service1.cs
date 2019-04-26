@@ -2,7 +2,6 @@
 using FileService.Model;
 using FileService.Util;
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.ServiceProcess;
 
@@ -20,7 +19,8 @@ namespace FileService.Converter
                 HandlerId = AppSettings.handlerId,
                 MachineName = Environment.MachineName,
                 Total = 0,
-                MonitorStateList = new List<MonitorState>(),
+                SaveFileType = AppSettings.saveFileType,
+                SaveFilePath = AppSettings.saveFilePath,
                 State = ConverterStateEnum.running,
                 StartTime = DateTime.Now,
                 CreateTime = DateTime.Now
