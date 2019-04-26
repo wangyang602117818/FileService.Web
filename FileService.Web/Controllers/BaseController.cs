@@ -109,6 +109,7 @@ namespace FileService.Web.Controllers
         {
             if (saveFileType == "local")
             {
+                saveFilePath = saveFilePath + DateTime.Now.ToString("yyyyMMdd") + "\\";
                 if (!Directory.Exists(saveFilePath)) Directory.CreateDirectory(saveFilePath);
                 file.SaveAs(saveFilePath + fileName);
             }
