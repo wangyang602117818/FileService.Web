@@ -49,7 +49,7 @@ namespace FileService.Converter
                     {
                         if (fileName.GetFileExt().ToLower() != ".mp4")
                         {
-                            ConvertVideoMp4(from, fileType, fileWrapId, fullPath, ImageFormat.Jpeg);
+                            ConvertVideoMp4(from, fileType, fileWrapId, fullPath, fileName, ImageFormat.Jpeg);
                         }
                         else
                         {
@@ -62,8 +62,7 @@ namespace FileService.Converter
                 //任务肯定是后加的
                 else
                 {
-                    BsonDocument filesWrap = new FilesWrap().FindOne(fileWrapId);
-                    mongoFile.SaveTo(filesWrap["FileId"].AsObjectId, fullPath);
+                    mongoFile.SaveTo(fileWrap["FileId"].AsObjectId, fullPath);
                 }
             }
             if (output.Id != ObjectId.Empty)

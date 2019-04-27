@@ -11,7 +11,6 @@ namespace FileService.Business
 {
     public class MongoFileBase : ModelBase<Data.MongoFileBase>
     {
-        public static string AppDataDir = AppDomain.CurrentDomain.BaseDirectory + "App_Data\\";
         public MongoFileBase(Data.MongoFileBase mongoFileBase) : base(mongoFileBase) { }
         public ObjectId Upload(string fileName, Stream stream, BsonDocument metadata)
         {

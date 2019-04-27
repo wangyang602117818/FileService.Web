@@ -26,7 +26,6 @@ namespace FileService.Converter
                 StartTime = DateTime.Now,
                 CreateTime = DateTime.Now
             };
-            if (!Directory.Exists(MongoFileBase.AppDataDir)) Directory.CreateDirectory(MongoFileBase.AppDataDir);
         }
 
         protected override void OnStart(string[] args)

@@ -25,28 +25,14 @@ namespace FileService.Converter
             string from = taskItem.Message["From"].AsString;
             string fileName = taskItem.Message["FileName"].AsString;
             string fileType = taskItem.Message["Type"].AsString;
-
-            int processCount = System.Convert.ToInt32(taskItem.Message["ProcessCount"]);
             string fullPath = AppSettings.GetFullPath(taskItem.Message);
-            if (processCount == 0)
+            if (File.Exists(fullPath))
             {
-                if (File.Exists(fullPath))
-                {
-                    SaveFileFromSharedFolder(from, fileType, fileWrapId, fullPath, fileName, null);
-                }
+                SaveFileFromSharedFolder(from, fileType, fileWrapId, fullPath, fileName, null);
             }
             else
             {
-                if (!File.Exists(fullPath))
-                {
-                    string newPath = MongoFileBase.AppDataDir + fileWrapId.ToString() + Path.GetExtension(fileName).ToLower();
-                    if (!File.Exists(newPath))
-                    {
-                        BsonDocument filesWrap = new FilesWrap().FindOne(fileWrapId);
-                        mongoFile.SaveTo(filesWrap["FileId"].AsObjectId, newPath);
-                    }
-                    fullPath = newPath;
-                }
+                mongoFile.SaveTo(fileWrap["FileId"].AsObjectId, fullPath);
             }
             if (fileWrap != null)
             {
@@ -66,10 +52,10 @@ namespace FileService.Converter
             }
             return false;
         }
-        public BsonArray ConvertRar(ObjectId fileWrapId, string fullSourceFileName, DateTime expiredTime)
+        public BsonArray ConvertRar(ObjectId fileWrapId, string fullPath, DateTime expiredTime)
         {
             BsonArray result = new BsonArray();
-            using (RarArchive rarArchive = RarArchive.Open(fullSourceFileName))
+            using (RarArchive rarArchive = RarArchive.Open(fullPath))
             {
                 using (IReader reader = rarArchive.ExtractAllEntries())
                 {
@@ -81,7 +67,7 @@ namespace FileService.Converter
                         string fileExt = Path.GetExtension(reader.Entry.Key).ToLower();
                         if (extension.GetTypeByExtension(fileExt) == "office")
                         {
-                            string destPath = MongoFileBase.AppDataDir + fileWrapId.ToString() + "\\";
+                            string destPath = Path.GetDirectoryName(fullPath) + "\\" + fileWrapId.ToString() + "\\";
                             if (!Directory.Exists(destPath)) Directory.CreateDirectory(destPath);
                             string sourcePath = destPath + Path.GetFileName(reader.Entry.Key);
                             //office文件存到磁盘

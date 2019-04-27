@@ -37,12 +37,12 @@ namespace FileService.Converter
                 id = mongoFile.Upload(fileName, fileStream, null);
                 //生成文件缩略图
                 if (type == "image") GenerateFilePreview(from, id, fileName, fileStream, format);
-                if (type == "video") ConvertVideoCpPreview(from, id, fileWrapId, fullPath, true);
+                if (type == "video") ConvertVideoCpPreview(from, id, fileWrapId, fullPath, fileName, true);
             }
             else
             {
                 id = file["_id"].AsObjectId;
-                if (type == "video") ConvertVideoCpPreview(from, id, fileWrapId, fullPath, false);
+                if (type == "video") ConvertVideoCpPreview(from, id, fileWrapId, fullPath, fileName, false);
             }
             fileStream.Close();
             fileStream.Dispose();
@@ -65,10 +65,11 @@ namespace FileService.Converter
             }
             return filesWrap.UpdateFileId(filesWrapId, id);
         }
-        public void ConvertVideoCpPreview(string from, ObjectId fileId, ObjectId fileWrapId, string fullPath, bool filePreview)
+        public void ConvertVideoCpPreview(string from, ObjectId fileId, ObjectId fileWrapId, string fullPath, string fileName, bool filePreview)
         {
             BsonDocument fileWrap = filesWrap.FindOne(fileWrapId);
             BsonArray videoCp = fileWrap["VideoCpIds"].AsBsonArray;
+            fileName = Path.GetFileNameWithoutExtension(fileName) + ".jpg";
             ObjectId videoCpId;
             if (videoCp.Count > 0)
             {
@@ -79,8 +80,7 @@ namespace FileService.Converter
                 videoCpId = ObjectId.GenerateNewId();
                 filesWrap.AddVideoCapture(fileWrapId, videoCpId);
             }
-            string cpPath = MongoFileBase.AppDataDir + Path.GetFileNameWithoutExtension(fullPath) + ".jpg";
-            string fileName = Path.GetFileName(cpPath);
+            string cpPath = Path.GetDirectoryName(fullPath) + "\\" + fileWrapId.ToString() + ".jpg";
             string cmd = "\"" + AppSettings.ExePath + "\" -ss 00:00:01 -i \"" + fullPath + "\" -vframes 1 \"" + cpPath + "\"";
             Process process = new Process()
             {
@@ -132,7 +132,7 @@ namespace FileService.Converter
                 filePreviewMobile.Replace(fileId, from, stream.Length, width, height, fileName, stream.ToBytes());
             }
         }
-        public bool ConvertVideoMp4(string from, string type, ObjectId fileWrapId, string fullPath, ImageFormat format)
+        public bool ConvertVideoMp4(string from, string type, ObjectId fileWrapId, string fullPath, string fileName, ImageFormat format)
         {
             string convertPath = Path.GetDirectoryName(fullPath) + "\\" + fileWrapId.ToString() + ".mp4";
             string cmd = "\"" + AppSettings.ExePath + "\"" + " -i " + "\"" + fullPath + "\" \"" + convertPath + "\"";
@@ -156,13 +156,13 @@ namespace FileService.Converter
                     BsonDocument file = files.GetFileByMd5(md5);
                     if (file == null)
                     {
-                        fileId = mongoFile.Upload(Path.GetFileName(convertPath), fileStream, null);
-                        ConvertVideoCpPreview(from, fileId, fileWrapId, convertPath, true);
+                        fileId = mongoFile.Upload(fileName, fileStream, null);
+                        ConvertVideoCpPreview(from, fileId, fileWrapId, convertPath, fileName, true);
                     }
                     else
                     {
                         fileId = file["_id"].AsObjectId;
-                        ConvertVideoCpPreview(from, fileId, fileWrapId, convertPath, false);
+                        ConvertVideoCpPreview(from, fileId, fileWrapId, convertPath, fileName, false);
                     }
                 }
             }

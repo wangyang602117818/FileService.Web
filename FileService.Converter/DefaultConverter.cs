@@ -21,13 +21,9 @@ namespace FileService.Converter
             string from = taskItem.Message["From"].AsString;
             string fileName = taskItem.Message["FileName"].AsString;
             string fileType = extension.GetTypeByExtension(Path.GetExtension(fileName).ToLower()).ToLower();
-            int processCount = System.Convert.ToInt32(taskItem.Message["ProcessCount"]);
             string fullPath = AppSettings.GetFullPath(taskItem.Message);
             //第一次转换，文件肯定在共享文件夹
-            if (processCount == 0)
-            {
-                if (File.Exists(fullPath)) SaveFileFromSharedFolder(from, fileType, fileWrapId, fullPath, fileName, ImageFormat.Jpeg);
-            }
+            if (File.Exists(fullPath)) SaveFileFromSharedFolder(from, fileType, fileWrapId, fullPath, fileName, ImageFormat.Jpeg);
             if (File.Exists(fullPath)) File.Delete(fullPath);
             return true;
         }

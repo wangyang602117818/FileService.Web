@@ -25,27 +25,14 @@ namespace FileService.Converter
             string fileName = taskItem.Message["FileName"].AsString;
             string fileType = taskItem.Message["Type"].AsString;
 
-            int processCount = System.Convert.ToInt32(taskItem.Message["ProcessCount"]);
             string fullPath = AppSettings.GetFullPath(taskItem.Message);
-            if (processCount == 0)
+            if (File.Exists(fullPath))
             {
-                if (File.Exists(fullPath))
-                {
-                    SaveFileFromSharedFolder(from, fileType, fileWrapId, fullPath, fileName, null);
-                }
+                SaveFileFromSharedFolder(from, fileType, fileWrapId, fullPath, fileName, null);
             }
             else
             {
-                if (!File.Exists(fullPath))
-                {
-                    string newPath = MongoFileBase.AppDataDir + fileWrapId.ToString() + Path.GetExtension(fileName).ToLower();
-                    if (!File.Exists(newPath))
-                    {
-                        BsonDocument filesWrap = new FilesWrap().FindOne(fileWrapId);
-                        mongoFile.SaveTo(filesWrap["FileId"].AsObjectId, newPath);
-                    }
-                    fullPath = newPath;
-                }
+                mongoFile.SaveTo(fileWrap["FileId"].AsObjectId, fullPath);
             }
             ObjectId oldFileId = ObjectId.Empty;
             if (fileWrap != null)
@@ -54,7 +41,7 @@ namespace FileService.Converter
                 if (oldFileId != ObjectId.Empty && filesConvert.FindOne(oldFileId) != null) mongoFileConvert.Delete(oldFileId);
             }
 
-            string destinationFullPath = MongoFileBase.AppDataDir + fileWrapId.ToString() + ".pdf";
+            string destinationFullPath = Path.GetDirectoryName(fullPath) + "\\" + fileWrapId.ToString() + ".pdf";
             //转换office方法
             ObjectId outputId = ConvertOffice(fullPath, destinationFullPath, Path.GetFileNameWithoutExtension(fileName) + ".pdf", fileWrapId, expiredTime);
             //更新 filesWrap 表
