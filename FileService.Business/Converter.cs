@@ -18,6 +18,7 @@ namespace FileService.Business
                     {"State",ConverterStateEnum.running },
                     {"StartTime",DateTime.Now },
                     {"SaveFileType",SaveFileType },
+                    {"SaveFileApi",SaveFileApi },
                     {"SaveFilePath",SaveFilePath }
                 });
             }
@@ -75,8 +76,8 @@ namespace FileService.Business
         public int Total { get; set; }
         public ConverterStateEnum State { get; set; }
         public string SaveFileType { get; set; }
+        public string SaveFileApi { get; set; }
         public string SaveFilePath { get; set; }
-        //public List<MonitorState> MonitorStateList { get; set; }
         public DateTime StartTime { get; set; }
         public DateTime? EndTime { get; set; }
         public DateTime CreateTime { get; set; }

@@ -39,56 +39,43 @@ namespace FileService.Converter
             {
                 format = ImageExtention.GetFormat(output.Format, fileName, out outputExt);
             }
-            int processCount = System.Convert.ToInt32(taskItem.Message["ProcessCount"]);
             Stream fileStream = null;
             string fullPath = AppSettings.GetFullPath(taskItem.Message);
-            //第一次转换，文件肯定在共享文件夹
-            if (processCount == 0)
+            lock (o)
             {
-                lock (o)
+                if (File.Exists(fullPath))
                 {
-                    if (File.Exists(fullPath))
+                    fileStream = new FileStream(fullPath, FileMode.Open, FileAccess.Read);
+                    //同一份文件的不同转换任务 该部分工作相同,确保不同的线程只执行一次
+                    if (!queues.Contains(fileWrapId.ToString()))
                     {
-                        fileStream = new FileStream(fullPath, FileMode.Open, FileAccess.Read);
-                        //同一份文件的不同转换任务 该部分工作相同,确保不同的线程只执行一次
-                        if (!queues.Contains(fileWrapId.ToString()))
-                        {
-                            SaveFileFromSharedFolder(from, fileType, fileWrapId, fileName, fileStream, format);
-                            queues.Enqueue(fileWrapId.ToString());
-                        }
-                        if (queues.Count >= 10) queues.Dequeue();
-                        fileStream.Position = 0;
+                        SaveFileFromSharedFolder(from, fileType, fileWrapId, fileName, fileStream, format);
+                        queues.Enqueue(fileWrapId.ToString());
                     }
-                    //任务肯定是后加的
-                    else
-                    {
-                        ObjectId fileId = fileWrap["FileId"].AsObjectId;
-                        fileStream = mongoFile.DownLoadSeekable(fileId);
-                    }
+                    if (queues.Count >= 10) queues.Dequeue();
+                    fileStream.Position = 0;
+                }
+                //任务肯定是后加的
+                else
+                {
+                    ObjectId fileId = fileWrap["FileId"].AsObjectId;
+                    fileStream = mongoFile.DownLoadSeekable(fileId);
                 }
             }
-            else
+            if (fileStream != null && output.Id != ObjectId.Empty)
             {
-                ObjectId fileId = fileWrap["FileId"].AsObjectId;
-                fileStream = mongoFile.DownLoadSeekable(fileId);
-            }
-            if (fileStream != null)
-            {
-                if (output.Id != ObjectId.Empty)
+                int twidth = output.Width, theight = output.Height;
+                using (Stream stream = ImageExtention.GenerateThumbnail(fileName, fileStream, output.Model, format, output.ImageQuality, output.X, output.Y, ref twidth, ref theight))
                 {
-                    int twidth = output.Width, theight = output.Height;
-                    using (Stream stream = ImageExtention.GenerateThumbnail(fileName, fileStream, output.Model, format, output.ImageQuality, output.X, output.Y, ref twidth, ref theight))
-                    {
-                        thumbnail.Replace(output.Id, 
-                            from, 
-                            taskItem.Message["FileId"].AsObjectId, 
-                            stream.Length, 
-                            twidth, 
-                            theight, 
-                            Path.GetFileNameWithoutExtension(fileName) + outputExt, 
-                            output.Flag, stream.ToBytes(), 
-                            fileWrap.Contains("ExpiredTime") ? fileWrap["ExpiredTime"].ToUniversalTime() : DateTime.MaxValue.ToUniversalTime());
-                    }
+                    thumbnail.Replace(output.Id,
+                        from,
+                        taskItem.Message["FileId"].AsObjectId,
+                        stream.Length,
+                        twidth,
+                        theight,
+                        Path.GetFileNameWithoutExtension(fileName) + outputExt,
+                        output.Flag, stream.ToBytes(),
+                        fileWrap.Contains("ExpiredTime") ? fileWrap["ExpiredTime"].ToUniversalTime() : DateTime.MaxValue.ToUniversalTime());
                 }
                 fileStream.Close();
                 fileStream.Dispose();

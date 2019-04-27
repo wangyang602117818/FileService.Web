@@ -20,6 +20,7 @@ namespace FileService.Converter
                 MachineName = Environment.MachineName,
                 Total = 0,
                 SaveFileType = AppSettings.saveFileType,
+                SaveFileApi = AppSettings.saveFileApi,
                 SaveFilePath = AppSettings.saveFilePath,
                 State = ConverterStateEnum.running,
                 StartTime = DateTime.Now,

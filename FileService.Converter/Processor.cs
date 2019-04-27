@@ -17,6 +17,7 @@ namespace FileService.Converter
         Extension extension = new Extension();
         public void StartMonitor(string handlerId)
         {
+            #region  旧代码监视共享目录
             //List<MonitorState> MonitorStateList = new List<MonitorState>();
             //string[] sharedFolders = AppSettings.sharedFolders.Split(';');
             //string[] userNames = AppSettings.sharedUserNames.Split(';');
@@ -49,6 +50,7 @@ namespace FileService.Converter
             //    }
             //}
             //converter.UpdateStatesByHanderId(handlerId, new BsonArray(MonitorStateList.Select(s => s.ToBsonDocument())));
+            #endregion
             new Queue().MonitorMessage(handlerId);
         }
         /// <summary>

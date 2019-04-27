@@ -134,7 +134,7 @@ namespace FileService.Converter
         }
         public bool ConvertVideoMp4(string from, string type, ObjectId fileWrapId, string fullPath, ImageFormat format)
         {
-            string convertPath = MongoFileBase.AppDataDir + Path.GetFileNameWithoutExtension(fullPath) + ".mp4";
+            string convertPath = Path.GetDirectoryName(fullPath) + "\\" + fileWrapId.ToString() + ".mp4";
             string cmd = "\"" + AppSettings.ExePath + "\"" + " -i " + "\"" + fullPath + "\" \"" + convertPath + "\"";
             Process process = new Process()
             {

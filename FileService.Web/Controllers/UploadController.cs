@@ -42,10 +42,10 @@ namespace FileService.Web.Controllers
             foreach (HttpPostedFileBase file in uploadImgModel.Images)
             {
                 //初始化参数
-                string contentType = "", fileType = "", handlerId = "", saveFileType = "", saveFilePath = "", saveFileName = "";
+                string contentType = "", fileType = "", handlerId = "", saveFileType = "", saveFileApi = "", saveFilePath = "", saveFileName = "";
                 ObjectId saveFileId = ObjectId.Empty;
                 //检测文件
-                if (!CheckFileAndHandler("image", file.FileName, ref contentType, ref fileType, ref handlerId, ref saveFileType, ref saveFilePath, ref saveFileId, ref saveFileName, ref response))
+                if (!CheckFileAndHandler("image", file.FileName, ref contentType, ref fileType, ref handlerId, ref saveFileType, ref saveFilePath, ref saveFileApi, ref saveFileId, ref saveFileName, ref response))
                 {
                     continue;
                 }
@@ -63,7 +63,7 @@ namespace FileService.Web.Controllers
                 }
                 BsonArray access = new BsonArray(accessList.Select(a => a.ToBsonDocument()));
                 //上传文件
-                if (!SaveFile(saveFileType, saveFilePath, saveFileName, file, ref response)) continue;
+                if (!SaveFile(saveFileType, saveFilePath, saveFileApi, saveFileName, file, ref response)) continue;
                 filesWrap.InsertImage(saveFileId,
                     ObjectId.Empty,
                     file.FileName,
@@ -127,9 +127,9 @@ namespace FileService.Web.Controllers
             foreach (HttpPostedFileBase file in uploadVideo.Videos)
             {
                 //初始化参数
-                string contentType = "", fileType = "", handlerId = "", saveFileType = "", saveFilePath = "", saveFileName = "";
+                string contentType = "", fileType = "", handlerId = "", saveFileType = "", saveFileApi = "", saveFilePath = "", saveFileName = "";
                 ObjectId saveFileId = ObjectId.Empty;
-                if (!CheckFileAndHandler("video", file.FileName, ref contentType, ref fileType, ref handlerId, ref saveFileType, ref saveFilePath, ref saveFileId, ref saveFileName, ref response))
+                if (!CheckFileAndHandler("video", file.FileName, ref contentType, ref fileType, ref handlerId, ref saveFileType, ref saveFilePath, ref saveFileApi, ref saveFileId, ref saveFileName, ref response))
                 {
                     continue;
                 }
@@ -147,7 +147,7 @@ namespace FileService.Web.Controllers
                 }
                 BsonArray access = new BsonArray(accessList.Select(a => a.ToBsonDocument()));
                 //上传到文件
-                if (!SaveFile(saveFileType, saveFilePath, saveFileName, file, ref response)) continue;
+                if (!SaveFile(saveFileType, saveFilePath, saveFileApi, saveFileName, file, ref response)) continue;
                 filesWrap.InsertVideo(saveFileId,
                     ObjectId.Empty,
                     file.FileName,
@@ -198,9 +198,9 @@ namespace FileService.Web.Controllers
             foreach (HttpPostedFileBase file in uploadAttachmentModel.Attachments)
             {
                 //初始化参数
-                string contentType = "", fileType = "", handlerId = "", saveFileType = "", saveFilePath = "", saveFileName = "";
+                string contentType = "", fileType = "", handlerId = "", saveFileType = "", saveFileApi = "", saveFilePath = "", saveFileName = "";
                 ObjectId saveFileId = ObjectId.Empty;
-                if (!CheckFileAndHandler("attachment", file.FileName, ref contentType, ref fileType, ref handlerId, ref saveFileType, ref saveFilePath, ref saveFileId, ref saveFileName, ref response))
+                if (!CheckFileAndHandler("attachment", file.FileName, ref contentType, ref fileType, ref handlerId, ref saveFileType, ref saveFilePath, ref saveFileApi, ref saveFileId, ref saveFileName, ref response))
                 {
                     continue;
                 }
@@ -216,7 +216,7 @@ namespace FileService.Web.Controllers
                 }
                 BsonArray access = new BsonArray(accessList.Select(a => a.ToBsonDocument()));
                 //上传到文件
-                if (!SaveFile(saveFileType, saveFilePath, saveFileName, file, ref response)) continue;
+                if (!SaveFile(saveFileType, saveFilePath, saveFileApi, saveFileName, file, ref response)) continue;
                 filesWrap.InsertAttachment(saveFileId,
                     ObjectId.Empty,
                     file.FileName,
@@ -335,9 +335,10 @@ namespace FileService.Web.Controllers
                 handlerId = "",
                 saveFileType = "",
                 saveFilePath = "",
-                saveFileName = fileId.ToString()+ replaceFileModel.File.FileName.GetFileExt();
+                saveFileApi = "",
+                saveFileName = fileId.ToString() + replaceFileModel.File.FileName.GetFileExt();
             List<FileResponse> response = new List<FileResponse>();
-            if (!CheckFileAndHandler("attachment", replaceFileModel.File.FileName, ref contentType, ref fileType, ref handlerId, ref saveFileType, ref saveFilePath, ref fileId, ref saveFileName, ref response))
+            if (!CheckFileAndHandler("attachment", replaceFileModel.File.FileName, ref contentType, ref fileType, ref handlerId, ref saveFileType, ref saveFilePath, ref saveFileApi, ref fileId, ref saveFileName, ref response))
             {
                 return new ResponseModel<string>(ErrorCode.success, "");
             }
@@ -347,7 +348,7 @@ namespace FileService.Web.Controllers
                 //删除文件的附加信息
                 DeleteSubFiles(fileWrap);
                 //上传文件
-                if (!SaveFile(saveFileType, saveFilePath, saveFileName, replaceFileModel.File, ref response))
+                if (!SaveFile(saveFileType, saveFilePath, saveFileApi, saveFileName, replaceFileModel.File, ref response))
                 {
                     return new ResponseModel<string>(ErrorCode.api_not_available, "");
                 }

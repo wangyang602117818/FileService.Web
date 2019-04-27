@@ -105,17 +105,19 @@ namespace FileService.Web.Controllers
         {
             return File(System.IO.File.ReadAllBytes(imagePath + "forbidden.png"), "image/png", "forbidden.png");
         }
-        protected bool SaveFile(string saveFileType, string saveFilePath, string fileName, HttpPostedFileBase file, ref List<FileResponse> response)
+        protected bool SaveFile(string saveFileType, string saveFilePath, string saveFileApi, string fileName, HttpPostedFileBase file, ref List<FileResponse> response)
         {
-            if (saveFileType == "local")
+            saveFilePath = saveFilePath + DateTime.Now.ToString("yyyyMMdd") + "\\";
+            if (saveFileType == "path")
             {
-                saveFilePath = saveFilePath + DateTime.Now.ToString("yyyyMMdd") + "\\";
                 if (!Directory.Exists(saveFilePath)) Directory.CreateDirectory(saveFilePath);
                 file.SaveAs(saveFilePath + fileName);
             }
             else
             {
-                UploadTransforModel result = JsonConvert.DeserializeObject<UploadTransforModel>(new HttpRequestHelper().PostFile(saveFilePath, "file", fileName, file.InputStream).Result);
+                Dictionary<string, string> header = new Dictionary<string, string>();
+                header.Add("savePath", saveFilePath);
+                UploadTransforModel result = JsonConvert.DeserializeObject<UploadTransforModel>(new HttpRequestHelper().PostFile(saveFileApi, "file", fileName, file.InputStream, null, header).Result);
                 if (result.code != 0)
                 {
                     response.Add(new FileResponse()
@@ -129,7 +131,7 @@ namespace FileService.Web.Controllers
             }
             return true;
         }
-        protected bool CheckFileAndHandler(string method, string fileName, ref string contentType, ref string fileType, ref string handlerId, ref string saveFileType, ref string saveFilePath, ref ObjectId saveFileId, ref string saveFileName, ref List<FileResponse> response)
+        protected bool CheckFileAndHandler(string method, string fileName, ref string contentType, ref string fileType, ref string handlerId, ref string saveFileType, ref string saveFilePath, ref string saveFileApi, ref ObjectId saveFileId, ref string saveFileName, ref List<FileResponse> response)
         {
             string ext = fileName.GetFileExt().ToLower();
             switch (method)
@@ -188,6 +190,7 @@ namespace FileService.Web.Controllers
             handlerId = handler["HandlerId"].ToString();
             saveFileType = handler["SaveFileType"].ToString();
             saveFilePath = handler["SaveFilePath"].ToString();
+            saveFileApi = handler["SaveFileApi"].ToString();
             if (saveFileId == ObjectId.Empty) saveFileId = ObjectId.GenerateNewId();
             if (string.IsNullOrEmpty(saveFileName)) saveFileName = saveFileId.ToString() + ext;
             return true;

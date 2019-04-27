@@ -37,60 +37,33 @@ namespace FileService.Converter
             ObjectId videoCpId = fileWrap["VideoCpIds"].AsBsonArray[0].AsObjectId;
             VideoOutPut output = BsonSerializer.Deserialize<VideoOutPut>(outputDocument);
 
-            int processCount = System.Convert.ToInt32(taskItem.Message["ProcessCount"]);
             string fullPath = AppSettings.GetFullPath(taskItem.Message);
-            string ext = Path.GetExtension(fullPath).ToLower();
             //第一次转换，文件肯定在共享文件夹
-            if (processCount == 0)
+            //确保文件只存一份
+            lock (o)
             {
-                //确保文件只存一份
-                lock (o)
+                if (File.Exists(fullPath))
                 {
-                    if (File.Exists(fullPath))
+                    //同一份文件的不同转换任务 该部分工作相同,确保不同的线程只执行一次
+                    if (!queues.Contains(fileWrapId.ToString()))
                     {
-                        //同一份文件的不同转换任务 该部分工作相同,确保不同的线程只执行一次
-                        if (!queues.Contains(fileWrapId.ToString()))
+                        if (fileName.GetFileExt().ToLower() != ".mp4")
                         {
-                            if (ext != ".mp4")
-                            {
-                                ConvertVideoMp4(from, fileType, fileWrapId, fullPath, ImageFormat.Jpeg);
-                            }
-                            else
-                            {
-                                SaveFileFromSharedFolder(from, fileType, fileWrapId, fullPath, fileName, ImageFormat.Jpeg);
-                            }
-                            queues.Enqueue(fileWrapId.ToString());
+                            ConvertVideoMp4(from, fileType, fileWrapId, fullPath, ImageFormat.Jpeg);
                         }
-                        if (queues.Count >= 10) queues.Dequeue();
-                    }
-                    //任务肯定是后加的
-                    else
-                    {
-                        string newPath = MongoFileBase.AppDataDir + fileWrapId.ToString() + Path.GetExtension(fileName).ToLower();
-                        if (!File.Exists(newPath))
+                        else
                         {
-                            BsonDocument filesWrap = new FilesWrap().FindOne(fileWrapId);
-                            mongoFile.SaveTo(filesWrap["FileId"].AsObjectId, newPath);
+                            SaveFileFromSharedFolder(from, fileType, fileWrapId, fullPath, fileName, ImageFormat.Jpeg);
                         }
-                        fullPath = newPath;
+                        queues.Enqueue(fileWrapId.ToString());
                     }
+                    if (queues.Count >= 10) queues.Dequeue();
                 }
-            }
-            else
-            {
-                //确保只下载一份
-                lock (o)
+                //任务肯定是后加的
+                else
                 {
-                    if (!File.Exists(fullPath))
-                    {
-                        string newPath = MongoFileBase.AppDataDir + fileWrapId.ToString() + Path.GetExtension(fileName).ToLower();
-                        if (!File.Exists(newPath))
-                        {
-                            BsonDocument filesWrap = new FilesWrap().FindOne(fileWrapId);
-                            mongoFile.SaveTo(filesWrap["FileId"].AsObjectId, newPath);
-                        }
-                        fullPath = newPath;
-                    }
+                    BsonDocument filesWrap = new FilesWrap().FindOne(fileWrapId);
+                    mongoFile.SaveTo(filesWrap["FileId"].AsObjectId, fullPath);
                 }
             }
             if (output.Id != ObjectId.Empty)
@@ -107,7 +80,7 @@ namespace FileService.Converter
         public void ConvertHls(string from, ObjectId id, ObjectId fileId, string fullPath, string fileName, VideoOutPut output, DateTime expiredTime)
         {
             string sengmentFileName = fileId.ToString().Substring(0, 18) + "%06d.ts";
-            string outputPath = MongoFileBase.AppDataDir + output.Id.ToString() + "\\";
+            string outputPath = Path.GetDirectoryName(fullPath) + "\\" + output.Id.ToString() + "\\";
             if (!Directory.Exists(outputPath)) Directory.CreateDirectory(outputPath);
             int crf = 23 + (int)output.Quality * 6;
             string cmd = "\"" + AppSettings.ExePath + "\"" + " -i " + "\"" + fullPath + "\"" + " -crf " + crf + " -f hls -hls_list_size 0 -hls_segment_filename " + "\"" + outputPath + sengmentFileName + "\" \"" + outputPath + Path.GetFileNameWithoutExtension(fullPath) + ".m3u8" + "\"";

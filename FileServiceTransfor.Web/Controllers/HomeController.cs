@@ -8,15 +8,16 @@ namespace FileServiceTransfor.Web.Controllers
 {
     public class HomeController : Controller
     {
-        public static string saveToFolder = System.Configuration.ConfigurationManager.AppSettings["saveToFolder"] + DateTime.Now.ToString("yyyyMMdd") + "\\";
         public ActionResult Index()
         {
             return Content("ok");
         }
         public ActionResult SaveFile(HttpPostedFileBase file)
         {
-            if (!Directory.Exists(saveToFolder)) Directory.CreateDirectory(saveToFolder);
-            file.SaveAs(saveToFolder + file.FileName);
+            string savePath = Request.Headers["savePath"];
+            if(string.IsNullOrEmpty(savePath)) return new ResponseModel<string>(ErrorCode.invalid_params, "");
+            if (!Directory.Exists(savePath)) Directory.CreateDirectory(savePath);
+            file.SaveAs(savePath + file.FileName);
             return new ResponseModel<string>(ErrorCode.success, "");
         }
     }
