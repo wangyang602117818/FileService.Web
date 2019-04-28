@@ -8,13 +8,13 @@
                 <thead>
                     <tr>
                         <th width="10%">{culture.handlerId}</th>
-                        <th width="15%">{culture.machineName}</th>
-                        <th width="10%">{culture.total_task_count}</th>
+                        <th width="12%">{culture.machineName}</th>
+                        <th width="8%">{culture.total_task_count}</th>
                         <th width="10%">{culture.state}</th>
-                        <th width="17%">{culture.monitorMachine}</th>
-                        <th width="11%">{culture.startTime}</th>
-                        <th width="11%">{culture.endTime}</th>
-                        <th width="11%">{culture.createTime}</th>
+                        <td width="10%">{culture.type}</td>
+                        <th width="15%">{culture.startTime}</th>
+                        <th width="15%">{culture.endTime}</th>
+                        <th width="15%">{culture.createTime}</th>
                         <th width="5%">{culture.empty}</th>
                     </tr>
                 </thead>
@@ -59,7 +59,11 @@ class HandlerItem extends React.Component {
             <tr>
                 <td>
                     <b className="link"
-                        id={this.props.handler.HandlerId.removeHTML()}
+                        data-handlerid={this.props.handler.HandlerId.removeHTML()}
+                        data-machine={this.props.handler.MachineName}
+                        data-api={this.props.handler.SaveFileApi}
+                        data-type={this.props.handler.SaveFileType}
+                        data-path={this.props.handler.SaveFilePath}
                         onClick={this.props.onIdClick}
                         dangerouslySetInnerHTML={{ __html: this.props.handler.HandlerId }}></b>
                 </td>
@@ -69,20 +73,7 @@ class HandlerItem extends React.Component {
                     <span className={"state " + convertHandlerState(this.props.handler.State)}></span>{'\u00A0'}
                     {convertHandlerState(this.props.handler.State)}
                 </td>
-                <td>
-                    {this.props.handler.MonitorStateList.map(function (item, i) {
-                        var className = "flag_txt";
-                        if (item.Message != "success") className += " error";
-                        return (
-                            <span className="flag_table" key={i} title={item.Machine}>
-                                <span className={className}
-                                    id={item.Machine}>
-                                    {item.Machine.substring(0, 4) + "..."}
-                                </span>
-                            </span>
-                        )
-                    })}
-                </td>
+                <td>{this.props.handler.SaveFileType}</td>
                 <td title={parseBsonTime(this.props.handler.StartTime)}>{parseBsonTimeNoneSecond(this.props.handler.StartTime)}</td>
                 <td title={parseBsonTime(this.props.handler.EndTime)}>{parseBsonTimeNoneSecond(this.props.handler.EndTime)}</td>
                 <td title={parseBsonTime(this.props.handler.CreateTime)}>{parseBsonTimeNoneSecond(this.props.handler.CreateTime)}</td>
@@ -101,49 +92,56 @@ class MonitorData extends React.Component {
                 <table className="table">
                     <thead>
                         <tr>
-                            <th width="5%">{culture.id}</th>
-                            <th width="20%">{culture.machineName}</th>
-                            <th width="15%">{culture.monitorTime}</th>
-                            <th width="60%">{culture.monitorState}</th>
+                            <th width="15%">{culture.handler}</th>
+                            <th width="15%">{culture.type}</th>
+                            <th width="35%">{culture.api}</th>
+                            <th width="35%">{culture.path}</th>
                         </tr>
                     </thead>
-                    <MonitorList data={this.props.data} />
+                    <tbody>
+                        <tr>
+                            <td>{this.props.handlerId}</td>
+                            <td>{this.props.type}</td>
+                            <td>{this.props.api}</td>
+                            <td>{this.props.path}</td>
+                        </tr>
+                    </tbody>
                 </table>
             </div>
         )
     }
 }
-class MonitorList extends React.Component {
-    constructor(props) {
-        super(props);
-    }
-    render() {
-        if (this.props.data.length == 0) {
-            return (
-                <tbody>
-                    <tr>
-                        <td colSpan='10'>... {culture.no_data} ...</td>
-                    </tr>
-                </tbody>
-            )
-        } else {
-            return (
-                <tbody>
-                    {this.props.data.map(function (item, i) {
-                        return (
-                            <tr key={i}>
-                                <td>{i + 1}</td>
-                                <td>{item.Machine}</td>
-                                <td>{parseBsonTime(item.MonitorTime)}</td>
-                                <td>{item.Message}</td>
-                            </tr>
-                        )
-                    }.bind(this))}
-                </tbody>
-            );
-        }
-    }
-}
+//class MonitorList extends React.Component {
+//    constructor(props) {
+//        super(props);
+//    }
+//    render() {
+//        if (this.props.data.length == 0) {
+//            return (
+//                <tbody>
+//                    <tr>
+//                        <td colSpan='10'>... {culture.no_data} ...</td>
+//                    </tr>
+//                </tbody>
+//            )
+//        } else {
+//            return (
+//                <tbody>
+//                    {this.props.data.map(function (item, i) {
+//                        return (
+//                            <tr key={i}>
+//                                <td>{i + 1}</td>
+//                                <td>{item.Machine}</td>
+//                                <td>{parseBsonTime(item.MonitorTime)}</td>
+//                                <td>{item.Message}</td>
+//                            </tr>
+//                        )
+//                    }.bind(this))}
+//                </tbody>
+//            );
+//        }
+//    }
+//}
 class Handlers extends React.Component {
     constructor(props) {
         super(props);
@@ -151,10 +149,13 @@ class Handlers extends React.Component {
             pageShow: localStorage.handler ? eval(localStorage.handler) : true,
             pageIndex: 1,
             pageSize: localStorage.handler_pageSize || 10,
-            monitor: "",
-            monitorShow: false,
-            monitorToggle: true,
-            monitorList: [],
+            handlerId: "",
+            machine: "",
+            api: "",
+            type:"",
+            path: "",
+            machineShow: false,
+            machineToggle: true,
             pageCount: 1,
             filter: "",
             startTime: "",
@@ -166,10 +167,10 @@ class Handlers extends React.Component {
         this.storagePageSizeKey = "handler_pageSize";
     }
     empty(e) {
-        var id = e.target.id;
+        var handlerId = e.target.handlerid;
         var that = this;
         if (window.confirm(" Empty ?")) {
-            http.get(urls.emptyUrl + "?handlerId=" + id, function (data) {
+            http.get(urls.emptyUrl + "?handlerId=" + handlerId, function (data) {
                 if (data.code == 0) {
                     that.getData();
                 } else {
@@ -179,13 +180,12 @@ class Handlers extends React.Component {
         }
     }
     onIdClick(e) {
-        var id = e.target.id || e.target.parentElement.id;
-        for (var i = 0; i < this.state.data.result.length; i++) {
-            if (this.state.data.result[i].HandlerId == id) {
-                this.setState({ monitorShow: true, monitor: id, monitorList: this.state.data.result[i].MonitorStateList });
-                break;
-            }
-        }
+        var handlerId = e.target.dataset.handlerid || e.target.parentElement.dataset.handlerid;
+        var machine = e.target.dataset.machine || e.target.parentElement.dataset.machine;
+        var api = e.target.dataset.api || e.target.parentElement.dataset.api;
+        var path = e.target.dataset.path || e.target.parentElement.dataset.path;
+        var type = e.target.dataset.type || e.target.parentElement.dataset.type;
+        this.setState({ machineShow: true, handlerId: handlerId, machine: machine, type: type, api: api, path: path });
     }
     render() {
         return (
@@ -208,13 +208,13 @@ class Handlers extends React.Component {
                 <HandlerData data={this.state.data.result}
                     empty={this.empty.bind(this)}
                     onIdClick={this.onIdClick.bind(this)} />
-                {this.state.monitorShow ?
-                    <TitleArrow title={culture.monitorList + "(" + this.state.monitor + ")"}
-                        show={this.state.monitorToggle}
-                        onShowChange={e => { this.setState({ monitorToggle: !this.state.monitorToggle }) }} /> : null
+                {this.state.machineShow ?
+                    <TitleArrow title={culture.servers + culture.state + "(" + this.state.machine + ")"}
+                        show={this.state.machineToggle}
+                        onShowChange={e => { this.setState({ machineToggle: !this.state.machineToggle }) }} /> : null
                 }
-                {this.state.monitorShow ?
-                    <MonitorData show={this.state.monitorToggle} data={this.state.monitorList} /> : null
+                {this.state.machineShow ?
+                    <MonitorData show={this.state.machineToggle} handlerId={this.state.handlerId} type={this.state.type} api={this.state.api} path={this.state.path} /> : null
                 }
 
             </div>

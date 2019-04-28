@@ -247,5 +247,9 @@ var culture = {
     processing: "Processing",
     completed: "Completed",
     updated: "Updated",
-    error:"Error"
+    error: "Error",
+
+    api: "Api",
+    path: "Path"
+
 }

@@ -33,8 +33,10 @@ namespace FileService.Util
 
         public static string GetFullPath(BsonDocument task)
         {
+            string path = saveFilePath + task["Folder"].AsString + "\\";
+            if (!Directory.Exists(path)) Directory.CreateDirectory(path);
             string fileExt = task["FileName"].ToString().GetFileExt();
-            return saveFilePath + task["Folder"].AsString + "\\" + task["FileId"].ToString() + fileExt;
+            return path + task["FileId"].ToString() + fileExt;
         }
         public static bool connectState(string path, string userName, string passWord, ref string message)
         {

@@ -247,5 +247,8 @@ var culture = {
     processing: "处理中",
     completed: "已完成",
     updated: "已更新",
-    error: "已出错"
+    error: "已出错",
+
+    api: "Api",
+    path: "路径"
 }

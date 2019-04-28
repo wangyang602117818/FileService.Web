@@ -354,6 +354,19 @@ namespace FileService.Web.Controllers
                 //删除转换的大图标
                 filePreviewMobile.DeleteOne(fId);
             }
+            //删除历史记录
+            if (fileWrap.Contains("History"))
+            {
+                foreach(BsonDocument bson in fileWrap["History"].AsBsonArray)
+                {
+                    ObjectId fileId = bson["FileId"].AsObjectId;
+                    mongoFile.Delete(fileId);
+                    //删除转换的小图标
+                    filePreview.DeleteOne(fileId);
+                    //删除转换的大图标
+                    filePreviewMobile.DeleteOne(fileId);
+                }
+            }
             //删除缓存文件
             IEnumerable<BsonDocument> tasks = task.FindCacheFiles(fileWrapId);
             foreach (BsonDocument task in tasks)
@@ -410,14 +423,14 @@ namespace FileService.Web.Controllers
                 }
             }
             //如果源文件没有被引用，则删除转换的大图标和小图标
-            if (filesWrap.CountByFileId(fileWrap["FileId"].AsObjectId) == 1 && fileWrap["FileId"].AsObjectId != ObjectId.Empty)
-            {
-                ObjectId fId = fileWrap["FileId"].AsObjectId;
-                //删除转换的小图标
-                filePreview.DeleteOne(fId);
-                //删除转换的大图标
-                filePreviewMobile.DeleteOne(fId);
-            }
+            //if (filesWrap.CountByFileId(fileWrap["FileId"].AsObjectId) == 1 && fileWrap["FileId"].AsObjectId != ObjectId.Empty)
+            //{
+            //    ObjectId fId = fileWrap["FileId"].AsObjectId;
+            //    //删除转换的小图标
+            //    filePreview.DeleteOne(fId);
+            //    //删除转换的大图标
+            //    filePreviewMobile.DeleteOne(fId);
+            //}
         }
     }
 }

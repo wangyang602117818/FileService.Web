@@ -22,7 +22,6 @@ namespace FileService.Converter
         Task task = new Task();
         FilePreview filePreview = new FilePreview();
         FilePreviewMobile filePreviewBig = new FilePreviewMobile();
-        static Queue<string> queues = new Queue<string>();   //防止存储和转换源文件任务执行多次 
         static object o = new object();
         public override bool Convert(FileItem taskItem)
         {
@@ -44,20 +43,14 @@ namespace FileService.Converter
             {
                 if (File.Exists(fullPath))
                 {
-                    //同一份文件的不同转换任务 该部分工作相同,确保不同的线程只执行一次
-                    if (!queues.Contains(fileWrapId.ToString()))
+                    if (fileName.GetFileExt().ToLower() != ".mp4")
                     {
-                        if (fileName.GetFileExt().ToLower() != ".mp4")
-                        {
-                            ConvertVideoMp4(from, fileType, fileWrapId, fullPath, fileName, ImageFormat.Jpeg);
-                        }
-                        else
-                        {
-                            SaveFileFromSharedFolder(from, fileType, fileWrapId, fullPath, fileName, ImageFormat.Jpeg);
-                        }
-                        queues.Enqueue(fileWrapId.ToString());
+                        ConvertVideoMp4(from, fileType, fileWrapId, fullPath, fileName, ImageFormat.Jpeg);
                     }
-                    if (queues.Count >= 10) queues.Dequeue();
+                    else
+                    {
+                        SaveFileFromSharedFolder(from, fileType, fileWrapId, fullPath, fileName, ImageFormat.Jpeg);
+                    }
                 }
                 //任务肯定是后加的
                 else

@@ -16,8 +16,6 @@ namespace FileService.Converter
         Files files = new Files();
         FilesWrap filesWrap = new FilesWrap();
         Thumbnail thumbnail = new Thumbnail();
-
-        static Queue<string> queues = new Queue<string>();   //防止存储和转换源文件任务执行多次
         static object o = new object();
         public override bool Convert(FileItem taskItem)
         {
@@ -46,13 +44,7 @@ namespace FileService.Converter
                 if (File.Exists(fullPath))
                 {
                     fileStream = new FileStream(fullPath, FileMode.Open, FileAccess.Read);
-                    //同一份文件的不同转换任务 该部分工作相同,确保不同的线程只执行一次
-                    if (!queues.Contains(fileWrapId.ToString()))
-                    {
-                        SaveFileFromSharedFolder(from, fileType, fileWrapId, fileName, fileStream, format);
-                        queues.Enqueue(fileWrapId.ToString());
-                    }
-                    if (queues.Count >= 10) queues.Dequeue();
+                    SaveFileFromSharedFolder(from, fileType, fileWrapId, fileName, fileStream, format);
                     fileStream.Position = 0;
                 }
                 //任务肯定是后加的
