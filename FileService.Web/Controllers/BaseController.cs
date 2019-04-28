@@ -116,7 +116,7 @@ namespace FileService.Web.Controllers
             else
             {
                 Dictionary<string, string> header = new Dictionary<string, string>();
-                header.Add("savePath", saveFilePath);
+                header.Add("path", saveFilePath);
                 UploadTransforModel result = JsonConvert.DeserializeObject<UploadTransforModel>(new HttpRequestHelper().PostFile(saveFileApi, "file", fileName, file.InputStream, null, header).Result);
                 if (result.code != 0)
                 {

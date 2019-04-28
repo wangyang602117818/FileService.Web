@@ -14,7 +14,7 @@ namespace FileServiceTransfor.Web.Controllers
         }
         public ActionResult SaveFile(HttpPostedFileBase file)
         {
-            string savePath = Request.Headers["savePath"];
+            string savePath = Request.Headers["path"];
             if(string.IsNullOrEmpty(savePath)) return new ResponseModel<string>(ErrorCode.invalid_params, "");
             if (!Directory.Exists(savePath)) Directory.CreateDirectory(savePath);
             file.SaveAs(savePath + file.FileName);
