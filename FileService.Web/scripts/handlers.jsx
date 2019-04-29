@@ -9,9 +9,9 @@
                     <tr>
                         <th width="10%">{culture.handlerId}</th>
                         <th width="12%">{culture.machineName}</th>
-                        <th width="8%">{culture.total_task_count}</th>
                         <th width="10%">{culture.state}</th>
                         <td width="10%">{culture.type}</td>
+                        <th width="8%">{culture.total_task_count}</th>
                         <th width="15%">{culture.startTime}</th>
                         <th width="15%">{culture.endTime}</th>
                         <th width="15%">{culture.createTime}</th>
@@ -68,12 +68,12 @@ class HandlerItem extends React.Component {
                         dangerouslySetInnerHTML={{ __html: this.props.handler.HandlerId }}></b>
                 </td>
                 <td dangerouslySetInnerHTML={{ __html: this.props.handler.MachineName }}></td>
-                <td>{this.props.handler.Total}</td>
                 <td>
                     <span className={"state " + convertHandlerState(this.props.handler.State)}></span>{'\u00A0'}
                     {convertHandlerState(this.props.handler.State)}
                 </td>
                 <td>{this.props.handler.SaveFileType}</td>
+                <td>{this.props.handler.Total}</td>
                 <td title={parseBsonTime(this.props.handler.StartTime)}>{parseBsonTimeNoneSecond(this.props.handler.StartTime)}</td>
                 <td title={parseBsonTime(this.props.handler.EndTime)}>{parseBsonTimeNoneSecond(this.props.handler.EndTime)}</td>
                 <td title={parseBsonTime(this.props.handler.CreateTime)}>{parseBsonTimeNoneSecond(this.props.handler.CreateTime)}</td>
@@ -167,7 +167,7 @@ class Handlers extends React.Component {
         this.storagePageSizeKey = "handler_pageSize";
     }
     empty(e) {
-        var handlerId = e.target.handlerid;
+        var handlerId = e.target.id;
         var that = this;
         if (window.confirm(" Empty ?")) {
             http.get(urls.emptyUrl + "?handlerId=" + handlerId, function (data) {

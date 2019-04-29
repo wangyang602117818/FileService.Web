@@ -41,6 +41,12 @@ namespace FileService.Util
             }
             return sb.ToString();
         }
+        public static string GetSha256(this Stream fileStream)
+        {
+            SHA256Managed Sha256 = new SHA256Managed();
+            byte[] by = Sha256.ComputeHash(fileStream);
+            return BitConverter.ToString(by).Replace("-", "").ToLower();
+        }
         public static BsonArray GetDeCompressionZipFiles(this Stream stream)
         {
             using (ZipArchive rarArchive = ZipArchive.Open(stream))

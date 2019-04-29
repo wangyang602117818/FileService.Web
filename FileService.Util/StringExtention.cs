@@ -23,6 +23,13 @@ namespace FileService.Util
                 return sb.ToString();
             }
         }
+        public static string GetSha256(this string str)
+        {
+            byte[] SHA256Data = Encoding.UTF8.GetBytes(str);
+            SHA256Managed Sha256 = new SHA256Managed();
+            byte[] by = Sha256.ComputeHash(SHA256Data);
+            return BitConverter.ToString(by).Replace("-", "").ToLower();
+        }
         public static string ToStr(this Stream stream)
         {
             stream.Position = 0;

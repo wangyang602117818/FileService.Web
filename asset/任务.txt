@@ -26,6 +26,10 @@ tcp传文件问题
 	}
 ]
 
+删除所有缓存,删除单个文件缓存
+删除文件时候:删除缓存文件
+下载文件时候:如果没有则从缓存中取
+获取任务列表的时候,加载缓存详情
 加密ts
 ffmpeg.exe -i Wildlife.mp4 -hls_time 2 -hls_list_size 0 -hls_allow_cache 0 -hls_enc 1 -hls_enc_key N74kEdQDwUgiR5QNyMQ9fg== -hls_enc_key_url http://localhost:2431/admin/key -hls_enc_iv EjRWeJCrze8= out.m3u8
 

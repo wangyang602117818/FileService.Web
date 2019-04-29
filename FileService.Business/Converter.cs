@@ -54,7 +54,6 @@ namespace FileService.Business
         }
         public BsonDocument GetHandlerId()
         {
-            //string machine = Environment.MachineName;
             IEnumerable<BsonDocument> all = mongoData.FindAll().OrderBy(o => o["Total"]);
             if (all.Count() == 0) return null;
             if (all.Count() == 1) return all.First();

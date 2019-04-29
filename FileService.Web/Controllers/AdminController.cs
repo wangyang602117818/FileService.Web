@@ -764,7 +764,7 @@ namespace FileService.Web.Controllers
             if (addUser.Department == null) addUser.Department = new List<string>();
             if (addUser.DepartmentDisplay == null) addUser.DepartmentDisplay = new List<string>();
             if (string.IsNullOrEmpty(addUser.Role)) addUser.Role = "none";
-            addUser.PassWord = addUser.PassWord.ToMD5();
+            addUser.PassWord = addUser.PassWord.GetSha256();
             BsonDocument document = addUser.ToBsonDocument();
             user.Insert(document);
             Log("-", "InsertUser(" + addUser.UserName + ")");
@@ -774,7 +774,7 @@ namespace FileService.Web.Controllers
         {
             BsonDocument userBson = user.GetUser(updateUser.UserCode);
             updateUser.Modified = true;
-            updateUser.PassWord = updateUser.PassWord.ToMD5();
+            updateUser.PassWord = updateUser.PassWord.GetSha256();
             if (updateUser.Department == null) updateUser.Department = new List<string>();
             if (updateUser.DepartmentDisplay == null) updateUser.DepartmentDisplay = new List<string>();
             if (string.IsNullOrEmpty(updateUser.Role)) updateUser.Role = "none";

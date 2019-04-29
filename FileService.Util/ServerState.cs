@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Management;
-using Microsoft.VisualBasic;
 namespace FileService.Util
 {
     public class ServerState
@@ -23,6 +21,19 @@ namespace FileService.Util
             {
                 MemoryTotal = Math.Round(Convert.ToDouble(objMgmt["totalphysicalmemory"].ToString()) / 1024 / 1024 / 1024).ToString();
             }
+            Disk = GetDirvesInfo();
+            //string cacheDir = AppDomain.CurrentDomain.BaseDirectory + AppSettings.tempFileDir;
+            //CacheFiles = GetFileConvertSize(DirectorySize(new DirectoryInfo(cacheDir))) + "/" + Directory.GetDirectories(cacheDir).Length;
+            string logDir = AppDomain.CurrentDomain.BaseDirectory + @"App_Data\Log\";
+            LogFiles = GetCacheFiles(logDir);
+            return this;
+        }
+        public static string GetCacheFiles(string path)
+        {
+            return GetFileConvertSize(DirectorySize(new DirectoryInfo(path))) + "/" + Directory.GetDirectories(path).Length;
+        }
+        public static string GetDirvesInfo()
+        {
             DriveInfo[] allDirves = DriveInfo.GetDrives();
             List<string> dirvesInfo = new List<string>();
             foreach (DriveInfo item in allDirves)
@@ -32,12 +43,7 @@ namespace FileService.Util
                     dirvesInfo.Add(item.Name.TrimEnd('\\') + Math.Round(item.TotalFreeSpace * 1.0 / 1024 / 1024 / 1024) + "G/" + Math.Round(item.TotalSize * 1.0 / 1024 / 1024 / 1024) + "G");
                 }
             }
-            Disk = string.Join(",", dirvesInfo);
-            //string cacheDir = AppDomain.CurrentDomain.BaseDirectory + AppSettings.tempFileDir;
-            //CacheFiles = GetFileConvertSize(DirectorySize(new DirectoryInfo(cacheDir))) + "/" + Directory.GetDirectories(cacheDir).Length;
-            string logDir = AppDomain.CurrentDomain.BaseDirectory + @"App_Data\Log\";
-            LogFiles = GetFileConvertSize(DirectorySize(new DirectoryInfo(logDir))) + "/" + Directory.GetDirectories(logDir).Length;
-            return this;
+            return string.Join(",", dirvesInfo);
         }
         static long DirectorySize(DirectoryInfo directoryInfo)
         {
@@ -57,13 +63,13 @@ namespace FileService.Util
         public static string GetFileConvertSize(double size)
         {
             size = size / 1024.0;
-            if (size < 1024) return Math.Round(size,2) + "KB";
+            if (size < 1024) return Math.Round(size, 2) + "KB";
             size = size / 1024.0;
-            if (size < 1024) return Math.Round(size,2) + "MB";
+            if (size < 1024) return Math.Round(size, 2) + "MB";
             size = size / 1024.0;
-            if (size < 1024) return Math.Round(size,2) + "GB";
+            if (size < 1024) return Math.Round(size, 2) + "GB";
             size = size / 1024.0;
-            return Math.Round(size,2) + "TB";
+            return Math.Round(size, 2) + "TB";
         }
     }
     public class MongoServerState
