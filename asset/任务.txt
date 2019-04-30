@@ -25,7 +25,8 @@ tcp传文件问题
 		
 	}
 ]
-
+文件流加密:项目初始化的时候往application中写入加密秘钥
+图片类型检测
 删除所有缓存,删除单个文件缓存
 删除文件时候:删除缓存文件
 下载文件时候:如果没有则从缓存中取
@@ -35,6 +36,8 @@ ffmpeg.exe -i Wildlife.mp4 -hls_time 2 -hls_list_size 0 -hls_allow_cache 0 -hls_
 
 
 ai开源项目 http://scikit-learn.org/stable/
+
+Monaco Editor
 
 Keras
 

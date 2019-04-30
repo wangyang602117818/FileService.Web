@@ -46,6 +46,18 @@ namespace FileService.Util
                 }
             }
         }
+        public static Stream AesEncode1(Stream sourceStream, string key, bool isBase64Key = true)
+        {
+            byte[] keyBytes = isBase64Key ? key.Base64StrToBuffer() : key.StrToBuffer();
+            using(RijndaelManaged aes = new RijndaelManaged())
+            {
+                FileStream fileStream = new FileStream();
+                using (ICryptoTransform encryptor = aes.CreateEncryptor(keyBytes, IV))
+                {
+                    
+                }
+            }
+        }
         /// <summary>
         /// Aes解密算法
         /// </summary>
