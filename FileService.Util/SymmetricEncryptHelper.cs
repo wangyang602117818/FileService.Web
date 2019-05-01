@@ -46,17 +46,33 @@ namespace FileService.Util
                 }
             }
         }
-        public static Stream AesEncode1(Stream sourceStream, string key, bool isBase64Key = true)
+        public static void AesEncodeFile(string inputFile, string outputFile, string key, bool isBase64Key = true)
         {
             byte[] keyBytes = isBase64Key ? key.Base64StrToBuffer() : key.StrToBuffer();
             using(RijndaelManaged aes = new RijndaelManaged())
             {
-                FileStream fileStream = new FileStream();
-                using (ICryptoTransform encryptor = aes.CreateEncryptor(keyBytes, IV))
+                using (FileStream fsCrypt = new FileStream(outputFile, FileMode.Create))
                 {
-                    
+                    using (ICryptoTransform encryptor = aes.CreateEncryptor(keyBytes, IV))
+                    {
+                        using (CryptoStream cs = new CryptoStream(fsCrypt, encryptor, CryptoStreamMode.Write))
+                        {
+                            using (FileStream fsIn = new FileStream(inputFile, FileMode.Open))
+                            {
+                                int data;
+                                while ((data = fsIn.ReadByte()) != -1)
+                                {
+                                    cs.WriteByte((byte)data);
+                                }
+                            }
+                        }
+                    }
                 }
             }
+        }
+        public static void AesDecryptFile()
+        {
+
         }
         /// <summary>
         /// Aes解密算法

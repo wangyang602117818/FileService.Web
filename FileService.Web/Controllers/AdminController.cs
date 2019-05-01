@@ -960,11 +960,12 @@ namespace FileService.Web.Controllers
             return new ResponseModel<string>(ErrorCode.success, "");
         }
         
-        public ActionResult M()
+        public ActionResult M(string filename)
         {
-            string filename = "dddd.doc";
-
-            return new ResponseModel<string>(ErrorCode.success, filename.GetFileExt());
+            string path = AppDomain.CurrentDomain.BaseDirectory+ "image\\"+ filename;
+            FileStream fileStream = new FileStream(path, FileMode.Open, FileAccess.Read);
+            return Content(ImageExtention.GetImageType2(fileStream));
+           
         }
     }
 }

@@ -5,6 +5,7 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using System.IO;
+using System.Text;
 using System.Text.RegularExpressions;
 using System.Xml;
 
@@ -292,7 +293,7 @@ namespace FileService.Util
                             g.DrawImage(image, new Rectangle(0, 0, width, height), new Rectangle(0, 0, image.Width, image.Height), GraphicsUnit.Pixel);
                         }
                         eps = new EncoderParameters(1);
-                        eps.Param[0] = new EncoderParameter(Encoder.SaveFlag, (long)EncoderValue.MultiFrame);
+                        eps.Param[0] = new EncoderParameter(System.Drawing.Imaging.Encoder.SaveFlag, (long)EncoderValue.MultiFrame);
                         bindProperty(image, gif);
                         gif.Save(stream, codecInfo, eps);
                     }
@@ -308,13 +309,13 @@ namespace FileService.Util
                             gFrame.DrawImage(image, new Rectangle(0, 0, width, height), new Rectangle(0, 0, image.Width, image.Height), GraphicsUnit.Pixel);
                         }
                         eps = new EncoderParameters(1);
-                        eps.Param[0] = new EncoderParameter(Encoder.SaveFlag, (long)EncoderValue.FrameDimensionTime);
+                        eps.Param[0] = new EncoderParameter(System.Drawing.Imaging.Encoder.SaveFlag, (long)EncoderValue.FrameDimensionTime);
                         bindProperty(image, frame);
                         gif.SaveAdd(frame, eps);
                     }
                 }
                 eps = new EncoderParameters(1);
-                eps.Param[0] = new EncoderParameter(Encoder.SaveFlag, (long)EncoderValue.Flush);
+                eps.Param[0] = new EncoderParameter(System.Drawing.Imaging.Encoder.SaveFlag, (long)EncoderValue.Flush);
                 gif.SaveAdd(eps);
             }
             stream.Position = 0;
@@ -349,13 +350,13 @@ namespace FileService.Util
             switch (imageQuality)
             {
                 case ImageQuality.High:
-                    return new EncoderParameter(Encoder.Quality, 80L);
+                    return new EncoderParameter(System.Drawing.Imaging.Encoder.Quality, 80L);
                 case ImageQuality.Medium:
-                    return new EncoderParameter(Encoder.Quality, 50L);
+                    return new EncoderParameter(System.Drawing.Imaging.Encoder.Quality, 50L);
                 case ImageQuality.Low:
-                    return new EncoderParameter(Encoder.Quality, 20L);
+                    return new EncoderParameter(System.Drawing.Imaging.Encoder.Quality, 20L);
             }
-            return new EncoderParameter(Encoder.Quality, 80L);
+            return new EncoderParameter(System.Drawing.Imaging.Encoder.Quality, 80L);
         }
         private static ImageCodecInfo GetEncoder(ImageFormat format)
         {
@@ -385,6 +386,45 @@ namespace FileService.Util
             if (buffer[6] == 'J' && buffer[7] == 'F' && buffer[8] == 'I' && buffer[9] == 'F') return ".jpg";
             if (buffer[0] == 'B' && buffer[1] == 'M') return ".bmp";
             return null;
+        }
+        public static string GetImageType2(Stream stream)
+        {
+            string headerCode = GetHeaderInfo(stream).ToUpper();
+            if (headerCode.StartsWith("FFD8FFE0"))
+            {
+                return "JPG";
+            }
+            else if (headerCode.StartsWith("49492A"))
+            {
+                return "TIFF";
+            }
+            else if (headerCode.StartsWith("424D"))
+            {
+                return "BMP";
+            }
+            else if (headerCode.StartsWith("474946"))
+            {
+                return "GIF";
+            }
+            else if (headerCode.StartsWith("89504E470D0A1A0A"))
+            {
+                return "PNG";
+            }
+            else
+            {
+                return "";
+            }
+        }
+        public static string GetHeaderInfo(Stream stream)
+        {
+            byte[] buffer = new byte[8];
+            BinaryReader reader = new BinaryReader(stream);
+            reader.Read(buffer, 0, buffer.Length);
+            reader.Close();
+            StringBuilder sb = new StringBuilder();
+            foreach (byte b in buffer)
+                sb.Append(b.ToString("X2"));
+            return sb.ToString();
         }
     }
 }
