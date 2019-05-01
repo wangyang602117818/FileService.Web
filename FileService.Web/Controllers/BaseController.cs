@@ -131,13 +131,13 @@ namespace FileService.Web.Controllers
             }
             return true;
         }
-        protected bool CheckFileAndHandler(string method, string fileName, ref string contentType, ref string fileType, ref string handlerId, ref string saveFileType, ref string saveFilePath, ref string saveFileApi, ref ObjectId saveFileId, ref string saveFileName, ref List<FileResponse> response)
+        protected bool CheckFileAndHandler(string method, string fileName, Stream stream, ref string contentType, ref string fileType, ref string handlerId, ref string saveFileType, ref string saveFilePath, ref string saveFileApi, ref ObjectId saveFileId, ref string saveFileName, ref List<FileResponse> response)
         {
             string ext = fileName.GetFileExt().ToLower();
             switch (method)
             {
                 case "image":
-                    if (!extension.CheckFileExtensionImage(ext, ref contentType, ref fileType))
+                    if (!extension.CheckFileExtensionImage(ext, ref contentType, ref fileType)|| ImageExtention.GetImageType2(stream) == "")
                     {
                         response.Add(new FileResponse()
                         {
@@ -193,6 +193,7 @@ namespace FileService.Web.Controllers
             saveFileApi = handler["SaveFileApi"].ToString();
             if (saveFileId == ObjectId.Empty) saveFileId = ObjectId.GenerateNewId();
             if (string.IsNullOrEmpty(saveFileName)) saveFileName = saveFileId.ToString() + ext;
+            stream.Position = 0;
             return true;
         }
         protected void Log(string fileId, string content)
@@ -357,7 +358,7 @@ namespace FileService.Web.Controllers
             //删除历史记录
             if (fileWrap.Contains("History"))
             {
-                foreach(BsonDocument bson in fileWrap["History"].AsBsonArray)
+                foreach (BsonDocument bson in fileWrap["History"].AsBsonArray)
                 {
                     ObjectId fileId = bson["FileId"].AsObjectId;
                     mongoFile.Delete(fileId);

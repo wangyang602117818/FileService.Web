@@ -45,7 +45,7 @@ namespace FileService.Web.Controllers
                 string contentType = "", fileType = "", handlerId = "", saveFileType = "", saveFileApi = "", saveFilePath = "", saveFileName = "";
                 ObjectId saveFileId = ObjectId.Empty;
                 //检测文件
-                if (!CheckFileAndHandler("image", file.FileName, ref contentType, ref fileType, ref handlerId, ref saveFileType, ref saveFilePath, ref saveFileApi, ref saveFileId, ref saveFileName, ref response))
+                if (!CheckFileAndHandler("image", file.FileName, file.InputStream, ref contentType, ref fileType, ref handlerId, ref saveFileType, ref saveFilePath, ref saveFileApi, ref saveFileId, ref saveFileName, ref response))
                 {
                     continue;
                 }
@@ -129,7 +129,7 @@ namespace FileService.Web.Controllers
                 //初始化参数
                 string contentType = "", fileType = "", handlerId = "", saveFileType = "", saveFileApi = "", saveFilePath = "", saveFileName = "";
                 ObjectId saveFileId = ObjectId.Empty;
-                if (!CheckFileAndHandler("video", file.FileName, ref contentType, ref fileType, ref handlerId, ref saveFileType, ref saveFilePath, ref saveFileApi, ref saveFileId, ref saveFileName, ref response))
+                if (!CheckFileAndHandler("video", file.FileName, file.InputStream, ref contentType, ref fileType, ref handlerId, ref saveFileType, ref saveFilePath, ref saveFileApi, ref saveFileId, ref saveFileName, ref response))
                 {
                     continue;
                 }
@@ -200,7 +200,7 @@ namespace FileService.Web.Controllers
                 //初始化参数
                 string contentType = "", fileType = "", handlerId = "", saveFileType = "", saveFileApi = "", saveFilePath = "", saveFileName = "";
                 ObjectId saveFileId = ObjectId.Empty;
-                if (!CheckFileAndHandler("attachment", file.FileName, ref contentType, ref fileType, ref handlerId, ref saveFileType, ref saveFilePath, ref saveFileApi, ref saveFileId, ref saveFileName, ref response))
+                if (!CheckFileAndHandler("attachment", file.FileName, file.InputStream, ref contentType, ref fileType, ref handlerId, ref saveFileType, ref saveFilePath, ref saveFileApi, ref saveFileId, ref saveFileName, ref response))
                 {
                     continue;
                 }
@@ -338,7 +338,7 @@ namespace FileService.Web.Controllers
                 saveFileApi = "",
                 saveFileName = fileId.ToString() + replaceFileModel.File.FileName.GetFileExt();
             List<FileResponse> response = new List<FileResponse>();
-            if (!CheckFileAndHandler("attachment", replaceFileModel.File.FileName, ref contentType, ref fileType, ref handlerId, ref saveFileType, ref saveFilePath, ref saveFileApi, ref fileId, ref saveFileName, ref response))
+            if (!CheckFileAndHandler("attachment", replaceFileModel.File.FileName, replaceFileModel.File.InputStream, ref contentType, ref fileType, ref handlerId, ref saveFileType, ref saveFilePath, ref saveFileApi, ref fileId, ref saveFileName, ref response))
             {
                 return new ResponseModel<string>(ErrorCode.success, "");
             }

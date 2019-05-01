@@ -410,6 +410,10 @@ namespace FileService.Util
             {
                 return "PNG";
             }
+            else if (headerCode.StartsWith("3C3F786D6C"))
+            {
+                return "XML";
+            }
             else
             {
                 return "";
@@ -418,7 +422,7 @@ namespace FileService.Util
         public static string GetHeaderInfo(Stream stream)
         {
             byte[] buffer = new byte[8];
-            BinaryReader reader = new BinaryReader(stream);
+            BinaryReader reader = new BinaryReader(stream, Encoding.UTF8, true);
             reader.Read(buffer, 0, buffer.Length);
             reader.Close();
             StringBuilder sb = new StringBuilder();
