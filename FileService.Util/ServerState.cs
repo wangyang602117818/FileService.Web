@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Management;
 namespace FileService.Util
 {
@@ -22,8 +23,6 @@ namespace FileService.Util
                 MemoryTotal = Math.Round(Convert.ToDouble(objMgmt["totalphysicalmemory"].ToString()) / 1024 / 1024 / 1024).ToString();
             }
             Disk = GetDirvesInfo();
-            //string cacheDir = AppDomain.CurrentDomain.BaseDirectory + AppSettings.tempFileDir;
-            //CacheFiles = GetFileConvertSize(DirectorySize(new DirectoryInfo(cacheDir))) + "/" + Directory.GetDirectories(cacheDir).Length;
             string logDir = AppDomain.CurrentDomain.BaseDirectory + @"App_Data\Log\";
             LogFiles = GetCacheFiles(logDir);
             return this;
@@ -31,6 +30,27 @@ namespace FileService.Util
         public static string GetCacheFiles(string path)
         {
             return GetFileConvertSize(DirectorySize(new DirectoryInfo(path))) + "/" + Directory.GetDirectories(path).Length;
+        }
+        public static int DeleteAllCacheFiles(string saveFilePath,IEnumerable<string> notDeletePaths)
+        {
+            int count = 0;
+            DirectoryInfo[] directoryInfos = new DirectoryInfo(saveFilePath).GetDirectories();
+            for (var i = 0; i < directoryInfos.Length; i++)
+            {
+                FileInfo[] fileInfo = directoryInfos[i].GetFiles();
+                if (fileInfo.Length == 0) Directory.Delete(directoryInfos[i].FullName);
+                for (var j = 0; j < fileInfo.Length; j++)
+                {
+                    var fullPath = fileInfo[j].FullName;
+                    if (notDeletePaths.Contains(fullPath)) continue;
+                    if (System.IO.File.Exists(fullPath))
+                    {
+                        count++;
+                        System.IO.File.Delete(fullPath);
+                    }
+                }
+            }
+            return count;
         }
         public static string GetDirvesInfo()
         {

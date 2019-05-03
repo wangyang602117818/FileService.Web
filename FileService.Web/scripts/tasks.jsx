@@ -164,9 +164,8 @@ class Tasks extends React.Component {
             task: null,
             taskFileExists: false,
             cacheFullPath: "",
-            state: localStorage.taskState || "",
-            rightTips: culture.empty_cache_file,
-            rightTipsDisabled: false
+            state: localStorage.taskState || ""
+            
         };
         this.url = urls.tasks.getUrl;
         this.storagePageShowKey = "task";
@@ -231,21 +230,6 @@ class Tasks extends React.Component {
             }
         }
     }
-    onRightTipsClick(e) {
-        if (this.state.rightTipsDisabled == true) return;
-        if (window.confirm(" " + culture.empty_cache_file + " ?")) {
-            this.setState({ rightTipsDisabled: true, rightTips: culture.deleting + "..." });
-            http.get(urls.tasks.deleteAllCacheFileUrl, function (data) {
-                if (data.code == 0) {
-                    this.getData();
-                    this.setState({ rightTips: culture.delete + culture.file + "(" + data.count + ")" });
-                    setTimeout(() => { this.setState({ rightTipsDisabled: false, rightTips: culture.empty_cache_file }) }, 2000);
-                } else {
-                    alert(data.message);
-                }
-            }.bind(this));
-        }
-    }
     onFromChange(e) {
         var from = e.target.value;
         this.setState({ from: from }, function () {
@@ -269,9 +253,6 @@ class Tasks extends React.Component {
                     type="task"
                     show={this.state.pageShow}
                     count={this.state.data.count}
-                    rightTips={this.state.rightTips}
-                    rightTipsClick={this.onRightTipsClick.bind(this)}
-                    rightTipsDisabled={this.state.rightTipsDisabled}
                     state={this.state.state}
                     onFilterClick={this.onFilterClick.bind(this)}
                     onShowChange={this.onPageShow.bind(this)} />

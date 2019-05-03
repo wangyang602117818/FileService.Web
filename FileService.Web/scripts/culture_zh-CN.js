@@ -67,6 +67,7 @@ var culture = {
     startTime: "启动时间",
     endTime: "结束时间",
     empty: "清空",
+    empty_task_count: "清空任务总数",
 
     of: "/",
     page: "页",

@@ -390,7 +390,7 @@ namespace FileService.Util
         public static string GetImageType2(Stream stream)
         {
             string headerCode = GetHeaderInfo(stream).ToUpper();
-            if (headerCode.StartsWith("FFD8FFE0"))
+            if (headerCode.StartsWith("FFD8FF"))
             {
                 return "JPG";
             }

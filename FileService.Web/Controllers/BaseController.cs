@@ -57,13 +57,11 @@ namespace FileService.Web.Controllers
         }
         protected string GetTempFilePath(BsonDocument task)
         {
-            //return AppDomain.CurrentDomain.BaseDirectory + AppSettings.tempFileDir + task["Folder"].ToString() + "\\" + task["FileId"].ToString() + Path.GetExtension(task["FileName"].ToString());
-            return null;
+            return task["Folder"].ToString() + "\\" + task["FileId"].ToString() + Path.GetExtension(task["FileName"].ToString());
         }
         protected string GetTempFilePath(string folder, string fileId, string fileName)
         {
-            //return AppDomain.CurrentDomain.BaseDirectory + AppSettings.tempFileDir + folder + "\\" + fileId + Path.GetExtension(fileName);
-            return null;
+            return folder + "\\" + fileId + Path.GetExtension(fileName);
         }
         protected ActionResult GetFilePreview(string id, BsonDocument filePreview)
         {
@@ -117,7 +115,7 @@ namespace FileService.Web.Controllers
             {
                 Dictionary<string, string> header = new Dictionary<string, string>();
                 header.Add("path", saveFilePath);
-                UploadTransforModel result = JsonConvert.DeserializeObject<UploadTransforModel>(new HttpRequestHelper().PostFile(saveFileApi, "file", fileName, file.InputStream, null, header).Result);
+                UploadTransforModel<string> result = JsonConvert.DeserializeObject<UploadTransforModel<string>>(new HttpRequestHelper().PostFile(saveFileApi + "/home/savefile", "file", fileName, file.InputStream, null, header).Result);
                 if (result.code != 0)
                 {
                     response.Add(new FileResponse()
@@ -131,13 +129,105 @@ namespace FileService.Web.Controllers
             }
             return true;
         }
+        protected int DeleteCacheFiles(BsonDocument handler)
+        {
+            string handlerId = handler["HandlerId"].AsString;
+            string saveFileType = handler["SaveFileType"].AsString;
+            string saveFilePath = handler["SaveFilePath"].AsString;
+            string saveFileApi = handler["SaveFileApi"].AsString;
+            IEnumerable<BsonDocument> list = task.FindCacheFiles(handlerId);
+            List<string> notDeletePaths = new List<string>();
+            foreach (BsonDocument bson in list)
+            {
+                notDeletePaths.Add(saveFilePath + GetTempFilePath(bson));
+            }
+            DirectoryInfo[] directoryInfos = new DirectoryInfo(saveFilePath).GetDirectories();
+            if (saveFileType == "path")
+            {
+                return ServerState.DeleteAllCacheFiles(saveFilePath, notDeletePaths);
+            }
+            else
+            {
+                Dictionary<string, string> header = new Dictionary<string, string>();
+                header.Add("path", saveFilePath);
+                string result = new HttpRequestHelper().Post(saveFileApi + "/home/deletecachefiles", new { notdeletepaths = notDeletePaths }, header).Result;
+                UploadTransforModel<int> resultModel = JsonConvert.DeserializeObject<UploadTransforModel<int>>(result);
+                return resultModel.result;
+            }
+        }
+        protected bool CheckFileExists(string relativePath, string handlerId)
+        {
+            BsonDocument handler = converter.GetHandler(handlerId);
+            string saveFileType = handler["SaveFileType"].AsString;
+            string saveFilePath = handler["SaveFilePath"].AsString;
+            string saveFileApi = handler["SaveFileApi"].AsString;
+            string fullPath = saveFilePath + relativePath;
+            if (saveFileType == "path")
+            {
+                if (System.IO.File.Exists(fullPath)) return true;
+            }
+            else
+            {
+                Dictionary<string, string> header = new Dictionary<string, string>();
+                header.Add("path", saveFilePath);
+                string result = new HttpRequestHelper().Post(saveFileApi + "/home/checkfileexists", new { relativePath = relativePath }, header).Result;
+                UploadTransforModel<bool> resultModel = JsonConvert.DeserializeObject<UploadTransforModel<bool>>(result);
+                return resultModel.result;
+            }
+            return false;
+        }
+        protected bool DeleteCacheFile(string relativePath, string handlerId)
+        {
+            BsonDocument handler = converter.GetHandler(handlerId);
+            string saveFileType = handler["SaveFileType"].AsString;
+            string saveFilePath = handler["SaveFilePath"].AsString;
+            string saveFileApi = handler["SaveFileApi"].AsString;
+            string fullPath = saveFilePath + relativePath;
+            if (saveFileType == "path")
+            {
+                if (System.IO.File.Exists(fullPath)) System.IO.File.Delete(fullPath);
+                return true;
+            }
+            else
+            {
+                Dictionary<string, string> header = new Dictionary<string, string>();
+                header.Add("path", saveFilePath);
+                string result = new HttpRequestHelper().Post(saveFileApi + "/home/deletecachefile", new { relativePath = relativePath }, header).Result;
+                UploadTransforModel<bool> resultModel = JsonConvert.DeserializeObject<UploadTransforModel<bool>>(result);
+                return resultModel.result;
+            }
+        }
+        protected Stream GetCacheFile(string relativePath)
+        {
+            IEnumerable<BsonDocument> handlers = converter.FindAll();
+            foreach (BsonDocument handler in handlers)
+            {
+                string saveFileType = handler["SaveFileType"].AsString;
+                string saveFilePath = handler["SaveFilePath"].AsString;
+                string saveFileApi = handler["SaveFileApi"].AsString;
+                string fullPath = saveFilePath + relativePath;
+                if (saveFileType == "path")
+                {
+                    if (System.IO.File.Exists(fullPath)) return new FileStream(fullPath, FileMode.Open, FileAccess.Read);
+                }
+                else
+                {
+                    Dictionary<string, string> header = new Dictionary<string, string>();
+                    header.Add("path", saveFilePath);
+                    DownloadFileItem downloadFileItem = new HttpRequestHelper().GetFile(saveFileApi + "/home/getcachefile?relativePath=" + relativePath, header);
+                    if (!string.IsNullOrEmpty(downloadFileItem.FileName))
+                        return downloadFileItem.FileStream;
+                }
+            }
+            return new MemoryStream();
+        }
         protected bool CheckFileAndHandler(string method, string fileName, Stream stream, ref string contentType, ref string fileType, ref string handlerId, ref string saveFileType, ref string saveFilePath, ref string saveFileApi, ref ObjectId saveFileId, ref string saveFileName, ref List<FileResponse> response)
         {
             string ext = fileName.GetFileExt().ToLower();
             switch (method)
             {
                 case "image":
-                    if (!extension.CheckFileExtensionImage(ext, ref contentType, ref fileType)|| ImageExtention.GetImageType2(stream) == "")
+                    if (!extension.CheckFileExtensionImage(ext, ref contentType, ref fileType) || ImageExtention.GetImageType2(stream) == "")
                     {
                         response.Add(new FileResponse()
                         {
@@ -372,8 +462,9 @@ namespace FileService.Web.Controllers
             IEnumerable<BsonDocument> tasks = task.FindCacheFiles(fileWrapId);
             foreach (BsonDocument task in tasks)
             {
-                string fullPath = GetTempFilePath(task);
-                if (System.IO.File.Exists(fullPath)) System.IO.File.Delete(fullPath);
+                string relativePath = GetTempFilePath(task);
+                string handlerId = task["HandlerId"].ToString();
+                DeleteCacheFile(relativePath, handlerId);
             }
             //删除共享信息
             shared.DeleteShared(fileWrapId);

@@ -35,8 +35,8 @@ namespace FileService.Web.Controllers
             Response.AddHeader("Accept-Ranges", "bytes");
             if (fileId == ObjectId.Empty)
             {
-                string tempFilePath = GetTempFilePath(fileWrap["CreateTime"].ToUniversalTime().ToString("yyyyMMdd"), fileWrap["_id"].ToString(), fileName);
-                FileStream fileStream = new FileStream(tempFilePath, FileMode.Open, FileAccess.Read);
+                string relativePath = GetTempFilePath(fileWrap["CreateTime"].ToUniversalTime().ToString("yyyyMMdd"), fileWrap["_id"].ToString(), fileName);
+                Stream fileStream = GetCacheFile(relativePath);
                 return File(fileStream, contentType, fileName);
             }
             else

@@ -31,10 +31,10 @@ namespace FileService.Web.Models
         }
 
     }
-    public class UploadTransforModel
+    public class UploadTransforModel<T>
     {
         public int code { get; set; }
         public string message { get; set; }
-        public string result { get; set; }
+        public T result { get; set; }
     }
 }

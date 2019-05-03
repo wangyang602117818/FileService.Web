@@ -67,6 +67,7 @@ var culture = {
     startTime: "StartTime",
     endTime: "EndTime",
     empty: "Empty",
+    empty_task_count: "EmptyTaskCount",
 
     of: "of",
     page: "Page",

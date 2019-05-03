@@ -1,4 +1,6 @@
-﻿using FileService.Util;
+﻿using FileService.Model;
+using FileService.Util;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -56,6 +58,69 @@ namespace FileService.Web
                     return reader.ReadToEndAsync();
                 }
             }
+        }
+        public Task<string> Post(string url, object paras, Dictionary<string, string> headers)
+        {
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
+            request.Method = "post";
+            request.ContentType = "application/json";
+            if (headers != null)
+            {
+                foreach (var kv in headers)
+                {
+                    request.Headers.Add(kv.Key, kv.Value);
+                }
+            }
+            using (var streamWriter = new StreamWriter(request.GetRequestStream()))
+            {
+                string json = JsonConvert.SerializeObject(paras);
+                streamWriter.Write(json);
+            }
+            using (WebResponse response = request.GetResponse())
+            {
+                using (StreamReader reader = new StreamReader(response.GetResponseStream()))
+                {
+                    return reader.ReadToEndAsync();
+                }
+            }
+        }
+        public Task<string> Get(string url, Dictionary<string, string> headers)
+        {
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
+            request.Method = "get";
+            if (headers != null)
+            {
+                foreach (var kv in headers)
+                {
+                    request.Headers.Add(kv.Key, kv.Value);
+                }
+            }
+            WebResponse response = request.GetResponse();
+            StreamReader reader = new StreamReader(response.GetResponseStream());
+            return reader.ReadToEndAsync();
+        }
+        public DownloadFileItem GetFile(string url, Dictionary<string, string> headers)
+        {
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
+            request.Method = "get";
+            if (headers != null)
+            {
+                foreach (var kv in headers)
+                {
+                    request.Headers.Add(kv.Key, kv.Value);
+                }
+            }
+            WebResponse response = request.GetResponse();
+            if (response.Headers["Content-Disposition"] == null) return new DownloadFileItem() { };
+            string name = response.Headers["Content-Disposition"].Split('=')[1].Trim('"');
+            return new DownloadFileItem()
+            {
+                FileName = name,
+                ContentType = response.ContentType,
+                ContentLength = response.ContentLength,
+                UserTsTime = response.Headers["TsTime"] ?? "",
+                FileStream = response.GetResponseStream()
+            };
         }
     }
 }

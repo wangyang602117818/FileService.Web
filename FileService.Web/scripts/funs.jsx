@@ -150,7 +150,7 @@ var urls = {
     videoListUrl: appDomain + "data/getvideolist",
     imageListUrl: appDomain + "data/getimagelist",
     redoUrl: appDomain + "admin/redo",
-    emptyUrl: appDomain + "admin/empty",
+    emptyTaskCountUrl: appDomain + "admin/emptytaskcount",
     getHexCodeUrl: appDomain + "admin/gethexcode",
     getObjectIdUrl: appDomain + "data/getobjectid",
     getFileIconUrl: appDomain + "admin/getfileicon",
@@ -173,7 +173,10 @@ var urls = {
         getUrl: appDomain + "admin/getlogs"
     },
     handlers: {
-        getUrl: appDomain + "admin/gethandlers"
+        getUrl: appDomain + "admin/gethandlers",
+        getCacheFilesUrl: appDomain + "server/getcachefiles",
+        deleteHandlerCacheFilesUrl: appDomain + "server/deletehandlercachefiles",
+        deleteAllCacheFilesUrl: appDomain +"server/deleteallcachefiles"
     },
     tasks: {
         getUrl: appDomain + "admin/gettasks",
@@ -185,8 +188,7 @@ var urls = {
         getAllHandlersUrl: appDomain + "admin/getallhandlers",
         addVideoTaskUrl: appDomain + "admin/addvideotask",
         addThumbnailTaskUrl: appDomain + "admin/addthumbnailtask",
-        deleteCacheFileUrl: appDomain + "admin/deletecachefile",
-        deleteAllCacheFileUrl: appDomain + "admin/deleteallcachefile",
+        deleteCacheFileUrl: appDomain + "admin/deletecachefile"
     },
     resources: {
         getUrl: appDomain + "admin/getfiles",

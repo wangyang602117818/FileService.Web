@@ -533,36 +533,33 @@ namespace FileService.Web.Controllers
         public ActionResult GetTaskById(string id)
         {
             BsonDocument document = task.FindOne(ObjectId.Parse(id));
-            //string fullPath = GetTempFilePath(document);
-            //if (System.IO.File.Exists(fullPath))
-            //{
-            //    document.Add("FileExists", true);
-            //}
-            //else
-            //{
-            //    document.Add("FileExists", false);
-            //}
-            //document.Add("RelativePath", "$\\" + AppSettings.tempFileDir + document["Folder"].ToString() + "\\" + document["FileId"].ToString() + Path.GetExtension(document["FileName"].ToString()));
+            string relativePath = GetTempFilePath(document);
+            string handlerId = document["HandlerId"].AsString;
+            if (CheckFileExists(relativePath, handlerId))
+            {
+                document.Add("FileExists", true);
+            }
+            else
+            {
+                document.Add("FileExists", false);
+            }
+            document.Add("RelativePath", "$\\" + relativePath);
             return new ResponseModel<BsonDocument>(ErrorCode.success, document);
         }
         public ActionResult DeleteCacheFile(string id)
         {
-            //Log(id, "DeleteCacheFile");
-            //BsonDocument document = task.FindOne(ObjectId.Parse(id));
-            //if (Convert.ToInt32(document["State"]) == 2)
-            //{
-            //    string fullPath = GetTempFilePath(document);
-            //    if (System.IO.File.Exists(fullPath))
-            //    {
-            //        System.IO.File.Delete(fullPath);
-            //    }
-            //    return new ResponseModel<string>(ErrorCode.success, "");
-            //}
-            //else
-            //{
-            //    return new ResponseModel<string>(ErrorCode.task_not_complete, "");
-            //}
-            return null;
+            Log(id, "DeleteCacheFile");
+            BsonDocument document = task.FindOne(ObjectId.Parse(id));
+            string relativePath = GetTempFilePath(document);
+            string handlerId = document["HandlerId"].AsString;
+            if (Convert.ToInt32(document["State"]) == 2)
+            {
+                return new ResponseModel<bool>(ErrorCode.success, DeleteCacheFile(relativePath, handlerId));
+            }
+            else
+            {
+                return new ResponseModel<string>(ErrorCode.task_not_complete, "");
+            }
         }
         public ActionResult DeleteAllCacheFile()
         {
@@ -726,7 +723,7 @@ namespace FileService.Web.Controllers
             return new ResponseModel<string>(ErrorCode.server_exception, "");
         }
         [Authorize(Roles = "admin")]
-        public ActionResult Empty(string handlerId)
+        public ActionResult EmptyTaskCount(string handlerId)
         {
             if (converter.Empty(handlerId))
             {

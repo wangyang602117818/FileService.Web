@@ -77,7 +77,7 @@ class HandlerItem extends React.Component {
                 <td title={parseBsonTime(this.props.handler.StartTime)}>{parseBsonTimeNoneSecond(this.props.handler.StartTime)}</td>
                 <td title={parseBsonTime(this.props.handler.EndTime)}>{parseBsonTimeNoneSecond(this.props.handler.EndTime)}</td>
                 <td title={parseBsonTime(this.props.handler.CreateTime)}>{parseBsonTimeNoneSecond(this.props.handler.CreateTime)}</td>
-                <td><i className="iconfont icon-empty" onClick={this.props.empty} id={this.props.handler.HandlerId}></i></td>
+                <td title={culture.empty_task_count}><i className="iconfont icon-empty" onClick={this.props.empty} id={this.props.handler.HandlerId}></i></td>
             </tr>
         )
     }
@@ -92,18 +92,22 @@ class MonitorData extends React.Component {
                 <table className="table">
                     <thead>
                         <tr>
-                            <th width="15%">{culture.handler}</th>
-                            <th width="15%">{culture.type}</th>
-                            <th width="35%">{culture.api}</th>
-                            <th width="35%">{culture.path}</th>
+                            <th width="10%">{culture.handler}</th>
+                            <th width="10%">{culture.type}</th>
+                            <th width="10%">{culture.cacheFiles}</th>
+                            <th width="25%">{culture.api}</th>
+                            <th width="40%">{culture.path}</th>
+                            <th width="5%" title={culture.empty_cache_file}>{culture.empty}</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
                             <td>{this.props.handlerId}</td>
                             <td>{this.props.type}</td>
+                            <td>{this.props.cacheFiles}</td>
                             <td>{this.props.api}</td>
                             <td>{this.props.path}</td>
+                            <td title={culture.empty_cache_file}><i className="iconfont icon-empty" onClick={this.props.emptyCacheFile} ></i></td>
                         </tr>
                     </tbody>
                 </table>
@@ -152,14 +156,17 @@ class Handlers extends React.Component {
             handlerId: "",
             machine: "",
             api: "",
-            type:"",
+            type: "",
             path: "",
+            cacheFiles: "",
             machineShow: false,
             machineToggle: true,
             pageCount: 1,
             filter: "",
             startTime: "",
             endTime: "",
+            rightTips: culture.empty_cache_file,
+            rightTipsDisabled: false,
             data: { code: 0, message: "", count: 0, result: [] }
         };
         this.url = urls.handlers.getUrl;
@@ -169,8 +176,8 @@ class Handlers extends React.Component {
     empty(e) {
         var handlerId = e.target.id;
         var that = this;
-        if (window.confirm(" Empty ?")) {
-            http.get(urls.emptyUrl + "?handlerId=" + handlerId, function (data) {
+        if (window.confirm(culture.empty_task_count + "?")) {
+            http.get(urls.emptyTaskCountUrl + "?handlerId=" + handlerId, function (data) {
                 if (data.code == 0) {
                     that.getData();
                 } else {
@@ -179,19 +186,71 @@ class Handlers extends React.Component {
             });
         }
     }
+    emptyCacheFile(e) {
+        if (window.confirm(culture.empty_cache_file + "?")) {
+            http.get(urls.handlers.deleteAllCacheFilesUrl + "?handlerId=" + this.state.handlerId, function (data) {
+                if (data.code == 0) {
+                    this.getCacheData(
+                        this.state.handlerId,
+                        this.state.machine,
+                        this.state.api,
+                        this.state.path,
+                        this.state.type);
+                }
+            }.bind(this));
+        }
+    }
     onIdClick(e) {
         var handlerId = e.target.dataset.handlerid || e.target.parentElement.dataset.handlerid;
         var machine = e.target.dataset.machine || e.target.parentElement.dataset.machine;
         var api = e.target.dataset.api || e.target.parentElement.dataset.api;
         var path = e.target.dataset.path || e.target.parentElement.dataset.path;
         var type = e.target.dataset.type || e.target.parentElement.dataset.type;
-        this.setState({ machineShow: true, handlerId: handlerId, machine: machine, type: type, api: api, path: path });
+        this.getCacheData(handlerId, machine, api, path, type);
+    }
+    getCacheData(handlerId, machine, api, path, type) {
+        http.get(urls.handlers.getCacheFilesUrl + "?handlerId=" + handlerId, function (data) {
+            if (data.code == 0) {
+                this.setState({
+                    machineShow: true,
+                    handlerId: handlerId,
+                    machine: machine,
+                    type: type,
+                    api: api,
+                    path: path,
+                    cacheFiles: data.result
+                });
+            }
+        }.bind(this));
+    }
+    onRightTipsClick(e) {
+        if (this.state.rightTipsDisabled == true) return;
+        if (window.confirm(" " + culture.empty_cache_file + " ?")) {
+            this.setState({ rightTipsDisabled: true, rightTips: culture.deleting + "..." });
+            http.get(urls.handlers.deleteAllCacheFilesUrl, function (data) {
+                if (data.code == 0) {
+                    this.getData();
+                    this.setState({ rightTips: culture.delete + culture.file + "(" + data.result + ")" });
+                    setTimeout(() => {
+                        this.setState({
+                            rightTipsDisabled: false,
+                            rightTips: culture.empty_cache_file
+                        })
+                    }, 2000);
+                } else {
+                    alert(data.message);
+                }
+            }.bind(this));
+        }
     }
     render() {
         return (
             <div className="main">
                 <h1>{culture.handlers}</h1>
                 <TitleArrow title={culture.all + culture.handlers} show={this.state.pageShow}
+                    rightTips={this.state.rightTips}
+                    rightTipsClick={this.onRightTipsClick.bind(this)}
+                    rightTipsDisabled={this.state.rightTipsDisabled}
                     count={this.state.data.count}
                     onShowChange={this.onPageShow.bind(this)} />
                 <Pagination show={this.state.pageShow}
@@ -214,7 +273,14 @@ class Handlers extends React.Component {
                         onShowChange={e => { this.setState({ machineToggle: !this.state.machineToggle }) }} /> : null
                 }
                 {this.state.machineShow ?
-                    <MonitorData show={this.state.machineToggle} handlerId={this.state.handlerId} type={this.state.type} api={this.state.api} path={this.state.path} /> : null
+                    <MonitorData show={this.state.machineToggle}
+                        handlerId={this.state.handlerId}
+                        type={this.state.type}
+                        api={this.state.api}
+                        path={this.state.path}
+                        cacheFiles={this.state.cacheFiles}
+                        emptyCacheFile={this.emptyCacheFile.bind(this)}
+                    /> : null
                 }
 
             </div>

@@ -27,6 +27,10 @@ namespace FileService.Business
                 return mongoData.UpdateByHanderId(HandlerId, this.ToBsonDocument());
             }
         }
+        public BsonDocument GetHandler(string handlerId)
+        {
+            return mongoData.FindByHandler(handlerId);
+        }
         public bool UpdateStatesByHanderId(string handlerId, BsonArray array)
         {
             return mongoData.UpdateStatesByHanderId(handlerId, array);
