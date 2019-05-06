@@ -72,6 +72,7 @@ namespace FileService.Web.Controllers
             if (saveFileType == "path")
             {
                 cacheFile = ServerState.GetCacheFiles(saveFilePath);
+                return new ResponseModel<string>(ErrorCode.success, cacheFile);
             }
             else
             {
