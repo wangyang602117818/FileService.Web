@@ -25,6 +25,8 @@
             <div className="top">
                 <div className="logo">
                     <img src={urls.logoUrl} />
+                    <span className="split">|</span>
+                    <span className="txt">File Management System (UAT)</span>
                 </div>
                 <div className="user">
                     <span className="user_tip">{culture.user}:</span>

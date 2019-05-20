@@ -238,6 +238,7 @@
     <Content Include="image\audio.png" />
     <Content Include="image\pdf.png" />
     <Content Include="image\ppt.png" />
+    <Content Include="image\PwC-logo.svg" />
     <Content Include="image\text.png" />
     <Content Include="image\user.svg" />
     <Content Include="image\video.png" />

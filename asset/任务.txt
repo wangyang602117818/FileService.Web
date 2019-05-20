@@ -68,3 +68,6 @@ User:
 	CreateTime:"",
 	
 }
+
+给manage 加上id
+不是 appdmin 则隐藏

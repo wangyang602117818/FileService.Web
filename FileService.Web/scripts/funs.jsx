@@ -124,7 +124,7 @@ var colorList = ["#C35C00", "#E1301E", "#968c6d", "#ffb600", "#602020", "#6d6e71
 var appDomain = appPath == "/" ? "/" : appPath + "/";
 var baseUrl = window.location.protocol + "//" + window.location.host + appDomain;
 var urls = {
-    logoUrl: appDomain + "image/logo.png",
+    logoUrl: appDomain + "image/PwC-logo.svg",
     loginUrl: appDomain+"admin/login",
     homeUrl: appDomain + "admin/index",
     logOutUrl: appDomain + "admin/logout",
