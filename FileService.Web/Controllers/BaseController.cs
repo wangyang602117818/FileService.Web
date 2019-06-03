@@ -272,6 +272,7 @@ namespace FileService.Web.Controllers
                 {
                     FileId = ObjectId.Empty.ToString(),
                     FileName = fileName,
+                    Message = "no handler",
                     SubFiles = new List<SubFileItem>()
                 });
                 Log4Net.InfoLog("handler not exists");

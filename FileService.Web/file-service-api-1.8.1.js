@@ -322,10 +322,16 @@ FileClient.prototype = {
         }
         return result;
     },
-    trimEnd: function (str) {
-        return str.replace(/.{1}$/, "");
+    trimEnd: function (str, char) {
+        var reTag = new RegExp((char || ' ') + "+$", "gi");
+        return str.replace(reTag, "");
     },
-    trimStart: function (str) {
-        return str.replace(/^.{1}/, "");
+    trimStart: function (str, char) {
+        var reTag = new RegExp("^" + (char || ' ') + "+", "gi");
+        return str.replace(reTag, "");
+    },
+    trim: function (str, char) {
+        var reTag = new RegExp("^" + (char || ' ') + "+|" + (char || ' ') + "+$", "gi");
+        return str.replace(reTag, "");
     }
 }

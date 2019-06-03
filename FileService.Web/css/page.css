@@ -173,12 +173,12 @@
 
     .echart_main_con .echart_app_resourcetask, .echart_main_con .echart_app_alldownload {
         flex: 1;
-        margin-left: 5px;
+        margin-left: 8px;
     }
 
     .echart_main_con .echart_app_resource, .echart_main_con .echart_app_task, .echart_main_con .echart_app_download {
         flex: 1;
-        margin-left: 5px;
+        margin-left: 8px;
     }
 
 .echart_split {

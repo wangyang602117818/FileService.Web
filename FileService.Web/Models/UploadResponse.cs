@@ -11,6 +11,7 @@ namespace FileService.Web.Models
         public string FileId { get; set; }
         public string FileName { get; set; }
         public long FileSize { get; set; }
+        public string Message { get; set; }
         public IEnumerable<SubFileItem> SubFiles { get => subFiles; set => subFiles = value; }
     }
     public class SubFileItem

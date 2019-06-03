@@ -76,7 +76,7 @@
                     if (a[0] > b[0]) return 1;
                     return 0;
                 });
-                that.myChartResource.setOption(getEchartOptionLine(xData, culture.resource_task_count_by_date, "5%", legendData));
+                that.myChartResource.setOption(getEchartOptionLine(xData, culture.resource_task_count_by_date, "6%", legendData));
                 that.myChartResource.setOption({
                     series: [{
                         name: culture.resource_count,
@@ -115,7 +115,7 @@
                     if (a[0] > b[0]) return 1;
                     return 0;
                 });
-                that.myChartDownload.setOption(getEchartOptionLine(xData, culture.download_count_by_date, "5%", legendData));
+                that.myChartDownload.setOption(getEchartOptionLine(xData, culture.download_count_by_date, "6%", legendData));
                 that.myChartDownload.setOption({
                     series: [{
                         name: culture.downloads,
