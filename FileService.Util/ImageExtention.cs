@@ -1,13 +1,12 @@
 ﻿using FileService.Model;
-using ImageProcessor;
 using System;
+using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Xml;
 
 namespace FileService.Util
 {
@@ -83,7 +82,7 @@ namespace FileService.Util
             ext = ".jpg";
             return ImageFormat.Jpeg;
         }
-        public static Stream GenerateThumbnail(string fileName, Stream stream, ImageModelEnum model, ImageFormat outputFormat, ImageQuality imageQuality, int x, int y, ref int width, ref int height)
+        public static Stream GenerateThumbnail(string fileName, string fullPath, Stream stream, ImageModelEnum model, ImageFormat outputFormat, ImageQuality imageQuality, int x, int y, ref int width, ref int height)
         {
             string fileExt = Path.GetExtension(fileName).ToLower();
             bool isGif = GetImageType(stream) == ".gif";
@@ -119,20 +118,16 @@ namespace FileService.Util
                         case ImageModelEnum.cut:
                             cut = true;
                             break;
-                            //case ImageModelEnum.quality:
-                            //    width = image.Width;
-                            //    height = image.Height;
-                            //    return isGif ? ConvertImageGif(image, 0, 0, width, height, false) : ConvertImageQuality(image, imageQuality);
                     }
                     if (width > image.Width) width = image.Width;
                     if (height > image.Height) height = image.Height;
-                    Stream imageStream = isGif ? ConvertImageGif(image, x, y, width, height, cut) : ConvertImage(image, outputFormat, x, y, width, height, cut);
+                    Stream imageStream = isGif ? ConvertImageGif(fullPath, image, x, y, width, height, cut) : ConvertImage(image, outputFormat, x, y, width, height, cut);
                     if (!isGif)
                     {
                         Image imageQ = Image.FromStream(imageStream);
                         return ConvertImageQuality(imageQ, imageQuality);
                     }
-                    return isGif ? ConvertImageGif(image, x, y, width, height, cut) : ConvertImage(image, outputFormat, x, y, width, height, cut);
+                    return isGif ? ConvertImageGif(fullPath, image, x, y, width, height, cut) : ConvertImage(image, outputFormat, x, y, width, height, cut);
                 }
             }
             else
@@ -140,7 +135,7 @@ namespace FileService.Util
                 return GenerateSvg(fileName, stream, model, ref width, ref height);
             }
         }
-        public static Stream GenerateFilePreview(string fileName, int fileHW, Stream stream, ImageModelEnum model, ImageFormat outputFormat, ref int width, ref int height)
+        public static Stream GenerateFilePreview(string fileName, int fileHW, string fullPath, Stream stream, ImageModelEnum model, ImageFormat outputFormat, ref int width, ref int height)
         {
             string fileExt = Path.GetExtension(fileName).ToLower();
             bool isGif = GetImageType(stream) == ".gif";
@@ -161,7 +156,7 @@ namespace FileService.Util
                         height = image.Height > fileHW ? fileHW : image.Height; //原图比指定的高度要高，就是用指定的高度，否则使用原图高
                         width = image.Width * height / image.Height;
                     }
-                    return isGif ? ConvertImageGif(image, 0, 0, width, height, false) : ConvertImage(image, outputFormat, 0, 0, width, height, false);
+                    return isGif ? ConvertImageGif(fullPath, image, 0, 0, width, height, false) : ConvertImage(image, outputFormat, 0, 0, width, height, false);
                 }
             }
             else
@@ -320,6 +315,43 @@ namespace FileService.Util
             }
             stream.Position = 0;
             return stream;
+        }
+        private static Stream ConvertImageGif(string fullPath, Image image, int x, int y, int width, int height, bool cut)
+        {
+            if (!File.Exists(fullPath)) image.Save(fullPath);
+            string exportPath = Path.GetDirectoryName(fullPath) + "\\" + Path.GetFileNameWithoutExtension(fullPath) + "." + width.ToString() + "_" + height.ToString() + Path.GetExtension(fullPath);
+            string cmd = "";
+            if (cut)
+            {
+                cmd = "\"" + AppSettings.ExePath + "\"" + " -hide_banner -v warning -i \"" + fullPath + "\" -filter_complex \"[0:v] crop=" + width + ":" + height + ":" + x + ":" + y + ",split[a][b]; [a] palettegen=reserve_transparent=on:transparency_color=ffffff[p];[b][p] paletteuse\" \"" + exportPath + "\"";
+            }
+            else
+            {
+                cmd = "\"" + AppSettings.ExePath + "\"" + " -hide_banner -v warning -i \"" + fullPath + "\" -filter_complex \"[0:v] scale=" + width + ":" + height + ",split[a][b]; [a] palettegen=reserve_transparent=on:transparency_color=ffffff[p];[b][p] paletteuse\" \"" + exportPath + "\"";
+            }
+
+            Process process = new Process()
+            {
+                StartInfo = new ProcessStartInfo(cmd)
+                {
+                    UseShellExecute = false,
+                    CreateNoWindow = true,
+                    RedirectStandardError = true
+                }
+            };
+            process.Start();
+            process.WaitForExit();
+            MemoryStream memoryStream = new MemoryStream();
+            if (File.Exists(exportPath))
+            {
+                using (FileStream fileStream = new FileStream(exportPath, FileMode.Open, FileAccess.Read))
+                {
+                    fileStream.CopyTo(memoryStream);
+                }
+                File.Delete(exportPath);
+            }
+            memoryStream.Position = 0;
+            return memoryStream;
         }
         //private static Stream ConvertImageGif(Image image, int x, int y, int width, int height, bool cut)
         //{

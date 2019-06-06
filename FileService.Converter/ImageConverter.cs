@@ -4,7 +4,6 @@ using FileService.Util;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization;
 using System;
-using System.Collections.Generic;
 using System.Drawing.Imaging;
 using System.IO;
 
@@ -43,9 +42,8 @@ namespace FileService.Converter
             {
                 if (File.Exists(fullPath))
                 {
-                    fileStream = new FileStream(fullPath, FileMode.Open, FileAccess.Read);
-                    SaveFileFromSharedFolder(from, fileType, fileWrapId, fileName, fileStream, format);
-                    fileStream.Position = 0;
+                    SaveFileFromSharedFolder(from, fileType, fileWrapId, fullPath, fileName, format);
+                    fileStream= new FileStream(fullPath, FileMode.Open, FileAccess.Read);
                 }
                 //任务肯定是后加的
                 else
@@ -57,7 +55,7 @@ namespace FileService.Converter
             if (fileStream != null && output.Id != ObjectId.Empty)
             {
                 int twidth = output.Width, theight = output.Height;
-                using (Stream stream = ImageExtention.GenerateThumbnail(fileName, fileStream, output.Model, format, output.ImageQuality, output.X, output.Y, ref twidth, ref theight))
+                using (Stream stream = ImageExtention.GenerateThumbnail(fileName, fullPath, fileStream, output.Model, format, output.ImageQuality, output.X, output.Y, ref twidth, ref theight))
                 {
                     thumbnail.Replace(output.Id,
                         from,

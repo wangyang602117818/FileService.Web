@@ -36,7 +36,7 @@ namespace FileService.Converter
             {
                 id = mongoFile.Upload(fileName, fileStream, null);
                 //生成文件缩略图
-                if (type == "image") GenerateFilePreview(from, id, fileName, fileStream, format);
+                if (type == "image") GenerateFilePreview(from, id, fileName, fullPath, fileStream, format);
                 if (type == "video") ConvertVideoCpPreview(from, id, fileWrapId, fullPath, fileName, true);
             }
             else
@@ -48,23 +48,23 @@ namespace FileService.Converter
             fileStream.Dispose();
             return filesWrap.UpdateFileId(fileWrapId, id);
         }
-        public bool SaveFileFromSharedFolder(string from, string type, ObjectId filesWrapId, string fileName, Stream fileStream, ImageFormat format)
-        {
-            string md5 = fileStream.GetMD5();
-            BsonDocument file = files.GetFileByMd5(md5);
-            ObjectId id = ObjectId.Empty;
-            if (file == null)
-            {
-                id = mongoFile.Upload(fileName, fileStream, null);
-                //生成文件缩略图
-                if (type == "image") GenerateFilePreview(from, id, fileName, fileStream, format);
-            }
-            else
-            {
-                id = file["_id"].AsObjectId;
-            }
-            return filesWrap.UpdateFileId(filesWrapId, id);
-        }
+        //public bool SaveFileFromSharedFolder(string from, string type, ObjectId filesWrapId, string fileName, Stream fileStream, ImageFormat format)
+        //{
+        //    string md5 = fileStream.GetMD5();
+        //    BsonDocument file = files.GetFileByMd5(md5);
+        //    ObjectId id = ObjectId.Empty;
+        //    if (file == null)
+        //    {
+        //        id = mongoFile.Upload(fileName, fileStream, null);
+        //        //生成文件缩略图
+        //        if (type == "image") GenerateFilePreview(from, id, fileName, fileStream, format);
+        //    }
+        //    else
+        //    {
+        //        id = file["_id"].AsObjectId;
+        //    }
+        //    return filesWrap.UpdateFileId(filesWrapId, id);
+        //}
         public void ConvertVideoCpPreview(string from, ObjectId fileId, ObjectId fileWrapId, string fullPath, string fileName, bool filePreview)
         {
             BsonDocument fileWrap = filesWrap.FindOne(fileWrapId);
@@ -110,7 +110,7 @@ namespace FileService.Converter
                     videoCapture.Replace(document);
                     if (filePreview)
                     {
-                        GenerateFilePreview(from, fileId, fileName, imageStream, ImageFormat.Jpeg);
+                        GenerateFilePreview(from, fileId, fileName, cpPath, imageStream, ImageFormat.Jpeg);
                     }
                 }
             }
@@ -118,16 +118,16 @@ namespace FileService.Converter
             process.Dispose();
             File.Delete(cpPath);
         }
-        public void GenerateFilePreview(string from, ObjectId fileId, string fileName, Stream fileStream, ImageFormat format)
+        public void GenerateFilePreview(string from, ObjectId fileId, string fileName, string fullPath, Stream fileStream, ImageFormat format)
         {
             fileStream.Position = 0;
             int width = 0, height = 0;
-            using (Stream stream = ImageExtention.GenerateFilePreview(fileName, 80, fileStream, ImageModelEnum.scale, format, ref width, ref height))
+            using (Stream stream = ImageExtention.GenerateFilePreview(fileName, 80, fullPath, fileStream, ImageModelEnum.scale, format, ref width, ref height))
             {
                 filePreview.Replace(fileId, from, stream.Length, width, height, fileName, stream.ToBytes());
             }
             fileStream.Position = 0;
-            using (Stream stream = ImageExtention.GenerateFilePreview(fileName, 50, fileStream, ImageModelEnum.scale, format, ref width, ref height))
+            using (Stream stream = ImageExtention.GenerateFilePreview(fileName, 50, fullPath, fileStream, ImageModelEnum.scale, format, ref width, ref height))
             {
                 filePreviewMobile.Replace(fileId, from, stream.Length, width, height, fileName, stream.ToBytes());
             }

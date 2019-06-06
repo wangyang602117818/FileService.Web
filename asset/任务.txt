@@ -32,11 +32,7 @@ Keras
 
 mongodb://127.0.0.1:27017,127.0.0.1:27018/admin
 
-net use \\YWANG363PRI4\FileServiceTempFiles\ wy999999999 /user:"Yang X Wang"
-			
-net use * /delete
-
-
+ffmpeg -hide_banner -v warning -i logo.gif -filter_complex "[0:v] scale=320:-1:flags=lanczos,split [a][b]; [a] palettegen=reserve_transparent=on:transparency_color=ffffff [p]; [b][p] paletteuse" logo-320.gif
 
 数据源
 本地数据源:
