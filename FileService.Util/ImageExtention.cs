@@ -341,6 +341,8 @@ namespace FileService.Util
             };
             process.Start();
             process.WaitForExit();
+            process.Close();
+            process.Dispose();
             MemoryStream memoryStream = new MemoryStream();
             if (File.Exists(exportPath))
             {
