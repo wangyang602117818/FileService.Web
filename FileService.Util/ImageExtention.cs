@@ -84,11 +84,13 @@ namespace FileService.Util
         }
         public static Stream GenerateThumbnail(string fileName, string fullPath, Stream stream, ImageModelEnum model, ImageFormat outputFormat, ImageQuality imageQuality, int x, int y, ref int width, ref int height)
         {
-            string fileExt = Path.GetExtension(fileName).ToLower();
-            bool isGif = GetImageType(stream) == ".gif";
-            bool isSvg = fileExt == ".svg" ? true : false;
+            string type = GetImageType2(stream);
             bool cut = false;
-            if (!isSvg)
+            if (type == "XML")
+            {
+                return GenerateSvg(fileName, stream, model, ref width, ref height);
+            }
+            else
             {
                 using (Image image = Image.FromStream(stream))
                 {
@@ -121,26 +123,27 @@ namespace FileService.Util
                     }
                     if (width > image.Width) width = image.Width;
                     if (height > image.Height) height = image.Height;
-                    Stream imageStream = isGif ? ConvertImageGif(fullPath, image, x, y, width, height, cut) : ConvertImage(image, outputFormat, x, y, width, height, cut);
-                    if (!isGif)
+                    Stream imageStream = type == "GIF" ? ConvertImageGif(fullPath, image, x, y, width, height, cut) : ConvertImage(image, outputFormat, x, y, width, height, cut);
+                    if (type != "GIF")
                     {
                         Image imageQ = Image.FromStream(imageStream);
                         return ConvertImageQuality(imageQ, imageQuality);
                     }
-                    return isGif ? ConvertImageGif(fullPath, image, x, y, width, height, cut) : ConvertImage(image, outputFormat, x, y, width, height, cut);
+                    return type == "GIF" ? ConvertImageGif(fullPath, image, x, y, width, height, cut) : ConvertImage(image, outputFormat, x, y, width, height, cut);
                 }
-            }
-            else
-            {
-                return GenerateSvg(fileName, stream, model, ref width, ref height);
             }
         }
         public static Stream GenerateFilePreview(string fileName, int fileHW, string fullPath, Stream stream, ImageModelEnum model, ImageFormat outputFormat, ref int width, ref int height)
         {
-            string fileExt = Path.GetExtension(fileName).ToLower();
-            bool isGif = GetImageType(stream) == ".gif";
-            bool isSvg = fileExt == ".svg" ? true : false;
-            if (!isSvg)
+            string type = GetImageType2(stream);
+            bool isGif = type == "GIF";
+            if (type == "XML")
+            {
+                width = fileHW;
+                height = fileHW;
+                return GenerateSvg(fileName, stream, model, ref width, ref height);
+            }
+            else
             {
                 using (Image image = Image.FromStream(stream))
                 {
@@ -159,12 +162,6 @@ namespace FileService.Util
                     return isGif ? ConvertImageGif(fullPath, image, 0, 0, width, height, false) : ConvertImage(image, outputFormat, 0, 0, width, height, false);
                 }
             }
-            else
-            {
-                width = fileHW;
-                height = fileHW;
-                return GenerateSvg(fileName, stream, model, ref width, ref height);
-            }
         }
         private static Stream GenerateSvg(string fileName, Stream stream, ImageModelEnum model, ref int width, ref int height)
         {
@@ -181,6 +178,19 @@ namespace FileService.Util
             switch (model)
             {
                 case ImageModelEnum.scale:
+                    if (width == 0 && height == 0)
+                    {
+                        width = swidth;
+                        height = sheight;
+                    }
+                    else if (width == 0 && height > 0)
+                    {
+                        width = swidth * height / sheight;
+                    }
+                    else if (width > 0 && height == 0)
+                    {
+                        height = sheight * width / swidth;
+                    }
                     break;
                 case ImageModelEnum.height:
                     if (sheight != 0 && swidth != 0)
@@ -411,16 +421,16 @@ namespace FileService.Util
                 b.SetPropertyItem(a.PropertyItems[i]);
             }
         }
-        private static string GetImageType(Stream stream)
-        {
-            byte[] buffer = new byte[10];
-            stream.Read(buffer, 0, 10);
-            if (buffer[0] == 'G' && buffer[1] == 'I' && buffer[2] == 'F') return ".gif";
-            if (buffer[1] == 'P' && buffer[2] == 'N' && buffer[3] == 'G') return ".png";
-            if (buffer[6] == 'J' && buffer[7] == 'F' && buffer[8] == 'I' && buffer[9] == 'F') return ".jpg";
-            if (buffer[0] == 'B' && buffer[1] == 'M') return ".bmp";
-            return null;
-        }
+        //private static string GetImageType(Stream stream)
+        //{
+        //    byte[] buffer = new byte[10];
+        //    stream.Read(buffer, 0, 10);
+        //    if (buffer[0] == 'G' && buffer[1] == 'I' && buffer[2] == 'F') return ".gif";
+        //    if (buffer[1] == 'P' && buffer[2] == 'N' && buffer[3] == 'G') return ".png";
+        //    if (buffer[6] == 'J' && buffer[7] == 'F' && buffer[8] == 'I' && buffer[9] == 'F') return ".jpg";
+        //    if (buffer[0] == 'B' && buffer[1] == 'M') return ".bmp";
+        //    return null;
+        //}
         public static string GetImageType2(Stream stream)
         {
             string headerCode = GetHeaderInfo(stream).ToUpper();

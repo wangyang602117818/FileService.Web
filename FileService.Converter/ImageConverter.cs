@@ -6,6 +6,7 @@ using MongoDB.Bson.Serialization;
 using System;
 using System.Drawing.Imaging;
 using System.IO;
+using System.Threading;
 
 namespace FileService.Converter
 {
@@ -24,7 +25,6 @@ namespace FileService.Converter
             string fileType = taskItem.Message["Type"].AsString;
             ObjectId fileWrapId = taskItem.Message["FileId"].AsObjectId;
             BsonDocument fileWrap = filesWrap.FindOne(fileWrapId);
-
             ImageOutPut output = BsonSerializer.Deserialize<ImageOutPut>(outputDocument);
             string outputExt = "";
             ImageFormat format = ImageFormat.Jpeg;
@@ -43,7 +43,7 @@ namespace FileService.Converter
                 if (File.Exists(fullPath))
                 {
                     SaveFileFromSharedFolder(from, fileType, fileWrapId, fullPath, fileName, format);
-                    fileStream= new FileStream(fullPath, FileMode.Open, FileAccess.Read);
+                    fileStream = new FileStream(fullPath, FileMode.Open, FileAccess.Read);
                 }
                 //任务肯定是后加的
                 else
