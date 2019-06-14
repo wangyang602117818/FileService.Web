@@ -233,9 +233,10 @@ namespace FileService.Web.Controllers
                         {
                             FileId = ObjectId.Empty.ToString(),
                             FileName = fileName,
+                            Message = "image type not allowed",
                             SubFiles = new List<SubFileItem>()
                         });
-                        Log4Net.InfoLog("image extension not allowed");
+                        Log4Net.InfoLog("image type not allowed");
                         return false;
                     }
                     break;
@@ -246,9 +247,10 @@ namespace FileService.Web.Controllers
                         {
                             FileId = ObjectId.Empty.ToString(),
                             FileName = fileName,
+                            Message = "video type not allowed",
                             SubFiles = new List<SubFileItem>()
                         });
-                        Log4Net.InfoLog("video extension not allowed");
+                        Log4Net.InfoLog("video type not allowed");
                         return false;
                     }
                     break;
@@ -258,9 +260,10 @@ namespace FileService.Web.Controllers
                         response.Add(new FileResponse()
                         {
                             FileId = ObjectId.Empty.ToString(),
-                            FileName = fileName
+                            FileName = fileName,
+                            Message = "attachment type not allowed",
                         });
-                        Log4Net.InfoLog("attachment extension not allowed");
+                        Log4Net.InfoLog("attachment type not allowed");
                         return false;
                     }
                     break;
