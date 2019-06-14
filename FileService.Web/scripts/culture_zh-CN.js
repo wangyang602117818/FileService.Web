@@ -103,6 +103,7 @@ var culture = {
     high: "高",
     low: "低",
 
+    none:"无",
     quality: "质量",
     original: "原画",
     lower: "稍低",

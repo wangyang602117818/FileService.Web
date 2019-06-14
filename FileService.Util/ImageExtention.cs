@@ -124,7 +124,7 @@ namespace FileService.Util
                     if (width > image.Width) width = image.Width;
                     if (height > image.Height) height = image.Height;
                     Stream imageStream = type == "GIF" ? ConvertImageGif(fullPath, image, x, y, width, height, cut) : ConvertImage(image, outputFormat, x, y, width, height, cut);
-                    if (type != "GIF")
+                    if (type != "GIF" && imageQuality != ImageQuality.None)
                     {
                         Image imageQ = Image.FromStream(imageStream);
                         return ConvertImageQuality(imageQ, imageQuality);

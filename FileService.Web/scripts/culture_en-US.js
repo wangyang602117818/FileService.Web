@@ -103,6 +103,7 @@ var culture = {
     high: "High",
     low: "Low",
 
+    none: "None",
     quality: "Quality",
     original: "Original",
     lower: "Lower",

@@ -24,8 +24,9 @@ namespace FileService.Model
     }
     public enum ImageQuality
     {
-        High = 0,
-        Medium = 1,
-        Low = 2
+        None = 0,
+        High = 1,
+        Medium = 2,
+        Low = 3
     }
 }

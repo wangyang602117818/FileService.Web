@@ -241,23 +241,30 @@
                     <tr>
                         <td>{culture.image_quality}</td>
                         <td colSpan="3">
-                            <input type="radio" value="0" name="imageQuality" id="high"
+                            <input type="radio" value="0" name="imageQuality" id="none"
                                 onChange={this.imageQualityChange.bind(this)}
-                                checked={this.state.convert.imageQuality == "0" ? true : false} /><label htmlFor="high">{culture.high}</label>
+                                checked={this.state.convert.imageQuality == "0" ? true : false} /><label htmlFor="none">{culture.none}</label>
                             {'\u00A0'}
                             {'\u00A0'}
                             {'\u00A0'}
                             {'\u00A0'}
-                            <input type="radio" value="1" name="imageQuality" id="medium"
+                            <input type="radio" value="1" name="imageQuality" id="high"
                                 onChange={this.imageQualityChange.bind(this)}
-                                checked={this.state.convert.imageQuality == "1" ? true : false} /><label htmlFor="medium">{culture.medium}</label>
+                                checked={this.state.convert.imageQuality == "1" ? true : false} /><label htmlFor="high">{culture.high}</label>
                             {'\u00A0'}
                             {'\u00A0'}
                             {'\u00A0'}
                             {'\u00A0'}
-                            <input type="radio" value="2" name="imageQuality" id="low"
+                            <input type="radio" value="2" name="imageQuality" id="medium"
                                 onChange={this.imageQualityChange.bind(this)}
-                                checked={this.state.convert.imageQuality == "2" ? true : false} /><label htmlFor="low">{culture.low}</label>
+                                checked={this.state.convert.imageQuality == "2" ? true : false} /><label htmlFor="medium">{culture.medium}</label>
+                            {'\u00A0'}
+                            {'\u00A0'}
+                            {'\u00A0'}
+                            {'\u00A0'}
+                            <input type="radio" value="3" name="imageQuality" id="low"
+                                onChange={this.imageQualityChange.bind(this)}
+                                checked={this.state.convert.imageQuality == "3" ? true : false} /><label htmlFor="low">{culture.low}</label>
                         </td>
                     </tr>
                     <tr>
