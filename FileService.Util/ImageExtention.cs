@@ -82,13 +82,13 @@ namespace FileService.Util
             ext = ".jpg";
             return ImageFormat.Jpeg;
         }
-        public static Stream GenerateThumbnail(string fileName, string fullPath, Stream stream, ImageModelEnum model, ImageFormat outputFormat, ImageQuality imageQuality, int x, int y, ref int width, ref int height)
+        public static Stream GenerateThumbnail(string fullPath, Stream stream, ImageModelEnum model, ImageFormat outputFormat, ImageQuality imageQuality, int x, int y, ref int width, ref int height)
         {
             string type = GetImageType2(stream);
             bool cut = false;
             if (type == "XML")
             {
-                return GenerateSvg(fileName, stream, model, ref width, ref height);
+                return GenerateSvg(stream, model, ref width, ref height);
             }
             else
             {
@@ -133,7 +133,7 @@ namespace FileService.Util
                 }
             }
         }
-        public static Stream GenerateFilePreview(string fileName, int fileHW, string fullPath, Stream stream, ImageModelEnum model, ImageFormat outputFormat, ref int width, ref int height)
+        public static Stream GenerateFilePreview(int fileHW, string fullPath, Stream stream, ImageModelEnum model, ImageFormat outputFormat, ref int width, ref int height)
         {
             string type = GetImageType2(stream);
             bool isGif = type == "GIF";
@@ -141,7 +141,7 @@ namespace FileService.Util
             {
                 width = fileHW;
                 height = fileHW;
-                return GenerateSvg(fileName, stream, model, ref width, ref height);
+                return GenerateSvg(stream, model, ref width, ref height);
             }
             else
             {
@@ -163,7 +163,7 @@ namespace FileService.Util
                 }
             }
         }
-        private static Stream GenerateSvg(string fileName, Stream stream, ImageModelEnum model, ref int width, ref int height)
+        private static Stream GenerateSvg(Stream stream, ImageModelEnum model, ref int width, ref int height)
         {
             string text = stream.ToStr();
             string pattern = @"<svg\s*(.|\n)+?>";

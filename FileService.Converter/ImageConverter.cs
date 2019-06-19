@@ -55,7 +55,7 @@ namespace FileService.Converter
             if (fileStream != null && output.Id != ObjectId.Empty)
             {
                 int twidth = output.Width, theight = output.Height;
-                using (Stream stream = ImageExtention.GenerateThumbnail(fileName, fullPath, fileStream, output.Model, format, output.ImageQuality, output.X, output.Y, ref twidth, ref theight))
+                using (Stream stream = ImageExtention.GenerateThumbnail(fullPath, fileStream, output.Model, format, output.ImageQuality, output.X, output.Y, ref twidth, ref theight))
                 {
                     thumbnail.Replace(output.Id,
                         from,

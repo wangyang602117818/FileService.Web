@@ -122,12 +122,12 @@ namespace FileService.Converter
         {
             fileStream.Position = 0;
             int width = 0, height = 0;
-            using (Stream stream = ImageExtention.GenerateFilePreview(fileName, 80, fullPath, fileStream, ImageModelEnum.scale, format, ref width, ref height))
+            using (Stream stream = ImageExtention.GenerateFilePreview( 80, fullPath, fileStream, ImageModelEnum.scale, format, ref width, ref height))
             {
                 filePreview.Replace(fileId, from, stream.Length, width, height, fileName, stream.ToBytes());
             }
             fileStream.Position = 0;
-            using (Stream stream = ImageExtention.GenerateFilePreview(fileName, 50, fullPath, fileStream, ImageModelEnum.scale, format, ref width, ref height))
+            using (Stream stream = ImageExtention.GenerateFilePreview(50, fullPath, fileStream, ImageModelEnum.scale, format, ref width, ref height))
             {
                 filePreviewMobile.Replace(fileId, from, stream.Length, width, height, fileName, stream.ToBytes());
             }
