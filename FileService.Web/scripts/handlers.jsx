@@ -188,7 +188,7 @@ class Handlers extends React.Component {
     }
     emptyCacheFile(e) {
         if (window.confirm(culture.empty_cache_file + "?")) {
-            http.get(urls.handlers.deleteAllCacheFilesUrl + "?handlerId=" + this.state.handlerId, function (data) {
+            http.get(urls.handlers.deleteHandlerCacheFilesUrl + "?handlerId=" + this.state.handlerId, function (data) {
                 if (data.code == 0) {
                     this.getCacheData(
                         this.state.handlerId,

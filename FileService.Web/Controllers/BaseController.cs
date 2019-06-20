@@ -141,7 +141,6 @@ namespace FileService.Web.Controllers
             {
                 notDeletePaths.Add(saveFilePath + GetTempFilePath(bson));
             }
-            DirectoryInfo[] directoryInfos = new DirectoryInfo(saveFilePath).GetDirectories();
             if (saveFileType == "path")
             {
                 return ServerState.DeleteAllCacheFiles(saveFilePath, notDeletePaths);
