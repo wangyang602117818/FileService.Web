@@ -11,7 +11,7 @@ namespace FileService.Business
         {
             return mongoData.CountByFileId(fileId);
         }
-        public void InsertImage(ObjectId id, ObjectId fileId, string fileName, long length, string from, int downloads, string fileType, string contentType, BsonArray thumbnail, BsonArray access, int expiredDay, string owner)
+        public void InsertImage(ObjectId id, ObjectId fileId, string fileName, long length, int width, int height, string from, int downloads, string fileType, string contentType, BsonArray thumbnail, BsonArray access, int expiredDay, string owner)
         {
             BsonDocument filesWrap = new BsonDocument()
                 {
@@ -19,6 +19,8 @@ namespace FileService.Business
                     {"FileId",fileId },
                     {"FileName",fileName },
                     {"Length",length },
+                    {"Width",width },
+                    {"Height",height },
                     {"From",from },
                     {"Download",downloads },
                     {"FileType",fileType},

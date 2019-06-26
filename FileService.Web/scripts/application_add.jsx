@@ -62,6 +62,7 @@
             y: convert.y,
             width: convert.width,
             height: convert.height,
+            imageQuality: convert.imageQuality
         });
         this.state.thumbnailsDisplay.push({
             format: convertDisplay.formatName,
@@ -71,6 +72,7 @@
             y: convertDisplay.y,
             width: convertDisplay.width,
             height: convertDisplay.height,
+            imageQuality: convert.imageQuality
         });
         this.setState({
             thumbnails: this.state.thumbnails,
@@ -260,6 +262,7 @@ class UpdateApplication extends React.Component {
             y: convert.y,
             width: convert.width,
             height: convert.height,
+            imageQuality: convert.imageQuality
         });
         this.state.thumbnailsDisplay.push({
             format: convertDisplay.formatName,
@@ -269,6 +272,7 @@ class UpdateApplication extends React.Component {
             y: convertDisplay.y,
             width: convertDisplay.width,
             height: convertDisplay.height,
+            imageQuality: convert.imageQuality
         });
         this.setState({
             thumbnails: this.state.thumbnails,

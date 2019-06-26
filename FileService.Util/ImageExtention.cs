@@ -1,5 +1,6 @@
 ﻿using FileService.Model;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Drawing2D;
@@ -474,5 +475,11 @@ namespace FileService.Util
                 sb.Append(b.ToString("X2"));
             return sb.ToString();
         }
+        public static Size GetImageSize(this Stream stream)
+        {
+            Image image = Image.FromStream(stream);
+            stream.Position = 0;
+            return image.Size;
+        } 
     }
 }

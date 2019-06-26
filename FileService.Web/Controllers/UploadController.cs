@@ -6,6 +6,7 @@ using MongoDB.Bson;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Web;
@@ -62,12 +63,15 @@ namespace FileService.Web.Controllers
                         });
                 }
                 BsonArray access = new BsonArray(accessList.Select(a => a.ToBsonDocument()));
+                Size size = file.InputStream.GetImageSize();
                 //上传文件
                 if (!SaveFile(saveFileType, saveFilePath, saveFileApi, saveFileName, file, ref response)) continue;
                 filesWrap.InsertImage(saveFileId,
                     ObjectId.Empty,
                     file.FileName.GetFileName(),
                     file.InputStream.Length,
+                    size.Width,
+                    size.Height,
                     Request.Headers["AppName"],
                     0,
                     fileType,

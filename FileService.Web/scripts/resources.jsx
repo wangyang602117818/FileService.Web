@@ -708,7 +708,7 @@ class Resources extends React.Component {
     onResourceSelected(e) {
         var id = e.target.getAttribute("data-fileid");
         for (var i = 0; i < this.state.data.result.length; i++) {
-            if (this.state.data.result[i]._id.$oid == id) {
+            if (this.state.data.result[i]._id.$oid.removeHTML() == id) {
                 if (this.state.selectedList.indexOf(id) == -1) {
                     this.state.selectedList.push(id);
                 } else {
