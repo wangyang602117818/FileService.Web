@@ -379,10 +379,15 @@ namespace FileService.Web.Controllers
         {
             Log(id, "RemoveFile");
             ObjectId fileWrapId = ObjectId.Parse(id);
-            BsonDocument fileWrap = filesWrap.FindOne(fileWrapId);
-            if (filesWrap == null) return false;
             task.RemoveByFileId(fileWrapId);
             filesWrap.Remove(fileWrapId);
+            return true;
+        }
+        protected bool RemoveFiles(IEnumerable<string> ids)
+        {
+            IEnumerable<ObjectId> fileWrapIds = ids.Select(id => ObjectId.Parse(id));
+            task.RemoveByFileIds(fileWrapIds);
+            filesWrap.Removes(fileWrapIds);
             return true;
         }
         protected void RestoreFile(string id)

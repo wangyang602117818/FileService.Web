@@ -900,17 +900,32 @@ namespace FileService.Web.Controllers
         [Authorize(Roles = "admin")]
         public ActionResult Remove(string id)
         {
-            RemoveFile(id);
-            return new ResponseModel<string>(ErrorCode.success, "");
+            if (RemoveFile(id))
+            {
+                return new ResponseModel<string>(ErrorCode.success, "");
+            }
+            else
+            {
+                return new ResponseModel<string>(ErrorCode.server_exception, "");
+            }
         }
         [Authorize(Roles = "admin")]
         public ActionResult Removes(IEnumerable<string> ids)
         {
-            foreach (string id in ids)
+            if (RemoveFiles(ids))
             {
-                RemoveFile(id);
+                return new ResponseModel<string>(ErrorCode.success, "");
             }
-            return new ResponseModel<string>(ErrorCode.success, "");
+            else
+            {
+                return new ResponseModel<string>(ErrorCode.server_exception, "");
+            }
+        }
+        [Authorize(Roles = "admin")]
+        public ActionResult RemoveAppFiles(string appName)
+        {
+            IEnumerable<string> ids = filesWrap.Find(new BsonDocument("From", appName)).Select(s => s["_id"].ToString());
+            return Removes(ids);
         }
         [Authorize(Roles = "admin")]
         public ActionResult Restore(string id)
@@ -956,7 +971,6 @@ namespace FileService.Web.Controllers
             }
             return new ResponseModel<string>(ErrorCode.success, "");
         }
-        
         public ActionResult M(string filename)
         {
             string path = AppDomain.CurrentDomain.BaseDirectory+ "image\\"+ filename;

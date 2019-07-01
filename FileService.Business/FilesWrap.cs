@@ -103,6 +103,10 @@ namespace FileService.Business
         {
             return mongoData.Remove(id);
         }
+        public bool Removes(IEnumerable<ObjectId> ids)
+        {
+            return mongoData.Removes(ids);
+        }
         public bool Restore(ObjectId id)
         {
             return mongoData.Restore(id);

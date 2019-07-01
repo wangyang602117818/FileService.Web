@@ -176,7 +176,7 @@ class TitleArrowComponent extends React.Component {
                     {this.props.type == "file" ?
                         <i className="iconfont icon-del" title={culture.delete}
                             onClick={this.props.removeByIds}
-                            style={{ display: this.props.delShow ? "inline-block" : "none" }} /> : null
+                            style={{ display: (this.props.delShow || this.props.from) ? "inline-block" : "none" }} /> : null
                     }
                     {this.props.listType == "list" ?
                         <i className='iconfont icon-listicon'

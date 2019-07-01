@@ -132,6 +132,7 @@ var urls = {
     previewConvert: appDomain + "admin/previewconvert",
     removeUrl: appDomain + "admin/remove",
     removeFilesUrl: appDomain + "admin/removes",
+    removeAppFilesUrl: appDomain +"admin/removeappfiles",
     deleteFileUrl: appDomain + "admin/delete",
     deleteFilesUrl: appDomain + "admin/deletefiles",
     restoreFileUrl: appDomain + "admin/restore",
