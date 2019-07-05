@@ -10,7 +10,7 @@ using System.Web.Mvc;
 namespace FileService.Web.Controllers
 {
     [AllowAnonymous]
-    //[AppAuthorize]
+    [AppAuthorize]
     public class DataController : BaseController
     {
         public ActionResult GetFileAccess(string id)
