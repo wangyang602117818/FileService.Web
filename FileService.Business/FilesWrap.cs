@@ -163,6 +163,10 @@ namespace FileService.Business
         {
             return mongoData.UpdateFlagAttachment(id, fileId, flag);
         }
+        public bool UpdateThumbFileId(ObjectId id, ObjectId subId, ObjectId thumbFileId)
+        {
+            return mongoData.UpdateThumbFileId(id, subId, thumbFileId);
+        }
         public bool UpdateSubFileId(ObjectId id, ObjectId oldFileId, ObjectId newFileId)
         {
             return mongoData.UpdateSubFileId(id, oldFileId, newFileId);

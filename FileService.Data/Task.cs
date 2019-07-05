@@ -22,6 +22,15 @@ namespace FileService.Data
         {
             return MongoCollection.UpdateOne(FilterBuilder.Eq("_id", id), Builders<BsonDocument>.Update.Set("Output._id", outputId)).IsAcknowledged;
         }
+        public BsonDocument GetByOutPutId(ObjectId outputId)
+        {
+            return MongoCollection.Find(FilterBuilder.Eq("Output._id", outputId)).FirstOrDefault();
+        }
+        public bool UpdateThumbFileId(ObjectId outputId, ObjectId thumbFileId)
+        {
+            var filter = FilterBuilder.Eq("Output._id", outputId);
+            return MongoCollection.UpdateOne(filter, Builders<BsonDocument>.Update.Set("Output.FileId", thumbFileId)).IsAcknowledged;
+        }
         public bool Compeleted(ObjectId id)
         {
             return MongoCollection.UpdateOne(FilterBuilder.Eq("_id", id), Builders<BsonDocument>.Update.Set("State", TaskStateEnum.completed).Set("StateDesc", TaskStateEnum.completed.ToString()).Set("CompletedTime", DateTime.Now).Set("Percent", 100).Inc("ProcessCount", 1)).IsAcknowledged;

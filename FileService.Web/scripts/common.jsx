@@ -168,9 +168,12 @@ class TitleArrowComponent extends React.Component {
                         <React.Fragment>
                             <i className="iconfont icon-restore"
                                 onClick={this.props.restoreFiles}
+                                style={{ display: (this.props.delShow || this.props.from) ? "inline-block" : "none" }}
                             />
                             <i className="iconfont icon-del" title={culture.delete}
-                                onClick={this.props.removeByIds} />
+                                onClick={this.props.removeByIds}
+                                style={{ display: (this.props.delShow || this.props.from) ? "inline-block" : "none" }}
+                            />
                         </React.Fragment> : null
                     }
                     {this.props.type == "file" ?

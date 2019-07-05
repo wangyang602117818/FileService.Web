@@ -125,6 +125,11 @@ namespace FileService.Data
             var filter = FilterBuilder.Eq("_id", id) & FilterBuilder.Eq("Files._id", subFileId);
             return MongoCollection.UpdateOne(filter, Builders<BsonDocument>.Update.Set("Files.$.Flag", flag)).IsAcknowledged;
         }
+        public bool UpdateThumbFileId(ObjectId id,ObjectId subId,ObjectId thumbFileId)
+        {
+            var filter = FilterBuilder.Eq("_id", id) & FilterBuilder.Eq("Thumbnail._id", subId);
+            return MongoCollection.UpdateOne(filter, Builders<BsonDocument>.Update.Set("Thumbnail.$.FileId", thumbFileId)).IsAcknowledged;
+        }
         public bool UpdateSubFileId(ObjectId id, ObjectId oldFileId, ObjectId newFileId)
         {
             var filter = FilterBuilder.Eq("_id", id) & FilterBuilder.Eq("Files._id", oldFileId);

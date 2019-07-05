@@ -10,7 +10,7 @@ using System.Web.Mvc;
 namespace FileService.Web.Controllers
 {
     [AllowAnonymous]
-    [AppAuthorize]
+    //[AppAuthorize]
     public class DataController : BaseController
     {
         public ActionResult GetFileAccess(string id)
@@ -106,8 +106,15 @@ namespace FileService.Web.Controllers
         public ActionResult GetThumbnailMetadata(string id)
         {
             BsonDocument fileWrap = filesWrap.FindOne(ObjectId.Parse(id));
-            IEnumerable<ObjectId> thumbnailIds = fileWrap["Thumbnail"].AsBsonArray.Select(s => s["_id"].AsObjectId);
-            IEnumerable<BsonDocument> thumbs = thumbnail.FindThumbnailMetadata(fileWrap["From"].ToString(), thumbnailIds);
+            IEnumerable<ObjectId> thumbnailIds = fileWrap["Thumbnail"].AsBsonArray.Select(s => s["FileId"].AsObjectId);
+            List<BsonDocument> thumbs = thumbnail.FindByIds(fileWrap["From"].ToString(), thumbnailIds).ToList();
+            foreach (BsonDocument bson in thumbs)
+            {
+                ObjectId fileId = bson["_id"].AsObjectId;
+                var thumb = fileWrap["Thumbnail"].AsBsonArray.Where(w => w["FileId"].AsObjectId == fileId).FirstOrDefault();
+                bson["_id"] = thumb["_id"];
+                bson["Flag"] = thumb["Flag"];
+            }
             return new ResponseModel<IEnumerable<BsonDocument>>(ErrorCode.success, thumbs);
         }
         public ActionResult DeleteVideoCapture(string id)
@@ -209,5 +216,6 @@ namespace FileService.Web.Controllers
         {
             return new ResponseModel<string>(ErrorCode.success, ObjectId.GenerateNewId().ToString());
         }
+        
     }
 }

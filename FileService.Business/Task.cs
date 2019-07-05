@@ -47,6 +47,14 @@ namespace FileService.Business
         {
             return mongoData.UpdateOutPutId(id, outputId);
         }
+        public BsonDocument GetByOutPutId(ObjectId outputId)
+        {
+            return mongoData.GetByOutPutId(outputId);
+        }
+        public bool UpdateThumbFileId(ObjectId outputId, ObjectId thumbFileId)
+        {
+            return mongoData.UpdateThumbFileId(outputId, thumbFileId);
+        }
         public bool Compeleted(ObjectId id)
         {
             return mongoData.Compeleted(id);

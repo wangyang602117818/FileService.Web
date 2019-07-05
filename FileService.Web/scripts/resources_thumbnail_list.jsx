@@ -8,17 +8,19 @@
                 <table className="table">
                     <thead>
                         <tr>
-                            <th width="25%">{culture.thumbnailId}</th>
-                            <th width="30%">{culture.fileName}</th>
+                            <th width="22%">{culture.thumbnailId}</th>
+                            <th width="27%">{culture.fileName}</th>
                             <th width="10%">{culture.size}</th>
-                            <th width="10%">{culture.type}</th>
-                            <th width="10%">{culture.flag}</th>
+                            <th width="5%">{culture.width}</th>
+                            <th width="5%">{culture.height}</th>
+                            <th width="8%">{culture.type}</th>
+                            <th width="8%">{culture.flag}</th>
                             <th width="5%">{culture.view}</th>
                             <th width="5%">{culture.dol}</th>
                             <th width="5%">{culture.del}</th>
                         </tr>
                     </thead>
-                    <ThumbnailFileList fileId={this.props.fileId} data={this.props.data} deleteThumbnail={this.props.deleteThumbnail} />
+                    <ThumbnailFileList fileId={this.props.fileId} fileName={this.props.fileName} data={this.props.data} deleteThumbnail={this.props.deleteThumbnail} />
                 </table>
                 <AddThumbnail
                     fileId={this.props.fileId}
@@ -62,13 +64,15 @@ class ThumbnailFileList extends React.Component {
                         return (
                             <tr key={i}>
                                 <td>{item._id.$oid}</td>
-                                <td>{item.FileName}</td>
+                                <td>{this.props.fileName}</td>
                                 <td>{convertFileSize(item.Length)}</td>
+                                <td>{item.Width}</td>
+                                <td>{item.Height}</td>
                                 <td>thumbnail</td>
                                 <td>{item.Flag}</td>
                                 <td>
                                     <i className="iconfont icon-view" onClick={this.preView.bind(this)}
-                                        id={"id=" + item.SourceId.$oid + "&filename=" + encodeURIComponent(item.FileName) + "#" + item._id.$oid}>
+                                        id={"id=" + this.props.fileId + "&filename=" + encodeURIComponent(this.props.fileName) + "#" + item._id.$oid}>
                                     </i>
                                 </td>
                                 <td>

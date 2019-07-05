@@ -43,7 +43,13 @@ namespace FileService.Web.Controllers
             foreach (HttpPostedFileBase file in uploadImgModel.Images)
             {
                 //初始化参数
-                string contentType = "", fileType = "", handlerId = "", saveFileType = "", saveFileApi = "", saveFilePath = "", saveFileName = "";
+                string contentType = "",
+                    fileType = "",
+                    handlerId = "",
+                    saveFileType = "",
+                    saveFileApi = "",
+                    saveFilePath = "",
+                    saveFileName = "";
                 ObjectId saveFileId = ObjectId.Empty;
                 //检测文件
                 if (!CheckFileAndHandler("image", file.FileName.GetFileName(), file.InputStream, ref contentType, ref fileType, ref handlerId, ref saveFileType, ref saveFilePath, ref saveFileApi, ref saveFileId, ref saveFileName, ref response))
@@ -58,6 +64,7 @@ namespace FileService.Web.Controllers
                     thumbnail.Add(new BsonDocument()
                         {
                             {"_id",thumb.Id },
+                            {"FileId",thumb.FileId },
                             {"Format",thumb.Format },
                             {"Flag", thumb.Flag}
                         });

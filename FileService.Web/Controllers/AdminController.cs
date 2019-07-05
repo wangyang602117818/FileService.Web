@@ -245,8 +245,15 @@ namespace FileService.Web.Controllers
         {
             ObjectId fileWrapId = ObjectId.Parse(id);
             BsonDocument fileWrap = filesWrap.FindOne(fileWrapId);
-            IEnumerable<ObjectId> thumbnailIds = fileWrap["Thumbnail"].AsBsonArray.Select(s => s["_id"].AsObjectId);
-            IEnumerable<BsonDocument> thumbs = thumbnail.FindByIds(fileWrap["From"].ToString(), thumbnailIds);
+            IEnumerable<ObjectId> thumbnailIds = fileWrap["Thumbnail"].AsBsonArray.Select(s => s["FileId"].AsObjectId);
+            List<BsonDocument> thumbs = thumbnail.FindByIds(fileWrap["From"].ToString(), thumbnailIds).ToList();
+            foreach (BsonDocument bson in thumbs)
+            {
+                ObjectId fileId = bson["_id"].AsObjectId;
+                var thumb = fileWrap["Thumbnail"].AsBsonArray.Where(w => w["FileId"].AsObjectId == fileId).FirstOrDefault();
+                bson["_id"] = thumb["_id"];
+                bson["Flag"] = thumb["Flag"];
+            }
             return new ResponseModel<IEnumerable<BsonDocument>>(ErrorCode.success, thumbs);
         }
         public ActionResult GetM3u8Metadata(string id)
@@ -618,7 +625,7 @@ namespace FileService.Web.Controllers
             };
             Log(updateImageTask.FileId, "UpdateImageTask");
             filesWrap.UpdateFlagImage(ObjectId.Parse(updateImageTask.FileId), ObjectId.Parse(updateImageTask.ThumbnailId), updateImageTask.Flag);
-            thumbnail.Update(ObjectId.Parse(updateImageTask.ThumbnailId), new BsonDocument("Flag", updateImageTask.Flag));
+            //thumbnail.Update(ObjectId.Parse(updateImageTask.ThumbnailId), new BsonDocument("Flag", updateImageTask.Flag));
             if (task.Update(ObjectId.Parse(updateImageTask.Id), document))
                 return new ResponseModel<BsonDocument>(ErrorCode.success, document);
             return new ResponseModel<string>(ErrorCode.server_exception, "");
@@ -936,10 +943,16 @@ namespace FileService.Web.Controllers
         [Authorize(Roles = "admin")]
         public ActionResult RestoreFiles(IEnumerable<string> ids)
         {
-            if (ids == null || ids.Count() == 0)
+            foreach (string id in ids)
             {
-                ids = filesWrap.Find(new BsonDocument("Delete", true)).Select(s => s["_id"].ToString());
+                RestoreFile(id);
             }
+            return new ResponseModel<string>(ErrorCode.success, "");
+        }
+        [Authorize(Roles = "admin")]
+        public ActionResult RestoreAppFiles(string appName)
+        {
+            IEnumerable<string> ids = filesWrap.Find(new BsonDocument("From", appName)).Select(s => s["_id"].ToString());
             foreach (string id in ids)
             {
                 RestoreFile(id);
@@ -961,10 +974,17 @@ namespace FileService.Web.Controllers
         [Authorize(Roles = "admin")]
         public ActionResult DeleteFiles(IEnumerable<string> ids)
         {
-            if (ids == null || ids.Count() == 0)
+            foreach (string id in ids)
             {
-                ids = filesWrap.Find(new BsonDocument("Delete", true)).Select(s => s["_id"].ToString());
+                DeleteFile(id);
             }
+            return new ResponseModel<string>(ErrorCode.success, "");
+        }
+        [Authorize(Roles = "admin")]
+        public ActionResult DeleteAppFiles(string appName)
+        {
+            BsonDocument filter = new BsonDocument() { { "From", appName }, { "Delete", true } };
+            IEnumerable<string> ids = filesWrap.Find(filter).Select(s => s["_id"].ToString());
             foreach (string id in ids)
             {
                 DeleteFile(id);
@@ -973,10 +993,10 @@ namespace FileService.Web.Controllers
         }
         public ActionResult M(string filename)
         {
-            string path = AppDomain.CurrentDomain.BaseDirectory+ "image\\"+ filename;
+            string path = AppDomain.CurrentDomain.BaseDirectory + "image\\" + filename;
             FileStream fileStream = new FileStream(path, FileMode.Open, FileAccess.Read);
             return Content(ImageExtention.GetImageType2(fileStream));
-           
+
         }
     }
 }

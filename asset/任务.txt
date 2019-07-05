@@ -57,3 +57,14 @@ User:
 
 给manage 加上id
 不是 appdmin 则隐藏
+
+flag=thumbnail   //150px*150px
+flag=preview     //20% quality
+flag=sliders     //50% quality
+flag=original    //80% quality
+
+flag="" or no flag //flag = thumbnail
+
+
+
+

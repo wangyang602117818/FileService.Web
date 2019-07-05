@@ -4,7 +4,9 @@ namespace FileService.Model
 {
     public class ImageOutPut
     {
+        private ObjectId fileId = ObjectId.Empty;
         public ObjectId Id { get; set; }
+        public ObjectId FileId { get => fileId; set => fileId = value; }
         public ImageOutPutFormat Format { get; set; }
         public string Flag { get; set; }
         public ImageModelEnum Model { get; set; }

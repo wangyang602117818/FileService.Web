@@ -137,6 +137,8 @@ var urls = {
     deleteFilesUrl: appDomain + "admin/deletefiles",
     restoreFileUrl: appDomain + "admin/restore",
     restoreFilesUrl: appDomain + "admin/restorefiles",
+    deleteAppFilesUrl: appDomain + "admin/deleteappfiles",
+    restoreAppFilesUrl: appDomain + "admin/restoreappfiles",
     downloadUrl: appDomain + "download/get",
     downloadConvertUrl: appDomain + "download/getconvert",
     downloadHistoryUrl: appDomain + "download/gethistory",

@@ -879,7 +879,7 @@ class Resources extends React.Component {
                         show={this.state.subFileToggle}
                         data={this.state.subFileArray}
                         fileId={this.state.fileId}
-                        fileName={this.state.fileName}
+                        fileName={this.state.innerFileName}
                         deleteThumbnail={this.deleteThumbnail.bind(this)}
                         deleteM3u8={this.deleteM3u8.bind(this)}
                     /> : null

@@ -55,6 +55,22 @@ namespace FileService.Web.Controllers
             GridFSDownloadStream stream = mongoFileConvert.DownLoad(id);
             return File(stream, stream.FileInfo.Metadata["ContentType"].AsString, stream.FileInfo.Filename);
         }
+        protected ActionResult GetThumbnailInner(ObjectId id, string fileName)
+        {
+            BsonDocument thumb = thumbnail.FindOne(id);
+            if (thumb == null)
+            {
+                return File(new MemoryStream(), "application/octet-stream");
+            }
+            else
+            {
+                if (thumb.Contains("ExpiredTime") && (thumb["CreateTime"].ToUniversalTime() >= thumb["ExpiredTime"].ToUniversalTime()))
+                {
+                    return GetFileExpired();
+                }
+                return File(thumb["File"].AsByteArray, ImageExtention.GetContentType(fileName), fileName);
+            }
+        }
         protected string GetTempFilePath(BsonDocument task)
         {
             return task["Folder"].ToString() + "\\" + task["FileId"].ToString() + Path.GetExtension(task["FileName"].ToString());
@@ -329,9 +345,11 @@ namespace FileService.Web.Controllers
         }
         protected void AddDownload(ObjectId fileWrapId)
         {
-            if (!download.AddedInOneMinute(Request.Headers["AppName"], fileWrapId, Request.Headers["UserCode"] ?? User.Identity.Name))
+            string appName = Request.Headers["AppName"]??"";
+            if (!download.AddedInOneMinute(appName, fileWrapId, Request.Headers["UserCode"] ?? User.Identity.Name))
             {
-                download.AddDownload(fileWrapId, Request.Headers["AppName"],
+                download.AddDownload(fileWrapId, 
+                    appName,
                     Request.Headers["UserCode"] ?? User.Identity.Name,
                     Request.Headers["UserIp"] ?? Request.UserHostAddress,
                     Request.Headers["UserAgent"] ?? Request.UserAgent);
@@ -407,8 +425,8 @@ namespace FileService.Web.Controllers
             if (fileWrap["FileType"] == "image" && fileWrap.Contains("Thumbnail"))
             {
                 List<ObjectId> thumbnailIds = new List<ObjectId>();
-                foreach (BsonDocument d in fileWrap["Thumbnail"].AsBsonArray) thumbnailIds.Add(d["_id"].AsObjectId);
-                thumbnail.DeleteMany(thumbnailIds);
+                foreach (BsonDocument d in fileWrap["Thumbnail"].AsBsonArray) thumbnailIds.Add(d["FileId"].AsObjectId);
+                thumbnail.DeleteByIds(fileWrap["From"].AsString, fileWrapId, thumbnailIds);
             }
             //删除 video 相关
             if (fileWrap["FileType"] == "video" && fileWrap.Contains("Videos"))
