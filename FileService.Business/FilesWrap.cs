@@ -103,6 +103,10 @@ namespace FileService.Business
         {
             return mongoData.Remove(id);
         }
+        public bool Removes(IEnumerable<ObjectId> ids)
+        {
+            return mongoData.Removes(ids);
+        }
         public bool Restore(ObjectId id)
         {
             return mongoData.Restore(id);
@@ -158,6 +162,10 @@ namespace FileService.Business
         public bool UpdateFlagAttachment(ObjectId id, ObjectId fileId, string flag)
         {
             return mongoData.UpdateFlagAttachment(id, fileId, flag);
+        }
+        public bool UpdateThumbFileId(ObjectId id, ObjectId subId, ObjectId thumbFileId)
+        {
+            return mongoData.UpdateThumbFileId(id, subId, thumbFileId);
         }
         public bool UpdateSubFileId(ObjectId id, ObjectId oldFileId, ObjectId newFileId)
         {

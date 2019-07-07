@@ -4,6 +4,7 @@ using FileService.Web.Filters;
 using MongoDB.Bson;
 using MongoDB.Driver.GridFS;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -73,9 +74,9 @@ namespace FileService.Web.Controllers
         {
             ObjectId thumbId = GetObjectIdFromId(id);
             if (thumbId == ObjectId.Empty) return File(new MemoryStream(), "application/octet-stream");
-            BsonDocument imageBson = thumbnail.FindOne(thumbId);
-            if (imageBson == null) return File(new MemoryStream(), "application/octet-stream");
-            return Get(imageBson["SourceId"].ToString());
+            BsonDocument taskBson = task.GetByOutPutId(thumbId);
+            if (taskBson == null) return File(new MemoryStream(), "application/octet-stream");
+            return Get(taskBson["FileId"].ToString());
         }
         public ActionResult GetHistory(string id)
         {
@@ -116,44 +117,8 @@ namespace FileService.Web.Controllers
         {
             ObjectId thumbId = GetObjectIdFromId(id);
             if (thumbId == ObjectId.Empty) return File(new MemoryStream(), "application/octet-stream");
-            BsonDocument thumb = thumbnail.FindOne(thumbId);
-            if (thumb == null)
-            {
-                return File(new MemoryStream(), "application/octet-stream");
-            }
-            else
-            {
-                if (thumb.Contains("ExpiredTime") && (thumb["CreateTime"].ToUniversalTime() >= thumb["ExpiredTime"].ToUniversalTime()))
-                {
-                    return GetFileExpired();
-                }
-                return File(thumb["File"].AsByteArray, ImageExtention.GetContentType(thumb["FileName"].AsString), thumb["FileName"].AsString);
-            }
-        }
-        public ActionResult GetThumbnail(string id)
-        {
-            ObjectId fileWrapId = GetObjectIdFromId(id);
-            if (fileWrapId == ObjectId.Empty) return File(new MemoryStream(), "application/octet-stream");
-            BsonDocument fileWrap = filesWrap.FindOne(fileWrapId);
-            if (fileWrap == null) return File(new MemoryStream(), "application/octet-stream");
-            if (fileWrap.Contains("ExpiredTime") && (fileWrap["CreateTime"].ToUniversalTime() >= fileWrap["ExpiredTime"].ToUniversalTime()))
-            {
-                return GetFileExpired();
-            }
-            BsonValue thumbnail = null;
-            if (fileWrap.Contains("Thumbnail") && fileWrap["Thumbnail"].AsBsonArray.FirstOrDefault() != null)
-            {
-                thumbnail = fileWrap["Thumbnail"].AsBsonArray.FirstOrDefault();
-            }
-            //没有缩略图
-            if (thumbnail == null)
-            {
-                return GetSourceFile(fileWrap["FileId"].AsObjectId, fileWrap["ContentType"].AsString, fileWrap["FileName"].AsString);
-            }
-            else
-            {
-                return Thumbnail(thumbnail["_id"].ToString());
-            }
+            BsonDocument taskBson = task.GetByOutPutId(thumbId);
+            return GetThumbnailInner(taskBson["Output"]["FileId"].AsObjectId, taskBson["FileName"].AsString);
         }
         public ActionResult GetThumbnailByTag(string id, string flag)
         {
@@ -177,7 +142,7 @@ namespace FileService.Web.Controllers
             }
             else
             {
-                return Thumbnail(thumbnail["_id"].ToString());
+                return GetThumbnailInner(thumbnail["FileId"].AsObjectId, fileWrap["FileName"].AsString);
             }
         }
         public ActionResult M3u8Pure(string id)
@@ -281,6 +246,31 @@ namespace FileService.Web.Controllers
         {
             BsonDocument file = filePreviewMobile.FindOne(ObjectId.Parse(id.Split('.')[0]));
             return GetFilePreview(id, file);
+        }
+
+        public bool AddFileId()
+        {
+            List<BsonDocument> resultFiles = filesWrap.Find(new BsonDocument("FileType", "image")).ToList();
+            foreach (var item in resultFiles)
+            {
+                BsonArray thumbnails = item["Thumbnail"].AsBsonArray;
+                foreach(BsonDocument bson in thumbnails)
+                {
+                    ObjectId id = bson["_id"].AsObjectId;
+                    if (bson.Contains("FileId")) continue;
+                    bson.Add("FileId", id);
+                }
+                filesWrap.Replace(item);
+            }
+            List<BsonDocument> resultTask = task.Find(new BsonDocument("Type", "image")).ToList();
+            foreach (var item in resultTask)
+            {
+                ObjectId id = item["Output"]["_id"].AsObjectId;
+                if (item["Output"].AsBsonDocument.Contains("FileId")) continue;
+                item["Output"].AsBsonDocument.Add("FileId", id);
+                task.Replace(item);
+            }
+            return true;
         }
     }
 }

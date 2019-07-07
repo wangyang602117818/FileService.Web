@@ -774,15 +774,27 @@ class Resources extends React.Component {
     }
     removeByIds() {
         if (window.confirm(" " + culture.delete + " ?")) {
-            http.post(urls.removeFilesUrl, { ids: this.state.selectedList }, function (data) {
-                if (data.code == 0) {
-                    this.getData();
-                    this.setState({ selectedList: [] });
-                }
-                else {
-                    alert(data.message);
-                }
-            }.bind(this));
+            if (this.state.selectedList.length > 0) {
+                http.post(urls.removeFilesUrl, { ids: this.state.selectedList }, function (data) {
+                    if (data.code == 0) {
+                        this.getData();
+                        this.setState({ selectedList: [] });
+                    }
+                    else {
+                        alert(data.message);
+                    }
+                }.bind(this));
+            } else {
+                http.get(urls.removeAppFilesUrl + "?appName=" + this.state.from, function (data) {
+                    if (data.code == 0) {
+                        this.getData();
+                        this.setState({ selectedList: [] });
+                    }
+                    else {
+                        alert(data.message);
+                    }
+                }.bind(this));
+            }
         }
     }
     downloadByIds() {
@@ -811,6 +823,7 @@ class Resources extends React.Component {
                     count={this.state.data.count}
                     listType={this.state.listType}
                     delShow={this.state.selectedList.length > 0 ? true : false}
+                    from={this.state.from}
                     removeByIds={this.removeByIds.bind(this)}
                     downloadByIds={this.downloadByIds.bind(this)}
                     orderField={this.state.orderField}
@@ -866,7 +879,7 @@ class Resources extends React.Component {
                         show={this.state.subFileToggle}
                         data={this.state.subFileArray}
                         fileId={this.state.fileId}
-                        fileName={this.state.fileName}
+                        fileName={this.state.innerFileName}
                         deleteThumbnail={this.deleteThumbnail.bind(this)}
                         deleteM3u8={this.deleteM3u8.bind(this)}
                     /> : null

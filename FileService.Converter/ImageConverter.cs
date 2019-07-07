@@ -4,6 +4,7 @@ using FileService.Util;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization;
 using System;
+using System.Collections.Generic;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Threading;
@@ -16,6 +17,7 @@ namespace FileService.Converter
         Files files = new Files();
         FilesWrap filesWrap = new FilesWrap();
         Thumbnail thumbnail = new Thumbnail();
+        Task task = new Task();
         static object o = new object();
         public override bool Convert(FileItem taskItem)
         {
@@ -57,15 +59,39 @@ namespace FileService.Converter
                 int twidth = output.Width, theight = output.Height;
                 using (Stream stream = ImageExtention.GenerateThumbnail(fullPath, fileStream, output.Model, format, output.ImageQuality, output.X, output.Y, ref twidth, ref theight))
                 {
-                    thumbnail.Replace(output.Id,
-                        from,
-                        taskItem.Message["FileId"].AsObjectId,
-                        stream.Length,
-                        twidth,
-                        theight,
-                        Path.GetFileNameWithoutExtension(fileName) + outputExt,
-                        output.Flag, stream.ToBytes(),
-                        fileWrap.Contains("ExpiredTime") ? fileWrap["ExpiredTime"].ToUniversalTime() : DateTime.MaxValue.ToUniversalTime());
+                    string md5 = stream.GetMD5();
+                    BsonDocument thumbBson = thumbnail.GetIdByMd5(from, md5);
+                    ObjectId thumbId = ObjectId.Empty;
+                    if (thumbBson == null)
+                    {
+                        thumbId = ObjectId.GenerateNewId();
+                        thumbnail.Insert(thumbId,
+                            from, 
+                            new List<ObjectId>() { fileWrapId }, 
+                            stream.Length, 
+                            twidth, 
+                            theight, 
+                            md5, 
+                            stream.ToBytes(), 
+                            fileWrap.Contains("ExpiredTime") ? fileWrap["ExpiredTime"].ToUniversalTime() : DateTime.MaxValue.ToUniversalTime());
+                    }
+                    else
+                    {
+                        thumbId = thumbBson["_id"].AsObjectId;
+                        thumbnail.AddSourceId(from, thumbId, fileWrapId);
+                    }
+                    filesWrap.UpdateThumbFileId(fileWrapId, output.Id, thumbId);
+                    task.UpdateThumbFileId(output.Id, thumbId);
+                    //thumbnail.Replace(output.Id,
+                    //    from,
+                    //    taskItem.Message["FileId"].AsObjectId,
+                    //    stream.Length,
+                    //    twidth,
+                    //    theight,
+                    //    Path.GetFileNameWithoutExtension(fileName) + outputExt,
+                    //    output.Flag,
+                    //    stream.ToBytes(),
+                    //    fileWrap.Contains("ExpiredTime") ? fileWrap["ExpiredTime"].ToUniversalTime() : DateTime.MaxValue.ToUniversalTime());
                 }
                 fileStream.Close();
                 fileStream.Dispose();

@@ -4,7 +4,6 @@
 预览其他项目的文件
 
 研究video加载事件
-thumbnail 不重复
 tcp传文件问题
 
 
@@ -44,6 +43,14 @@ User:
 	CreateTime:"",
 	
 }
-
 es返回值格式
 创建index {"acknowledged":true,"shards_acknowledged":true,"index":"cli"}
+给manage 加上id
+不是 appdmin 则隐藏
+
+flag=thumbnail   //150px*150px
+flag=preview     //20% quality
+flag=sliders     //50% quality
+flag=original    //80% quality
+
+flag="" or no flag //flag = thumbnail

@@ -103,6 +103,11 @@ namespace FileService.Util
                                 width = image.Width;
                                 height = image.Height;
                             }
+                            else if (width == height)
+                            {
+                                if (image.Width > image.Height) height = image.Height * width / image.Width;
+                                if (image.Height > image.Width) width = image.Width * height / image.Height;
+                            }
                             else if (width == 0 && height > 0)
                             {
                                 width = image.Width * height / image.Height;

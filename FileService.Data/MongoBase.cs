@@ -78,7 +78,7 @@ namespace FileService.Data
         }
         public IEnumerable<BsonDocument> FindAll()
         {
-            return MongoCollection.Find(new BsonDocument()).ToEnumerable();
+            return MongoCollection.Find(new BsonDocument(), new FindOptions() { BatchSize = 1000 }).ToEnumerable();
         }
         public virtual long Count()
         {

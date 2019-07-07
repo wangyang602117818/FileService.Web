@@ -120,14 +120,26 @@ class FileRecycle extends React.Component {
     }
     deleteFiles() {
         if (window.confirm(" " + culture.permanent_del + " ?")) {
-            http.postJson(urls.deleteFilesUrl, { ids: this.state.selectedList }, function (data) {
-                if (data.code == 0) {
-                    this.getData();
-                }
-                else {
-                    alert(data.message);
-                }
-            }.bind(this));
+            if (this.state.selectedList.length > 0) {
+                http.postJson(urls.deleteFilesUrl, { ids: this.state.selectedList }, function (data) {
+                    if (data.code == 0) {
+                        this.getData();
+                        this.setState({ selectedList: [] });
+                    }
+                    else {
+                        alert(data.message);
+                    }
+                }.bind(this));
+            } else {
+                http.get(urls.deleteAppFilesUrl + "?appName=" + this.state.from, function (data) {
+                    if (data.code == 0) {
+                        this.getData();
+                    }
+                    else {
+                        alert(data.message);
+                    }
+                }.bind(this));
+            }
         }
     }
     restoreFile(e) {
@@ -145,14 +157,27 @@ class FileRecycle extends React.Component {
     }
     restoreFiles(e) {
         if (window.confirm(" " + culture.restore_file + " ?")) {
-            http.post(urls.restoreFilesUrl, { ids: this.state.selectedList }, function (data) {
-                if (data.code == 0) {
-                    this.getData();
-                }
-                else {
-                    alert(data.message);
-                }
-            }.bind(this));
+            if (this.state.selectedList.length > 0) {
+                http.post(urls.restoreFilesUrl, { ids: this.state.selectedList }, function (data) {
+                    if (data.code == 0) {
+                        this.getData();
+                        this.setState({ selectedList: [] });
+                    }
+                    else {
+                        alert(data.message);
+                    }
+                }.bind(this));
+            } else {
+                http.get(urls.restoreAppFilesUrl + "?appName=" + this.state.from, function (data) {
+                    if (data.code == 0) {
+                        this.getData();
+                    }
+                    else {
+                        alert(data.message);
+                    }
+                }.bind(this));
+            }
+
         }
     }
     onResourceSelected(e) {
@@ -207,6 +232,7 @@ class FileRecycle extends React.Component {
                     count={this.state.data.count}
                     listType={this.state.listType}
                     delShow={this.state.selectedList.length > 0 ? true : false}
+                    from={this.state.from}
                     removeByIds={this.deleteFiles.bind(this)}
                     orderField={this.state.orderField}
                     onOrderChanged={this.onOrderChanged.bind(this)}
