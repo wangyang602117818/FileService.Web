@@ -14,18 +14,26 @@ namespace FileService.Web.Models
     {
         public ResponseModel(ErrorCode code, T t, long count = 0)
         {
-            switch (code)
+            if (t is string)
             {
-                case ErrorCode.success:
-                    Content = "{\"code\":" + (int)code + ",\"message\":\"" + code.ToString() + "\",\"result\":" + t.ToJson(new JsonWriterSettings() { OutputMode = JsonOutputMode.Strict }) + ",\"count\":" + count + "}";
-                    break;
-                case ErrorCode.redirect:
-                    Content = "{\"code\":" + (int)code + ",\"message\":\"" + code.ToString() + "\",\"result\":\"" + t.ToString() + "\",\"count\":" + count + "}";
-                    break;
-                default:
-                    Content = "{\"code\":" + (int)code + ",\"message\":\"" + code.ToString() + "\"}";
-                    break;
+                Content = "{\"code\":" + (int)code + ",\"message\":\"" + code.ToString() + "\",\"result\":\"" + t.ToString() + "\",\"count\":" + count + "}";
             }
+            else
+            {
+                Content = "{\"code\":" + (int)code + ",\"message\":\"" + code.ToString() + "\",\"result\":" + t.ToJson(new JsonWriterSettings() { OutputMode = JsonOutputMode.Strict }) + ",\"count\":" + count + "}";
+            }
+            //switch (code)
+            //{
+            //    case ErrorCode.success:
+            //        Content = "{\"code\":" + (int)code + ",\"message\":\"" + code.ToString() + "\",\"result\":" + t.ToJson(new JsonWriterSettings() { OutputMode = JsonOutputMode.Strict }) + ",\"count\":" + count + "}";
+            //        break;
+            //    case ErrorCode.redirect:
+            //        Content = "{\"code\":" + (int)code + ",\"message\":\"" + code.ToString() + "\",\"result\":\"" + t.ToString() + "\",\"count\":" + count + "}";
+            //        break;
+            //    default:
+            //        Content = "{\"code\":" + (int)code + ",\"message\":\"" + code.ToString() + "\"}";
+            //        break;
+            //}
             ContentEncoding = Encoding.UTF8;
             ContentType = "application/json";
         }
