@@ -265,10 +265,13 @@ namespace FileService.Web.Controllers
             List<BsonDocument> resultTask = task.Find(new BsonDocument("Type", "image")).ToList();
             foreach (var item in resultTask)
             {
-                ObjectId id = item["Output"]["_id"].AsObjectId;
-                if (item["Output"].AsBsonDocument.Contains("FileId")) continue;
-                item["Output"].AsBsonDocument.Add("FileId", id);
-                task.Replace(item);
+                if (item["Output"].AsBsonDocument.Contains("_id"))
+                {
+                    ObjectId id = item["Output"]["_id"].AsObjectId;
+                    if (item["Output"].AsBsonDocument.Contains("FileId")) continue;
+                    item["Output"].AsBsonDocument.Add("FileId", id);
+                    task.Replace(item);
+                }
             }
             return true;
         }
