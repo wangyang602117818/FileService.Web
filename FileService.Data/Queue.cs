@@ -1,12 +1,5 @@
-﻿using FileService.Util;
-using MongoDB.Bson;
+﻿using MongoDB.Bson;
 using MongoDB.Driver;
-using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace FileService.Data
@@ -19,7 +12,7 @@ namespace FileService.Data
         public async Task<IAsyncCursor<BsonDocument>> MonitorMessage(string handlerId, string collection = "Task")
         {
             var filter = FilterBuilder.Eq("handlerId", handlerId) & FilterBuilder.Eq("collectionName", collection) & FilterBuilder.Eq("processed", false);
-            return await MongoCollection.FindAsync(filter, new FindOptions<BsonDocument> { CursorType = CursorType.TailableAwait });
+            return await MongoCollection.FindAsync(filter, new FindOptions<BsonDocument> { CursorType = CursorType.TailableAwait, BatchSize = 100 });
         }
         public bool MessageProcessed(ObjectId id)
         {
