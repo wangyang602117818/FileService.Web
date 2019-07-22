@@ -158,30 +158,7 @@
                         <tr>
                             <td>{culture.image_quality}</td>
                             <td colSpan="3">
-                                <input type="radio" value="0" name="imageQuality" id="none"
-                                    onChange={this.imageQualityChange.bind(this)}
-                                    checked={this.state.imageQuality == "0" ? true : false} /><label htmlFor="none">{culture.none}</label>
-                                {'\u00A0'}
-                                {'\u00A0'}
-                                {'\u00A0'}
-                                {'\u00A0'}
-                                <input type="radio" value="1" name="imageQuality" id="high"
-                                    onChange={this.imageQualityChange.bind(this)}
-                                    checked={this.state.imageQuality == "1" ? true : false} /><label htmlFor="high">{culture.high}</label>
-                                {'\u00A0'}
-                                {'\u00A0'}
-                                {'\u00A0'}
-                                {'\u00A0'}
-                                <input type="radio" value="2" name="imageQuality" id="medium"
-                                    onChange={this.imageQualityChange.bind(this)}
-                                    checked={this.state.imageQuality == "2" ? true : false} /><label htmlFor="medium">{culture.medium}</label>
-                                {'\u00A0'}
-                                {'\u00A0'}
-                                {'\u00A0'}
-                                {'\u00A0'}
-                                <input type="radio" value="3" name="imageQuality" id="low"
-                                    onChange={this.imageQualityChange.bind(this)}
-                                    checked={this.state.imageQuality == "3" ? true : false} /><label htmlFor="low">{culture.low}</label>
+                                <input type="number" value={this.state.imageQuality} name="imageQuality" onChange={this.imageQualityChange.bind(this)} max="100" step="5" min="0" /> % 
                             </td>
                         </tr>
                         <tr>

@@ -1,6 +1,5 @@
 ﻿using FileService.Model;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Drawing2D;
@@ -83,7 +82,7 @@ namespace FileService.Util
             ext = ".jpg";
             return ImageFormat.Jpeg;
         }
-        public static Stream GenerateThumbnail(string fullPath, Stream stream, ImageModelEnum model, ImageFormat outputFormat, ImageQuality imageQuality, int x, int y, ref int width, ref int height)
+        public static Stream GenerateThumbnail(string fullPath, Stream stream, ImageModelEnum model, ImageFormat outputFormat, int imageQuality, int x, int y, ref int width, ref int height)
         {
             string type = GetImageType2(stream);
             bool cut = false;
@@ -130,7 +129,7 @@ namespace FileService.Util
                     if (width > image.Width) width = image.Width;
                     if (height > image.Height) height = image.Height;
                     Stream imageStream = type == "GIF" ? ConvertImageGif(fullPath, image, x, y, width, height, cut) : ConvertImage(image, outputFormat, x, y, width, height, cut);
-                    if (type != "GIF" && imageQuality != ImageQuality.None)
+                    if (type != "GIF" && imageQuality != 100 && imageQuality != 0)
                     {
                         Image imageQ = Image.FromStream(imageStream);
                         return ConvertImageQuality(imageQ, imageQuality);
@@ -263,7 +262,7 @@ namespace FileService.Util
             stream.Position = 0;
             return stream;
         }
-        private static Stream ConvertImageQuality(Image image, ImageQuality imageQuality)
+        private static Stream ConvertImageQuality(Image image, int imageQuality)
         {
             Stream stream = new MemoryStream();
             ImageCodecInfo encoder = GetEncoder(ImageFormat.Jpeg);
@@ -395,18 +394,9 @@ namespace FileService.Util
         //        return stream;
         //    }
         //}
-        private static EncoderParameter GetEncoderParameter(ImageQuality imageQuality)
+        private static EncoderParameter GetEncoderParameter(int imageQuality)
         {
-            switch (imageQuality)
-            {
-                case ImageQuality.High:
-                    return new EncoderParameter(System.Drawing.Imaging.Encoder.Quality, 80L);
-                case ImageQuality.Medium:
-                    return new EncoderParameter(System.Drawing.Imaging.Encoder.Quality, 50L);
-                case ImageQuality.Low:
-                    return new EncoderParameter(System.Drawing.Imaging.Encoder.Quality, 20L);
-            }
-            return new EncoderParameter(System.Drawing.Imaging.Encoder.Quality, 80L);
+            return new EncoderParameter(System.Drawing.Imaging.Encoder.Quality, imageQuality);
         }
         private static ImageCodecInfo GetEncoder(ImageFormat format)
         {
@@ -485,6 +475,6 @@ namespace FileService.Util
             Image image = Image.FromStream(stream);
             stream.Position = 0;
             return image.Size;
-        } 
+        }
     }
 }
