@@ -54,3 +54,7 @@ flag=sliders     //50% quality
 flag=original    //80% quality
 
 flag="" or no flag //flag = thumbnail
+
+ExperienceSite.Web email
+janus message
+

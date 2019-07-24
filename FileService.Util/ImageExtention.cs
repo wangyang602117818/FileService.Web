@@ -34,27 +34,27 @@ namespace FileService.Util
             }
             return ImageFormat.Jpeg;
         }
-        public static string GetContentType(string fileName)
+        public static string GetContentType(byte[] buffer)
         {
-            switch (Path.GetExtension(fileName).ToLower())
+            switch (GetImageType(buffer).ToLower())
             {
-                case ".jpg":
+                case "jpg":
                     return "image/jpeg";
-                case ".png":
+                case "png":
                     return "image/png";
-                case ".gif":
+                case "gif":
                     return "image/gif";
-                case ".bmp":
+                case "bmp":
                     return "application/x-bmp";
-                case ".jpeg":
+                case "jpeg":
                     return "image/jpeg";
-                case ".pic":
+                case "pic":
                     return "application/x-pic";
-                case ".ico":
+                case "ico":
                     return "image/x-icon";
-                case ".tif":
+                case "tif":
                     return "image/tiff";
-                case ".svg":
+                case "svg":
                     return "image/svg+xml";
             }
             return "image/*";
@@ -84,7 +84,7 @@ namespace FileService.Util
         }
         public static Stream GenerateThumbnail(string fullPath, Stream stream, ImageModelEnum model, ImageFormat outputFormat, int imageQuality, int x, int y, ref int width, ref int height)
         {
-            string type = GetImageType2(stream);
+            string type = GetImageType(stream);
             bool cut = false;
             if (type == "XML")
             {
@@ -140,7 +140,7 @@ namespace FileService.Util
         }
         public static Stream GenerateFilePreview(int fileHW, string fullPath, Stream stream, ImageModelEnum model, ImageFormat outputFormat, ref int width, ref int height)
         {
-            string type = GetImageType2(stream);
+            string type = GetImageType(stream);
             bool isGif = type == "GIF";
             if (type == "XML")
             {
@@ -427,30 +427,39 @@ namespace FileService.Util
         //    if (buffer[0] == 'B' && buffer[1] == 'M') return ".bmp";
         //    return null;
         //}
-        public static string GetImageType2(Stream stream)
+        public static string GetImageType(Stream stream)
         {
-            string headerCode = GetHeaderInfo(stream).ToUpper();
-            if (headerCode.StartsWith("FFD8FF"))
+            string header = GetHeaderInfo(stream).ToUpper();
+            return GetImageTypeFromHeader(header);
+        }
+        public static string GetImageType(byte[] buffer)
+        {
+            string header = GetHeaderInfo(buffer).ToUpper();
+            return GetImageTypeFromHeader(header);
+        }
+        public static string GetImageTypeFromHeader(string header)
+        {
+            if (header.StartsWith("FFD8FF"))
             {
                 return "JPG";
             }
-            else if (headerCode.StartsWith("49492A"))
+            else if (header.StartsWith("49492A"))
             {
                 return "TIFF";
             }
-            else if (headerCode.StartsWith("424D"))
+            else if (header.StartsWith("424D"))
             {
                 return "BMP";
             }
-            else if (headerCode.StartsWith("474946"))
+            else if (header.StartsWith("474946"))
             {
                 return "GIF";
             }
-            else if (headerCode.StartsWith("89504E470D0A1A0A"))
+            else if (header.StartsWith("89504E470D0A1A0A"))
             {
                 return "PNG";
             }
-            else if (headerCode.StartsWith("3C3F786D6C"))
+            else if (header.StartsWith("3C3F786D6C"))
             {
                 return "XML";
             }
@@ -458,6 +467,15 @@ namespace FileService.Util
             {
                 return "";
             }
+        }
+        public static string GetHeaderInfo(byte[] buffer)
+        {
+            StringBuilder sb = new StringBuilder();
+            for (var i = 0; i < 8; i++)
+            {
+                sb.Append(buffer[i].ToString("X2"));
+            }
+            return sb.ToString();
         }
         public static string GetHeaderInfo(Stream stream)
         {

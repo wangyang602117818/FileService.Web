@@ -68,7 +68,7 @@ namespace FileService.Web.Controllers
                 {
                     return GetFileExpired();
                 }
-                return File(thumb["File"].AsByteArray, ImageExtention.GetContentType(fileName), fileName);
+                return File(thumb["File"].AsByteArray, ImageExtention.GetContentType(thumb["File"].AsByteArray), fileName);
             }
         }
         protected string GetTempFilePath(BsonDocument task)
@@ -242,7 +242,7 @@ namespace FileService.Web.Controllers
             switch (method)
             {
                 case "image":
-                    if (!extension.CheckFileExtensionImage(ext, ref contentType, ref fileType) || ImageExtention.GetImageType2(stream) == "")
+                    if (!extension.CheckFileExtensionImage(ext, ref contentType, ref fileType) || ImageExtention.GetImageType(stream) == "")
                     {
                         response.Add(new FileResponse()
                         {

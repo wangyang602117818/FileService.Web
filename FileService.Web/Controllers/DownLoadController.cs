@@ -233,7 +233,7 @@ namespace FileService.Web.Controllers
             ObjectId newId = GetObjectIdFromId(id);
             if (newId == ObjectId.Empty) return File(new MemoryStream(), "application/octet-stream");
             BsonDocument document = videoCapture.FindOne(newId);
-            return File(document["File"].AsByteArray, ImageExtention.GetContentType(document["FileName"].AsString), document["FileName"].AsString);
+            return File(document["File"].AsByteArray, ImageExtention.GetContentType(document["File"].AsByteArray), document["FileName"].AsString);
         }
         [OutputCache(Duration = 60 * 20, VaryByParam = "id")]
         public ActionResult GetFileIcon(string id)
