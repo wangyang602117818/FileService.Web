@@ -82,16 +82,6 @@ namespace FileService.Converter
                     }
                     filesWrap.UpdateThumbFileId(fileWrapId, output.Id, thumbId);
                     task.UpdateThumbFileId(output.Id, thumbId);
-                    //thumbnail.Replace(output.Id,
-                    //    from,
-                    //    taskItem.Message["FileId"].AsObjectId,
-                    //    stream.Length,
-                    //    twidth,
-                    //    theight,
-                    //    Path.GetFileNameWithoutExtension(fileName) + outputExt,
-                    //    output.Flag,
-                    //    stream.ToBytes(),
-                    //    fileWrap.Contains("ExpiredTime") ? fileWrap["ExpiredTime"].ToUniversalTime() : DateTime.MaxValue.ToUniversalTime());
                 }
                 fileStream.Close();
                 fileStream.Dispose();

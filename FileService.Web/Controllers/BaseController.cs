@@ -68,7 +68,7 @@ namespace FileService.Web.Controllers
                 {
                     return GetFileExpired();
                 }
-                return File(thumb["File"].AsByteArray, ImageExtention.GetContentType(fileName));
+                return File(thumb["File"].AsByteArray, ImageExtention.GetContentType(thumb["File"].AsByteArray));
             }
         }
         protected string GetTempFilePath(BsonDocument task)
@@ -81,9 +81,8 @@ namespace FileService.Web.Controllers
         }
         protected ActionResult GetFilePreview(string id, BsonDocument filePreview)
         {
-            string fileId = id.Split('.')[0].TrimEnd('/');
-            if (fileId == "ffffffffffffffffffffffff") return GetFileExpired();
-            string ext = "." + id.Split('.')[1].TrimEnd('/').ToLower();
+            if (id == "ffffffffffffffffffffffff") return GetFileExpired();
+            string ext =Path.GetExtension(Request.Url.AbsolutePath).ToLower();
             string type = extension.GetTypeByExtension(ext).ToLower();
             if (filePreview == null)
             {
@@ -242,7 +241,7 @@ namespace FileService.Web.Controllers
             switch (method)
             {
                 case "image":
-                    if (!extension.CheckFileExtensionImage(ext, ref contentType, ref fileType) || ImageExtention.GetImageType2(stream) == "")
+                    if (!extension.CheckFileExtensionImage(ext, ref contentType, ref fileType) || ImageExtention.GetImageType(stream) == "")
                     {
                         response.Add(new FileResponse()
                         {

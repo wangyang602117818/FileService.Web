@@ -14,7 +14,7 @@ namespace FileService.Model
         public int Y { get; set; }
         public int Width { get; set; }
         public int Height { get; set; }
-        public ImageQuality ImageQuality { get; set; }
+        public int ImageQuality { get; set; }
     }
     public enum ImageOutPutFormat
     {
@@ -23,12 +23,5 @@ namespace FileService.Model
         Png = 2,
         Gif = 3,
         Bmp = 4
-    }
-    public enum ImageQuality
-    {
-        None = 0,
-        High = 1,
-        Medium = 2,
-        Low = 3
     }
 }

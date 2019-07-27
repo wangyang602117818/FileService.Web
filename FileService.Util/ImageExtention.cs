@@ -1,6 +1,5 @@
 ﻿using FileService.Model;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Drawing2D;
@@ -35,27 +34,27 @@ namespace FileService.Util
             }
             return ImageFormat.Jpeg;
         }
-        public static string GetContentType(string fileName)
+        public static string GetContentType(byte[] buffer)
         {
-            switch (Path.GetExtension(fileName).ToLower())
+            switch (GetImageType(buffer).ToLower())
             {
-                case ".jpg":
+                case "jpg":
                     return "image/jpeg";
-                case ".png":
+                case "png":
                     return "image/png";
-                case ".gif":
+                case "gif":
                     return "image/gif";
-                case ".bmp":
+                case "bmp":
                     return "application/x-bmp";
-                case ".jpeg":
+                case "jpeg":
                     return "image/jpeg";
-                case ".pic":
+                case "pic":
                     return "application/x-pic";
-                case ".ico":
+                case "ico":
                     return "image/x-icon";
-                case ".tif":
+                case "tif":
                     return "image/tiff";
-                case ".svg":
+                case "svg":
                     return "image/svg+xml";
             }
             return "image/*";
@@ -83,9 +82,9 @@ namespace FileService.Util
             ext = ".jpg";
             return ImageFormat.Jpeg;
         }
-        public static Stream GenerateThumbnail(string fullPath, Stream stream, ImageModelEnum model, ImageFormat outputFormat, ImageQuality imageQuality, int x, int y, ref int width, ref int height)
+        public static Stream GenerateThumbnail(string fullPath, Stream stream, ImageModelEnum model, ImageFormat outputFormat, int imageQuality, int x, int y, ref int width, ref int height)
         {
-            string type = GetImageType2(stream);
+            string type = GetImageType(stream);
             bool cut = false;
             if (type == "XML")
             {
@@ -130,7 +129,7 @@ namespace FileService.Util
                     if (width > image.Width) width = image.Width;
                     if (height > image.Height) height = image.Height;
                     Stream imageStream = type == "GIF" ? ConvertImageGif(fullPath, image, x, y, width, height, cut) : ConvertImage(image, outputFormat, x, y, width, height, cut);
-                    if (type != "GIF" && imageQuality != ImageQuality.None)
+                    if (type != "GIF" && imageQuality != 100 && imageQuality != 0)
                     {
                         Image imageQ = Image.FromStream(imageStream);
                         return ConvertImageQuality(imageQ, imageQuality);
@@ -141,7 +140,7 @@ namespace FileService.Util
         }
         public static Stream GenerateFilePreview(int fileHW, string fullPath, Stream stream, ImageModelEnum model, ImageFormat outputFormat, ref int width, ref int height)
         {
-            string type = GetImageType2(stream);
+            string type = GetImageType(stream);
             bool isGif = type == "GIF";
             if (type == "XML")
             {
@@ -263,7 +262,7 @@ namespace FileService.Util
             stream.Position = 0;
             return stream;
         }
-        private static Stream ConvertImageQuality(Image image, ImageQuality imageQuality)
+        private static Stream ConvertImageQuality(Image image, int imageQuality)
         {
             Stream stream = new MemoryStream();
             ImageCodecInfo encoder = GetEncoder(ImageFormat.Jpeg);
@@ -395,18 +394,9 @@ namespace FileService.Util
         //        return stream;
         //    }
         //}
-        private static EncoderParameter GetEncoderParameter(ImageQuality imageQuality)
+        private static EncoderParameter GetEncoderParameter(int imageQuality)
         {
-            switch (imageQuality)
-            {
-                case ImageQuality.High:
-                    return new EncoderParameter(System.Drawing.Imaging.Encoder.Quality, 80L);
-                case ImageQuality.Medium:
-                    return new EncoderParameter(System.Drawing.Imaging.Encoder.Quality, 50L);
-                case ImageQuality.Low:
-                    return new EncoderParameter(System.Drawing.Imaging.Encoder.Quality, 20L);
-            }
-            return new EncoderParameter(System.Drawing.Imaging.Encoder.Quality, 80L);
+            return new EncoderParameter(System.Drawing.Imaging.Encoder.Quality, imageQuality);
         }
         private static ImageCodecInfo GetEncoder(ImageFormat format)
         {
@@ -437,30 +427,39 @@ namespace FileService.Util
         //    if (buffer[0] == 'B' && buffer[1] == 'M') return ".bmp";
         //    return null;
         //}
-        public static string GetImageType2(Stream stream)
+        public static string GetImageType(Stream stream)
         {
-            string headerCode = GetHeaderInfo(stream).ToUpper();
-            if (headerCode.StartsWith("FFD8FF"))
+            string header = GetHeaderInfo(stream).ToUpper();
+            return GetImageTypeFromHeader(header);
+        }
+        public static string GetImageType(byte[] buffer)
+        {
+            string header = GetHeaderInfo(buffer).ToUpper();
+            return GetImageTypeFromHeader(header);
+        }
+        public static string GetImageTypeFromHeader(string header)
+        {
+            if (header.StartsWith("FFD8FF"))
             {
                 return "JPG";
             }
-            else if (headerCode.StartsWith("49492A"))
+            else if (header.StartsWith("49492A"))
             {
                 return "TIFF";
             }
-            else if (headerCode.StartsWith("424D"))
+            else if (header.StartsWith("424D"))
             {
                 return "BMP";
             }
-            else if (headerCode.StartsWith("474946"))
+            else if (header.StartsWith("474946"))
             {
                 return "GIF";
             }
-            else if (headerCode.StartsWith("89504E470D0A1A0A"))
+            else if (header.StartsWith("89504E470D0A1A0A"))
             {
                 return "PNG";
             }
-            else if (headerCode.StartsWith("3C3F786D6C"))
+            else if (header.StartsWith("3C3F786D6C"))
             {
                 return "XML";
             }
@@ -468,6 +467,15 @@ namespace FileService.Util
             {
                 return "";
             }
+        }
+        public static string GetHeaderInfo(byte[] buffer)
+        {
+            StringBuilder sb = new StringBuilder();
+            for (var i = 0; i < 8; i++)
+            {
+                sb.Append(buffer[i].ToString("X2"));
+            }
+            return sb.ToString();
         }
         public static string GetHeaderInfo(Stream stream)
         {
@@ -485,6 +493,6 @@ namespace FileService.Util
             Image image = Image.FromStream(stream);
             stream.Position = 0;
             return image.Size;
-        } 
+        }
     }
 }

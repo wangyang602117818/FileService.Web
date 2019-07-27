@@ -35,7 +35,7 @@ namespace FileService.Web.Models
         public int Width { get; set; }
         public int X { get; set; }
         public int Y { get; set; }
-        public ImageQuality ImageQuality { get; set; }
+        public int ImageQuality { get; set; }
     }
     public class UpdateVideoTask : AddVideoTask
     {

@@ -11,9 +11,12 @@ namespace FileService.Web
     {
         public static void RegisterRoutes(RouteCollection routes)
         {
-            //routes.RouteExistingFiles = true;//静态文件路由
-
+            routes.RouteExistingFiles = true;
             routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
+            routes.IgnoreRoute("css/{*.*}");
+            routes.IgnoreRoute("scripts/{*.*}");
+            routes.IgnoreRoute("image/{*.*}");
+            routes.IgnoreRoute("pdfview/{*.*}");
 
             routes.MapRoute(
                 name: "shared",
@@ -25,7 +28,6 @@ namespace FileService.Web
                 name: "Image",
                 url: "{controller}/{action}/{id}.{ext}",
                 defaults: new { controller = "admin", action = "index", id = UrlParameter.Optional, ext = UrlParameter.Optional }
-                //constraints:new { ext ="jpg|png|bmp|gif|jpeg|bmp|svg|ico|pic"}
             );
 
             routes.MapRoute(
