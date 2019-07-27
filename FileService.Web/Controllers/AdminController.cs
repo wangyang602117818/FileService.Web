@@ -190,15 +190,13 @@ namespace FileService.Web.Controllers
         [OutputCache(Duration = 60 * 20, VaryByParam = "id")]
         public ActionResult GetFileIcon(string id)
         {
-            string fileId = id.Split('.')[0];
-            BsonDocument file = filePreview.FindOne(ObjectId.Parse(fileId));
+            BsonDocument file = filePreview.FindOne(ObjectId.Parse(id));
             return GetFilePreview(id, file);
         }
         [OutputCache(Duration = 60 * 20, VaryByParam = "id")]
         public ActionResult GetFileIconMobile(string id)
         {
-            string fileId = id.Split('.')[0];
-            BsonDocument file = filePreviewMobile.FindOne(ObjectId.Parse(fileId));
+            BsonDocument file = filePreviewMobile.FindOne(ObjectId.Parse(id));
             return GetFilePreview(id, file);
         }
         public ActionResult GetAllShared(string fileId)

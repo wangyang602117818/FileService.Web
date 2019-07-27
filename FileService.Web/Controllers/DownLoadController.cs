@@ -116,7 +116,7 @@ namespace FileService.Web.Controllers
         public ActionResult Thumbnail(string id)
         {
             ObjectId thumbId = GetObjectIdFromId(id);
-            if (thumbId == ObjectId.Empty) return File(new MemoryStream(), "application/octet-stream");
+            if (thumbId == ObjectId.Empty) return File(new MemoryStream(), "image/jpg");
             BsonDocument taskBson = task.GetByOutPutId(thumbId);
             return GetThumbnailInner(taskBson["Output"]["FileId"].AsObjectId, taskBson["FileName"].AsString);
         }

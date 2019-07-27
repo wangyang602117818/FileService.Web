@@ -60,7 +60,7 @@ namespace FileService.Web.Controllers
             BsonDocument thumb = thumbnail.FindOne(id);
             if (thumb == null)
             {
-                return File(new MemoryStream(), "application/octet-stream");
+                return File(new MemoryStream(), "image/jpg");
             }
             else
             {
@@ -68,7 +68,7 @@ namespace FileService.Web.Controllers
                 {
                     return GetFileExpired();
                 }
-                return File(thumb["File"].AsByteArray, ImageExtention.GetContentType(fileName), fileName);
+                return File(thumb["File"].AsByteArray, ImageExtention.GetContentType(fileName));
             }
         }
         protected string GetTempFilePath(BsonDocument task)

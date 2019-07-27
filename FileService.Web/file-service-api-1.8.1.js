@@ -144,10 +144,10 @@ FileClient.prototype = {
         return this.remoteUrl + "/download/videocapture/" + videoCpId;
     },
     getFileIconUrl: function (fileIconId) {
-        return this.remoteUrl + "/download/getfileicon/" + fileIconId + "/";
+        return this.remoteUrl + "/download/getfileicon/" + fileIconId;
     },
     getFileIconMobileUrl: function (fileIconId) {
-        return this.remoteUrl + "/download/getfileiconmobile/" + fileIconId + "/";
+        return this.remoteUrl + "/download/getfileiconmobile/" + fileIconId;
     },
     getFileState: function (fileId, success, progress, error, userCode) {
         var url = this.remoteUrl + "/data/filestate/" + fileId;
