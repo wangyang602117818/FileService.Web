@@ -33,8 +33,8 @@ ffmpeg -hide_banner -v warning -i 01.gif -filter_complex "[0:v] scale=320:-1:fla
 
 用户中心(UserCenter.Web)
 用户基本信息(用户id,用户名,手机号,邮箱,身份证号,照片,创建时间)
-用户登录信息(用户id,用户名,登录名称,密码,已修改,创建时间)
-用户角色信息(用户id,用户名,所属公司,所属部门,角色,创建时间)
+用户权限信息(用户id,用户名,登录名称,密码,所属公司,所属部门,角色,已修改,创建时间)
+
 
 User:
 {
@@ -63,4 +63,6 @@ dms send email
 
 dmfileserver
 
+05:00 26:38
 
+console.log(JSON.stringify(this.projectOptions));
