@@ -33,7 +33,7 @@ namespace FileService.Converter
             ObjectId fileWrapId = taskItem.Message["FileId"].AsObjectId;
             BsonDocument fileWrap = filesWrap.FindOne(fileWrapId);
             DateTime expiredTime = fileWrap.Contains("ExpiredTime") ? fileWrap["ExpiredTime"].ToUniversalTime() : DateTime.MaxValue.ToUniversalTime();
-            ObjectId videoCpId = fileWrap["VideoCpIds"].AsBsonArray[0].AsObjectId;
+
             VideoOutPut output = BsonSerializer.Deserialize<VideoOutPut>(outputDocument);
 
             string fullPath = AppSettings.GetFullPath(taskItem.Message);

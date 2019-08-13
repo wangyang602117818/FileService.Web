@@ -17,6 +17,7 @@ namespace FileService.Web
             routes.IgnoreRoute("scripts/{*.*}");
             routes.IgnoreRoute("image/{*.*}");
             routes.IgnoreRoute("pdfview/{*.*}");
+            routes.IgnoreRoute("hlsplayer/{*.*}");
 
             routes.MapRoute(
                 name: "shared",

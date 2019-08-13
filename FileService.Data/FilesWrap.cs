@@ -81,9 +81,13 @@ namespace FileService.Data
                     {"files",new BsonDocument("$sum",1) }
                 }).ToEnumerable();
         }
-        public bool AddVideoCapture(ObjectId id, ObjectId captureId)
+        public bool AddVideoCapture(ObjectId _id, ObjectId id, ObjectId captureId)
         {
-            return MongoCollection.UpdateOne(FilterBuilder.Eq("_id", id), Builders<BsonDocument>.Update.AddToSet("VideoCpIds", captureId)).IsAcknowledged;
+            return MongoCollection.UpdateOne(FilterBuilder.Eq("_id", _id), Builders<BsonDocument>.Update.AddToSet("VideoCpIds",
+                new BsonDocument() {
+                    {"_id",id },
+                    {"FileId",captureId },
+            })).IsAcknowledged;
         }
         public bool AddHistory(ObjectId id, ObjectId fileId)
         {
@@ -94,11 +98,7 @@ namespace FileService.Data
         }
         public bool DeleteVideoCapture(ObjectId id, ObjectId captureId)
         {
-            return MongoCollection.UpdateOne(FilterBuilder.Eq("_id", id), Builders<BsonDocument>.Update.Pull("VideoCpIds", captureId)).IsAcknowledged;
-        }
-        public bool DeleteVideoCapture(ObjectId id)
-        {
-            return MongoCollection.UpdateOne(FilterBuilder.Eq("_id", id), Builders<BsonDocument>.Update.Set("VideoCpIds", new BsonArray())).IsAcknowledged;
+            return MongoCollection.UpdateOne(FilterBuilder.Eq("_id", id), Builders<BsonDocument>.Update.Pull("VideoCpIds", new BsonDocument("FileId", captureId))).IsAcknowledged;
         }
         public bool DeleteThumbnail(ObjectId id, ObjectId thumbnailId)
         {
@@ -125,10 +125,25 @@ namespace FileService.Data
             var filter = FilterBuilder.Eq("_id", id) & FilterBuilder.Eq("Files._id", subFileId);
             return MongoCollection.UpdateOne(filter, Builders<BsonDocument>.Update.Set("Files.$.Flag", flag)).IsAcknowledged;
         }
-        public bool UpdateThumbFileId(ObjectId id,ObjectId subId,ObjectId thumbFileId)
+        public bool UpdateThumbFileId(ObjectId id, ObjectId subId, ObjectId thumbFileId)
         {
             var filter = FilterBuilder.Eq("_id", id) & FilterBuilder.Eq("Thumbnail._id", subId);
             return MongoCollection.UpdateOne(filter, Builders<BsonDocument>.Update.Set("Thumbnail.$.FileId", thumbFileId)).IsAcknowledged;
+        }
+        public bool UpdateCpFileId(ObjectId id, ObjectId subId, ObjectId cpFileId)
+        {
+            var filter = FilterBuilder.Eq("_id", id) & FilterBuilder.Eq("VideoCpIds._id", subId);
+            return MongoCollection.UpdateOne(filter, Builders<BsonDocument>.Update.Set("VideoCpIds.$.FileId", cpFileId)).IsAcknowledged;
+        }
+        public BsonDocument GetThumbFileId(ObjectId id, ObjectId subId)
+        {
+            var filter = FilterBuilder.Eq("_id", id) & FilterBuilder.Eq("Thumbnail._id", subId);
+            return MongoCollection.Find(filter).FirstOrDefault();
+        }
+        public BsonDocument GetCpFileIdFrom(ObjectId id, ObjectId subId)
+        {
+            var filter = FilterBuilder.Eq("_id", id) & FilterBuilder.Eq("VideoCpIds.FileId", subId);
+            return MongoCollection.Find(filter).FirstOrDefault();
         }
         public bool UpdateSubFileId(ObjectId id, ObjectId oldFileId, ObjectId newFileId)
         {

@@ -233,7 +233,7 @@ namespace FileService.Web.Controllers
             ObjectId newId = GetObjectIdFromId(id);
             if (newId == ObjectId.Empty) return File(new MemoryStream(), "application/octet-stream");
             BsonDocument document = videoCapture.FindOne(newId);
-            return File(document["File"].AsByteArray, ImageExtention.GetContentType(document["File"].AsByteArray), document["FileName"].AsString);
+            return File(document["File"].AsByteArray, ImageExtention.GetContentType(document["File"].AsByteArray));
         }
         [OutputCache(Duration = 60 * 20, VaryByParam = "id")]
         public ActionResult GetFileIcon(string id)
@@ -254,7 +254,7 @@ namespace FileService.Web.Controllers
             foreach (var item in resultFiles)
             {
                 BsonArray thumbnails = item["Thumbnail"].AsBsonArray;
-                foreach(BsonDocument bson in thumbnails)
+                foreach (BsonDocument bson in thumbnails)
                 {
                     ObjectId id = bson["_id"].AsObjectId;
                     if (bson.Contains("FileId")) continue;
@@ -262,6 +262,28 @@ namespace FileService.Web.Controllers
                 }
                 filesWrap.Replace(item);
             }
+
+            List<BsonDocument> resultVideo = filesWrap.Find(new BsonDocument("FileType", "video")).ToList();
+            foreach (var item in resultVideo)
+            {
+                BsonArray newArray = new BsonArray();
+                try
+                {
+                    ObjectId id = item["VideoCpIds"].AsBsonArray[0].AsBsonValue.AsObjectId;
+                    item["VideoCpIds"] = new BsonArray() {
+                        new BsonDocument(){
+                            {"_id",id },
+                            {"FileId",id }
+                        }
+                    };
+                    filesWrap.Replace(item);
+                }
+                catch (Exception ex)
+                {
+                    continue;
+                }
+            }
+
             List<BsonDocument> resultTask = task.Find(new BsonDocument("Type", "image")).ToList();
             foreach (var item in resultTask)
             {

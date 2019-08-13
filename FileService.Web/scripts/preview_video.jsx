@@ -11,7 +11,7 @@
                     <VideoM3u8 fileId={this.props.fileId} />
                 }
                 <VideoCpBtn onCpClick={this.props.onCpClick} />
-                <VideoCpList videoCps={this.props.videoCps} onCpDel={this.props.onCpDel} />
+                <VideoCpList videoCps={this.props.videoCps} fileId={this.props.fileId} onCpDel={this.props.onCpDel} />
             </div>
         );
     }
@@ -36,7 +36,7 @@ class VideoCpList extends React.Component {
         return (
             <div className="video_cp">
                 {this.props.videoCps.map(function (item, i) {
-                    return <VideoCpItem fileId={item} key={i} onCpDel={this.props.onCpDel} />
+                    return <VideoCpItem fileId={item} sourceId={this.props.fileId} key={i} onCpDel={this.props.onCpDel} />
                 }.bind(this))}
             </div>
         )
@@ -50,7 +50,7 @@ class VideoCpItem extends React.Component {
         return (
             <div className="image_item">
                 <img src={urls.videoCpUrl + "/" + this.props.fileId} />
-                <div className="videocp_del" id={this.props.fileId} onClick={this.props.onCpDel}>×</div>
+                <div className="videocp_del" id={this.props.fileId} data-sourceid={this.props.sourceId} onClick={this.props.onCpDel}>×</div>
             </div >
         )
     }
@@ -144,8 +144,9 @@ class Preview extends React.Component {
     }
     onCpDel(e) {
         var cpId = e.target.id;
+        var sourceId = e.target.dataset.sourceid;
         var that = this;
-        http.get(urls.videoCpDelUrl + "?id=" + cpId
+        http.get(urls.videoCpDelUrl + "?fileId=" + sourceId + "&id=" + cpId
             , function (data) {
                 if (data.code == 0) {
                     that.state.videoCps.remove(cpId);

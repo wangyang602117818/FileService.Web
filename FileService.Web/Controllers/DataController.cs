@@ -63,7 +63,7 @@ namespace FileService.Web.Controllers
         public ActionResult GetVideoCaptureIds(string id)
         {
             BsonDocument document = filesWrap.FindOne(ObjectId.Parse(id));
-            return new ResponseModel<IEnumerable<string>>(ErrorCode.success, document["VideoCpIds"].AsBsonArray.Select(s => s.ToString()));
+            return new ResponseModel<IEnumerable<string>>(ErrorCode.success, document["VideoCpIds"].AsBsonArray.Select(s => s["FileId"].ToString()));
         }
         public ActionResult GetVideoList(string id)
         {
@@ -81,9 +81,9 @@ namespace FileService.Web.Controllers
             List<string> videoCps = new List<string>();
             if (document.AsBsonDocument.Contains("VideoCpIds"))
             {
-                foreach (BsonValue value in document["VideoCpIds"].AsBsonArray)
+                foreach (BsonDocument value in document["VideoCpIds"].AsBsonArray)
                 {
-                    videoCps.Add(value.ToString());
+                    videoCps.Add(value["FileId"].ToString());
                 }
             }
             return new ResponseModel<dynamic>(ErrorCode.success, new { videolist = videoList, videocps = videoCps });
@@ -117,16 +117,15 @@ namespace FileService.Web.Controllers
             }
             return new ResponseModel<IEnumerable<BsonDocument>>(ErrorCode.success, thumbs);
         }
-        public ActionResult DeleteVideoCapture(string id)
+        public ActionResult DeleteVideoCapture(string fileId, string id)
         {
-            BsonDocument document = videoCapture.FindOne(ObjectId.Parse(id));
-            if (videoCapture.DeleteOne(ObjectId.Parse(id)) && document != null)
-            {
-                filesWrap.DeleteVideoCapture(document["SourceId"].AsObjectId, ObjectId.Parse(id));
-                Log(id, "DeleteVideoCapture");
-                return new ResponseModel<string>(ErrorCode.success, "");
-            }
-            return new ResponseModel<string>(ErrorCode.record_not_exist, "");
+            ObjectId cpId = ObjectId.Parse(id);
+            ObjectId fId = ObjectId.Parse(fileId);
+            string from = filesWrap.GetCpFileIdFrom(fId, cpId);
+            if (!string.IsNullOrEmpty(from)) videoCapture.DeleteByIds(from, fId, new List<ObjectId>() { cpId });
+            filesWrap.DeleteVideoCapture(fId, cpId);
+            Log(id, "DeleteVideoCapture");
+            return new ResponseModel<string>(ErrorCode.success, "");
         }
         public ActionResult FileState(string id)
         {
@@ -216,6 +215,6 @@ namespace FileService.Web.Controllers
         {
             return new ResponseModel<string>(ErrorCode.success, ObjectId.GenerateNewId().ToString());
         }
-        
+
     }
 }

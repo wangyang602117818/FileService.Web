@@ -2,8 +2,9 @@
 using FileService.Model;
 using FileService.Util;
 using MongoDB.Bson;
-using System;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 
@@ -69,19 +70,19 @@ namespace FileService.Converter
         {
             BsonDocument fileWrap = filesWrap.FindOne(fileWrapId);
             BsonArray videoCp = fileWrap["VideoCpIds"].AsBsonArray;
-            fileName = Path.GetFileNameWithoutExtension(fileName) + ".jpg";
+            fileName = Path.GetFileNameWithoutExtension(fileName) + ".gif";
             ObjectId videoCpId;
             if (videoCp.Count > 0)
             {
-                videoCpId = videoCp[0].AsObjectId;
+                videoCpId = videoCp[0]["_id"].AsObjectId;
             }
             else
             {
                 videoCpId = ObjectId.GenerateNewId();
-                filesWrap.AddVideoCapture(fileWrapId, videoCpId);
+                filesWrap.AddVideoCapture(fileWrapId, ObjectId.GenerateNewId(), videoCpId);
             }
-            string cpPath = Path.GetDirectoryName(fullPath) + "\\" + fileWrapId.ToString() + ".jpg";
-            string cmd = "\"" + AppSettings.ExePath + "\" -ss 00:00:01 -i \"" + fullPath + "\" -vframes 1 \"" + cpPath + "\"";
+            string cpPath = Path.GetDirectoryName(fullPath) + "\\" + fileWrapId.ToString() + ".gif";
+            string cmd = "\"" + AppSettings.ExePath + "\" -ss 00:00:01 -t 5 -i \"" + fullPath + "\" -r 4 -y \"" + cpPath + "\"";
             Process process = new Process()
             {
                 StartInfo = new ProcessStartInfo(cmd)
@@ -97,17 +98,30 @@ namespace FileService.Converter
             {
                 using (FileStream imageStream = new FileStream(cpPath, FileMode.Open, FileAccess.Read))
                 {
-                    BsonDocument document = new BsonDocument()
+                    string md5 = imageStream.GetMD5();
+                    ObjectId cpId = ObjectId.Empty;
+                    BsonDocument cpBson = videoCapture.GetIdByMd5(from, md5);
+                    if (cpBson == null)
                     {
-                        {"_id",videoCpId },
-                        {"From",from },
-                        {"SourceId",fileWrapId },
-                        {"Length",imageStream.Length },
-                        {"FileName",fileName },
-                        {"File",imageStream.ToBytes() },
-                        {"CreateTime",DateTime.Now }
-                    };
-                    videoCapture.Replace(document);
+                        cpId = ObjectId.GenerateNewId();
+                        Size size = imageStream.GetImageSize();
+                        videoCapture.Insert(cpId,
+                            from,
+                            new List<ObjectId>() { fileWrapId },
+                            imageStream.Length,
+                            size.Width,
+                            size.Height,
+                            md5,
+                            imageStream.ToBytes()
+                         );
+                    }
+                    else
+                    {
+                        cpId = cpBson["_id"].AsObjectId;
+                        videoCapture.AddSourceId(from, cpId, fileWrapId);
+                    }
+                    filesWrap.UpdateCpFileId(fileWrapId, videoCpId, cpId);
+
                     if (filePreview)
                     {
                         GenerateFilePreview(from, fileId, fileName, cpPath, imageStream, ImageFormat.Jpeg);
@@ -122,7 +136,7 @@ namespace FileService.Converter
         {
             fileStream.Position = 0;
             int width = 0, height = 0;
-            using (Stream stream = ImageExtention.GenerateFilePreview( 80, fullPath, fileStream, ImageModelEnum.scale, format, ref width, ref height))
+            using (Stream stream = ImageExtention.GenerateFilePreview(80, fullPath, fileStream, ImageModelEnum.scale, format, ref width, ref height))
             {
                 filePreview.Replace(fileId, from, stream.Length, width, height, fileName, stream.ToBytes());
             }

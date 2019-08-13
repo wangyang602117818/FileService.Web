@@ -49,7 +49,10 @@ namespace FileService.Business
                     {"FileType",fileType },
                     {"ContentType",contentType },
                     {"Videos",videos },
-                    {"VideoCpIds",new BsonArray(){ ObjectId.GenerateNewId()} },
+                    {"VideoCpIds",new BsonArray(){ new BsonDocument() {
+                        {"_id",ObjectId.GenerateNewId() },
+                        {"FileId",ObjectId.Empty }
+                    }}},
                     {"Access",access },
                     {"Owner",owner },
                     {"Delete",false },
@@ -127,9 +130,9 @@ namespace FileService.Business
         {
             return mongoData.GetFilesByAppName();
         }
-        public bool AddVideoCapture(ObjectId id, ObjectId captureId)
+        public bool AddVideoCapture(ObjectId _id, ObjectId id, ObjectId captureId)
         {
-            return mongoData.AddVideoCapture(id, captureId);
+            return mongoData.AddVideoCapture(_id, id, captureId);
         }
         public bool AddHistory(ObjectId id, ObjectId fileId)
         {
@@ -138,10 +141,6 @@ namespace FileService.Business
         public bool DeleteVideoCapture(ObjectId id, ObjectId captureId)
         {
             return mongoData.DeleteVideoCapture(id, captureId);
-        }
-        public bool DeleteVideoCapture(ObjectId id)
-        {
-            return mongoData.DeleteVideoCapture(id);
         }
         public bool DeleteThumbnail(ObjectId id, ObjectId thumbnailId)
         {
@@ -166,6 +165,26 @@ namespace FileService.Business
         public bool UpdateThumbFileId(ObjectId id, ObjectId subId, ObjectId thumbFileId)
         {
             return mongoData.UpdateThumbFileId(id, subId, thumbFileId);
+        }
+        public bool UpdateCpFileId(ObjectId id, ObjectId subId, ObjectId cpFileId)
+        {
+            return mongoData.UpdateCpFileId(id, subId, cpFileId);
+        }
+        public ObjectId GetThumbFileId(ObjectId id, ObjectId subId, ref string from)
+        {
+            BsonDocument fileWrap = mongoData.GetThumbFileId(id, subId);
+            from = fileWrap["From"].AsString;
+            BsonArray thumbs = fileWrap["Thumbnail"].AsBsonArray;
+            foreach (BsonDocument bson in thumbs)
+            {
+                if (bson["_id"].AsObjectId == subId) return bson["FileId"].AsObjectId;
+            }
+            return ObjectId.Empty;
+        }
+        public string GetCpFileIdFrom(ObjectId id, ObjectId subId)
+        {
+            BsonDocument fileWrap = mongoData.GetCpFileIdFrom(id, subId);
+            return fileWrap == null ? "" : fileWrap["From"].AsString;
         }
         public bool UpdateSubFileId(ObjectId id, ObjectId oldFileId, ObjectId newFileId)
         {

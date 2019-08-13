@@ -494,5 +494,13 @@ namespace FileService.Util
             stream.Position = 0;
             return image.Size;
         }
+        public static Size GetImageSize(this byte[] bytes)
+        {
+            using(Stream stream = new MemoryStream(bytes))
+            {
+                Image image = Image.FromStream(stream);
+                return image.Size;
+            }
+        }
     }
 }

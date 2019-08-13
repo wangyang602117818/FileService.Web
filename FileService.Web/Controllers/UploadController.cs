@@ -282,25 +282,36 @@ namespace FileService.Web.Controllers
         public ActionResult VideoCapture(UploadVideoCPModel uploadVideoCPModel)
         {
             BsonDocument fileWrap = filesWrap.FindOne(ObjectId.Parse(uploadVideoCPModel.FileId));
+            string from = fileWrap["From"].AsString;
             if (fileWrap == null) return new ResponseModel<string>(ErrorCode.record_not_exist, "");
             string[] imageBase64 = uploadVideoCPModel.FileBase64.Split(',');
             byte[] image = Convert.FromBase64String(Base64SecureURL.Decode(imageBase64.Length >= 2 ? imageBase64[1] : imageBase64[0]));
-            ObjectId id = ObjectId.GenerateNewId();
-            BsonDocument document = new BsonDocument()
+            string md5 = image.GetMD5();
+            BsonDocument cpBson = videoCapture.GetIdByMd5(from, md5);
+            ObjectId cpId = ObjectId.Empty;
+            if (cpBson == null)
             {
-                {"_id",id },
-                {"From",Request.Headers["AppName"] },
-                {"SourceId",ObjectId.Parse(uploadVideoCPModel.FileId) },
-                {"Length",image.Length },
-                {"FileName",Path.GetFileNameWithoutExtension(fileWrap["FileName"].AsString)+".png" },
-                {"File",image },
-                {"CreateTime",DateTime.Now }
-            };
-            videoCapture.Insert(document);
-            filesWrap.AddVideoCapture(ObjectId.Parse(uploadVideoCPModel.FileId), id);
+                cpId = ObjectId.GenerateNewId();
+                Size size = image.GetImageSize();
+                videoCapture.Insert(cpId,
+                    from,
+                    new List<ObjectId>() { ObjectId.Parse(uploadVideoCPModel.FileId) },
+                    image.Length,
+                    size.Width,
+                    size.Height,
+                    md5,
+                    image
+               );
+            }
+            else
+            {
+                cpId = cpBson["_id"].AsObjectId;
+                videoCapture.AddSourceId(from, cpId, ObjectId.Parse(uploadVideoCPModel.FileId));
+            }
+            filesWrap.AddVideoCapture(ObjectId.Parse(uploadVideoCPModel.FileId), ObjectId.GenerateNewId(), cpId);
             //日志
             Log(uploadVideoCPModel.FileId, "UploadVideoCapture");
-            return new ResponseModel<string>(ErrorCode.success, id.ToString());
+            return new ResponseModel<string>(ErrorCode.success, cpId.ToString());
         }
         [HttpPost]
         public ActionResult VideoCaptureStream(UploadVideoCPStreamModel uploadVideoCPStreamModel)
@@ -316,22 +327,32 @@ namespace FileService.Web.Controllers
                     response.Add(ObjectId.Empty.ToString());
                     continue;
                 }
-                ObjectId id = ObjectId.GenerateNewId();
-                BsonDocument document = new BsonDocument()
+                string md5 = file.InputStream.GetMD5();
+                BsonDocument cpBson = videoCapture.GetIdByMd5(Request.Headers["AppName"], md5);
+                ObjectId cpId = ObjectId.Empty;
+                if (cpId == null)
                 {
-                    {"_id",id },
-                    {"From",Request.Headers["AppName"] },
-                    {"SourceId",ObjectId.Parse(uploadVideoCPStreamModel.FileId) },
-                    {"Length",file.InputStream.Length },
-                    {"FileName",file.FileName.GetFileName() },
-                    {"File",file.InputStream.ToBytes() },
-                    {"CreateTime",DateTime.Now }
-                };
-                videoCapture.InsertOneAsync(document);
-                filesWrap.AddVideoCapture(ObjectId.Parse(uploadVideoCPStreamModel.FileId), id);
+                    cpId = ObjectId.GenerateNewId();
+                    Size size = file.InputStream.GetImageSize();
+                    videoCapture.Insert(cpId,
+                        Request.Headers["AppName"],
+                        new List<ObjectId>() { ObjectId.Parse(uploadVideoCPStreamModel.FileId) },
+                        file.InputStream.Length,
+                        size.Width,
+                        size.Height,
+                        md5,
+                        file.InputStream.ToBytes()
+                    );
+                }
+                else
+                {
+                    cpId = cpBson["_id"].AsObjectId;
+                    videoCapture.AddSourceId(Request.Headers["AppName"], cpId, ObjectId.Parse(uploadVideoCPStreamModel.FileId));
+                }
+                filesWrap.AddVideoCapture(ObjectId.Parse(uploadVideoCPStreamModel.FileId), ObjectId.GenerateNewId(), cpId);
                 //日志
-                Log(id.ToString(), "UploadVideoCaptureStream");
-                response.Add(id.ToString());
+                Log(cpId.ToString(), "UploadVideoCaptureStream");
+                response.Add(cpId.ToString());
                 file.InputStream.Close();
                 file.InputStream.Dispose();
             }

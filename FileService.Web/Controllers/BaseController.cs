@@ -82,7 +82,7 @@ namespace FileService.Web.Controllers
         protected ActionResult GetFilePreview(string id, BsonDocument filePreview)
         {
             if (id == "ffffffffffffffffffffffff") return GetFileExpired();
-            string ext =Path.GetExtension(Request.Url.AbsolutePath).ToLower();
+            string ext = Path.GetExtension(Request.Url.AbsolutePath).ToLower();
             string type = extension.GetTypeByExtension(ext).ToLower();
             if (filePreview == null)
             {
@@ -344,10 +344,10 @@ namespace FileService.Web.Controllers
         }
         protected void AddDownload(ObjectId fileWrapId)
         {
-            string appName = Request.Headers["AppName"]??"";
+            string appName = Request.Headers["AppName"] ?? "";
             if (!download.AddedInOneMinute(appName, fileWrapId, Request.Headers["UserCode"] ?? User.Identity.Name))
             {
-                download.AddDownload(fileWrapId, 
+                download.AddDownload(fileWrapId,
                     appName,
                     Request.Headers["UserCode"] ?? User.Identity.Name,
                     Request.Headers["UserIp"] ?? Request.UserHostAddress,
@@ -443,9 +443,9 @@ namespace FileService.Web.Controllers
                     List<ObjectId> tsIds = m3u8["File"].AsString.GetTsIds();
                     ts.DeleteByIds(m3u8["From"].AsString, m3u8["_id"].AsObjectId, tsIds);
                 }
-                foreach (BsonObjectId oId in fileWrap["VideoCpIds"].AsBsonArray) videoCpIds.Add(oId.AsObjectId);
+                foreach (BsonDocument bson in fileWrap["VideoCpIds"].AsBsonArray) videoCpIds.Add(bson["FileId"].AsObjectId);
                 m3u8.DeleteMany(m3u8Ids);
-                videoCapture.DeleteByIds(fileWrap["From"].AsString, videoCpIds);
+                videoCapture.DeleteByIds(fileWrap["From"].AsString, fileWrapId, videoCpIds);
             }
             //删除 attachment 相关
             if (fileWrap["FileType"] == "office" || fileWrap["FileType"] == "attachment")
@@ -457,7 +457,7 @@ namespace FileService.Web.Controllers
                 }
                 if (fileWrap.Contains("VideoCpIds"))
                 {
-                    videoCapture.DeleteByIds(fileWrap["From"].AsString, fileWrap["VideoCpIds"].AsBsonArray.Select(s => s.AsObjectId));
+                    videoCapture.DeleteByIds(fileWrap["From"].AsString, fileWrapId, fileWrap["VideoCpIds"].AsBsonArray.Select(s => s["_id"].AsObjectId));
                 }
             }
             //如果源文件没有被引用，则删除
@@ -522,9 +522,9 @@ namespace FileService.Web.Controllers
                     List<ObjectId> tsIds = m3u8["File"].AsString.GetTsIds();
                     ts.DeleteByIds(m3u8["From"].AsString, m3u8["_id"].AsObjectId, tsIds);
                 }
-                foreach (BsonObjectId oId in fileWrap["VideoCpIds"].AsBsonArray) videoCpIds.Add(oId.AsObjectId);
+                foreach (BsonDocument bson in fileWrap["VideoCpIds"].AsBsonArray) videoCpIds.Add(bson["FileId"].AsObjectId);
                 m3u8.DeleteMany(m3u8Ids);
-                videoCapture.DeleteByIds(fileWrap["From"].AsString, videoCpIds);
+                videoCapture.DeleteByIds(fileWrap["From"].AsString, fileWrap["_id"].AsObjectId, videoCpIds);
             }
             // 删除 attachment 相关
             if (fileWrap["FileType"] == "office" || fileWrap["FileType"] == "attachment")
@@ -536,7 +536,7 @@ namespace FileService.Web.Controllers
                 }
                 if (fileWrap.Contains("VideoCpIds"))
                 {
-                    videoCapture.DeleteByIds(fileWrap["From"].AsString, fileWrap["VideoCpIds"].AsBsonArray.Select(s => s.AsObjectId));
+                    videoCapture.DeleteByIds(fileWrap["From"].AsString, fileWrap["_id"].AsObjectId, fileWrap["VideoCpIds"].AsBsonArray.Select(s => s["_id"].AsObjectId));
                 }
             }
             //如果源文件没有被引用，则删除转换的大图标和小图标

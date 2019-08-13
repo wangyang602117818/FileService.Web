@@ -400,6 +400,7 @@ namespace FileService.Web.Controllers
         }
         public ActionResult GetTsTime(TsTimeModel tsTimeModel)
         {
+            if (tsTimeModel.Ids == null) tsTimeModel.Ids = new List<string>();
             IEnumerable<ObjectId> oIds = tsTimeModel.Ids.Select(sel => ObjectId.Parse(sel));
             IEnumerable<BsonDocument> result = tsTime.GetListLastMonth(oIds, tsTimeModel.Month);
             return new ResponseModel<IEnumerable<BsonDocument>>(ErrorCode.success, result);
@@ -881,9 +882,12 @@ namespace FileService.Web.Controllers
         public ActionResult DeleteThumbnail(string fileId, string thumbnailId)
         {
             ObjectId thumbId = ObjectId.Parse(thumbnailId);
-            thumbnail.DeleteOne(thumbId);
+            ObjectId fId = ObjectId.Parse(fileId);
+            string from = "";
+            ObjectId thumbFileId = filesWrap.GetThumbFileId(fId, thumbId,ref from);
+            thumbnail.DeleteByIds(from, fId, new List<ObjectId>() { thumbFileId });
             task.DeleteByOutputId(thumbId);
-            filesWrap.DeleteThumbnail(ObjectId.Parse(fileId), thumbId);
+            filesWrap.DeleteThumbnail(fId, thumbId);
             Log(fileId, "DeleteThumbnail");
             return new ResponseModel<string>(ErrorCode.success, "");
         }
