@@ -121,7 +121,8 @@ namespace FileService.Web.Controllers
         {
             ObjectId cpId = ObjectId.Parse(id);
             ObjectId fId = ObjectId.Parse(fileId);
-            string from = filesWrap.GetCpFileIdFrom(fId, cpId);
+            int count = 0;
+            string from = filesWrap.GetCpFileIdFrom(fId, cpId, ref count);
             if (!string.IsNullOrEmpty(from)) videoCapture.DeleteByIds(from, fId, new List<ObjectId>() { cpId });
             filesWrap.DeleteVideoCapture(fId, cpId);
             Log(id, "DeleteVideoCapture");

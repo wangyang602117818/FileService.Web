@@ -181,9 +181,14 @@ namespace FileService.Business
             }
             return ObjectId.Empty;
         }
-        public string GetCpFileIdFrom(ObjectId id, ObjectId subId)
+        public string GetCpFileIdFrom(ObjectId id, ObjectId subId, ref int count)
         {
             BsonDocument fileWrap = mongoData.GetCpFileIdFrom(id, subId);
+            if (fileWrap == null) return "";
+            foreach (BsonDocument bson in fileWrap["VideoCpIds"].AsBsonArray)
+            {
+                if (bson["FileId"].AsObjectId == subId) count++;
+            }
             return fileWrap == null ? "" : fileWrap["From"].AsString;
         }
         public bool UpdateSubFileId(ObjectId id, ObjectId oldFileId, ObjectId newFileId)
