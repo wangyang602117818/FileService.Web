@@ -36,4 +36,9 @@ namespace FileService.Model
         Bad = 3
 
     }
+    public struct VideoFrame
+    {
+        public int Width { get; set; }
+        public int Height { get; set; }
+    }
 }

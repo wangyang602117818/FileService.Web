@@ -63,7 +63,7 @@ namespace FileService.Converter
                 switch (output.Format)
                 {
                     case VideoOutPutFormat.M3u8:
-                        ConvertHls(from, taskItem.Message["_id"].AsObjectId, taskItem.Message["FileId"].AsObjectId, fullPath, fileName, output, expiredTime);
+                        ConvertHls(from, taskItem.Message["_id"].AsObjectId, fileWrapId, fullPath, fileName, output, expiredTime);
                         break;
                 }
             }
@@ -89,10 +89,17 @@ namespace FileService.Converter
             //进度
             StreamReader SR = process.StandardError;
             int totalDuration = 0;
+            int width = 0, height = 0;
             while (!SR.EndOfStream)
             {
                 string line = SR.ReadLine();
                 if (totalDuration == 0) totalDuration = GetTotalDuration(line);
+                if (width == 0 && height == 0)
+                {
+                    var frame = GetFrame(line);
+                    width = frame.Width;
+                    height = frame.Height;
+                }
                 int currentDuration = GetCurrentDuration(line);
                 if (totalDuration != 0 && currentDuration != 0)
                 {
@@ -102,11 +109,11 @@ namespace FileService.Converter
                 }
             }
             process.WaitForExit();
-            HlsToMongo(from, outputPath, output.Id, fileId, Path.GetFileNameWithoutExtension(fileName) + ".m3u8", (int)output.Quality, totalDuration, output.Flag, expiredTime);
+            HlsToMongo(from, outputPath, output.Id, fileId, Path.GetFileNameWithoutExtension(fileName) + ".m3u8", (int)output.Quality, totalDuration, width, height, output.Flag, expiredTime);
             process.Close();
             process.Dispose();
         }
-        public void HlsToMongo(string from, string path, ObjectId m3u8FileId, ObjectId sourceFileId, string fileNameM3u8, int quality, int duration, string flag, DateTime expiredTime)
+        public void HlsToMongo(string from, string path, ObjectId m3u8FileId, ObjectId sourceFileId, string fileNameM3u8, int quality, int duration, int width, int height, string flag, DateTime expiredTime)
         {
             string[] files = Directory.GetFiles(path);
             string m3u8Text = File.ReadAllText(path + sourceFileId.ToString() + ".m3u8");
@@ -131,38 +138,9 @@ namespace FileService.Converter
                     m3u8Text = m3u8Text.Replace(Path.GetFileNameWithoutExtension(file), tsId.ToString());
                 }
             }
-            m3u8.Replace(m3u8FileId, from, sourceFileId, fileNameM3u8, m3u8Text, quality, duration, files.Length - 1, flag, expiredTime);
+            m3u8.Replace(m3u8FileId, from, sourceFileId, fileNameM3u8, m3u8Text, quality, duration, width, height, files.Length - 1, flag, expiredTime);
             Directory.Delete(path, true);
         }
-        private int GetTotalDuration(string str)
-        {
-            Regex regex = new Regex(@"Duration:\s*(\d{2}):(\d{2}):(\d{2}).(\d{2})");
-            if (regex.IsMatch(str))
-            {
-                foreach (Match item in regex.Matches(str))
-                {
-                    int h = int.Parse(item.Groups[1].Value);
-                    int m = int.Parse(item.Groups[2].Value);
-                    int s = int.Parse(item.Groups[3].Value);
-                    return h * 60 * 60 + m * 60 + s;
-                }
-            }
-            return 0;
-        }
-        private int GetCurrentDuration(string str)
-        {
-            Regex regex = new Regex(@"time=(\d{2}):(\d{2}):(\d{2}).(\d{2})");
-            if (regex.IsMatch(str))
-            {
-                foreach (Match item in regex.Matches(str))
-                {
-                    int h = int.Parse(item.Groups[1].Value);
-                    int m = int.Parse(item.Groups[2].Value);
-                    int s = int.Parse(item.Groups[3].Value);
-                    return h * 60 * 60 + m * 60 + s;
-                }
-            }
-            return 0;
-        }
+       
     }
 }

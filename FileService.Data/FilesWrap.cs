@@ -130,10 +130,10 @@ namespace FileService.Data
             var filter = FilterBuilder.Eq("_id", id) & FilterBuilder.Eq("Thumbnail._id", subId);
             return MongoCollection.UpdateOne(filter, Builders<BsonDocument>.Update.Set("Thumbnail.$.FileId", thumbFileId)).IsAcknowledged;
         }
-        public bool UpdateCpFileId(ObjectId id, ObjectId subId, ObjectId cpFileId)
+        public bool UpdateVideoMeta(ObjectId id, ObjectId subId, ObjectId cpFileId, int width, int height, int duration)
         {
             var filter = FilterBuilder.Eq("_id", id) & FilterBuilder.Eq("VideoCpIds._id", subId);
-            return MongoCollection.UpdateOne(filter, Builders<BsonDocument>.Update.Set("VideoCpIds.$.FileId", cpFileId)).IsAcknowledged;
+            return MongoCollection.UpdateOne(filter, Builders<BsonDocument>.Update.Set("VideoCpIds.$.FileId", cpFileId).Set("Width", width).Set("Height", height).Set("Duration", duration)).IsAcknowledged;
         }
         public BsonDocument GetThumbFileId(ObjectId id, ObjectId subId)
         {

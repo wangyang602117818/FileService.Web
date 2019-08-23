@@ -44,6 +44,9 @@ namespace FileService.Business
                     {"FileId",fileId },
                     {"FileName",fileName },
                     {"Length",length },
+                    {"Width",0 },
+                    {"Height",0 },
+                    {"Duration",0 },
                     {"From",from },
                     {"Download",downloads },
                     {"FileType",fileType },
@@ -166,9 +169,9 @@ namespace FileService.Business
         {
             return mongoData.UpdateThumbFileId(id, subId, thumbFileId);
         }
-        public bool UpdateCpFileId(ObjectId id, ObjectId subId, ObjectId cpFileId)
+        public bool UpdateVideoMeta(ObjectId id, ObjectId subId, ObjectId cpFileId,int width,int height,int duration)
         {
-            return mongoData.UpdateCpFileId(id, subId, cpFileId);
+            return mongoData.UpdateVideoMeta(id, subId, cpFileId,width,height,duration);
         }
         public ObjectId GetThumbFileId(ObjectId id, ObjectId subId, ref string from)
         {

@@ -35,6 +35,7 @@ ffmpeg -hide_banner -v warning -i 01.gif -filter_complex "[0:v] scale=320:-1:fla
 用户基本信息(用户id,用户名,手机号,邮箱,身份证号,照片,创建时间)
 用户权限信息(用户id,用户名,登录名称,密码,所属公司,所属部门,角色,已修改,创建时间)
 
+windows 消息队列
 
 User:
 {
@@ -58,8 +59,7 @@ flag=original    //80% quality
 
 flag="" or no flag //flag = thumbnail
 
-janus message
-dms send email
+
 
 dmfileserver
 

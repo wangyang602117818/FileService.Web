@@ -14,7 +14,7 @@ namespace FileService.Web
     {
         public Task<string> PostFile(string url, string type, string fileName, Stream fileStream, Dictionary<string, string> paras = null, Dictionary<string, string> headers = null)
         {
-            string boundary = "----" + new Random().RandomCode(30);
+            string boundary = "----" + Guid.NewGuid().ToString().Replace("-", "").Substring(0, 30);
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
             request.Method = "post";
             if (headers != null)

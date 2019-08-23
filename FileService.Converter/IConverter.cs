@@ -7,6 +7,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
+using System.Text.RegularExpressions;
 
 namespace FileService.Converter
 {
@@ -89,10 +90,24 @@ namespace FileService.Converter
                 {
                     UseShellExecute = false,
                     CreateNoWindow = true,
-                    RedirectStandardError = false
+                    RedirectStandardError = true
                 }
             };
             process.Start();
+            StreamReader SR = process.StandardError;
+            int totalDuration = 0;
+            int width = 0, height = 0;
+            while (!SR.EndOfStream)
+            {
+                string line = SR.ReadLine();
+                if (totalDuration == 0) totalDuration = GetTotalDuration(line);
+                if (width == 0 && height == 0)
+                {
+                    var frame = GetFrame(line);
+                    width = frame.Width;
+                    height = frame.Height;
+                }
+            }
             process.WaitForExit();
             if (File.Exists(cpPath))
             {
@@ -120,7 +135,7 @@ namespace FileService.Converter
                         cpId = cpBson["_id"].AsObjectId;
                         videoCapture.AddSourceId(from, cpId, fileWrapId);
                     }
-                    filesWrap.UpdateCpFileId(fileWrapId, videoCpId, cpId);
+                    filesWrap.UpdateVideoMeta(fileWrapId, videoCpId, cpId, width, height, totalDuration);
 
                     if (filePreview)
                     {
@@ -184,6 +199,51 @@ namespace FileService.Converter
             process.Dispose();
             File.Delete(convertPath);
             return filesWrap.UpdateFileId(fileWrapId, fileId);
+        }
+
+        public int GetTotalDuration(string str)
+        {
+            Regex regex = new Regex(@"Duration:\s*(\d{2}):(\d{2}):(\d{2}).(\d{2})", RegexOptions.IgnoreCase);
+            if (regex.IsMatch(str))
+            {
+                foreach (Match item in regex.Matches(str))
+                {
+                    int h = int.Parse(item.Groups[1].Value);
+                    int m = int.Parse(item.Groups[2].Value);
+                    int s = int.Parse(item.Groups[3].Value);
+                    return h * 60 * 60 + m * 60 + s;
+                }
+            }
+            return 0;
+        }
+        public int GetCurrentDuration(string str)
+        {
+            Regex regex = new Regex(@"time=(\d{2}):(\d{2}):(\d{2}).(\d{2})", RegexOptions.IgnoreCase);
+            if (regex.IsMatch(str))
+            {
+                foreach (Match item in regex.Matches(str))
+                {
+                    int h = int.Parse(item.Groups[1].Value);
+                    int m = int.Parse(item.Groups[2].Value);
+                    int s = int.Parse(item.Groups[3].Value);
+                    return h * 60 * 60 + m * 60 + s;
+                }
+            }
+            return 0;
+        }
+        public VideoFrame GetFrame(string str)
+        {
+            Regex regex = new Regex(@"(\d{2,})x(\d{2,})", RegexOptions.IgnoreCase);
+            if (regex.IsMatch(str))
+            {
+                foreach (Match item in regex.Matches(str))
+                {
+                    int width = int.Parse(item.Groups[1].Value);
+                    int height = int.Parse(item.Groups[2].Value);
+                    return new VideoFrame() { Width = width, Height = height };
+                }
+            }
+            return new VideoFrame() { Width = 0, Height = 0 };
         }
     }
 }
