@@ -136,7 +136,6 @@ namespace FileService.Converter
                         videoCapture.AddSourceId(from, cpId, fileWrapId);
                     }
                     filesWrap.UpdateVideoMeta(fileWrapId, videoCpId, cpId, width, height, totalDuration);
-
                     if (filePreview)
                     {
                         GenerateFilePreview(from, fileId, fileName, cpPath, imageStream, ImageFormat.Jpeg);
