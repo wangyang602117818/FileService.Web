@@ -1,25 +1,16 @@
-﻿using FileService.Data;
-using FileService.Util;
+﻿using FileService.Util;
 using MongoDB.Bson;
+using MongoDB.Driver;
 using System;
-using System.Collections.Concurrent;
+using System.Threading.Tasks;
 
 namespace FileService.Business
 {
     public partial class Queue : ModelBase<Data.Queue>
     {
-        public static BlockingCollection<FileItem> itemlist = null;
-        public static BlockingCollection<int> tasklist = null;
-        static Queue()
+        public Queue() : base(new Data.Queue())
         {
-            if (AppSettings.taskCount > 0)
-            {
-                itemlist = new BlockingCollection<FileItem>(AppSettings.taskCount);
-                tasklist = new BlockingCollection<int>(AppSettings.taskCount);
-            }
-            for (var i = 0; i < AppSettings.taskCount; i++) tasklist.Add(1);
         }
-        public Queue() : base(new Data.Queue()) { }
         public void Insert(string handlerId, string type, string collectionName, ObjectId collectionId, bool processed, BsonDocument data)
         {
             BsonDocument queue = new BsonDocument()
@@ -39,31 +30,10 @@ namespace FileService.Business
         {
             return mongoData.MessageProcessed(id);
         }
-        public async void MonitorMessage(string handlerId)
+        public async Task<IAsyncCursor<BsonDocument>> GetMonitorCursor(string handlerId)
         {
-            var cursor = await mongoData.MonitorMessage(handlerId);
-            while (await cursor.MoveNextAsync())
-            {
-                var batch = cursor.Current;
-                foreach (var doc in batch)
-                {
-                    ObjectId queueId = doc["_id"].AsObjectId;
-                    string collectionName = doc["collectionName"].AsString;
-                    ObjectId collectionId = doc["collectionId"].AsObjectId;
-                    BsonDocument taskItem = new MongoBase(collectionName).FindOne(collectionId);
-                    if (taskItem == null) continue;
-                    if (taskItem["State"].AsInt32 == -100) continue;
-                    if (taskItem.Contains("Delete") && taskItem["Delete"].AsBoolean == true) continue;
-                    itemlist.Add(new FileItem()
-                    {
-                        QueueId = queueId,
-                        Message = taskItem,
-                    });
-                }
-            }
+            return await mongoData.MonitorMessage(handlerId);
         }
-
-
     }
     public class FileItem
     {

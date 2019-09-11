@@ -1,21 +1,32 @@
 ﻿using FileService.Business;
+using FileService.Data;
 using FileService.Model;
 using FileService.Util;
 using MongoDB.Bson;
+using MongoDB.Driver;
 using System;
-using System.Collections.Generic;
+using System.Collections.Concurrent;
 using System.IO;
-using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace FileService.Converter
 {
     public class Processor
     {
-        Task task = new Task();
+        Business.Task task = new Business.Task();
         Business.Converter converter = new Business.Converter();
-        Extension extension = new Extension();
-        public void StartMonitor(string handlerId)
+        Business.Extension extension = new Business.Extension();
+        Business.Queue queue = new Business.Queue();
+        public static BlockingCollection<FileItem> itemlist = new BlockingCollection<FileItem>();
+        public static BlockingCollection<int> tasklist = new BlockingCollection<int>(AppSettings.taskCount);
+        public static Task<IAsyncCursor<BsonDocument>> cursor = null;
+        public Processor()
+        {
+            for (var i = 0; i < AppSettings.taskCount; i++) tasklist.Add(1);
+            cursor = queue.GetMonitorCursor(AppSettings.handlerId);
+        }
+        public async void StartMonitor(string handlerId)
         {
             #region  旧代码监视共享目录
             //List<MonitorState> MonitorStateList = new List<MonitorState>();
@@ -51,7 +62,26 @@ namespace FileService.Converter
             //}
             //converter.UpdateStatesByHanderId(handlerId, new BsonArray(MonitorStateList.Select(s => s.ToBsonDocument())));
             #endregion
-            new Queue().MonitorMessage(handlerId);
+            while (await cursor.Result.MoveNextAsync())
+            {
+                var batch = cursor.Result.Current;
+                foreach (var doc in batch)
+                {
+                    ObjectId queueId = doc["_id"].AsObjectId;
+                    string collectionName = doc["collectionName"].AsString;
+                    ObjectId collectionId = doc["collectionId"].AsObjectId;
+                    BsonDocument taskItem = new MongoBase(collectionName).FindOne(collectionId);
+                    if (taskItem == null) continue;
+                    if (taskItem["State"].AsInt32 == -100) continue;
+                    if (taskItem.Contains("Delete") && taskItem["Delete"].AsBoolean == true) continue;
+                    Log4Net.InfoLog("in:" + queueId.ToString());
+                    itemlist.Add(new FileItem()
+                    {
+                        QueueId = queueId,
+                        Message = new BsonDocument(),
+                    });
+                }
+            }
         }
         /// <summary>
         ///  获取一个任务，并且开启一个线程，
@@ -62,16 +92,15 @@ namespace FileService.Converter
         {
             while (true)
             {
-                if (Queue.itemlist.Count > 0)
+                FileItem item = itemlist.Take();
+                var p = tasklist.Take();
+                
+                System.Threading.Tasks.Task.Factory
+                    .StartNew(Worker, item)
+                    .ContinueWith(t =>
                 {
-                    var p = Queue.tasklist.Take();
-                    FileItem item = Queue.itemlist.Take();
-                    System.Threading.Tasks.Task.Factory.StartNew(this.Worker, item);
-                }
-                else
-                {
-                    Thread.Sleep(2000);
-                }
+                    tasklist.Add(1);
+                });
             }
         }
         /// <summary>
@@ -122,7 +151,7 @@ namespace FileService.Converter
                 }
                 if (result)
                 {
-                    new Queue().MessageProcessed(item.QueueId);
+                    queue.MessageProcessed(item.QueueId);
                     task.Compeleted(messageId);
                 }
                 else
@@ -138,7 +167,6 @@ namespace FileService.Converter
             finally
             {
                 converter.AddCount(item.Message["HandlerId"].AsString, -1);
-                Queue.tasklist.Add(1);
             }
         }
 

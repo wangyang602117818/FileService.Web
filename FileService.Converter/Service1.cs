@@ -2,7 +2,6 @@
 using FileService.Model;
 using FileService.Util;
 using System;
-using System.IO;
 using System.ServiceProcess;
 
 namespace FileService.Converter
@@ -11,6 +10,7 @@ namespace FileService.Converter
     {
         protected Business.Converter converter;
         protected Processor processor = new Processor();
+        public static System.Threading.Tasks.Task workTask = null;
         public Service1()
         {
             InitializeComponent();
@@ -33,7 +33,7 @@ namespace FileService.Converter
             Log4Net.InfoLog("start...");
             converter.UpdateByHanderId();
             processor.StartMonitor(AppSettings.handlerId);
-            System.Threading.Tasks.Task.Factory.StartNew(processor.StartWork);
+            workTask = System.Threading.Tasks.Task.Factory.StartNew(processor.StartWork);
             base.OnStart(args);
         }
 
