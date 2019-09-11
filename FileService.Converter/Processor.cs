@@ -74,11 +74,10 @@ namespace FileService.Converter
                     if (taskItem == null) continue;
                     if (taskItem["State"].AsInt32 == -100) continue;
                     if (taskItem.Contains("Delete") && taskItem["Delete"].AsBoolean == true) continue;
-                    Log4Net.InfoLog("in:" + queueId.ToString());
                     itemlist.Add(new FileItem()
                     {
                         QueueId = queueId,
-                        Message = new BsonDocument(),
+                        Message = taskItem,
                     });
                 }
             }
@@ -94,7 +93,6 @@ namespace FileService.Converter
             {
                 FileItem item = itemlist.Take();
                 var p = tasklist.Take();
-                
                 System.Threading.Tasks.Task.Factory
                     .StartNew(Worker, item)
                     .ContinueWith(t =>
