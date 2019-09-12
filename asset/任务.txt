@@ -7,6 +7,10 @@
 tcp传文件问题
 
 
+ffmpeg.exe -i "02.mp4" -crf 23  -f hls -hls_list_size 0 2\out.m3u8
+
+ffmpeg -re -r 36 -f h264 -i /var/run/my_named_pipe.h264 -vcodec copy -an -r 36 -use_localtime 1 -f hls -flags +cgop -g 25 -hls_time 6 -hls_list_size 5 -hls_start_number_source datetime -hls_allow_cache 1 -hls_flags program_date_time -hls_segment_filename http://localhost/%Y_%m_%d__%H_%M_%S.ts -method PUT http://localhost/myfeed.m3u8
+
 文件流加密:项目初始化的时候往application中写入加密秘钥
 加密ts
 ffmpeg.exe -i Wildlife.mp4 -hls_time 2 -hls_list_size 0 -hls_allow_cache 0 -hls_enc 1 -hls_enc_key N74kEdQDwUgiR5QNyMQ9fg== -hls_enc_key_url http://localhost:2431/admin/key -hls_enc_iv EjRWeJCrze8= out.m3u8
