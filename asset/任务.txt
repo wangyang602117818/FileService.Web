@@ -36,8 +36,8 @@ ffmpeg -hide_banner -v warning -i 01.gif -filter_complex "[0:v] scale=320:-1:fla
 	
 
 用户中心(UserCenter.Web)
-用户基本信息(用户id,用户名,手机号,邮箱,身份证号,照片,创建时间)
-用户权限信息(用户id,用户名,登录名称,密码,所属公司,所属部门,角色,已修改,创建时间)
+用户基本信息(用户id,用户名,密码,手机号,邮箱,身份证号,性别,所属公司)
+用户权限信息()
 
 windows 消息队列
 
@@ -66,7 +66,6 @@ mediaLibrary video
 
 dmfileserver
 
-
 cpu 2% -> 100%
 memory 46% -> 63%
 
@@ -89,13 +88,110 @@ yang(100MB)3
 转换用时: 00:01:51
 
 1:行业数据
-2:赛道数据
+{
+	"_id":"",
+	name:"",
+	type:"",
+	active:"",
+	pwcTag:"",
+	subTags:[
+		{
+			"id":"",
+			tagId:"",
+			tag2Id:"",
+			tag2Name:"",
+			active:"",
+			subTags:[
+				"id":"",
+				tagId:"",
+				tag2Id:"",
+				tag2Name:"",
+				active:"",
+			]
+		},
+		{
+			"id":"",
+			tagId:"",
+			tag2Id:"",
+			tag2Name:"",
+			active:"",
+			subTags:[
+				"id":"",
+				tagId:"",
+				tag2Id:"",
+				tag2Name:"",
+				active:"",
+			]
+		},
+	]
+}
+2:赛道数据(赛道和行业?)
+{
+	id:"",
+	industryCode:"",
+	name:"",
+	description:"",
+	createTime:"",
+	modifyTime:"",
+	active:"",
+	tagIds:[],  //
+}
+通过接口(/industry/list)一级行业id列表依次获取赛道数据
 
 3:公司数据(所属行业,所属赛道,竞争对手)
-
+{
+	"id":"",
+	"companyCode":"",
+	"basic":{
+		"name":"",
+		"email":"",
+		"logo":"",
+		...
+	},
+	"industry":[]     //*所属行业
+	"track":[]        //*所属赛道
+	"funding":{},
+	"similar":{},
+	"feature":{},
+	"finance":{},
+	"tags":{},
+	"unicorn_index":"",
+}
 4:新闻数据(所属行业,所属赛道)
+{
+	"id":"",
+	"url":"",
+	"title":"",
+	"domain":"",         //*
+	"domain_name":"",   //*
+	"content":"",
+	"negative":"",
+	"industry":[],   //*所属行业
+	"track":[]       //*所属赛道
+}
+4.1:赛道新闻
+{
+   ...
+   "companyId":"",
+   "industryId":"",   //*关联赛道
+}
 
-5:研报数据
+5:研报数据(所属行业)
+来源: 研报的source
+type 78001市场报告，78004行业研报，78005个股研报，78006宏观研究
+6:用户设置
+{
+	"id":"",
+	"email":""
+	"staffId":"",
+	"staffName":"",
+	"starCompanyList":[],  //*关注公司
+	"starIndustryList":[], //*关注行业
+	"starNewsList":[],      //*收藏新闻
+	"starReportList":[]    //*收藏研报
+}
+
+
 
 
 
