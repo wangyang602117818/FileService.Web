@@ -52,14 +52,14 @@ class SharedFileList extends React.Component {
                         var currentDate = getCurrentDateTime();
                         return (
                             <tr key={i}>
-                                <td>{item.SharedUrl}</td>
+                                <td>{baseUrl + "shared/" + item._id.$oid}</td>
                                 <td>{item.PassWord || "none"}</td>
                                 <td>{item.ExpiredDay || "∞"}</td>
                                 <td>{item.ExpiredDay == 0 ? "∞" : expiredDate}</td>
                                 <td>{parseBsonTime(item.CreateTime)}</td>
                                 <td>
                                     {
-                                        (!item.Disabled && (currentDate < expiredDate || item.ExpiredDay==0)) ?
+                                        (!item.Disabled && (currentDate < expiredDate || item.ExpiredDay == 0)) ?
                                             <span className="state use_state" title={culture.used} />
                                             :
                                             <span className="state disabled_state" title={culture.disabled} />
@@ -70,7 +70,7 @@ class SharedFileList extends React.Component {
                                         !item.Disabled ?
                                             <i className="iconfont icon-disable"
                                                 id={item._id.$oid}
-                                                onClick={this.props.disableShared.bind(this)}></i> : 
+                                                onClick={this.props.disableShared.bind(this)}></i> :
                                             <i className="iconfont icon-dui"
                                                 id={item._id.$oid}
                                                 onClick={this.props.enableShared.bind(this)}></i>
@@ -119,7 +119,7 @@ class AddShared extends React.Component {
     }
     render() {
         return (
-            <table className="table_modify" style={{width:"70%"}}>
+            <table className="table_modify" style={{ width: "70%" }}>
                 <tbody>
                     <tr>
                         <td width="10%">{culture.shared_type}:</td>

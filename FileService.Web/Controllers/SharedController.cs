@@ -48,7 +48,8 @@ namespace FileService.Web.Controllers
             //验证/////////////////////
 
             string fileId = bson["FileId"].ToString();
-            string fileName = bson["FileName"].ToString();
+            BsonDocument fileWrap = filesWrap.FindOne(ObjectId.Parse(fileId));
+            string fileName = fileWrap["FileName"].ToString();
             string fileType = extension.GetTypeByExtension(Path.GetExtension(fileName).ToLower()).ToLower();
             ViewBag.id = id;
             ViewBag.fileId = fileId;
@@ -59,7 +60,6 @@ namespace FileService.Web.Controllers
             if (fileType == "office")
             {
                 ViewBag.convert = "true";
-                BsonDocument fileWrap = filesWrap.FindOne(ObjectId.Parse(fileId));
                 ViewBag.fileId = fileWrap.Contains("Files") ? fileWrap["Files"].AsBsonArray[0]["_id"].ToString() : ObjectId.Empty.ToString();
             }
             ViewBag.template = System.IO.File.ReadAllText(AppDomain.CurrentDomain.BaseDirectory + "/pdfview/template.html");
@@ -84,6 +84,16 @@ namespace FileService.Web.Controllers
                 }
             }
         }
-
+        public ActionResult AddShared(SharedModel sharedModel)
+        {
+            sharedModel.CreateTime = DateTime.Now;
+            ObjectId id = ObjectId.GenerateNewId();
+            BsonDocument shareBson = sharedModel.ToBsonDocument();
+            shareBson.Add("_id", id);
+            shareBson["FileId"] = ObjectId.Parse(sharedModel.FileId);
+            Log(sharedModel.FileId, "AddShared");
+            shared.Insert(shareBson);
+            return new ResponseModel<string>(ErrorCode.success, id.ToString());
+        }
     }
 }

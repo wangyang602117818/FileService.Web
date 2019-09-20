@@ -456,7 +456,6 @@ class Resources extends React.Component {
         }
         var access = this.getFileAccess(fileId);
         var departments = this.getAllCompany();
-        this.getSharedUrl();
         this.getSharedList(fileId);
         this.getHistory(fileId);
         if (owner == userName || trim(owner) == "") {
@@ -638,20 +637,11 @@ class Resources extends React.Component {
             }
         }.bind(this));
     }
-    getSharedUrl() {
-        http.get(urls.getObjectIdUrl, function (data) {
-            if (data.code == 0) {
-                this.setState({ sharedUrl: baseUrl + "shared/" + data.result });
-            }
-        }.bind(this));
-    }
     shared(obj) {
         obj.fileId = this.state.fileId;
-        obj.sharedUrl = this.state.sharedUrl;
         http.postJson(urls.shared.addshared, obj, function (data) {
             if (data.code == 0) {
                 this.getSharedList(obj.fileId);
-                this.getSharedUrl();
             }
         }.bind(this));
     }
