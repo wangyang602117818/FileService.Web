@@ -134,6 +134,7 @@ namespace FileService.Util
         public static string GetFileExt(this string str)
         {
             var index = str.LastIndexOf(".");
+            if (index == -1) return "";
             return str.Substring(index);
         }
     }
