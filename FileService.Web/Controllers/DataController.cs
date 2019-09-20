@@ -158,6 +158,17 @@ namespace FileService.Web.Controllers
             IEnumerable<string> result = application.FindApplications().Select(s => s["ApplicationName"].AsString);
             return new ResponseModel<IEnumerable<string>>(ErrorCode.success, result, result.Count());
         }
+        public ActionResult AddShared(SharedModel sharedModel)
+        {
+            sharedModel.CreateTime = DateTime.Now;
+            ObjectId id = ObjectId.GenerateNewId();
+            BsonDocument shareBson = sharedModel.ToBsonDocument();
+            shareBson.Add("_id", id);
+            shareBson["FileId"] = ObjectId.Parse(sharedModel.FileId);
+            Log(sharedModel.FileId, "AddShared");
+            shared.Insert(shareBson);
+            return new ResponseModel<string>(ErrorCode.success, id.ToString());
+        }
         public ActionResult GetFileList(string from = "", string fileType = "", string filter = "", int pageIndex = 1, int pageSize = 15)
         {
             BsonDocument eqs = new BsonDocument("Delete", false);
