@@ -32,7 +32,7 @@ namespace FileService.Business
         }
         public async Task<IAsyncCursor<BsonDocument>> GetMonitorCursor(string handlerId)
         {
-            return await mongoData.MonitorMessage(handlerId);
+            return await mongoData.GetMonitorCursor(handlerId);
         }
     }
     public class FileItem

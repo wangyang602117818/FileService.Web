@@ -32,7 +32,7 @@ namespace FileService.Converter
         {
             Log4Net.InfoLog("start...");
             converter.UpdateByHanderId();
-            processor.StartMonitor(AppSettings.handlerId);
+            processor.StartMonitor();
             workTask = System.Threading.Tasks.Task.Factory.StartNew(processor.StartWork);
             base.OnStart(args);
         }
