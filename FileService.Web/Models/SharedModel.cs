@@ -12,8 +12,6 @@ namespace FileService.Web.Models
         [Required]
         public string FileId { get; set; }
         [Required]
-        public string FileName { get; set; }
-        [Required]
         public string SharedUrl { get; set; }
         public string PassWord { get; set; }
         public int ExpiredDay { get; set; }

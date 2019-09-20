@@ -11,8 +11,7 @@
                 <table className="table">
                     <thead>
                         <tr>
-                            <th width="24%">{culture.fileName}</th>
-                            <th width="26%">{culture.shared_link}</th>
+                            <th width="50%">{culture.shared_link}</th>
                             <th width="6%">{culture.password}</th>
                             <th width="8%">{culture.date + "(" + culture.day + ")"}</th>
                             <th width="13%">{culture.expired_date}</th>
@@ -53,7 +52,6 @@ class SharedFileList extends React.Component {
                         var currentDate = getCurrentDateTime();
                         return (
                             <tr key={i}>
-                                <td title={item.FileName}>{item.FileName.getFileName(15)}</td>
                                 <td>{item.SharedUrl}</td>
                                 <td>{item.PassWord || "none"}</td>
                                 <td>{item.ExpiredDay || "∞"}</td>
@@ -123,10 +121,6 @@ class AddShared extends React.Component {
         return (
             <table className="table_modify" style={{width:"70%"}}>
                 <tbody>
-                    <tr>
-                        <td>{culture.shared_link}:</td>
-                        <td colSpan="3">{this.props.sharedUrl}</td>
-                    </tr>
                     <tr>
                         <td width="10%">{culture.shared_type}:</td>
                         <td width="20%">

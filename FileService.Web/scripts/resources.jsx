@@ -647,7 +647,6 @@ class Resources extends React.Component {
     }
     shared(obj) {
         obj.fileId = this.state.fileId;
-        obj.fileName = this.state.innerFileName;
         obj.sharedUrl = this.state.sharedUrl;
         http.postJson(urls.shared.addshared, obj, function (data) {
             if (data.code == 0) {
