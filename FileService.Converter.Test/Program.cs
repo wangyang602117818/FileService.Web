@@ -16,8 +16,9 @@ namespace FileService.Converter.Test
             //processor.StartMonitor();
             //workTask = System.Threading.Tasks.Task.Factory.StartNew(processor.StartWork);
 
-            MsQueue msQueue = new MsQueue();
+            MsQueue<Person> msQueue = new MsQueue<Person>();
             msQueue.ReceiveMessage();
+
             Console.WriteLine("ok");
             Console.ReadKey();
         }

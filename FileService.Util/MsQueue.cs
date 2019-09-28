@@ -3,20 +3,21 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Messaging;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace FileService.Util
 {
-    public class MsQueue
+    public class MsQueue<T>
     {
         string path = @".\private$\yqueue";
         MessageQueue messageQueue = null;
         public MsQueue()
         {
             messageQueue = new MessageQueue(path);
-            messageQueue.Formatter = new XmlMessageFormatter(new Type[] { typeof(Person) });
+            messageQueue.Formatter = new XmlMessageFormatter(new Type[] { typeof(T) });
         }
-        public void SendMessage(object data, string label)
+        public void SendMessage(T data, string label)
         {
             messageQueue.Send(data, label);
         }
@@ -25,10 +26,9 @@ namespace FileService.Util
             while (true)
             {
                 var obj = messageQueue.Receive();
-                Person person = (Person)obj.Body;
-                Console.WriteLine(person.Name);
+                T person = (T)obj.Body;
+                Console.WriteLine(person);
             }
-
         }
     }
     public class Person

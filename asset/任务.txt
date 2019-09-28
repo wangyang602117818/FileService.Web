@@ -41,6 +41,7 @@ ffmpeg -hide_banner -v warning -i 01.gif -filter_complex "[0:v] scale=320:-1:fla
 
 windows 消息队列
 
+mongodb NoCursorTimeout
 
 es返回值格式
 创建index {"acknowledged":true,"shards_acknowledged":true,"index":"cli"}
