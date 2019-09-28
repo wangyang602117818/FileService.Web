@@ -297,5 +297,17 @@ namespace FileService.Web.Controllers
             }
             return true;
         }
+
+        public string Send()
+        {
+            MsQueue msQueue = new MsQueue();
+            Person person = new Person
+            {
+                Name = "wang",
+                Age = 13
+            };
+            msQueue.SendMessage(person, "h01");
+            return "ok";
+        }
     }
 }
