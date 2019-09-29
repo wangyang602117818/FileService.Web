@@ -300,7 +300,7 @@ namespace FileService.Web.Controllers
 
         public string Send()
         {
-            MsQueue<Person> msQueue = new MsQueue<Person>();
+            MsQueue<Person> msQueue = new MsQueue<Person>(@".\private$\yqueue");
             Person person = new Person
             {
                 Name = "wang",

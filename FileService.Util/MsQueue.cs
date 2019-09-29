@@ -1,33 +1,36 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Messaging;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace FileService.Util
 {
     public class MsQueue<T>
     {
-        string path = @".\private$\yqueue";
         MessageQueue messageQueue = null;
-        public MsQueue()
+        public MsQueue(string path)
         {
+            try
+            {
+                if (!MessageQueue.Exists(path)) MessageQueue.Create(path);
+            }
+            catch (MessageQueueException ex)
+            {
+                Log4Net.ErrorLog(ex);
+            }
             messageQueue = new MessageQueue(path);
+            messageQueue.SetPermissions("Everyone", MessageQueueAccessRights.FullControl);
             messageQueue.Formatter = new XmlMessageFormatter(new Type[] { typeof(T) });
         }
         public void SendMessage(T data, string label)
         {
             messageQueue.Send(data, label);
         }
-        public void ReceiveMessage()
+        public void ReceiveMessage(Action<T> action)
         {
             while (true)
             {
                 var obj = messageQueue.Receive();
                 T person = (T)obj.Body;
-                Console.WriteLine(person);
+                action(person);
             }
         }
     }

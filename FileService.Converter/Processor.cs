@@ -7,7 +7,6 @@ using MongoDB.Driver;
 using System;
 using System.Collections.Concurrent;
 using System.IO;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace FileService.Converter
@@ -25,6 +24,10 @@ namespace FileService.Converter
         {
             for (var i = 0; i < AppSettings.taskCount; i++) tasklist.Add(1);
             cursor = queue.GetMonitorCursor(AppSettings.handlerId);
+        }
+        public void DisposeCursor()
+        {
+            cursor.Dispose();
         }
         public async void StartMonitor()
         {

@@ -16,13 +16,16 @@ namespace FileService.Converter.Test
             //processor.StartMonitor();
             //workTask = System.Threading.Tasks.Task.Factory.StartNew(processor.StartWork);
 
-            MsQueue<Person> msQueue = new MsQueue<Person>();
-            msQueue.ReceiveMessage();
+            MsQueue<Person> msQueue = new MsQueue<Person>(@".\private$\yqueue");
+            msQueue.ReceiveMessage(M);
 
             Console.WriteLine("ok");
             Console.ReadKey();
         }
 
-
+        private static void M(Person obj)
+        {
+            Console.WriteLine(obj.Name);
+        }
     }
 }
