@@ -298,16 +298,17 @@ namespace FileService.Web.Controllers
             return true;
         }
 
-        public string Send()
+        public static int i = 0;
+        public ActionResult Send()
         {
-            MsQueue<Person> msQueue = new MsQueue<Person>(@".\private$\yqueue");
+            MsQueue<Person> msQueue = new MsQueue<Person>("FormatName:DIRECT=OS:hkappuwv818\\private$\\task_queue");
             Person person = new Person
             {
                 Name = "wang",
-                Age = 13
+                Age = i++
             };
-            msQueue.SendMessage(person, "h01");
-            return "ok";
+            msQueue.SendMessageTransactional(person, "person");
+            return Json(person,JsonRequestBehavior.AllowGet);
         }
     }
 }

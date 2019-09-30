@@ -7,6 +7,7 @@ namespace FileService.Converter.Test
     class Program
     {
         public static System.Threading.Tasks.Task workTask = null;
+
         static void Main(string[] args)
         {
             FileInfo fileInfo = new FileInfo(AppDomain.CurrentDomain.BaseDirectory + "log4net.config");
@@ -16,7 +17,9 @@ namespace FileService.Converter.Test
             //processor.StartMonitor();
             //workTask = System.Threading.Tasks.Task.Factory.StartNew(processor.StartWork);
 
-            MsQueue<Person> msQueue = new MsQueue<Person>(@".\private$\yqueue");
+            MsQueue<Person> msQueue = new MsQueue<Person>(@".\private$\task_queue");
+            msQueue.CreateQueue(true);
+
             msQueue.ReceiveMessage(M);
 
             Console.WriteLine("ok");
@@ -25,7 +28,8 @@ namespace FileService.Converter.Test
 
         private static void M(Person obj)
         {
-            Console.WriteLine(obj.Name);
+            Console.WriteLine(obj.Name + ":" + obj.Age);
+            throw new Exception();
         }
     }
 }
