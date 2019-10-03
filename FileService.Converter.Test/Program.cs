@@ -29,7 +29,7 @@ namespace FileService.Converter.Test
         private static void M(Person obj)
         {
             Console.WriteLine(obj.Name + ":" + obj.Age);
-            throw new Exception();
+            
         }
     }
 }

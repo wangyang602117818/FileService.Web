@@ -6,27 +6,17 @@
     <script src="file-service-api-1.8.1.js"></script>
 </head>
 <body>
-    <input type ="file" name="file" id="file" />
+    <input type="file" name="file" id="file" />
 
-    <video src="">
-
-    </video>
+    <video src=""></video>
 </body>
 </html>
 <script>
-    var fileClient = new FileClient("1936aef6d2ba", "http://localhost/FileService.Web/");
-    document.getElementById("file").onchange = function () {
-        var files = this.files;
-        fileClient.uploadImage(files, null, null,
-            function (data) {
-                console.log(data);
-            },
-            function (percent) {
-                console.log(percent);
-            },
-            null,
-            null,
-        )
-    };
-    
+    function getReturnUrl(name) {
+        var index = window.location.search.indexOf(name);
+        var returnUrl = window.location.search.substring(index + name.length + 1);
+        return returnUrl;
+    }
+
+    getReturnUrl("returnUrl");
 </script>

@@ -11,7 +11,7 @@ namespace FileService.Web
     {
         public static void RegisterRoutes(RouteCollection routes)
         {
-            routes.RouteExistingFiles = true;
+            //routes.RouteExistingFiles = true;
             routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
             routes.IgnoreRoute("css/{*.*}");
             routes.IgnoreRoute("scripts/{*.*}");
