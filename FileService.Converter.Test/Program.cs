@@ -19,17 +19,23 @@ namespace FileService.Converter.Test
 
             MsQueue<Person> msQueue = new MsQueue<Person>(@".\private$\task_queue");
             msQueue.CreateQueue(true);
+            msQueue.ReceiveMessageTransactional(M1);
 
-            msQueue.ReceiveMessage(M);
 
             Console.WriteLine("ok");
             Console.ReadKey();
         }
 
-        private static void M(Person obj)
+        private static bool M1(Person obj)
         {
-            Console.WriteLine(obj.Name + ":" + obj.Age);
-            
+            Console.WriteLine(obj.Name);
+            return false;
+        }
+
+        private static bool M(Person arg)
+        {
+            Console.WriteLine(arg.Name);
+            return true;
         }
     }
 }

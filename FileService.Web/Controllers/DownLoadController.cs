@@ -307,8 +307,8 @@ namespace FileService.Web.Controllers
                 Name = "wang",
                 Age = i++
             };
-            msQueue.SendMessage(person, "person");
-            return Json(person,JsonRequestBehavior.AllowGet);
+            msQueue.SendMessageTransactional(person, "person", true);
+            return Json(person, JsonRequestBehavior.AllowGet);
         }
     }
 }
