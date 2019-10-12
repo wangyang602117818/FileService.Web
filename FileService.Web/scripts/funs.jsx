@@ -408,6 +408,11 @@ function getQueryString(name) {
     var r = window.location.search.substr(1).match(reg);
     if (r != null) return unescape(r[2]); return null;
 }
+function getReturnUrl(name) {
+    var index = window.location.search.indexOf(name);
+    var returnUrl = window.location.search.substring(index + name.length + 1);
+    return returnUrl;
+}
 function trim(str, char) {
     var reTag = new RegExp("^" + ('\\' + char || ' ') + "+|" + (char || ' ') + "+$", "gi");
     return str.replace(reTag, "");
