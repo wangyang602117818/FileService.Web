@@ -12,7 +12,7 @@ namespace FileService.Data
         public async Task<IAsyncCursor<BsonDocument>> GetMonitorCursor(string handlerId, string collection = "Task")
         {
             var filter = FilterBuilder.Eq("handlerId", handlerId) & FilterBuilder.Eq("collectionName", collection) & FilterBuilder.Eq("processed", false);
-            return await MongoCollection.FindAsync(filter, new FindOptions<BsonDocument> { CursorType = CursorType.TailableAwait, BatchSize = 100 });
+            return await MongoCollection.FindAsync(filter, new FindOptions<BsonDocument> { CursorType = CursorType.Tailable, BatchSize = 100 });
         }
         public bool MessageProcessed(ObjectId id)
         {
