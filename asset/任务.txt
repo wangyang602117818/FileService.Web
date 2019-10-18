@@ -58,8 +58,26 @@ flag="" or no flag //flag = thumbnail
 mediaLibrary video
 烯牛数据同步
 
+region
+round
+industry
 
-cid 0-6w的数据没有 mobile 问题
+filter
+year
+
+investors
+sorts
+
+
+市场报告: http://localhost/Startup.Web/home/SeachResearch?filter=中国
+券商报告: http://localhost/Startup.Web/home/SeachResearch?type=-1&filter=中国
+pwc报告: http://localhost/Startup.Web/home/SeachResearch?type=0&filter=中国&source=普华永道,PwC
+
+
+
+
+
+
 
 
 
