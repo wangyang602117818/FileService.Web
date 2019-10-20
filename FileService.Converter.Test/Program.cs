@@ -18,12 +18,7 @@ namespace FileService.Converter.Test
             msQueue.CreateQueue();
 
             Processor processor = new Processor();
-            //processor.StartMonitor();
             processor.StartWork();
-
-
-            //msQueue.ReceiveMessage(M2);
-
 
             Console.WriteLine("ok");
             Console.ReadKey();

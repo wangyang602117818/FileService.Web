@@ -124,19 +124,6 @@ namespace FileService.Web.Controllers
             if (!string.IsNullOrEmpty(from)) eqs.Add("From", from);
             if (state >= -100) eqs.Add("State", state);
             List<BsonDocument> result = task.GetPageList(pageIndex, pageSize, eqs, timeStart, timeEnd, sorts, filter, new List<string>() { "FileId", "FileName", "StateDesc", "HandlerId", "StateDesc", "Type" }, new List<string>() { }, out count, userName).ToList();
-            //foreach (BsonDocument bson in result)
-            //{
-            //    string fullPath = GetTempFilePath(bson);
-            //    if (System.IO.File.Exists(fullPath))
-            //    {
-            //        bson.Add("FileExists", true);
-            //    }
-            //    else
-            //    {
-            //        bson.Add("FileExists", false);
-            //    }
-            //    bson.Remove("Machine");
-            //}
             return new ResponseModel<IEnumerable<BsonDocument>>(ErrorCode.success, result, count);
         }
         public ActionResult GetFiles(int pageIndex = 1, int pageSize = 10, string from = "", string orderField = "CreateTime", string orderFieldType = "desc", string filter = "", string fileType = "", string startTime = null, string endTime = null)
