@@ -125,14 +125,14 @@ var appDomain = appPath == "/" ? "/" : appPath + "/";
 var baseUrl = window.location.protocol + "//" + window.location.host + appDomain;
 var urls = {
     logoUrl: appDomain + "image/PwC-logo.svg",
-    loginUrl: appDomain+"admin/login",
+    loginUrl: appDomain + "admin/login",
     homeUrl: appDomain + "admin/index",
     logOutUrl: appDomain + "admin/logout",
     preview: appDomain + "admin/preview",
     previewConvert: appDomain + "admin/previewconvert",
     removeUrl: appDomain + "admin/remove",
     removeFilesUrl: appDomain + "admin/removes",
-    removeAppFilesUrl: appDomain +"admin/removeappfiles",
+    removeAppFilesUrl: appDomain + "admin/removeappfiles",
     deleteFileUrl: appDomain + "admin/delete",
     deleteFilesUrl: appDomain + "admin/deletefiles",
     restoreFileUrl: appDomain + "admin/restore",
@@ -179,7 +179,7 @@ var urls = {
         getUrl: appDomain + "admin/gethandlers",
         getCacheFilesUrl: appDomain + "server/getcachefiles",
         deleteHandlerCacheFilesUrl: appDomain + "server/deletehandlercachefiles",
-        deleteAllCacheFilesUrl: appDomain +"server/deleteallcachefiles"
+        deleteAllCacheFilesUrl: appDomain + "server/deleteallcachefiles"
     },
     tasks: {
         getUrl: appDomain + "admin/gettasks",
@@ -219,7 +219,7 @@ var urls = {
     application: {
         getUrl: appDomain + "admin/getapplications",
         getapplicationUrl: appDomain + "admin/getapplication",
-        getAllApplicationUrl: appDomain +"admin/getallapplications",
+        getAllApplicationUrl: appDomain + "admin/getallapplications",
         getApplicationByAuthCodeUrl: appDomain + "admin/getapplicationbyauthcode",
         addUrl: appDomain + "admin/addapplication",
         updateUrl: appDomain + "admin/updateapplication",
@@ -414,15 +414,15 @@ function getReturnUrl(name) {
     return returnUrl;
 }
 function trim(str, char) {
-    var reTag = new RegExp("^" + (char || ' ') + "+|" + (char || ' ') + "+$", "gi");
+    var reTag = new RegExp("^" + ('\\' + char || ' ') + "+|" + (char || ' ') + "+$", "gi");
     return str.replace(reTag, "");
 }
 function trimEnd(str, char) {
-    var reTag = new RegExp((char || ' ') + "+$", "gi");
+    var reTag = new RegExp(('\\' + char || ' ') + "+$", "gi");
     return str.replace(reTag, "");
 }
 function trimStart(str, char) {
-    var reTag = new RegExp("^" + (char || ' ') + "+", "gi");
+    var reTag = new RegExp("^" + ('\\' + char || ' ') + "+", "gi");
     return str.replace(reTag, "");
 }
 function getIconNameByFileName(filename) {

@@ -58,136 +58,24 @@ flag="" or no flag //flag = thumbnail
 mediaLibrary video
 烯牛数据同步
 
-dmfileserver
+region
+round
+industry
 
-cpu 2% -> 100%
-memory 46% -> 63%
+filter
+year
 
-2.4GHz 8 processors 8GB
+investors
+sorts
 
-上传 11:36:00 -> 41:08
-转换 11:38:08 -> 00:04
-10个视频(575.6MB)最小28.63MB 最大94.61MB
-上传用时: 00:05:08
-转换用时: 00:21:56
 
-yahui(241MB)4: 
-上传用时: 00:05:08
-转换用时: 00:18:29
-bai(233MB)3
-上传用时: 00:04:52
-转换用时: 00:19:36
-yang(100MB)3
-上传用时: 00:02:32
-转换用时: 00:01:51
+市场报告: http://localhost/Startup.Web/home/SeachResearch?filter=中国
+券商报告: http://localhost/Startup.Web/home/SeachResearch?type=-1&filter=中国
+pwc报告: http://localhost/Startup.Web/home/SeachResearch?type=0&filter=中国&source=普华永道,PwC
 
-1:行业数据
-{
-	"_id":"",
-	name:"",
-	type:"",
-	active:"",
-	pwcTag:"",
-	subTags:[
-		{
-			"id":"",
-			tagId:"",
-			tag2Id:"",
-			tag2Name:"",
-			active:"",
-			subTags:[
-				"id":"",
-				tagId:"",
-				tag2Id:"",
-				tag2Name:"",
-				active:"",
-			]
-		},
-		{
-			"id":"",
-			tagId:"",
-			tag2Id:"",
-			tag2Name:"",
-			active:"",
-			subTags:[
-				"id":"",
-				tagId:"",
-				tag2Id:"",
-				tag2Name:"",
-				active:"",
-			]
-		},
-	]
-}
-2:赛道数据(赛道和行业?)
-{
-	id:"",
-	industryCode:"",
-	name:"",
-	description:"",
-	createTime:"",
-	modifyTime:"",
-	active:"",
-	tagIds:[],  //
-}
-通过接口(/industry/list)一级行业id列表依次获取赛道数据
 
-3:公司数据(所属行业,所属赛道,竞争对手)
-{
-	"id":"",
-	"companyCode":"",
-	"basic":{
-		"name":"",
-		"email":"",
-		"logo":"",
-		...
-	},
-	"industry":[]     //*所属行业
-	"track":[]        //*所属赛道
-	"funding":{},
-	"similar":{},
-	"feature":{},
-	"finance":{},
-	"tags":{},
-	"unicorn_index":"",
-}
-4:新闻数据(所属行业,所属赛道)
-{
-	"id":"",
-	"url":"",
-	"title":"",
-	"domain":"",         //*
-	"domain_name":"",   //*
-	"content":"",
-	"negative":"",
-	"industry":[],   //*所属行业
-	"track":[]       //*所属赛道
-}
-4.1:赛道新闻
-{
-   ...
-   "companyId":"",
-   "industryId":"",   //*关联赛道
-}
 
-5:研报数据(所属行业)
-来源: 研报的source
-type 78001市场报告，78004行业研报，78005个股研报，78006宏观研究
-研报中的 tab(券商报告)= 78004行业研报+78005个股研报+78006宏观研究
-所有 type=78001 的 source -> 20张ppt的来源
-所有 type=78004 的 source -> 21张ppt的来源
 
-6:用户设置
-{
-	"id":"",
-	"email":""
-	"staffId":"",
-	"staffName":"",
-	"starCompanyList":[],  //*关注公司
-	"starIndustryList":[], //*关注行业
-	"starNewsList":[],      //*收藏新闻
-	"starReportList":[]    //*收藏研报
-}
 
 
 
