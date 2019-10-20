@@ -17,16 +17,16 @@ namespace FileService.Converter
         Task task = new Task();
         MongoFile mongoFile = new MongoFile();
         MongoFileConvert mongoFileConvert = new MongoFileConvert();
-        public override bool Convert(FileItem taskItem)
+        public override bool Convert(BsonDocument taskItem)
         {
-            ObjectId fileWrapId = taskItem.Message["FileId"].AsObjectId;
+            ObjectId fileWrapId = taskItem["FileId"].AsObjectId;
             BsonDocument fileWrap = filesWrap.FindOne(fileWrapId);
             DateTime expiredTime = fileWrap.Contains("ExpiredTime") ? fileWrap["ExpiredTime"].ToUniversalTime() : DateTime.MaxValue.ToUniversalTime();
-            string from = taskItem.Message["From"].AsString;
-            string fileName = taskItem.Message["FileName"].AsString;
-            string fileType = taskItem.Message["Type"].AsString;
+            string from = taskItem["From"].AsString;
+            string fileName = taskItem["FileName"].AsString;
+            string fileType = taskItem["Type"].AsString;
 
-            string fullPath = AppSettings.GetFullPath(taskItem.Message);
+            string fullPath = AppSettings.GetFullPath(taskItem);
             if (File.Exists(fullPath))
             {
                 SaveFileFromSharedFolder(from, fileType, fileWrapId, fullPath, fileName, null);

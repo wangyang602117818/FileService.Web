@@ -11,21 +11,6 @@ namespace FileService.Data
         public static void Init(IMongoDatabase database)
         {
             var databases = database.ListCollectionNames().ToList();
-            if (!databases.Contains("queue"))
-            {
-                database.CreateCollection("queue", new CreateCollectionOptions() { Capped = true, MaxSize = 1048576 * 100 });
-                database.GetCollection<BsonDocument>("queue").InsertOne(new BsonDocument()
-                {
-                    {"handlerId","system" },
-                    {"type","system" },
-                    {"collectionName","system" },
-                    {"collectionId",ObjectId.GenerateNewId() },
-                    {"op","init" },
-                    {"data",new BsonDocument() },
-                    {"processed",true },
-                    {"createTime",DateTime.Now }
-                });
-            }
             if (!databases.Contains("Extension"))
             {
                 database.CreateCollection("Extension");

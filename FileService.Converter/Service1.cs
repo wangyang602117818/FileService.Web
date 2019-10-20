@@ -12,7 +12,6 @@ namespace FileService.Converter
     {
         protected Business.Converter converter;
         protected Processor processor = new Processor();
-        public static System.Threading.Tasks.Task workTask = null;
         
         public Service1()
         {
@@ -35,23 +34,19 @@ namespace FileService.Converter
         {
             Log4Net.InfoLog("start...");
             converter.UpdateByHanderId();
-
-            processor.StartMonitor();
-            workTask = Task.Factory.StartNew(processor.StartWork);
+            processor.StartWork();
             base.OnStart(args);
         }
 
         protected override void OnStop()
         {
             Log4Net.InfoLog("end...");
-            processor.DisposeCursor();
             converter.Offline();
             base.OnStop();
         }
         protected override void OnShutdown()
         {
             Log4Net.InfoLog("Shutdown...");
-            processor.DisposeCursor();
             converter.Offline();
             base.OnShutdown();
         }

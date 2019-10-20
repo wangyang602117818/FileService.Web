@@ -19,13 +19,13 @@ namespace FileService.Converter
         Thumbnail thumbnail = new Thumbnail();
         Task task = new Task();
         static object o = new object();
-        public override bool Convert(FileItem taskItem)
+        public override bool Convert(BsonDocument taskItem)
         {
-            BsonDocument outputDocument = taskItem.Message["Output"].AsBsonDocument;
-            string from = taskItem.Message["From"].AsString;
-            string fileName = taskItem.Message["FileName"].AsString;
-            string fileType = taskItem.Message["Type"].AsString;
-            ObjectId fileWrapId = taskItem.Message["FileId"].AsObjectId;
+            BsonDocument outputDocument = taskItem["Output"].AsBsonDocument;
+            string from = taskItem["From"].AsString;
+            string fileName = taskItem["FileName"].AsString;
+            string fileType = taskItem["Type"].AsString;
+            ObjectId fileWrapId = taskItem["FileId"].AsObjectId;
             BsonDocument fileWrap = filesWrap.FindOne(fileWrapId);
             ImageOutPut output = BsonSerializer.Deserialize<ImageOutPut>(outputDocument);
             string outputExt = "";
@@ -39,7 +39,7 @@ namespace FileService.Converter
                 format = ImageExtention.GetFormat(output.Format, fileName, out outputExt);
             }
             Stream fileStream = null;
-            string fullPath = AppSettings.GetFullPath(taskItem.Message);
+            string fullPath = AppSettings.GetFullPath(taskItem);
             lock (o)
             {
                 if (File.Exists(fullPath))

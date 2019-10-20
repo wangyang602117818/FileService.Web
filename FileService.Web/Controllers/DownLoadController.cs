@@ -301,13 +301,14 @@ namespace FileService.Web.Controllers
         public static int i = 0;
         public ActionResult Send()
         {
-            MsQueue<Person> msQueue = new MsQueue<Person>("FormatName:DIRECT=OS:AFOFD-608200745\\private$\\task_queue");
-            Person person = new Person
+            MsQueue<TaskMessage> msQueue = new MsQueue<TaskMessage>("FormatName:DIRECT=OS:AFOFD-608200745\\private$\\task_queue");
+            TaskMessage person = new TaskMessage
             {
-                Name = "wang",
-                Age = i++
+               Type="image",
+               CollectionName= "Task",
+               CollectionId= ObjectId.GenerateNewId().ToString()
             };
-            msQueue.SendMessageTransactional(person, "person", true);
+            msQueue.SendMessage(person, "task", true);
             return Json(person, JsonRequestBehavior.AllowGet);
         }
     }

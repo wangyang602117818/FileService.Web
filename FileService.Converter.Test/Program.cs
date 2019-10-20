@@ -1,40 +1,42 @@
 ﻿using FileService.Util;
 using System;
 using System.IO;
+using System.Messaging;
 
 namespace FileService.Converter.Test
 {
     class Program
     {
-        public static System.Threading.Tasks.Task workTask = null;
+        //public static System.Threading.Tasks.Task workTask = null;
 
         static void Main(string[] args)
         {
             FileInfo fileInfo = new FileInfo(AppDomain.CurrentDomain.BaseDirectory + "log4net.config");
             log4net.Config.XmlConfigurator.ConfigureAndWatch(fileInfo);
 
-            //Processor processor = new Processor();
-            //processor.StartMonitor();
-            //workTask = System.Threading.Tasks.Task.Factory.StartNew(processor.StartWork);
+            MsQueue<TaskMessage> msQueue = new MsQueue<TaskMessage>(AppSettings.msqueue);
+            msQueue.CreateQueue();
 
-            MsQueue<Person> msQueue = new MsQueue<Person>(@".\private$\task_queue");
-            msQueue.CreateQueue(true);
-            msQueue.ReceiveMessageTransactional(M1);
+            Processor processor = new Processor();
+            //processor.StartMonitor();
+            processor.StartWork();
+
+
+            //msQueue.ReceiveMessage(M2);
 
 
             Console.WriteLine("ok");
             Console.ReadKey();
         }
 
-        private static bool M1(Person obj)
+        private static void M2(TaskMessage obj)
         {
-            Console.WriteLine(obj.Name);
-            return false;
+            Console.WriteLine(obj.CollectionId);
         }
 
-        private static bool M(Person arg)
+        private static bool M(TaskMessage arg)
         {
-            Console.WriteLine(arg.Name);
+            Console.WriteLine(arg.CollectionId);
             return true;
         }
     }

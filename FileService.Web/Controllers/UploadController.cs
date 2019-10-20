@@ -46,13 +46,26 @@ namespace FileService.Web.Controllers
                 string contentType = "",
                     fileType = "",
                     handlerId = "",
+                    machineName = "",
                     saveFileType = "",
                     saveFileApi = "",
                     saveFilePath = "",
                     saveFileName = "";
                 ObjectId saveFileId = ObjectId.Empty;
                 //检测文件
-                if (!CheckFileAndHandler("image", file.FileName.GetFileName(), file.InputStream, ref contentType, ref fileType, ref handlerId, ref saveFileType, ref saveFilePath, ref saveFileApi, ref saveFileId, ref saveFileName, ref response))
+                if (!CheckFileAndHandler("image",
+                    file.FileName.GetFileName(),
+                    file.InputStream,
+                    ref contentType,
+                    ref fileType,
+                    ref handlerId,
+                    ref machineName,
+                    ref saveFileType,
+                    ref saveFilePath,
+                    ref saveFileApi,
+                    ref saveFileId,
+                    ref saveFileName,
+                    ref response))
                 {
                     continue;
                 }
@@ -90,13 +103,13 @@ namespace FileService.Web.Controllers
 
                 if (output.Count == 0)
                 {
-                    InsertTask(handlerId, saveFileId, file.FileName.GetFileName(), fileType, Request.Headers["AppName"], new BsonDocument(), access, Request.Headers["UserCode"] ?? User.Identity.Name);
+                    InsertTask(handlerId, machineName, saveFileId, file.FileName.GetFileName(), fileType, Request.Headers["AppName"], new BsonDocument(), access, Request.Headers["UserCode"] ?? User.Identity.Name);
                 }
                 else
                 {
                     foreach (ImageOutPut o in output)
                     {
-                        InsertTask(handlerId, saveFileId, file.FileName.GetFileName(), fileType, Request.Headers["AppName"], o.ToBsonDocument(), access, Request.Headers["UserCode"] ?? User.Identity.Name);
+                        InsertTask(handlerId, machineName, saveFileId, file.FileName.GetFileName(), fileType, Request.Headers["AppName"], o.ToBsonDocument(), access, Request.Headers["UserCode"] ?? User.Identity.Name);
                     }
                 }
                 //日志
@@ -138,9 +151,28 @@ namespace FileService.Web.Controllers
             foreach (HttpPostedFileBase file in uploadVideo.Videos)
             {
                 //初始化参数
-                string contentType = "", fileType = "", handlerId = "", saveFileType = "", saveFileApi = "", saveFilePath = "", saveFileName = "";
+                string contentType = "",
+                    fileType = "",
+                    handlerId = "",
+                    machineName = "",
+                    saveFileType = "",
+                    saveFileApi = "",
+                    saveFilePath = "",
+                    saveFileName = "";
                 ObjectId saveFileId = ObjectId.Empty;
-                if (!CheckFileAndHandler("video", file.FileName.GetFileName(), file.InputStream, ref contentType, ref fileType, ref handlerId, ref saveFileType, ref saveFilePath, ref saveFileApi, ref saveFileId, ref saveFileName, ref response))
+                if (!CheckFileAndHandler("video",
+                    file.FileName.GetFileName(),
+                    file.InputStream,
+                    ref contentType,
+                    ref fileType,
+                    ref handlerId,
+                    ref machineName,
+                    ref saveFileType,
+                    ref saveFilePath,
+                    ref saveFileApi,
+                    ref saveFileId,
+                    ref saveFileName,
+                    ref response))
                 {
                     continue;
                 }
@@ -173,13 +205,13 @@ namespace FileService.Web.Controllers
                     Request.Headers["UserCode"] ?? User.Identity.Name);
                 if (outputs.Count == 0)
                 {
-                    InsertTask(handlerId, saveFileId, file.FileName.GetFileName(), "video", Request.Headers["AppName"], new BsonDocument(), access, Request.Headers["UserCode"] ?? User.Identity.Name);
+                    InsertTask(handlerId, machineName, saveFileId, file.FileName.GetFileName(), "video", Request.Headers["AppName"], new BsonDocument(), access, Request.Headers["UserCode"] ?? User.Identity.Name);
                 }
                 else
                 {
                     foreach (VideoOutPut o in outputs)
                     {
-                        InsertTask(handlerId, saveFileId, file.FileName.GetFileName(), "video", Request.Headers["AppName"], o.ToBsonDocument(), access, Request.Headers["UserCode"] ?? User.Identity.Name);
+                        InsertTask(handlerId, machineName, saveFileId, file.FileName.GetFileName(), "video", Request.Headers["AppName"], o.ToBsonDocument(), access, Request.Headers["UserCode"] ?? User.Identity.Name);
                     }
                 }
                 //日志
@@ -209,9 +241,28 @@ namespace FileService.Web.Controllers
             foreach (HttpPostedFileBase file in uploadAttachmentModel.Attachments)
             {
                 //初始化参数
-                string contentType = "", fileType = "", handlerId = "", saveFileType = "", saveFileApi = "", saveFilePath = "", saveFileName = "";
+                string contentType = "",
+                    fileType = "",
+                    handlerId = "",
+                    machineName = "",
+                    saveFileType = "",
+                    saveFileApi = "",
+                    saveFilePath = "",
+                    saveFileName = "";
                 ObjectId saveFileId = ObjectId.Empty;
-                if (!CheckFileAndHandler("attachment", file.FileName.GetFileName(), file.InputStream, ref contentType, ref fileType, ref handlerId, ref saveFileType, ref saveFilePath, ref saveFileApi, ref saveFileId, ref saveFileName, ref response))
+                if (!CheckFileAndHandler("attachment",
+                    file.FileName.GetFileName(),
+                    file.InputStream,
+                    ref contentType,
+                    ref fileType,
+                    ref handlerId,
+                    ref machineName,
+                    ref saveFileType,
+                    ref saveFilePath,
+                    ref saveFileApi,
+                    ref saveFileId,
+                    ref saveFileName,
+                    ref response))
                 {
                     continue;
                 }
@@ -243,7 +294,7 @@ namespace FileService.Web.Controllers
                 //office转换任务
                 if (fileType == "office")
                 {
-                    InsertTask(handlerId, saveFileId, file.FileName.GetFileName(), fileType, Request.Headers["AppName"], new BsonDocument() {
+                    InsertTask(handlerId, machineName, saveFileId, file.FileName.GetFileName(), fileType, Request.Headers["AppName"], new BsonDocument() {
                         {"_id",ObjectId.Empty },
                         {"Format",AttachmentOutput.pdf },
                         {"Flag","preview" } },
@@ -254,7 +305,7 @@ namespace FileService.Web.Controllers
                 //zip转换任务
                 else if (saveFileName.GetFileExt() == ".zip" || saveFileName.GetFileExt() == ".rar")
                 {
-                    InsertTask(handlerId, saveFileId, file.FileName.GetFileName(), fileType, Request.Headers["AppName"], new BsonDocument(){
+                    InsertTask(handlerId, machineName, saveFileId, file.FileName.GetFileName(), fileType, Request.Headers["AppName"], new BsonDocument(){
                         {"_id",ObjectId.Empty },
                         {"Flag","zip" }
                     },
@@ -263,7 +314,7 @@ namespace FileService.Web.Controllers
                 }
                 else
                 {
-                    InsertTask(handlerId, saveFileId, file.FileName.GetFileName(), fileType, Request.Headers["AppName"], new BsonDocument(), access, Request.Headers["UserCode"] ?? User.Identity.Name);
+                    InsertTask(handlerId, machineName, saveFileId, file.FileName.GetFileName(), fileType, Request.Headers["AppName"], new BsonDocument(), access, Request.Headers["UserCode"] ?? User.Identity.Name);
                 }
                 //日志
                 Log(saveFileId.ToString(), "UploadAttachment");
@@ -365,12 +416,25 @@ namespace FileService.Web.Controllers
             string contentType = "",
                 fileType = "",
                 handlerId = "",
+                machineName = "",
                 saveFileType = "",
                 saveFilePath = "",
                 saveFileApi = "",
                 saveFileName = fileId.ToString() + replaceFileModel.File.FileName.GetFileName().GetFileExt();
             List<FileResponse> response = new List<FileResponse>();
-            if (!CheckFileAndHandler("attachment", replaceFileModel.File.FileName.GetFileName(), replaceFileModel.File.InputStream, ref contentType, ref fileType, ref handlerId, ref saveFileType, ref saveFilePath, ref saveFileApi, ref fileId, ref saveFileName, ref response))
+            if (!CheckFileAndHandler("attachment", 
+                replaceFileModel.File.FileName.GetFileName(),
+                replaceFileModel.File.InputStream, 
+                ref contentType, 
+                ref fileType, 
+                ref handlerId, 
+                ref machineName,
+                ref saveFileType, 
+                ref saveFilePath,
+                ref saveFileApi, 
+                ref fileId,
+                ref saveFileName, 
+                ref response))
             {
                 return new ResponseModel<string>(ErrorCode.success, "");
             }
@@ -395,7 +459,7 @@ namespace FileService.Web.Controllers
                 IEnumerable<BsonDocument> list = task.Find(new BsonDocument("FileId", fileId));
                 foreach (BsonDocument item in list)
                 {
-                    UpdateTask(item["_id"].AsObjectId, handlerId, replaceFileModel.File.FileName.GetFileName(), item["Type"].AsString, 0, TaskStateEnum.wait);
+                    UpdateTask(item["_id"].AsObjectId, handlerId, machineName, replaceFileModel.File.FileName.GetFileName(), item["Type"].AsString, 0, TaskStateEnum.wait);
                 }
                 Log(replaceFileModel.FileId, "ReplaceFile");
                 return new ResponseModel<string>(ErrorCode.success, "");

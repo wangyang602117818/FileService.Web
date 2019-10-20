@@ -27,6 +27,8 @@ namespace FileService.Web
             FileInfo fileInfo = new FileInfo(AppDomain.CurrentDomain.BaseDirectory + "bin\\log4net.config");
             log4net.Config.XmlConfigurator.ConfigureAndWatch(fileInfo);
 
+            MsQueue<TaskMessage> msQueue = new MsQueue<TaskMessage>(AppSettings.msqueue);
+            msQueue.CreateQueue();
         }
         protected void Application_AuthorizeRequest(object sender, System.EventArgs e)
         {

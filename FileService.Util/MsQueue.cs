@@ -31,7 +31,10 @@ namespace FileService.Util
         public void SendMessage(T data, string label, bool recoverable = false)
         {
             MessageQueue messageQueue = new MessageQueue(path);
-            Message message = new Message(data) { Recoverable = recoverable };
+            Message message = new Message(data)
+            {
+                Recoverable = recoverable
+            };
             messageQueue.Send(message, label);
         }
         /// <summary>
@@ -69,6 +72,17 @@ namespace FileService.Util
             while (true)
             {
                 var obj = messageQueue.Receive();
+                T t = (T)obj.Body;
+                action(t);
+            }
+        }
+        public void ReceiveDeadletterMessage(Action<T> action)
+        {
+            MessageQueue deadLetter = new MessageQueue(".\\DeadLetter$");
+            deadLetter.Formatter = new XmlMessageFormatter(new Type[] { typeof(T) });
+            while (true)
+            {
+                var obj = deadLetter.Receive();
                 T t = (T)obj.Body;
                 action(t);
             }
@@ -147,9 +161,10 @@ namespace FileService.Util
             }
         }
     }
-    public class Person
+    public class TaskMessage
     {
-        public string Name { get; set; }
-        public int Age { get; set; }
+        public string Type { get; set; }
+        public string CollectionName { get; set; }
+        public string CollectionId { get; set; }
     }
 }

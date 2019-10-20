@@ -11,6 +11,8 @@ namespace FileService.Util
         public static string mongodb = ConfigurationManager.AppSettings["mongodb"];
         public static string database = ConfigurationManager.AppSettings["database"];
         public static string handlerId = ConfigurationManager.AppSettings["handlerId"];
+        public static string msqueue = ConfigurationManager.AppSettings["msqueue"];
+        public static string remoteQueue = ConfigurationManager.AppSettings["remoteQueue"];
         public static int taskCount = Convert.ToInt32(ConfigurationManager.AppSettings["taskCount"]);
         public static string libreOffice = ConfigurationManager.AppSettings["libreOffice"];
         //public static string tempFileDir = ConfigurationManager.AppSettings["tempFileDir"];

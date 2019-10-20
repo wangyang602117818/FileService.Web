@@ -13,7 +13,7 @@ namespace FileService.Converter
 {
     interface IConverter
     {
-        bool Convert(FileItem fileItem);
+        bool Convert(BsonDocument fileItem);
     }
     public class Converter : IConverter
     {
@@ -24,7 +24,7 @@ namespace FileService.Converter
         FilePreview filePreview = new FilePreview();
         FilePreviewMobile filePreviewMobile = new FilePreviewMobile();
         VideoCapture videoCapture = new VideoCapture();
-        public virtual bool Convert(FileItem fileItem)
+        public virtual bool Convert(BsonDocument fileItem)
         {
             return false;
         }

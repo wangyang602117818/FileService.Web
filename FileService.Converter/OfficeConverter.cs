@@ -16,16 +16,16 @@ namespace FileService.Converter
         MongoFile mongoFile = new MongoFile();
         MongoFileConvert mongoFileConvert = new MongoFileConvert();
         static object o = new object();
-        public override bool Convert(FileItem taskItem)
+        public override bool Convert(BsonDocument taskItem)
         {
-            ObjectId fileWrapId = taskItem.Message["FileId"].AsObjectId;
+            ObjectId fileWrapId = taskItem["FileId"].AsObjectId;
             BsonDocument fileWrap = filesWrap.FindOne(fileWrapId);
             DateTime expiredTime = fileWrap.Contains("ExpiredTime") ? fileWrap["ExpiredTime"].ToUniversalTime() : DateTime.MaxValue.ToUniversalTime();
-            string from = taskItem.Message["From"].AsString;
-            string fileName = taskItem.Message["FileName"].AsString;
-            string fileType = taskItem.Message["Type"].AsString;
+            string from = taskItem["From"].AsString;
+            string fileName = taskItem["FileName"].AsString;
+            string fileType = taskItem["Type"].AsString;
 
-            string fullPath = AppSettings.GetFullPath(taskItem.Message);
+            string fullPath = AppSettings.GetFullPath(taskItem);
             if (File.Exists(fullPath))
             {
                 SaveFileFromSharedFolder(from, fileType, fileWrapId, fullPath, fileName, null);
@@ -37,7 +37,7 @@ namespace FileService.Converter
             ObjectId oldFileId = ObjectId.Empty;
             if (fileWrap != null)
             {
-                oldFileId = taskItem.Message["Output"]["_id"].AsObjectId;
+                oldFileId = taskItem["Output"]["_id"].AsObjectId;
                 if (oldFileId != ObjectId.Empty && filesConvert.FindOne(oldFileId) != null) mongoFileConvert.Delete(oldFileId);
             }
 
@@ -47,7 +47,7 @@ namespace FileService.Converter
             //更新 filesWrap 表
             filesWrap.UpdateSubFileId(fileWrapId, oldFileId, outputId);
             //更新 task 表
-            task.UpdateOutPutId(taskItem.Message["_id"].AsObjectId, outputId);
+            task.UpdateOutPutId(taskItem["_id"].AsObjectId, outputId);
             if (File.Exists(destinationFullPath)) File.Delete(destinationFullPath);
             if (File.Exists(fullPath)) File.Delete(fullPath);
             return true;

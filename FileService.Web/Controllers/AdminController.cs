@@ -522,12 +522,13 @@ namespace FileService.Web.Controllers
             Log(id, "ReDo");
             BsonDocument document = task.FindOne(ObjectId.Parse(id));
             string handlerId = document["HandlerId"].AsString;
+            string machine = document["Machine"].AsString;
             int state = Convert.ToInt32(document["State"]);
             if (state == 2 || state == 4 || state == -100)
             {
                 task.UpdateState(ObjectId.Parse(id), TaskStateEnum.wait, 0);
-                queue.Insert(handlerId, type, "Task", ObjectId.Parse(id), false, new BsonDocument());
                 converter.AddCount(handlerId, 1);
+                SendQueue(machine, type, "Task", ObjectId.Parse(id));
                 return new ResponseModel<string>(ErrorCode.success, "");
             }
             else
@@ -673,7 +674,15 @@ namespace FileService.Web.Controllers
                 {"Flag",addVideoTask.Flag }
             };
             Log(addVideoTask.FileId, "AddVideoTask");
-            InsertTask(handler["HandlerId"].ToString(), fileId, fileWrap["FileName"].AsString, "video", Request.Headers["AppName"], output, fileWrap["Access"].AsBsonArray, Request.Headers["UserCode"] ?? User.Identity.Name);
+            InsertTask(handler["HandlerId"].ToString(),
+                handler["MachineName"].ToString(), 
+                fileId, 
+                fileWrap["FileName"].AsString,
+                "video",
+                Request.Headers["AppName"], 
+                output,
+                fileWrap["Access"].AsBsonArray, 
+                Request.Headers["UserCode"] ?? User.Identity.Name);
             filesWrap.AddSubVideo(fileId, subFile);
             return new ResponseModel<bool>(ErrorCode.success, true);
         }
@@ -705,7 +714,15 @@ namespace FileService.Web.Controllers
                 {"Flag",addImageTask.Flag }
             };
             Log(addImageTask.FileId, "AddThumbnailTask");
-            InsertTask(handler["HandlerId"].ToString(), fileId, fileWrap["FileName"].AsString, "image", Request.Headers["AppName"], output, fileWrap["Access"].AsBsonArray, Request.Headers["UserCode"] ?? User.Identity.Name);
+            InsertTask(handler["HandlerId"].ToString(), 
+                handler["MachineName"].ToString(), 
+                fileId, 
+                fileWrap["FileName"].AsString, 
+                "image", 
+                Request.Headers["AppName"], 
+                output, 
+                fileWrap["Access"].AsBsonArray, 
+                Request.Headers["UserCode"] ?? User.Identity.Name);
             filesWrap.AddSubThumbnail(fileId, subFile);
             return new ResponseModel<bool>(ErrorCode.success, true);
         }

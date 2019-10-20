@@ -21,7 +21,6 @@ namespace FileService.Web.Controllers
         protected Regex regex = new Regex(@"\\(\w+)\\$");
         protected Converter converter = new Converter();
         protected Task task = new Task();
-        protected Queue queue = new Queue();
         protected Department department = new Department();
         protected FilesWrap filesWrap = new FilesWrap();
         protected Thumbnail thumbnail = new Thumbnail();
@@ -235,7 +234,7 @@ namespace FileService.Web.Controllers
             }
             return new MemoryStream();
         }
-        protected bool CheckFileAndHandler(string method, string fileName, Stream stream, ref string contentType, ref string fileType, ref string handlerId, ref string saveFileType, ref string saveFilePath, ref string saveFileApi, ref ObjectId saveFileId, ref string saveFileName, ref List<FileResponse> response)
+        protected bool CheckFileAndHandler(string method, string fileName, Stream stream, ref string contentType, ref string fileType, ref string handlerId, ref string machineName, ref string saveFileType, ref string saveFilePath, ref string saveFileApi, ref ObjectId saveFileId, ref string saveFileName, ref List<FileResponse> response)
         {
             string ext = fileName.GetFileExt().ToLower();
             switch (method)
@@ -296,6 +295,7 @@ namespace FileService.Web.Controllers
                 return false;
             }
             handlerId = handler["HandlerId"].ToString();
+            machineName = handler["MachineName"].ToString();
             saveFileType = handler["SaveFileType"].ToString();
             saveFilePath = handler["SaveFilePath"].ToString();
             saveFileApi = handler["SaveFileApi"].ToString();
@@ -355,16 +355,16 @@ namespace FileService.Web.Controllers
                 filesWrap.AddDownloads(fileWrapId);
             }
         }
-        protected void InsertTask(string handlerId, ObjectId fileId, string fileName, string type, string from, BsonDocument outPut, BsonArray access, string owner)
+        protected void InsertTask(string handlerId, string machineName, ObjectId fileId, string fileName, string type, string from, BsonDocument outPut, BsonArray access, string owner)
         {
             converter.AddCount(handlerId, 1);
             ObjectId taskId = ObjectId.GenerateNewId();
             task.Insert(taskId, fileId, DateTime.Now.ToString("yyyyMMdd"), fileName,
                 type, from, outPut, access, owner, handlerId, 0, TaskStateEnum.wait, 0);
-            //添加队列
-            queue.Insert(handlerId, type, "Task", taskId, false, new BsonDocument());
+            SendQueue(machineName, type, "Task", taskId);
+            //queue.Insert(handlerId, type, "Task", taskId, false, new BsonDocument());
         }
-        protected void UpdateTask(ObjectId id, string handlerId, string fileName, string type, int percent, TaskStateEnum state)
+        protected void UpdateTask(ObjectId id, string handlerId, string machineName, string fileName, string type, int percent, TaskStateEnum state)
         {
             converter.AddCount(handlerId, 1);
             BsonDocument item = new BsonDocument()
@@ -377,7 +377,20 @@ namespace FileService.Web.Controllers
                 {"Percent",percent }
             };
             task.Update(id, item);
-            queue.Insert(handlerId, type, "Task", id, false, new BsonDocument());
+            SendQueue(machineName, type, "Task", id);
+            //queue.Insert(handlerId, type, "Task", id, false, new BsonDocument());
+        }
+        protected void SendQueue(string machineName, string type, string collectionName, ObjectId collectionId)
+        {
+            //添加队列
+            MsQueue<TaskMessage> msQueue = new MsQueue<TaskMessage>(AppSettings.remoteQueue.Replace("{machineName}", machineName));
+            TaskMessage taskMessage = new TaskMessage()
+            {
+                Type = type,
+                CollectionName = "Task",
+                CollectionId = collectionId.ToString()
+            };
+            msQueue.SendMessage(taskMessage, "task", true);
         }
         protected void ConvertAccess(List<AccessModel> accessList)
         {

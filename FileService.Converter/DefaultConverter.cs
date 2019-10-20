@@ -15,13 +15,13 @@ namespace FileService.Converter
         Extension extension = new Extension();
         FilePreview filePreview = new FilePreview();
         FilePreviewMobile filePreviewMobile = new FilePreviewMobile();
-        public override bool Convert(FileItem taskItem)
+        public override bool Convert(BsonDocument taskItem)
         {
-            ObjectId fileWrapId = taskItem.Message["FileId"].AsObjectId;
-            string from = taskItem.Message["From"].AsString;
-            string fileName = taskItem.Message["FileName"].AsString;
+            ObjectId fileWrapId = taskItem["FileId"].AsObjectId;
+            string from = taskItem["From"].AsString;
+            string fileName = taskItem["FileName"].AsString;
             string fileType = extension.GetTypeByExtension(Path.GetExtension(fileName).ToLower()).ToLower();
-            string fullPath = AppSettings.GetFullPath(taskItem.Message);
+            string fullPath = AppSettings.GetFullPath(taskItem);
             //第一次转换，文件肯定在共享文件夹
             if (File.Exists(fullPath)) SaveFileFromSharedFolder(from, fileType, fileWrapId, fullPath, fileName, ImageFormat.Jpeg);
             if (File.Exists(fullPath)) File.Delete(fullPath);

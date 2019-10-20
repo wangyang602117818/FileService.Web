@@ -23,20 +23,20 @@ namespace FileService.Converter
         FilePreview filePreview = new FilePreview();
         FilePreviewMobile filePreviewBig = new FilePreviewMobile();
         static object o = new object();
-        public override bool Convert(FileItem taskItem)
+        public override bool Convert(BsonDocument taskItem)
         {
-            BsonDocument outputDocument = taskItem.Message["Output"].AsBsonDocument;
-            string from = taskItem.Message["From"].AsString;
-            string fileName = taskItem.Message["FileName"].AsString;
-            string fileType = taskItem.Message["Type"].AsString;
+            BsonDocument outputDocument = taskItem["Output"].AsBsonDocument;
+            string from = taskItem["From"].AsString;
+            string fileName = taskItem["FileName"].AsString;
+            string fileType = taskItem["Type"].AsString;
 
-            ObjectId fileWrapId = taskItem.Message["FileId"].AsObjectId;
+            ObjectId fileWrapId = taskItem["FileId"].AsObjectId;
             BsonDocument fileWrap = filesWrap.FindOne(fileWrapId);
             DateTime expiredTime = fileWrap.Contains("ExpiredTime") ? fileWrap["ExpiredTime"].ToUniversalTime() : DateTime.MaxValue.ToUniversalTime();
 
             VideoOutPut output = BsonSerializer.Deserialize<VideoOutPut>(outputDocument);
 
-            string fullPath = AppSettings.GetFullPath(taskItem.Message);
+            string fullPath = AppSettings.GetFullPath(taskItem);
             //第一次转换，文件肯定在共享文件夹
             //确保文件只存一份
             lock (o)
@@ -63,7 +63,7 @@ namespace FileService.Converter
                 switch (output.Format)
                 {
                     case VideoOutPutFormat.M3u8:
-                        ConvertHls(from, taskItem.Message["_id"].AsObjectId, fileWrapId, fullPath, fileName, output, expiredTime);
+                        ConvertHls(from, taskItem["_id"].AsObjectId, fileWrapId, fullPath, fileName, output, expiredTime);
                         break;
                 }
             }

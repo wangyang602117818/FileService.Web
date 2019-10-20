@@ -1,4 +1,5 @@
-﻿using System;
+﻿using FileService.Util;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -17,6 +18,9 @@ namespace FileService.Converter
         {
             FileInfo fileInfo = new FileInfo(AppDomain.CurrentDomain.BaseDirectory + "log4net.config");
             log4net.Config.XmlConfigurator.ConfigureAndWatch(fileInfo);
+
+            MsQueue<TaskMessage> msQueue = new MsQueue<TaskMessage>(AppSettings.msqueue);
+            msQueue.CreateQueue();
 
             ServiceBase[] ServicesToRun;
             ServicesToRun = new ServiceBase[]
