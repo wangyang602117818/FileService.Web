@@ -43,6 +43,8 @@
             this.serviceInstaller1.Description = "文件转换服务";
             this.serviceInstaller1.DisplayName = "FileService.Converter";
             this.serviceInstaller1.ServiceName = "FileService.Converter";
+            this.serviceInstaller1.ServicesDependedOn = new string[] {
+        "MSMQ"};
             this.serviceInstaller1.StartType = System.ServiceProcess.ServiceStartMode.Automatic;
             // 
             // ProjectInstaller
