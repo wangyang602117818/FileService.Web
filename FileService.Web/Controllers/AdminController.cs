@@ -510,18 +510,10 @@ namespace FileService.Web.Controllers
             BsonDocument document = task.FindOne(ObjectId.Parse(id));
             string handlerId = document["HandlerId"].AsString;
             string machine = document["Machine"].AsString;
-            int state = Convert.ToInt32(document["State"]);
-            if (state == 2 || state == 4 || state == -100)
-            {
-                task.UpdateState(ObjectId.Parse(id), TaskStateEnum.wait, 0);
-                converter.AddCount(handlerId, 1);
-                SendQueue(machine, type, "Task", ObjectId.Parse(id));
-                return new ResponseModel<string>(ErrorCode.success, "");
-            }
-            else
-            {
-                return new ResponseModel<string>(ErrorCode.task_not_completed, "");
-            }
+            task.UpdateState(ObjectId.Parse(id), TaskStateEnum.wait, 0);
+            converter.AddCount(handlerId, 1);
+            SendQueue(machine, type, "Task", ObjectId.Parse(id));
+            return new ResponseModel<string>(ErrorCode.success, "");
         }
         public ActionResult GetTaskById(string id)
         {
@@ -662,13 +654,13 @@ namespace FileService.Web.Controllers
             };
             Log(addVideoTask.FileId, "AddVideoTask");
             InsertTask(handler["HandlerId"].ToString(),
-                handler["MachineName"].ToString(), 
-                fileId, 
+                handler["MachineName"].ToString(),
+                fileId,
                 fileWrap["FileName"].AsString,
                 "video",
-                Request.Headers["AppName"], 
+                Request.Headers["AppName"],
                 output,
-                fileWrap["Access"].AsBsonArray, 
+                fileWrap["Access"].AsBsonArray,
                 Request.Headers["UserCode"] ?? User.Identity.Name);
             filesWrap.AddSubVideo(fileId, subFile);
             return new ResponseModel<bool>(ErrorCode.success, true);
@@ -701,14 +693,14 @@ namespace FileService.Web.Controllers
                 {"Flag",addImageTask.Flag }
             };
             Log(addImageTask.FileId, "AddThumbnailTask");
-            InsertTask(handler["HandlerId"].ToString(), 
-                handler["MachineName"].ToString(), 
-                fileId, 
-                fileWrap["FileName"].AsString, 
-                "image", 
-                Request.Headers["AppName"], 
-                output, 
-                fileWrap["Access"].AsBsonArray, 
+            InsertTask(handler["HandlerId"].ToString(),
+                handler["MachineName"].ToString(),
+                fileId,
+                fileWrap["FileName"].AsString,
+                "image",
+                Request.Headers["AppName"],
+                output,
+                fileWrap["Access"].AsBsonArray,
                 Request.Headers["UserCode"] ?? User.Identity.Name);
             filesWrap.AddSubThumbnail(fileId, subFile);
             return new ResponseModel<bool>(ErrorCode.success, true);
@@ -887,7 +879,7 @@ namespace FileService.Web.Controllers
             ObjectId thumbId = ObjectId.Parse(thumbnailId);
             ObjectId fId = ObjectId.Parse(fileId);
             string from = "";
-            ObjectId thumbFileId = filesWrap.GetThumbFileId(fId, thumbId,ref from);
+            ObjectId thumbFileId = filesWrap.GetThumbFileId(fId, thumbId, ref from);
             thumbnail.DeleteByIds(from, fId, new List<ObjectId>() { thumbFileId });
             task.DeleteByOutputId(thumbId);
             filesWrap.DeleteThumbnail(fId, thumbId);
@@ -996,6 +988,6 @@ namespace FileService.Web.Controllers
             }
             return new ResponseModel<string>(ErrorCode.success, "");
         }
-        
+
     }
 }

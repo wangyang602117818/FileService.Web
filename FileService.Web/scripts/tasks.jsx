@@ -105,10 +105,8 @@ class TaskItem extends React.Component {
                         id={"id=" + this.props.task.FileId.$oid + "&filename=" + encodeURIComponent(this.props.task.FileName.removeHTML()) + "#" + (this.props.task.Output._id ? this.props.task.Output._id.$oid : "")}></i>
                 </td>
                 <td>
-                    {this.props.task.State == 2 || this.props.task.State == 4 || this.props.task.State == -100 ?
-                        <i className="iconfont icon-redo" onClick={this.redo.bind(this)}
-                            id={"id=" + this.props.task._id.$oid + "&type=" + this.props.task.Type}></i> :
-                        null}
+                    <i className="iconfont icon-redo" onClick={this.redo.bind(this)}
+                        id={"id=" + this.props.task._id.$oid + "&type=" + this.props.task.Type}></i>
                 </td>
             </tr >
         )
@@ -165,7 +163,7 @@ class Tasks extends React.Component {
             taskFileExists: false,
             cacheFullPath: "",
             state: localStorage.taskState || ""
-            
+
         };
         this.url = urls.tasks.getUrl;
         this.storagePageShowKey = "task";
