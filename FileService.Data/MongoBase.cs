@@ -34,9 +34,9 @@ namespace FileService.Data
         {
             MongoCollection.InsertOne(document);
         }
-        public void InsertOneAsync(BsonDocument document)
+        public async void InsertOneAsync(BsonDocument document)
         {
-            MongoCollection.InsertOneAsync(document);
+            await MongoCollection.InsertOneAsync(document);
         }
         public void InsertManyAsync(IEnumerable<BsonDocument> documents)
         {

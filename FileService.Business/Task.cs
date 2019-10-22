@@ -33,7 +33,7 @@ namespace FileService.Business
                 {"CreateTime",DateTime.Now },
                 {"CompletedTime",BsonNull.Value }
             };
-            mongoData.InsertOneAsync(task);
+            mongoData.Insert(task);
         }
         public bool UpdateState(ObjectId id, TaskStateEnum state, int percent)
         {

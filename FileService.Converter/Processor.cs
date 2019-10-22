@@ -15,7 +15,7 @@ namespace FileService.Converter
     public class Processor
     {
         public List<System.Threading.Tasks.Task> tasks = new List<System.Threading.Tasks.Task>();
-        public Processor(){}
+        public Processor() { }
         public void StartWork()
         {
             for (var i = 0; i < AppSettings.taskCount; i++)
@@ -77,12 +77,12 @@ namespace FileService.Converter
                 if (result)
                 {
                     task.Compeleted(messageId);
-                    Log4Net.InfoLog("task complete:" + messageId.ToString());
+                    Log4Net.InfoLog("task(" + System.Threading.Tasks.Task.CurrentId + ") complete:" + messageId.ToString());
                 }
                 else
                 {
                     task.Fault(messageId);
-                    Log4Net.InfoLog("task fault:" + messageId.ToString());
+                    Log4Net.InfoLog("task(" + System.Threading.Tasks.Task.CurrentId + ") fault:" + messageId.ToString());
                 }
             }
             catch (Exception ex)
