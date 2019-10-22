@@ -19,8 +19,15 @@ namespace FileService.Util
         /// <param name="path">FormatName:DIRECT=OS:computename\\private$\\task_queue</param>
         public void CreateQueue(bool transactional = false)
         {
-            if (!MessageQueue.Exists(path)) MessageQueue.Create(path, transactional).SetPermissions("Everyone", MessageQueueAccessRights.FullControl);
-            if (!string.IsNullOrEmpty(managerpath) && !MessageQueue.Exists(managerpath)) MessageQueue.Create(managerpath, transactional).SetPermissions("Everyone", MessageQueueAccessRights.FullControl);
+            try
+            {
+                if (!MessageQueue.Exists(path)) MessageQueue.Create(path, transactional).SetPermissions("Everyone", MessageQueueAccessRights.FullControl);
+                if (!string.IsNullOrEmpty(managerpath) && !MessageQueue.Exists(managerpath)) MessageQueue.Create(managerpath, transactional).SetPermissions("Everyone", MessageQueueAccessRights.FullControl);
+            }
+            catch (Exception ex)
+            {
+                Log4Net.ErrorLog(ex);
+            }
         }
         /// <summary>
         /// 发送普通消息

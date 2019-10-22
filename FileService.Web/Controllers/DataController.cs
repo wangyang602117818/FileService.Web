@@ -169,6 +169,12 @@ namespace FileService.Web.Controllers
             shared.Insert(shareBson);
             return new ResponseModel<string>(ErrorCode.success, id.ToString());
         }
+        public ActionResult GetFileIdBySharedId(string id)
+        {
+            BsonDocument sh = shared.FindOne(ObjectId.Parse(id));
+            if (sh == null) return new ResponseModel<string>(ErrorCode.success, "");
+            return new ResponseModel<string>(ErrorCode.success, sh["FileId"].ToString());
+        }
         public ActionResult GetFileList(string from = "", string fileType = "", string filter = "", int pageIndex = 1, int pageSize = 15)
         {
             BsonDocument eqs = new BsonDocument("Delete", false);

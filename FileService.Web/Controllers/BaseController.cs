@@ -362,7 +362,6 @@ namespace FileService.Web.Controllers
             task.Insert(taskId, fileId, DateTime.Now.ToString("yyyyMMdd"), fileName,
                 type, from, outPut, access, owner, handlerId, 0, TaskStateEnum.wait, 0);
             SendQueue(machineName, type, "Task", taskId);
-            //queue.Insert(handlerId, type, "Task", taskId, false, new BsonDocument());
         }
         protected void UpdateTask(ObjectId id, string handlerId, string machineName, string fileName, string type, int percent, TaskStateEnum state)
         {
@@ -378,7 +377,6 @@ namespace FileService.Web.Controllers
             };
             task.Update(id, item);
             SendQueue(machineName, type, "Task", id);
-            //queue.Insert(handlerId, type, "Task", id, false, new BsonDocument());
         }
         protected void SendQueue(string machineName, string type, string collectionName, ObjectId collectionId)
         {
@@ -391,6 +389,7 @@ namespace FileService.Web.Controllers
                 CollectionId = collectionId.ToString()
             };
             msQueue.SendMessage(taskMessage, "task", true);
+            Log4Net.InfoLog("add queue:" + collectionId.ToString());
         }
         protected void ConvertAccess(List<AccessModel> accessList)
         {
