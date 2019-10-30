@@ -77,6 +77,7 @@
     <Compile Include="Log.cs" />
     <Compile Include="M3u8.cs" />
     <Compile Include="MongoFileBase.cs" />
+    <Compile Include="Queue.cs" />
     <Compile Include="Shared.cs" />
     <Compile Include="Task.cs" />
     <Compile Include="ModelBase.cs" />

@@ -99,6 +99,7 @@
     <Compile Include="ImageConverter.cs" />
     <Compile Include="OfficeConverter.cs" />
     <Compile Include="Processor.cs" />
+    <Compile Include="ProcessorCappedCollection.cs" />
     <Compile Include="ProjectInstaller.cs">
       <SubType>Component</SubType>
     </Compile>

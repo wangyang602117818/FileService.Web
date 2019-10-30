@@ -12,7 +12,8 @@ namespace FileService.Converter
     {
         protected Business.Converter converter;
         protected Processor processor = new Processor();
-        
+        protected ProcessorCappedCollection processorCappedCollection = new ProcessorCappedCollection();
+        public static System.Threading.Tasks.Task workTask = null;
         public Service1()
         {
             InitializeComponent();
@@ -34,6 +35,10 @@ namespace FileService.Converter
         {
             Log4Net.InfoLog("start...");
             converter.UpdateByHanderId();
+            ////////////////////
+            //processorCappedCollection.StartMonitor();
+            //workTask = Task.Factory.StartNew(processorCappedCollection.StartWork);
+            //////////////////////
             processor.StartWork();
             base.OnStart(args);
         }
