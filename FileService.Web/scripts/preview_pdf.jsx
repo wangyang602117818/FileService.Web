@@ -10,4 +10,5 @@ if (convert == "true") {
 if (deleted == "true") {
     DEFAULT_URL = DEFAULT_URL + "?deleted=true";
 }
-var pdf_word = appDomain + "pdfview/pdf.worker.min.js";
+var pdf_work = appDomain + "pdfview/pdf.worker.min.js";
+var cMapUrl = appDomain + "pdfview/";

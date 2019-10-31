@@ -330,6 +330,7 @@
     <Content Include="pdfview\images\treeitem-collapsed.png" />
     <Content Include="pdfview\images\treeitem-expanded%402x.png" />
     <Content Include="pdfview\images\treeitem-expanded.png" />
+    <Content Include="pdfview\index.html" />
     <Content Include="pdfview\locale\en-US\viewer.txt" />
     <Content Include="pdfview\locale\locale.txt" />
     <Content Include="pdfview\locale\zh-CN\viewer.txt" />
@@ -342,6 +343,8 @@
     <Content Include="pdfview\viewer.js" />
     <Content Include="pdfview\viewer.min.js" />
     <Content Include="css\iconfont.woff2" />
+    <Content Include="pdfview\处方药新零售.pdf" />
+    <Content Include="pdfview\Adobe-GB1-UCS2.bcmap" />
     <None Include="readme.txt" />
     <Content Include="scripts\application.jsx" />
     <Content Include="scripts\application_add.jsx" />
