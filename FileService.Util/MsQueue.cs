@@ -40,7 +40,7 @@ namespace FileService.Util
             MessageQueue messageQueue = new MessageQueue(path);
             Message message = new Message(data)
             {
-                Recoverable = recoverable
+                Recoverable = recoverable,
             };
             messageQueue.Send(message, label);
         }

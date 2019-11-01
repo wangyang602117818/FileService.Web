@@ -298,18 +298,10 @@ namespace FileService.Web.Controllers
             return true;
         }
 
-        public static int i = 0;
-        public ActionResult Send()
+        public bool sendQ()
         {
-            MsQueue<TaskMessage> msQueue = new MsQueue<TaskMessage>("FormatName:DIRECT=OS:AFOFD-608200745\\private$\\task_queue");
-            TaskMessage person = new TaskMessage
-            {
-               Type="image",
-               CollectionName= "Task",
-               CollectionId= ObjectId.GenerateNewId().ToString()
-            };
-            msQueue.SendMessage(person, "task", true);
-            return Json(person, JsonRequestBehavior.AllowGet);
+            SendQueue("HKAPPUWV818", "task", "Task", ObjectId.GenerateNewId());
+            return true;
         }
     }
 }
