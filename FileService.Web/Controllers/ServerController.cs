@@ -78,7 +78,7 @@ namespace FileService.Web.Controllers
             {
                 Dictionary<string, string> header = new Dictionary<string, string>();
                 header.Add("path", saveFilePath);
-                cacheFile = new HttpRequestHelper().Get(saveFileApi + "/home/getcachefiles" + "?handlerId=" + handlerId, header).Result;
+                cacheFile = new HttpRequestHelper().Get(saveFileApi + "/home/getcachefiles" + "?handlerId=" + handlerId, header);
             }
             return Content(cacheFile, "application/json");
         }
