@@ -129,7 +129,7 @@ namespace FileService.Web.Controllers
             {
                 Dictionary<string, string> header = new Dictionary<string, string>();
                 header.Add("path", saveFilePath);
-                UploadTransforModel<string> result = JsonConvert.DeserializeObject<UploadTransforModel<string>>(new HttpRequestHelper().PostFile(saveFileApi + "/home/savefile", "file", fileName, file.InputStream, null, header).Result);
+                UploadTransforModel<string> result = JsonConvert.DeserializeObject<UploadTransforModel<string>>(new HttpRequestHelper().PostFile(saveFileApi + "/home/savefile", "file", fileName, file.InputStream, null, header));
                 if (result.code != 0)
                 {
                     response.Add(new FileResponse()
@@ -163,7 +163,7 @@ namespace FileService.Web.Controllers
             {
                 Dictionary<string, string> header = new Dictionary<string, string>();
                 header.Add("path", saveFilePath);
-                string result = new HttpRequestHelper().Post(saveFileApi + "/home/deletecachefiles", new { notdeletepaths = notDeletePaths }, header).Result;
+                string result = new HttpRequestHelper().Post(saveFileApi + "/home/deletecachefiles", new { notdeletepaths = notDeletePaths }, header);
                 UploadTransforModel<int> resultModel = JsonConvert.DeserializeObject<UploadTransforModel<int>>(result);
                 return resultModel.result;
             }
@@ -183,7 +183,7 @@ namespace FileService.Web.Controllers
             {
                 Dictionary<string, string> header = new Dictionary<string, string>();
                 header.Add("path", saveFilePath);
-                string result = new HttpRequestHelper().Post(saveFileApi + "/home/checkfileexists", new { relativePath = relativePath }, header).Result;
+                string result = new HttpRequestHelper().Post(saveFileApi + "/home/checkfileexists", new { relativePath = relativePath }, header);
                 UploadTransforModel<bool> resultModel = JsonConvert.DeserializeObject<UploadTransforModel<bool>>(result);
                 return resultModel.result;
             }
@@ -205,7 +205,7 @@ namespace FileService.Web.Controllers
             {
                 Dictionary<string, string> header = new Dictionary<string, string>();
                 header.Add("path", saveFilePath);
-                string result = new HttpRequestHelper().Post(saveFileApi + "/home/deletecachefile", new { relativePath = relativePath }, header).Result;
+                string result = new HttpRequestHelper().Post(saveFileApi + "/home/deletecachefile", new { relativePath = relativePath }, header);
                 UploadTransforModel<bool> resultModel = JsonConvert.DeserializeObject<UploadTransforModel<bool>>(result);
                 return resultModel.result;
             }

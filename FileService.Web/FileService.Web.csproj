@@ -194,7 +194,6 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="HttpRequestHelper.cs" />
     <Compile Include="Models\Department.cs" />
     <Compile Include="Models\ErrorCode.cs" />
     <Compile Include="Models\ResponseModel.cs" />
@@ -345,6 +344,7 @@
     <Content Include="css\iconfont.woff2" />
     <Content Include="pdfview\处方药新零售.pdf" />
     <Content Include="pdfview\Adobe-GB1-UCS2.bcmap" />
+    <Content Include="pdfview\Adobe-CNS1-UCS2.bcmap" />
     <None Include="readme.txt" />
     <Content Include="scripts\application.jsx" />
     <Content Include="scripts\application_add.jsx" />

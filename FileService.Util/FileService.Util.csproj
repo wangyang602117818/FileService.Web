@@ -63,6 +63,7 @@
     <Compile Include="Base64SecureURL.cs" />
     <Compile Include="DateTimeExtention.cs" />
     <Compile Include="HashEncryptHelper.cs" />
+    <Compile Include="HttpRequestHelper.cs" />
     <Compile Include="ImageExtention.cs" />
     <Compile Include="JsonSerializerHelper.cs" />
     <Compile Include="Log4Net.cs" />
