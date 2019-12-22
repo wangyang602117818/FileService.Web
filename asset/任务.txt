@@ -33,13 +33,7 @@ ffmpeg -hide_banner -v warning -i 01.gif -filter_complex "[0:v] scale=320:-1:fla
 远程数据源：
 	user:
 	获取用户列表(pageIndex,pageSize,filter)
-	
 
-用户中心(UserCenter.Web)
-用户基本信息(用户id,用户名,密码,手机号,邮箱,身份证号,性别,所属公司)
-用户权限信息()
-
-windows 消息队列
 
 es返回值格式
 创建index {"acknowledged":true,"shards_acknowledged":true,"index":"cli"}
@@ -53,12 +47,14 @@ flag=original    //80% quality
 
 flag="" or no flag //flag = thumbnail
 
-mediaLibrary video
+用户初始密码修改
 
+公司总数 部门总数 角色总数 用户总数
 
+按天 按月 按年  
+操作记录(线图)  每月录入人员-删除人员图(线图)
 
-
-
+男女比例图  部门人数图
 
 
 
