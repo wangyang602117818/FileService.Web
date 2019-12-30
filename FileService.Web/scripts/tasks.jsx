@@ -9,8 +9,8 @@
                     <tr>
                         <th width="15%">{culture.fileId}</th>
                         <th width="20%">{culture.fileName}</th>
-                        <th width="8%">{culture.handler}</th>
-                        <th width="8%">{culture.state}</th>
+                        <th width="7%">{culture.handler}</th>
+                        <th width="9%">{culture.state}</th>
                         <th width="7%">{culture.percent}</th>
                         <td width="6%">{culture.process_count}</td>
                         <th width="14%">{culture.createTime}</th>
@@ -94,7 +94,7 @@ class TaskItem extends React.Component {
                 <td title={this.props.task.Output._id ? this.props.task.Output.Flag : ""} >
                     <span className={"state " + this.props.task.StateDesc.removeHTML()}></span>
                     {'\u00A0'}
-                    <span dangerouslySetInnerHTML={{ __html: this.props.task.StateDesc }}></span>
+                    <span style={{ "fontSize":"12px"}} dangerouslySetInnerHTML={{ __html: this.props.task.StateDesc }}></span>
                 </td>
                 <td>{this.props.task.Percent}%</td>
                 <td>{this.props.task.ProcessCount}</td>

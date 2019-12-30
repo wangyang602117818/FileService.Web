@@ -99,7 +99,7 @@ class ResourceItem extends React.Component {
                     <i className={"iconfont " + getIconNameByFileName(this.props.resource.FileName.removeHTML())}></i>&nbsp;
                     <span
                         className="link"
-                        dangerouslySetInnerHTML={{ __html: this.props.resource.FileName.getFileName(15) }}
+                        dangerouslySetInnerHTML={{ __html: this.props.resource.FileName.getFileName(12) }}
                         onClick={this.preView.bind(this)}
                         id={"id=" + this.props.resource._id.$oid.removeHTML() + "&filename=" + encodeURIComponent(this.props.resource.FileName.removeHTML())}>
                     </span>

@@ -72,7 +72,7 @@ var culture = {
     of: "of",
     page: "Page",
     filter: "Filter",
-    page_size_up: "Page size up to",
+    page_size_up: "PageSize",
     next_page: "next page",
     last_page: "last page",
 
@@ -118,7 +118,7 @@ var culture = {
     fileType: "FileType",
     dol: "Dol",
     download: "Download",
-    downloads: "Downloads",
+    downloads: "Dols",
     del: "Del",
     permanent_del: "PermanentDel",
     add: "Add ",

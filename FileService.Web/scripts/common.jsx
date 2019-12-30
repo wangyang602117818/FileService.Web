@@ -232,14 +232,14 @@ class Pagination extends React.Component {
                     {'\u00A0'}{'\u00A0'}{'\u00A0'}{'\u00A0'}
                     {culture.filter}:
                     <input type="text" name="filter"
-                        size="20"
+                        size="18"
                         value={this.props.filter}
                         className="filter"
                         onChange={this.props.onInput}
                         onKeyPress={this.props.onKeyPress} />
                     {'\u00A0'}{'\u00A0'}{'\u00A0'}{'\u00A0'}{'\u00A0'}{'\u00A0'}
                     {culture.from1}:{'\u00A0'}
-                    <input type="text" className="datepicker" size="12"
+                    <input type="text" className="datepicker" size="11"
                         name="starttime"
                         value={this.props.startTime}
                         date-lang={current_culture.toLocaleLowerCase()}
@@ -248,7 +248,7 @@ class Pagination extends React.Component {
                         onKeyPress={this.props.onKeyPress}
                         title={culture.createTime} />
                     {'\u00A0'}{'\u00A0'}{culture.to}:
-                    <input type="text" className="datepicker" size="12"
+                    <input type="text" className="datepicker" size="11"
                         name="endtime"
                         value={this.props.endTime}
                         date-lang={current_culture.toLocaleLowerCase()}
@@ -259,8 +259,9 @@ class Pagination extends React.Component {
 
                 </div>
                 <div className="size">
-                    {culture.page_size_up} :
+                    {culture.page_size_up}:
                     <input type="text" name="pageSize" value={this.props.pageSize} className="pageSize" maxLength="3"
+                        size="4"
                         onChange={this.props.onInput}
                         onKeyPress={this.props.onKeyPress} />
                 </div>

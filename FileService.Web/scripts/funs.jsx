@@ -338,12 +338,12 @@ function convertFileSize(value) {
         size = size / 1024;
         if (size > 1024) {
             size = size / 1024;
-            return size.toFixed(2) + " GB";
+            return size.toFixed(2) + "GB";
         } else {
-            return size.toFixed(2) + " MB";
+            return size.toFixed(2) + "MB";
         }
     } else {
-        return size.toFixed(2) + " KB";
+        return size.toFixed(2) + "KB";
     }
 }
 function convertTime(seconds) {
