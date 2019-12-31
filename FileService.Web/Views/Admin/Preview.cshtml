@@ -49,7 +49,7 @@
     else if (ViewBag.fileType == "video")
     {
         <script src="~/scripts/jquery-3.3.1.min.js"></script>
-        <script src="~/hlsplayer/hlsplayer.min.js" script-flowplayer="~/hlsplayer/flowplayer.swf" script-flowplayerhls="~/hlsplayer/flowplayerhls.swf" script-auto-init="false"></script>
+        <script src="~/hlsplayer/hlsplayer.min.js" script-flowplayer="~/hlsplayer/flowplayer.swf" script-flowplayerhls="~/hlsplayer/flowplayerhls.swf" script-auto-init="false" script-tstime-record="true"></script>
         @Scripts.Render("~/scripts/preview_video")
     }
     else if (ViewBag.fileType == "pdf" || ViewBag.fileType == "office" && ViewBag.id != ObjectId.Empty.ToString())

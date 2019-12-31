@@ -66,7 +66,7 @@ class VideoOrigin extends React.Component {
     componentDidMount() {
         var convert = document.getElementById("convert").value == "true" ? true : false;
         var deleted = document.getElementById("deleted").value == "true" ? true : false;
-        this.setState({ convert: convert, deleted: deleted })
+        this.setState({ convert: convert, deleted: deleted });
     }
     render() {
         var url = (this.props.convert ? urls.downloadConvertUrl : urls.downloadUrl) + "/" + this.props.fileId;
@@ -91,7 +91,7 @@ class VideoM3u8 extends React.Component {
     }
     render() {
         return (
-            <video controls="controls" width="900" height="600" className="hlsplayer">
+            <video controls="controls" width="900" height="600" className="hlsplayer" tstime-user={ userName }>
                 {this.props.fileId ?
                     <source src={urls.m3u8Url + "/" + this.props.fileId} />
                     :

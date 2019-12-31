@@ -274,6 +274,7 @@ namespace FileService.Web.Controllers
         {
             string fileType = extension.GetTypeByExtension(Path.GetExtension(fileName).ToLower()).ToLower();
             ViewBag.id = id;
+            ViewBag.Name = User.Identity.Name;
             ViewBag.convert = "false";
             ViewBag.deleted = deleted.ToString().ToLower();
             ViewBag.fileType = fileType;

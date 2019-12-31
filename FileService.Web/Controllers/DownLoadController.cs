@@ -181,7 +181,9 @@ namespace FileService.Web.Controllers
                 string userCode = Request.Headers["UserCode"] ?? User.Identity.Name;
                 if (!string.IsNullOrEmpty(userCode))
                 {
-                    tsLastTime = tsTime.GetTsTime(document["From"].AsString, m3u8Id, userCode);
+                    string from = document["From"].AsString;
+                    ObjectId fileId = document["SourceId"].AsObjectId;
+                    tsLastTime = tsTime.GetTsTime(from, fileId, userCode);
                 }
                 document["File"] = Regex.Replace(document["File"].AsString, "(\\w+).ts", (match) =>
                 {
@@ -218,13 +220,16 @@ namespace FileService.Web.Controllers
             }
             else
             {
-                //string tstime = Request.Headers["TsTime"];
-                //string userName = Request.Headers["UserName"] ?? User.Identity.Name;
-                //int currTsTime = string.IsNullOrEmpty(tstime) ? 0 : int.Parse(tstime);
-                //if (currTsTime > 0 && !string.IsNullOrEmpty(userName))
-                //{
-                //    tsTime.UpdateByUserName(document["From"].AsString, document["SourceId"].AsObjectId, document["SourceName"].AsString, userName, currTsTime);
-                //}
+                string tstime = Request.Headers["TsTime"];
+                string userCode = Request.Headers["UserCode"] ?? User.Identity.Name;
+                int currTsTime = string.IsNullOrEmpty(tstime) ? 0 : int.Parse(tstime);
+                if (currTsTime > 0 && !string.IsNullOrEmpty(userCode))
+                {
+                    string from = document["From"].AsString;
+                    ObjectId m3u8Id = document["SourceIds"].AsBsonArray[0].AsObjectId;
+                    ObjectId fileId = m3u8.FindOne(m3u8Id)["SourceId"].AsObjectId;
+                    tsTime.UpdateByUserName(from, fileId, userCode, currTsTime);
+                }
                 return File(document["File"].AsByteArray, "video/vnd.dlna.mpeg-tts", document["_id"].ToString() + ".ts");
             }
         }

@@ -167,7 +167,7 @@ namespace FileService.Data
             if (!databases.Contains("TsTime"))
             {
                 database.CreateCollection("TsTime");
-                var c = new CreateIndexModel<BsonDocument>(new BsonDocument() { { "SourceId", 1 } });  //index
+                var c = new CreateIndexModel<BsonDocument>(new BsonDocument() { { "FileId", 1 } });  //index
                 database.GetCollection<BsonDocument>("TsTime").Indexes.CreateOne(c);
             }
             if (!databases.Contains("Task"))
