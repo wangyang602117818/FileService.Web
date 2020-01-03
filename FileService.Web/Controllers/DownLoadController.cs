@@ -1,6 +1,7 @@
 ﻿using FileService.Business;
 using FileService.Util;
 using FileService.Web.Filters;
+using FileService.Web.Models;
 using MongoDB.Bson;
 using MongoDB.Driver.GridFS;
 using System;
@@ -147,6 +148,10 @@ namespace FileService.Web.Controllers
         }
         public ActionResult M3u8Pure(string id)
         {
+            //记录播放时间
+            string userCode = Request.Headers["UserCode"] ?? User.Identity.Name;
+            int tsTime = Convert.ToInt32(Request.Headers["tsTime"]);
+            if (!string.IsNullOrEmpty(userCode) && tsTime > 0) return RecordVideoTime(id, "", userCode, tsTime);
             ObjectId m3u8Id = GetObjectIdFromId(id);
             if (m3u8Id == ObjectId.Empty) return File(new MemoryStream(), "application/octet-stream");
             BsonDocument document = m3u8.FindOne(m3u8Id);
@@ -163,6 +168,10 @@ namespace FileService.Web.Controllers
         }
         public ActionResult M3u8(string id)
         {
+            //记录播放时间
+            string userCode = Request.Headers["UserCode"] ?? User.Identity.Name;
+            int currentTsTime = Convert.ToInt32(Request.Headers["tsTime"]);
+            if (!string.IsNullOrEmpty(userCode) && currentTsTime > 0) return RecordVideoTime("", id, userCode, currentTsTime);
             if (id.StartsWith("t")) return Ts(id.TrimStart('t'));
             ObjectId m3u8Id = GetObjectIdFromId(id);
             if (m3u8Id == ObjectId.Empty) return File(new MemoryStream(), "application/octet-stream");
@@ -178,23 +187,26 @@ namespace FileService.Web.Controllers
             else
             {
                 int tsLastTime = 0;
-                string userCode = Request.Headers["UserCode"] ?? User.Identity.Name;
                 if (!string.IsNullOrEmpty(userCode))
                 {
                     string from = document["From"].AsString;
                     ObjectId fileId = document["SourceId"].AsObjectId;
-                    tsLastTime = tsTime.GetTsTime(from, fileId, userCode);
+                    tsLastTime = tsTime.GetTsTime(fileId, userCode);
                 }
                 document["File"] = Regex.Replace(document["File"].AsString, "(\\w+).ts", (match) =>
                 {
                     return "t" + match.Groups[1].Value;
                 });
-                Response.AddHeader("TsTime", tsLastTime.ToString());
+                document["File"] = Regex.Replace(document["File"].AsString, "#EXTM3U\n", "#EXTM3U\n#EXT-X-START:TIME-OFFSET=" + tsLastTime + ",PRECISE=YES\n");
                 return File(Encoding.UTF8.GetBytes(document["File"].AsString), "application/x-mpegURL", document["FileName"].AsString);
             }
         }
         public ActionResult M3u8MultiStream(string id)
         {
+            //记录播放时间
+            string userCode = Request.Headers["UserCode"] ?? User.Identity.Name;
+            int tsTime = Convert.ToInt32(Request.Headers["tsTime"]);
+            if (!string.IsNullOrEmpty(userCode) && tsTime > 0) return RecordVideoTime(id, "", userCode, tsTime);
             if (id.StartsWith("m")) return M3u8(id.TrimStart('m'));
             if (id.StartsWith("t")) return Ts(id.TrimStart('t'));
             string m3u8File = m3u8Template;
@@ -220,18 +232,24 @@ namespace FileService.Web.Controllers
             }
             else
             {
-                string tstime = Request.Headers["TsTime"];
-                string userCode = Request.Headers["UserCode"] ?? User.Identity.Name;
-                int currTsTime = string.IsNullOrEmpty(tstime) ? 0 : int.Parse(tstime);
-                if (currTsTime > 0 && !string.IsNullOrEmpty(userCode))
-                {
-                    string from = document["From"].AsString;
-                    ObjectId m3u8Id = document["SourceIds"].AsBsonArray[0].AsObjectId;
-                    ObjectId fileId = m3u8.FindOne(m3u8Id)["SourceId"].AsObjectId;
-                    tsTime.UpdateByUserName(from, fileId, userCode, currTsTime);
-                }
                 return File(document["File"].AsByteArray, "video/vnd.dlna.mpeg-tts", document["_id"].ToString() + ".ts");
             }
+        }
+        public ActionResult RecordVideoTime(string fileId, string m3u8Id, string user, int time)
+        {
+            string userCode = user ?? User.Identity.Name;
+            fileId = fileId.TrimStart('m', 't');
+            m3u8Id = m3u8Id.TrimStart('m', 't');
+            if (!string.IsNullOrEmpty(fileId))
+            {
+                tsTime.UpdateByUser(ObjectId.Parse(fileId), userCode, time);
+            }
+            if (!string.IsNullOrEmpty(m3u8Id))
+            {
+                BsonDocument bson = m3u8.FindOne(ObjectId.Parse(m3u8Id));
+                tsTime.UpdateByUser(bson["SourceId"].AsObjectId, userCode, time);
+            }
+            return File(new MemoryStream(), "application/octet-stream", ObjectId.Empty.ToString());
         }
         public ActionResult VideoCapture(string id)
         {
