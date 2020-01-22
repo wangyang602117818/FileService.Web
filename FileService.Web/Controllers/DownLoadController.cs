@@ -198,7 +198,7 @@ namespace FileService.Web.Controllers
                     return "t" + match.Groups[1].Value;
                 });
                 document["File"] = Regex.Replace(document["File"].AsString, "#EXTM3U\n", "#EXTM3U\n#EXT-X-START:TIME-OFFSET=" + tsLastTime + ",PRECISE=YES\n");
-                return File(Encoding.UTF8.GetBytes(document["File"].AsString), "application/x-mpegURL", document["FileName"].AsString);
+                return File(Encoding.UTF8.GetBytes(document["File"].AsString), "application/vnd.apple.mpegurl", document["FileName"].AsString);
             }
         }
         public ActionResult M3u8MultiStream(string id)
@@ -219,7 +219,7 @@ namespace FileService.Web.Controllers
                 BsonDocument item = r == null ? list[list.Count - 1] : r;
                 m3u8File = m3u8File.Replace("{level-" + i + "}", "m" + item["_id"].ToString());
             }
-            return File(Encoding.UTF8.GetBytes(m3u8File), "application/x-mpegURL", list[0]["FileName"].ToString());
+            return File(Encoding.UTF8.GetBytes(m3u8File), "application/vnd.apple.mpegurl", list[0]["FileName"].ToString());
         }
         public ActionResult Ts(string id)
         {
@@ -232,7 +232,7 @@ namespace FileService.Web.Controllers
             }
             else
             {
-                return File(document["File"].AsByteArray, "video/vnd.dlna.mpeg-tts", document["_id"].ToString() + ".ts");
+                return File(document["File"].AsByteArray, "video/mp2t", document["_id"].ToString() + ".ts");
             }
         }
         public ActionResult RecordVideoTime(string fileId, string m3u8Id, string user, int time)
