@@ -381,7 +381,7 @@ namespace FileService.Web.Controllers
                 string md5 = file.InputStream.GetMD5();
                 BsonDocument cpBson = videoCapture.GetIdByMd5(Request.Headers["AppName"], md5);
                 ObjectId cpId = ObjectId.Empty;
-                if (cpId == null)
+                if (cpBson == null)
                 {
                     cpId = ObjectId.GenerateNewId();
                     Size size = file.InputStream.GetImageSize();
