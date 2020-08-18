@@ -83,7 +83,7 @@ namespace FileService.Converter
                 filesWrap.AddVideoCapture(fileWrapId, ObjectId.GenerateNewId(), videoCpId);
             }
             string cpPath = Path.GetDirectoryName(fullPath) + "\\" + fileWrapId.ToString() + ".gif";
-            string cmd = "\"" + AppSettings.ExePath + "\" -ss 00:00:01 -t 5 -i \"" + fullPath + "\" -r 4 -y \"" + cpPath + "\"";
+            string cmd = "\"" + AppSettings.ExePath + "\" -ss 00:00:01 -t 4 -i \"" + fullPath + "\" -r 4 -y \"" + cpPath + "\"";
             Process process = new Process()
             {
                 StartInfo = new ProcessStartInfo(cmd)
@@ -145,6 +145,71 @@ namespace FileService.Converter
             process.Close();
             process.Dispose();
             File.Delete(cpPath);
+        }
+        /// <summary>
+        /// 默认转换缩略图,并且返回缩略图地址
+        /// </summary>
+        /// <param name="fullPath"></param>
+        /// <param name="fileWrapId"></param>
+        /// <returns></returns>
+        public string ConvertCpDefault(string fullPath, ObjectId fileWrapId)
+        {
+            string cpPath = Path.GetDirectoryName(fullPath) + "\\" + fileWrapId.ToString() + ".gif";
+            string cmd = "\"" + AppSettings.ExePath + "\" -ss 00:00:02 -t 4 -i \"" + fullPath + "\" -r 4 -y \"" + cpPath + "\"";
+            Process process = new Process()
+            {
+                StartInfo = new ProcessStartInfo(cmd)
+                {
+                    UseShellExecute = false,
+                    CreateNoWindow = true,
+                    RedirectStandardError = false
+                }
+            };
+            process.Start();
+            process.WaitForExit();
+            process.Close();
+            process.Dispose();
+            return cpPath;
+        }
+        /// <summary>
+        /// 指定时间点转换缩略图,返回缩略图地址
+        /// </summary>
+        /// <param name="fullPath"></param>
+        /// <param name="fileWrapId"></param>
+        /// <param name="thumbs"></param>
+        /// <returns></returns>
+        public string ConvertCpManual(string fullPath, ObjectId fileWrapId, int[] thumbs)
+        {
+            string cpPath = Path.GetDirectoryName(fullPath) + "\\" + fileWrapId.ToString() + ".gif";
+            string cpName = Path.GetDirectoryName(fullPath) + "\\" + fileWrapId.ToString();
+            List<string> cmds = new List<string>();
+            if (thumbs == null) thumbs = new int[] { 1, 2, 3, 4 };
+            for (var i = 0; i < thumbs.Length; i++)
+            {
+                string cmd = "\"" + AppSettings.ExePath + "\" -ss " + thumbs[i] + " -i \"" + fullPath + "\" -y -vframes 1 \"" + cpName + "_" + i + ".png\"";
+                cmds.Add(cmd);
+            }
+            cmds.Add("\"" + AppSettings.ExePath + "\" -r 4 -y -i \"" + cpName + "_%d.png\"" + " \"" + cpPath + "\"");
+            Process process = new Process() { };
+            foreach (var cmd in cmds)
+            {
+                process.StartInfo = new ProcessStartInfo(cmd)
+                {
+                    UseShellExecute = false,
+                    CreateNoWindow = true,
+                    RedirectStandardError = false
+                };
+                process.Start();
+                process.WaitForExit();
+            }
+            process.Close();
+            process.Dispose();
+            for (var i = 0; i < thumbs.Length; i++)
+            {
+                var path = cpName + "_" + i + ".png";
+                if (File.Exists(path)) File.Delete(path);
+            }
+            return cpPath;
         }
         public void GenerateFilePreview(string from, ObjectId fileId, string fileName, string fullPath, Stream fileStream, ImageFormat format)
         {

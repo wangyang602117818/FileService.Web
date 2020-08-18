@@ -67,7 +67,7 @@ namespace FileService.Web.Controllers
                 {
                     return GetFileExpired();
                 }
-                return File(thumb["File"].AsByteArray, ImageExtention.GetContentType(thumb["File"].AsByteArray));
+                return File(thumb["File"].AsByteArray, ImageExtention.GetContentType(thumb["File"].AsByteArray), fileName);
             }
         }
         protected string GetTempFilePath(BsonDocument task)
@@ -338,8 +338,7 @@ namespace FileService.Web.Controllers
         }
         protected ObjectId GetObjectIdFromId(string id)
         {
-            ObjectId newId = ObjectId.Empty;
-            ObjectId.TryParse(id, out newId);
+            ObjectId.TryParse(id, out ObjectId newId);
             return newId;
         }
         protected void AddDownload(ObjectId fileWrapId)

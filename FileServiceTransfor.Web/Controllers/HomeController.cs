@@ -62,7 +62,6 @@ namespace FileServiceTransfor.Web.Controllers
             string fullPath = path + relativePath;
             if (System.IO.File.Exists(fullPath))
             {
-                FileStream fileStream = new FileStream(fullPath, FileMode.Open, FileAccess.Read);
                 return File(fullPath, "application/octet-stream", Path.GetFileName(fullPath));
             }
             return File(new MemoryStream(), "application/octet-stream");
